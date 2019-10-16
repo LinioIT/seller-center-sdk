@@ -1,0 +1,13 @@
+vendor/
+.phpunit/
+infection.log
+.php_cs
+.php_cs.cache
+phpunit.xml
+.idea/
+.phpstan.neon
+reports/
+.php_cs
+.idea/
+.idea/workspace.xml
+.docker

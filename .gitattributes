@@ -1,0 +1,7 @@
+/docs export-ignore
+/tests export-ignore
+/.* export-ignore
+/phpunit.xml.dist export-ignore
+/docker-compose.yml export-ignore
+/infection.* export-ignore
+/Jenkinsfile export-ignore

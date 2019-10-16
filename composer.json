@@ -1,0 +1,77 @@
+{
+    "name": "linio/seller-center-sdk",
+    "type": "project",
+    "description": "Linio Software Development Kit",
+    "license": "BSD-3-Clause",
+    "minimum-stability": "dev",
+    "authors": [
+        {
+            "name": "Martín San Juan",
+            "email": "martin.sanjuan@linio.com",
+            "role": "Software Engineer Team Leader"
+        },
+        {
+            "name": "Emiliano Castro",
+            "email": "emiliano.castro@linio.com",
+            "role": "Junior Software Engineer"
+        },
+        {
+            "name": "Matías Cáceres",
+            "email": "matias.caceres@linio.com",
+            "role": "Junior Software Engineer"
+        }
+    ],
+    "prefer-stable": true,
+    "require": {
+        "php": "^7.1",
+        "ext-json": "*",
+        "ext-simplexml": "*",
+        "guzzlehttp/guzzle": "^6.3",
+        "linio/util": "^2.2",
+        "psr/log": "^1.1"
+    },
+    "require-dev": {
+        "friendsofphp/php-cs-fixer": "^2.13",
+        "fzaninotto/faker": "^1.8",
+        "infection/infection": "^0.13.6",
+        "phpspec/prophecy": "^1.8",
+        "phpstan/phpstan": "^0.11.15",
+        "phpunit/phpunit": "^7.5"
+    },
+    "config": {
+        "preferred-install": {
+            "*": "dist"
+        },
+        "sort-packages": true
+    },
+    "autoload": {
+        "psr-4": {
+            "Linio\\SellerCenter\\": "src/"
+        }
+    },
+    "autoload-dev": {
+        "psr-4": {
+            "Linio\\SellerCenter\\": [
+                "tests/",
+                "tests/Functional",
+                "tests/Integration",
+                "tests/Unit"
+            ]
+        }
+    },
+    "scripts": {
+        "lint": "php-cs-fixer fix --verbose --show-progress=estimating",
+        "lint:check": [
+            "php-cs-fixer fix --dry-run --verbose --show-progress=estimating"
+        ],
+        "phpunit": "phpunit",
+        "phpstan": "phpstan analyze",
+        "infection": "infection",
+        "test": [
+            "@lint:check",
+            "@phpunit",
+            "@phpstan",
+            "@infection"
+        ]
+    }
+}

@@ -1,0 +1,13 @@
+version: '2'
+services:
+  app:
+    build:
+      context: .
+      dockerfile: .docker/Dockerfile
+    image: sdk-docker
+    ports:
+      - 8080:80
+    volumes:
+      - .:/var/www
+    env_file:
+      - .docker/.env
