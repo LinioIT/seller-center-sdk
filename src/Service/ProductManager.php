@@ -273,7 +273,7 @@ class ProductManager
         $products = new Products();
 
         foreach ($productImages as $sku => $images) {
-            $product = Product::fromSku($sku);
+            $product = Product::fromSku((string) $sku);
             $imagesCollection = new Images();
             $imagesCollection->addMany($images);
 
