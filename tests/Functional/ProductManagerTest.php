@@ -295,7 +295,10 @@ class ProductManagerTest extends LinioTestCase
         $this->assertInstanceOf(FeedResponse::class, $result);
     }
 
-    public function testItReturnsFeedResponseFromAnAddImageRequest(): void
+    /**
+     * @dataProvider validImageRequests
+     */
+    public function testItReturnsFeedResponseFromAnAddImageRequest(array $images): void
     {
         $body = '<?xml version="1.0" encoding="UTF-8"?>
                     <SuccessResponse>
@@ -314,14 +317,6 @@ class ProductManagerTest extends LinioTestCase
         $configuration = new Configuration($env['key'], $env['username'], $env['endpoint'], $env['version']);
 
         $sdk = new SellerCenterSdk($configuration, $client);
-
-        $images = [
-            '2145887609aaeu7' => [
-                'http://static.somecdn.com/moneyshot.jpeg',
-                'http://static.somecdn.com/front.jpeg',
-                'http://static.somecdn.com/rear.jpeg',
-            ],
-        ];
 
         $result = $sdk->products()->addImage($images);
 
@@ -547,5 +542,32 @@ class ProductManagerTest extends LinioTestCase
         ]);
 
         return $product;
+    }
+
+    public function validImageRequests(): array
+    {
+        $randomString = $this->getFaker()->word();
+        $randomNumberToString = (string) $this->getFaker()->randomNumber();
+
+        return [
+            [
+                [
+                    $randomString => [
+                        'http://static.somecdn.com/moneyshot.jpeg',
+                        'http://static.somecdn.com/front.jpeg',
+                        'http://static.somecdn.com/rear.jpeg',
+                    ],
+                ],
+            ],
+            [
+                [
+                    $randomNumberToString => [
+                        'http://static.somecdn.com/moneyshot.jpeg',
+                        'http://static.somecdn.com/front.jpeg',
+                        'http://static.somecdn.com/rear.jpeg',
+                    ],
+                ],
+            ],
+        ];
     }
 }
