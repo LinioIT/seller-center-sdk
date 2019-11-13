@@ -42,6 +42,10 @@ class ProductTransformer
         $attributes = $product->getProductData()->all();
 
         foreach ($attributes as $attributeKey => $attributeValue) {
+            if (is_array($attributeValue)) {
+                $attributeValue = implode(',', $attributeValue);
+            }
+
             $productData->addChild($attributeKey, htmlspecialchars((string) $attributeValue));
         }
     }
