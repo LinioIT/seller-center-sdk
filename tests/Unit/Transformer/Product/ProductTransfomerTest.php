@@ -19,6 +19,7 @@ class ProductTransfomerTest extends LinioTestCase
     {
         $productData = new ProductData('Nuevo', 1, 1, 1, 1);
         $productData->add('ShortDescription', 'Short description & ampersand');
+        $productData->add('MultiOption', ['Option one', 'Option two']);
 
         $product = Product::fromBasicData(
             'BLACK_BAG_TEST',
@@ -62,6 +63,7 @@ class ProductTransfomerTest extends LinioTestCase
                         <PackageLength>1</PackageLength>
                         <PackageWeight>1</PackageWeight>
                         <ShortDescription>Short description &amp; ampersand</ShortDescription>
+                        <MultiOption>Option one,Option two</MultiOption>
                         </ProductData>
                     </Product>
                 </Products>';
