@@ -1,14 +1,22 @@
-Changelog
-===================
+# Changelog
 
+All notable changes to this project will be documented in this file.
 
-Unreleased
-----------------------
+The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
+and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [Unreleased]
 
+### Added
 
-Changelog v0.2.0 (2019-09-02)
-----------------------
+* Support array value in `ProductData`
+
+### Fixed
+
+* Update feed documentation
+* Fix error while processing numerical SKU by `ProductManager::addImage`
+
+## [0.2.0] - 2019-09-02
 
 ### Added 
 
@@ -39,9 +47,9 @@ Changelog v0.2.0 (2019-09-02)
 * `Orders::getStatus` method. Not its called `Orders::getStatuses`
 * `Orders::getStatuses`. Instead to return an string, now return an array with all the statuses
 
-
-Changelog [v0.1.0](https://github.com/LinioIT/seller-center-sdk/releases/tag/v0.1.0) (2019-04-24)
-----------------------
+## 0.1.0 - 2019-04-24
 
 Initial Release
 
+[Unreleased]: https://github.com/LinioIT/seller-center-sdk/compare/v0.2.0...HEAD
+[0.2.0]: https://github.com/LinioIT/seller-center-sdk/releases/tag/v0.2.0
