@@ -17,33 +17,14 @@ steps:
     commands:
       - cf_export GITHUB_TOKEN=$(codefresh get context github --decrypt -o yaml | yq -y .spec.data.auth.password)
   tests:
-    stage: test    
-    type: parallel
-    steps:
-      lint:
-        title: Run lint
-        image: gcr.io/linio-support/docker-php:7.4
-        commands:      
-          - test -n "${GITHUB_TOKEN}" && composer config -g github-oauth.github.com ${GITHUB_TOKEN}
-          - composer install --no-scripts -o
-          - composer lint:check
-        environment:
-          - GITHUB_TOKEN=${{GITHUB_TOKEN}}
-      unit:
-        title: Run unit tests
-        image: gcr.io/linio-support/docker-php:7.4
-        commands:      
-          - test -n "${GITHUB_TOKEN}" && composer config -g github-oauth.github.com ${GITHUB_TOKEN}
-          - composer install --no-scripts -o
-          - composer phpunit
-        environment:
-          - GITHUB_TOKEN=${{GITHUB_TOKEN}}
-      phpstan:
-        title: Run phpstan
-        image: gcr.io/linio-support/docker-php:7.4
-        commands:      
-          - test -n "${GITHUB_TOKEN}" && composer config -g github-oauth.github.com ${GITHUB_TOKEN}
-          - composer install --no-scripts -o
-          - composer phpstan
-        environment:
-          - GITHUB_TOKEN=${{GITHUB_TOKEN}}
+    stage: test        
+    title: Run code quality
+    image: gcr.io/linio-support/docker-php:7.4
+    commands:      
+      - test -n "${GITHUB_TOKEN}" && composer config -g github-oauth.github.com ${GITHUB_TOKEN}
+      - composer install --no-scripts -o
+      - composer lint:check
+      - composer phpunit
+      - composer phpstan
+    environment:
+      - GITHUB_TOKEN=${{GITHUB_TOKEN}}
