@@ -15,15 +15,12 @@ steps:
     stage: clone
     image: codefresh/cli
     commands:
-      - cf_export GITHUB_TOKEN=$(codefresh get context github --decrypt -o yaml | yq -y .spec.data.auth.password) LINIO_ENV=local
+      - cf_export GITHUB_TOKEN=$(codefresh get context github --decrypt -o yaml | yq -y .spec.data.auth.password)
   tests:
     stage: test        
     title: Run code quality
     image: gcr.io/linio-support/docker-php:7.4
     commands:      
       - test -n "${GITHUB_TOKEN}" && composer config -g github-oauth.github.com ${GITHUB_TOKEN}
-      - composer install --no-scripts -o --no-interaction --no-suggest
-      - echo $(cat /usr/local/etc/php/conf.d/docker-php-ext-xdebug.ini | sed "s/;//") > /usr/local/etc/php/conf.d/docker-php-ext-xdebug.ini
+      - composer install --no-scripts -o --no-interaction --no-suggest      
       - composer test
-    environment:
-      - LINIO_ENV=local
