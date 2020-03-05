@@ -24,6 +24,5 @@ steps:
       - test -n "${GITHUB_TOKEN}" && composer config -g github-oauth.github.com ${GITHUB_TOKEN}
       - composer install --no-scripts -o --no-interaction --no-suggest
       - composer test      
-    environment:
-      - GITHUB_TOKEN=${GITHUB_TOKEN}
-      - LINIO_ENV=local
+    environment:   
+      LINIO_ENV: local
