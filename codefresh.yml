@@ -21,6 +21,6 @@ steps:
     title: Run code quality
     image: gcr.io/linio-support/docker-php:7.4
     commands:      
-      - test -n "${GITHUB_TOKEN}" && composer config -g github-oauth.github.com ${GITHUB_TOKEN}
+      - composer config -g github-oauth.github.com ${GITHUB_TOKEN}
       - composer install --no-scripts -o --no-interaction --no-suggest      
       - composer test
