@@ -15,7 +15,7 @@ steps:
     stage: clone
     image: codefresh/cli
     commands:
-      - cf_export GITHUB_TOKEN=$(codefresh get context github --decrypt -o yaml | yq -y .spec.data.auth.password)
+      - cf_export GITHUB_TOKEN=$(codefresh get context github --decrypt -o yaml | yq -y .spec.data.auth.password) LINIO_ENV=local
   tests:
     stage: test        
     title: Run code quality
@@ -23,6 +23,4 @@ steps:
     commands:      
       - test -n "${GITHUB_TOKEN}" && composer config -g github-oauth.github.com ${GITHUB_TOKEN}
       - composer install --no-scripts -o --no-interaction --no-suggest
-      - composer test      
-    environment:   
-      LINIO_ENV: local
+      - composer test
