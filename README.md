@@ -1,6 +1,7 @@
 Seller Center PHP SDK
 =====================
 [![License](https://img.shields.io/badge/License-BSD%203--Clause-blue.svg)](https://opensource.org/licenses/BSD-3-Clause)
+[![Codefresh build status]( https://g.codefresh.io/api/badges/pipeline/linioit/seller-center-sdk%2Fdefault?branch=master&key=eyJhbGciOiJIUzI1NiJ9.NWNhNzllZDQzNjVkMGNlMjdjOTYzNzI4.OK7sUA-U_zNwHsu1lm9Xw2DAX9hj0MUjFH1CUUK7xhM&type=cf-1)]( https%3A%2F%2Fg.codefresh.io%2Fpipelines%2Fdefault%2Fbuilds%3FrepoOwner%3DLinioIT%26repoName%3Dseller-center-sdk%26serviceName%3DLinioIT%252Fseller-center-sdk%26filter%3Dtrigger%3Abuild~Build%3Bbranch%3Amaster%3Bpipeline%3A5e600de27efa9000aa57452f~default)
 
 
 Installation
