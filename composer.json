@@ -27,7 +27,7 @@
         "ext-json": "*",
         "ext-simplexml": "*",
         "guzzlehttp/guzzle": "^6.3",
-        "linio/util": "^2.2",
+        "linio/util": "^2.2|^3.0",
         "psr/log": "^1.1"
     },
     "require-dev": {
