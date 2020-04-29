@@ -14,8 +14,8 @@ Edit your composer.json to add the repository URL:
     {
         "repositories": [
             {
-                "type": "vcs",
-                "url": "git@github.com:LinioIT/seller-center-sdk.git"
+                "type": "git",
+                "url": "https://github.com/LinioIT/seller-center-sdk.git"
             }
         ]
     }
@@ -72,7 +72,7 @@ Here is a list of the actual managers in the SDK:
 - [OrderManager](docs/Managers/Order.md)
 - [ProductManager](docs/Managers/Product.md)
 - [QualityControlManager](docs/Managers/QcStatus.md)
-
+- [WebookManager](docs/Managers/Webook.md)
 
 ### Logging
 
