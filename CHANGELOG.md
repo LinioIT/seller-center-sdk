@@ -7,6 +7,12 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Added
+* Support linio util v3
+
+### Changed
+* Update Readme documentation
+
 ## [0.2.1] - 2019-11-04
 
 ### Added
@@ -53,5 +59,6 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 Initial Release
 
-[Unreleased]: https://github.com/LinioIT/seller-center-sdk/compare/v0.2.0...HEAD
+[Unreleased]: https://github.com/LinioIT/seller-center-sdk/compare/v0.2.1...HEAD
+[0.2.1]: https://github.com/LinioIT/seller-center-sdk/releases/tag/v0.2.1
 [0.2.0]: https://github.com/LinioIT/seller-center-sdk/releases/tag/v0.2.0
