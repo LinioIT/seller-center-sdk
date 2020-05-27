@@ -160,51 +160,12 @@ class FeedManagerTest extends LinioTestCase
         $sdkClient->feeds()->getFeedList();
     }
 
-    public function testItReturnsFeedInstanceFromValidXml(): void
+    /**
+     * @dataProvider xmlTypesProvider
+     */
+    public function testItReturnsFeedInstanceFromValidXml($xml): void
     {
-        $xml = '<?xml version="1.0" encoding="UTF-8"?>
-        <SuccessResponse>
-             <Head>
-                  <RequestId/>
-                  <RequestAction>FeedStatus</RequestAction>
-                  <ResponseType>FeedDetail</ResponseType>
-                  <Timestamp>2018-12-18T07:55:07-0600</Timestamp>
-                  <RequestParameters>
-                       <FeedID>aa19d73f-ab3a-48c1-b196-9a1f18e5280e</FeedID>
-                  </RequestParameters>
-             </Head>
-             <Body>
-                  <FeedDetail>
-                       <Feed>aa19d73f-ab3a-48c1-b196-9a1f18e5280e</Feed>
-                       <Status>Finished</Status>
-                       <Action>ProductUpdate</Action>
-                       <CreationDate>2018-12-17 13:46:25</CreationDate>
-                       <UpdatedDate>2018-12-17 13:50:43</UpdatedDate>
-                       <Source>api</Source>
-                       <TotalRecords>1232</TotalRecords>
-                       <ProcessedRecords>1190</ProcessedRecords>
-                       <FailedRecords>114</FailedRecords>
-                       <FeedErrors>
-                            <Error>
-                                 <Code>1</Code>
-                                 <Message>Negative value is not allowed</Message>
-                                 <SellerSku>9786077351993</SellerSku>
-                            </Error>
-                            <Error>
-                                 <Code>1</Code>
-                                 <Message>Seller SKU \'9788441418011\' not found</Message>
-                                 <SellerSku>9788441418011</SellerSku>
-                            </Error>
-                            <Error>
-                                 <Code>1</Code>
-                                 <Message>Seller SKU \'9788498455984\' not found</Message>
-                                 <SellerSku>9788498455984</SellerSku>
-                            </Error>
-                       </FeedErrors>
-                  </FeedDetail>
-             </Body>
-        </SuccessResponse>';
-
+        $sxml = simplexml_load_string($xml);
         $env = $this->getParameters();
         $configuration = new Configuration($env['key'], $env['username'], $env['endpoint'], $env['version']);
         $client = $this->createClientWithResponse($xml);
@@ -216,7 +177,7 @@ class FeedManagerTest extends LinioTestCase
         $this->assertEquals('aa19d73f-ab3a-48c1-b196-9a1f18e5280e', $feed->getID());
 
         $this->assertEquals('Finished', $feed->getStatus());
-        $this->assertEquals('ProductUpdate', $feed->getAction());
+        $this->assertEquals((string) $sxml->Body->FeedDetail->Action, $feed->getAction());
         $this->assertInstanceOf(DateTimeImmutable::class, $feed->getCreationDate());
         $this->assertInstanceOf(DateTimeImmutable::class, $feed->getUpdatedDate());
         $this->assertEquals('1232', $feed->getTotalRecords());
@@ -225,6 +186,90 @@ class FeedManagerTest extends LinioTestCase
 
         $this->assertInstanceOf(FeedErrors::class, $feed->getErrors());
         $this->assertContainsOnlyInstancesOf(FeedError::class, $feed->getErrors()->all());
+    }
+
+    public function xmlTypesProvider()
+    {
+        return [
+            [
+                'productUpdate' => '<?xml version="1.0" encoding="UTF-8"?>
+                    <SuccessResponse>
+                         <Head>
+                              <RequestId/>
+                              <RequestAction>FeedStatus</RequestAction>
+                              <ResponseType>FeedDetail</ResponseType>
+                              <Timestamp>2018-12-18T07:55:07-0600</Timestamp>
+                              <RequestParameters>
+                                   <FeedID>aa19d73f-ab3a-48c1-b196-9a1f18e5280e</FeedID>
+                              </RequestParameters>
+                         </Head>
+                         <Body>
+                              <FeedDetail>
+                                   <Feed>aa19d73f-ab3a-48c1-b196-9a1f18e5280e</Feed>
+                                   <Status>Finished</Status>
+                                   <Action>ProductUpdate</Action>
+                                   <CreationDate>2018-12-17 13:46:25</CreationDate>
+                                   <UpdatedDate>2018-12-17 13:50:43</UpdatedDate>
+                                   <Source>api</Source>
+                                   <TotalRecords>1232</TotalRecords>
+                                   <ProcessedRecords>1190</ProcessedRecords>
+                                   <FailedRecords>114</FailedRecords>
+                                   <FeedErrors>
+                                        <Error>
+                                             <Code>1</Code>
+                                             <Message>Negative value is not allowed</Message>
+                                             <SellerSku>9786077351993</SellerSku>
+                                        </Error>
+                                        <Error>
+                                             <Code>1</Code>
+                                             <Message>Seller SKU \'9788441418011\' not found</Message>
+                                             <SellerSku>9788441418011</SellerSku>
+                                        </Error>
+                                        <Error>
+                                             <Code>1</Code>
+                                             <Message>Seller SKU \'9788498455984\' not found</Message>
+                                             <SellerSku>9788498455984</SellerSku>
+                                        </Error>
+                                   </FeedErrors>
+                              </FeedDetail>
+                         </Body>
+                    </SuccessResponse>',
+            ],
+            [
+                'ProductCreate' => '<?xml version="1.0" encoding="UTF-8"?>
+                    <SuccessResponse>
+                         <Head>
+                              <RequestId/>
+                              <RequestAction>FeedStatus</RequestAction>
+                              <ResponseType>FeedDetail</ResponseType>
+                              <Timestamp>2018-12-18T07:55:07-0600</Timestamp>
+                              <RequestParameters>
+                                   <FeedID>aa19d73f-ab3a-48c1-b196-9a1f18e5280e</FeedID>
+                              </RequestParameters>
+                         </Head>
+                         <Body>
+                              <FeedDetail>
+                                   <Feed>aa19d73f-ab3a-48c1-b196-9a1f18e5280e</Feed>
+                                   <Status>Finished</Status>
+                                   <Action>ProductCreate</Action>
+                                   <CreationDate>2018-12-17 13:46:25</CreationDate>
+                                   <UpdatedDate>2018-12-17 13:50:43</UpdatedDate>
+                                   <Source>api</Source>
+                                   <TotalRecords>1232</TotalRecords>
+                                   <ProcessedRecords>1190</ProcessedRecords>
+                                   <FailedRecords>114</FailedRecords>
+                                   <FeedErrors>
+                                        <Error>
+                                             <Code>0</Code>
+                                             <Message>SellerSku cannot be empty</Message>
+                                             <SellerSku/>
+                                        </Error>
+                                   </FeedErrors>
+                              </FeedDetail>
+                         </Body>
+                    </SuccessResponse>',
+            ],
+        ];
     }
 
     public function testItThrowsXMLStructureException(): void
