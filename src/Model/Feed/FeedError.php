@@ -27,10 +27,6 @@ class FeedError implements JsonSerializable
 
     public function __construct(int $code, string $sellerSku, string $message)
     {
-        if (empty($sellerSku)) {
-            throw new EmptyArgumentException('SellerSku');
-        }
-
         if (empty($message)) {
             throw new EmptyArgumentException('Message');
         }

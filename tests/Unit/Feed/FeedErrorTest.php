@@ -81,14 +81,6 @@ class FeedErrorTest extends LinioTestCase
     public function testItThrowsAnExceptionIfMessageIsNullForFeedError(): void
     {
         $this->expectException(EmptyArgumentException::class);
-        $this->expectExceptionMessage('The parameter SellerSku should not be null.');
-
-        new FeedError(0, '', 'Message');
-    }
-
-    public function testItThrowsAnExceptionIfSellerSkuIsNullForFeedError(): void
-    {
-        $this->expectException(EmptyArgumentException::class);
         $this->expectExceptionMessage('The parameter Message should not be null.');
 
         new FeedError(0, 'SellerSku', '');
