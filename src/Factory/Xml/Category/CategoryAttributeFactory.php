@@ -87,7 +87,7 @@ class CategoryAttributeFactory
             (string) $element->ProductType,
             (string) $element->InputType,
             (string) $element->GroupName,
-            (int) $element->MaxLength,
+            (int) $element->MaxLength ?: null,
             (string) $element->ExampleValue
         );
     }
