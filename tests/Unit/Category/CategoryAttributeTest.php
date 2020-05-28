@@ -616,4 +616,59 @@ class CategoryAttributeTest extends LinioTestCase
         $expectedJson = sprintf('{"name":"%s","feedName":"%s","label":"%s","globalIdentifier":"%s","mandatory":false,"globalAttribute":false,"description":null,"productType":null,"inputType":null,"attributeType":"%s","options": [ {"globalIdentifier": "globalIdentifier", "name": "name", "default": true } ],"groupName":null,"maxLength":null,"exampleValue":null}', $name, $feedName, $label, $globalIdentifier, $attributeType);
         $this->assertJsonStringEqualsJsonString($expectedJson, Json::encode($categoryAttribute));
     }
+
+    /**
+     * @dataProvider maxLengthTypesProvider
+     */
+    public function testMaxLengthCases(
+        $maxLength,
+        $expected
+    ): void {
+        $xml = sprintf(
+            '<Attribute>
+                  <Label>%s</Label>
+                  <Name>%s</Name>
+                  <FeedName>%s</FeedName>
+                  <GlobalIdentifier>%s</GlobalIdentifier>
+                  <GroupName>%s</GroupName>
+                  <isMandatory>%s</isMandatory>
+                  <IsGlobalAttribute>%s</IsGlobalAttribute>
+                  <Description>%s</Description>
+                  <ProductType>%s</ProductType>
+                  <InputType>%s</InputType>
+                  <AttributeType>%s</AttributeType>
+                  <ExampleValue>%s</ExampleValue>
+                  <MaxLength>%s</MaxLength>
+                  <Options/>
+                </Attribute>',
+            'Memory Size (GB)',
+            'StorageCapacity',
+            'storage_capacity',
+            'storage_capacity_mock',
+            'Memory Size',
+            0,
+            0,
+            'Size capacity of the phone',
+            'config',
+            'string',
+            'value',
+            '16GB',
+            $maxLength
+        );
+
+        $sxml = simplexml_load_string($xml);
+
+        $result = CategoryAttributeFactory::make($sxml);
+        $this->assertEquals($expected, $result->getMaxLength());
+    }
+
+    public function maxLengthTypesProvider()
+    {
+        return [
+            ['maxLength' => 15, 'expected' => 15],
+            ['maxLength' => '15', 'expected' => 15],
+            ['maxLength' => 0, 'expected' => null],
+            ['maxLength' => '0', 'expected' => null],
+        ];
+    }
 }
