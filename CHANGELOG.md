@@ -16,7 +16,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Fixed
 
 * Support feed's errors with empty SellerSku
-* Fix CategoryAttribute returning `0` (zero) instead `null`
+* Fix CategoryAttribute returning `0` (zero) instead of `null`
 
 ## [0.2.1] - 2019-11-04
 
@@ -31,10 +31,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [0.2.0] - 2019-09-02
 
-### Added 
+### Added
 
 * Request and response logs in the managers
-* Shipment manager into the sdk to get the shipment providers from seller center 
+* Shipment manager into the sdk to get the shipment providers from seller center
 * jsonSerialize into models
 * `Product::fromSku` to use when only the images will be updated
 * Product remove feature into the product manager
@@ -46,7 +46,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 * Feed manager. Now its checks the right object
 * `extraAttributes` in orders. Now `extraAttributes` its processed as a `string`
 * Uninitialized collection for orders
-* The category behavior when it contains commas 
+* The category behavior when it contains commas
 
 ### Changed
 
