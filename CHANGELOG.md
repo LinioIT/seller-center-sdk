@@ -13,6 +13,11 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Changed
 * Update Readme documentation
 
+### Fixed
+
+* Support feed's errors with empty SellerSku
+* Fix CategoryAttribute returning `0` (zero) instead `null`
+
 ## [0.2.1] - 2019-11-04
 
 ### Added
