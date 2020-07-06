@@ -18,15 +18,15 @@ class ProductTransformer
         $body = $xml->addChild('Product');
         self::addAttributes($body, $product->all());
 
-        $productDataAttribute = $product->getProductData()->all();
+        $productDataAttributes = $product->getProductData()->all();
 
-        if (empty($productDataAttribute)) {
+        if (empty($productDataAttributes)) {
             return;
         }
 
         $productData = $body->addChild('ProductData');
 
-        foreach ($productDataAttribute as $attributeKey => $attributeValue) {
+        foreach ($productDataAttributes as $attributeKey => $attributeValue) {
             if (is_array($attributeValue)) {
                 $attributeValue = implode(',', $attributeValue);
             }
