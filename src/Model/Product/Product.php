@@ -128,6 +128,7 @@ class Product implements JsonSerializable
 
     private function __construct()
     {
+        $this->productData = new ProductData();
     }
 
     /**
@@ -179,7 +180,7 @@ class Product implements JsonSerializable
         $product->setTaxClass($taxClass);
         $product->setProductData($productData);
 
-        $product->setStatus('active');
+        $product->setStatus(ProductStatus::ACTIVE);
         $product->setQuantity(0);
         $product->setAvailable(0);
         $categories = new Categories();
@@ -447,6 +448,31 @@ class Product implements JsonSerializable
     public function attachImages(Images $images): void
     {
         $this->images = $images;
+    }
+
+    /**
+     * @return mixed[]
+     */
+    public function all(): array
+    {
+        return [
+            Attribute::FEED_SELLER_SKU => $this->sellerSku,
+            Attribute::FEED_NAME => $this->name,
+            Attribute::FEED_VARIATION => $this->variation,
+            Attribute::FEED_STATUS => $this->status,
+            Attribute::FEED_PRIMARY_CATEGORY => $this->primaryCategory,
+            Attribute::FEED_CATEGORIES => $this->categories,
+            Attribute::FEED_DESCRIPTION => $this->description,
+            Attribute::FEED_BRAND => $this->brand,
+            Attribute::FEED_PRICE => $this->price,
+            Attribute::FEED_PRODUCT_ID => $this->productId,
+            Attribute::FEED_TAX_CLASS => $this->taxClass,
+            Attribute::FEED_PARENT_SKU => $this->parentSku,
+            Attribute::FEED_QUANTITY => $this->quantity,
+            Attribute::FEED_SALE_PRICE => $this->salePrice,
+            Attribute::FEED_SALE_START_DATE => $this->getSaleStartDateString(),
+            Attribute::FEED_SALE_END_DATE => $this->getSaleEndDateString(),
+        ];
     }
 
     public function jsonSerialize(): stdClass

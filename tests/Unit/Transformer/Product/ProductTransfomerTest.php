@@ -45,17 +45,12 @@ class ProductTransfomerTest extends LinioTestCase
                     <Variation>M</Variation>
                     <Status>active</Status>
                     <PrimaryCategory>7080</PrimaryCategory>
-                    <Categories/>
                     <Description>&lt;p&gt;Womens black &lt;b&gt;leather &amp; bag&lt;/b&gt;, with ample space. Can be worn over the shoulder, or remove straps to carry in your hand.asdasd&lt;/p&gt;</Description>
                     <Brand>Apple</Brand>
                     <Price>30000</Price>
                     <ProductId>123456783</ProductId>
                     <TaxClass>IVA 19%</TaxClass>
-                    <ParentSku/>
                     <Quantity>0</Quantity>
-                    <SalePrice/>
-                    <SaleStartDate/>
-                    <SaleEndDate/>
                     <ProductData>
                         <ConditionType>Nuevo</ConditionType>
                         <PackageHeight>1</PackageHeight>
