@@ -11,38 +11,48 @@ use stdClass;
 
 class ProductData implements JsonSerializable
 {
+    public const FEED_CONDITION_TYPE = 'ConditionType';
+    public const FEED_PACKAGE_WEIGHT = 'PackageWeight';
+    public const FEED_PACKAGE_HEIGHT = 'PackageHeight';
+    public const FEED_PACKAGE_WIDTH = 'PackageWidth';
+    public const FEED_PACKAGE_LENGTH = 'PackageLength';
+
     /**
-     * @var array
+     * @var mixed[]
      */
     protected $attributes = [];
 
-    public function __construct(string $conditionType, float $packageHeight, float $packageWidth, float $packageLength, float $packageWeight)
-    {
-        if (!in_array($conditionType, ProductConditionTypes::CONDITION_TYPES)) {
-            throw new InvalidDomainException('ConditionType');
+    public function __construct(
+        string $conditionType = null,
+        float $packageHeight = null,
+        float $packageWidth = null,
+        float $packageLength = null,
+        float $packageWeight = null
+    ) {
+        if ($conditionType !== null) {
+            $this->validateConditionType($conditionType);
+            $this->attributes[self::FEED_CONDITION_TYPE] = $conditionType;
         }
 
-        if ($packageHeight < 0) {
-            throw new InvalidDomainException('PackageHeight');
+        if ($packageHeight !== null) {
+            $this->validateGreaterThan(0, $packageHeight, self::FEED_PACKAGE_HEIGHT);
+            $this->attributes[self::FEED_PACKAGE_HEIGHT] = $packageHeight;
         }
 
-        if ($packageWidth < 0) {
-            throw new InvalidDomainException('PackageWidth');
+        if ($packageWidth !== null) {
+            $this->validateGreaterThan(0, $packageWidth, self::FEED_PACKAGE_WIDTH);
+            $this->attributes[self::FEED_PACKAGE_WIDTH] = $packageWidth;
         }
 
-        if ($packageLength < 0) {
-            throw new InvalidDomainException('PackageLength');
+        if ($packageLength !== null) {
+            $this->validateGreaterThan(0, $packageLength, self::FEED_PACKAGE_LENGTH);
+            $this->attributes[self::FEED_PACKAGE_LENGTH] = $packageLength;
         }
 
-        if ($packageWeight < 0) {
-            throw new InvalidDomainException('PackageWeight');
+        if ($packageWeight !== null) {
+            $this->validateGreaterThan(0, $packageWeight, self::FEED_PACKAGE_WEIGHT);
+            $this->attributes[self::FEED_PACKAGE_WEIGHT] = $packageWeight;
         }
-
-        $this->attributes['ConditionType'] = $conditionType;
-        $this->attributes['PackageHeight'] = $packageHeight;
-        $this->attributes['PackageWidth'] = $packageWidth;
-        $this->attributes['PackageLength'] = $packageLength;
-        $this->attributes['PackageWeight'] = $packageWeight;
     }
 
     public function all(): array
@@ -77,5 +87,19 @@ class ProductData implements JsonSerializable
         }
 
         return $serialized;
+    }
+
+    private function validateConditionType(string $conditionType): void
+    {
+        if (!in_array($conditionType, ProductConditionTypes::CONDITION_TYPES)) {
+            throw new InvalidDomainException('ConditionType');
+        }
+    }
+
+    private function validateGreaterThan(int $minValue, float $value, string $feedName): void
+    {
+        if ($value < $minValue) {
+            throw new InvalidDomainException($feedName);
+        }
     }
 }
