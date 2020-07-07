@@ -92,7 +92,7 @@ class ProductData implements JsonSerializable
     private function validateConditionType(string $conditionType): void
     {
         if (!in_array($conditionType, ProductConditionTypes::CONDITION_TYPES)) {
-            throw new InvalidDomainException('ConditionType');
+            throw new InvalidDomainException(self::FEED_CONDITION_TYPE);
         }
     }
 
