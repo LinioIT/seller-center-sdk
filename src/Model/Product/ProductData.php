@@ -23,11 +23,11 @@ class ProductData implements JsonSerializable
     protected $attributes = [];
 
     public function __construct(
-        string $conditionType = null,
-        float $packageHeight = null,
-        float $packageWidth = null,
-        float $packageLength = null,
-        float $packageWeight = null
+        ?string $conditionType = null,
+        ?float $packageHeight = null,
+        ?float $packageWidth = null,
+        ?float $packageLength = null,
+        ?float $packageWeight = null
     ) {
         if ($conditionType !== null) {
             $this->validateConditionType($conditionType);
