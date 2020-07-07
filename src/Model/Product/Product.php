@@ -129,6 +129,7 @@ class Product implements JsonSerializable
     private function __construct()
     {
         $this->productData = new ProductData();
+        $this->images = new Images();
     }
 
     /**
@@ -185,8 +186,10 @@ class Product implements JsonSerializable
         $product->setAvailable(0);
         $categories = new Categories();
         $product->setCategories($categories);
-        $images = $images ?? new Images();
-        $product->attachImages($images);
+
+        if ($images) {
+            $product->attachImages($images);
+        }
 
         return $product;
     }
