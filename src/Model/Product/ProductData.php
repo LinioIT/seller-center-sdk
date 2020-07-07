@@ -16,6 +16,7 @@ class ProductData implements JsonSerializable
     public const FEED_PACKAGE_HEIGHT = 'PackageHeight';
     public const FEED_PACKAGE_WIDTH = 'PackageWidth';
     public const FEED_PACKAGE_LENGTH = 'PackageLength';
+    protected const PACKAGE_MIN_VALUE = 0;
 
     /**
      * @var mixed[]
@@ -35,22 +36,22 @@ class ProductData implements JsonSerializable
         }
 
         if ($packageHeight !== null) {
-            $this->validateGreaterThan(0, $packageHeight, self::FEED_PACKAGE_HEIGHT);
+            $this->validatePackageValue($packageHeight, self::FEED_PACKAGE_HEIGHT);
             $this->attributes[self::FEED_PACKAGE_HEIGHT] = $packageHeight;
         }
 
         if ($packageWidth !== null) {
-            $this->validateGreaterThan(0, $packageWidth, self::FEED_PACKAGE_WIDTH);
+            $this->validatePackageValue($packageWidth, self::FEED_PACKAGE_WIDTH);
             $this->attributes[self::FEED_PACKAGE_WIDTH] = $packageWidth;
         }
 
         if ($packageLength !== null) {
-            $this->validateGreaterThan(0, $packageLength, self::FEED_PACKAGE_LENGTH);
+            $this->validatePackageValue($packageLength, self::FEED_PACKAGE_LENGTH);
             $this->attributes[self::FEED_PACKAGE_LENGTH] = $packageLength;
         }
 
         if ($packageWeight !== null) {
-            $this->validateGreaterThan(0, $packageWeight, self::FEED_PACKAGE_WEIGHT);
+            $this->validatePackageValue($packageWeight, self::FEED_PACKAGE_WEIGHT);
             $this->attributes[self::FEED_PACKAGE_WEIGHT] = $packageWeight;
         }
     }
@@ -89,16 +90,16 @@ class ProductData implements JsonSerializable
         return $serialized;
     }
 
-    private function validateConditionType(string $conditionType): void
+    protected function validateConditionType(string $conditionType): void
     {
         if (!in_array($conditionType, ProductConditionTypes::CONDITION_TYPES)) {
             throw new InvalidDomainException(self::FEED_CONDITION_TYPE);
         }
     }
 
-    private function validateGreaterThan(int $minValue, float $value, string $feedName): void
+    protected function validatePackageValue(float $value, string $feedName): void
     {
-        if ($value < $minValue) {
+        if ($value < self::PACKAGE_MIN_VALUE) {
             throw new InvalidDomainException($feedName);
         }
     }
