@@ -35,7 +35,7 @@ class ProductTransformer
         }
     }
 
-    private static function addAttributes(SimpleXMLElement $xml, array $attributes): void
+    public static function addAttributes(SimpleXMLElement $xml, array $attributes): void
     {
         foreach ($attributes as $attributeName => $attributeValue) {
             if ($attributeValue === null) {
@@ -53,7 +53,7 @@ class ProductTransformer
         }
     }
 
-    private static function attributeAsString($attribute): ?string
+    public static function attributeAsString($attribute): ?string
     {
         if (is_object($attribute)) {
             return self::attributeObjectAsString($attribute);
@@ -62,7 +62,7 @@ class ProductTransformer
         return (string) $attribute;
     }
 
-    private static function attributeObjectAsString($attribute): ?string
+    public static function attributeObjectAsString($attribute): ?string
     {
         $className = get_class($attribute);
 

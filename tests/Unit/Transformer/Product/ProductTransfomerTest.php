@@ -4,14 +4,17 @@ declare(strict_types=1);
 
 namespace Linio\SellerCenter\Transformer\Product;
 
+use Linio\SellerCenter\Exception\InvalidDomainException;
 use Linio\SellerCenter\LinioTestCase;
 use Linio\SellerCenter\Model\Brand\Brand;
+use Linio\SellerCenter\Model\Category\Categories;
 use Linio\SellerCenter\Model\Category\Category;
 use Linio\SellerCenter\Model\Product\Image;
 use Linio\SellerCenter\Model\Product\Images;
 use Linio\SellerCenter\Model\Product\Product;
 use Linio\SellerCenter\Model\Product\ProductData;
 use SimpleXMLElement;
+use stdClass;
 
 class ProductTransfomerTest extends LinioTestCase
 {
@@ -89,5 +92,70 @@ class ProductTransfomerTest extends LinioTestCase
              </Request>';
 
         $this->assertXmlStringEqualsXmlString($expectedXml, $xml->asXML());
+    }
+
+    public function testItAddsAttributesIgnoringTheNullValues(): void
+    {
+        $xml = new SimpleXMLElement('<Root />');
+
+        $attributes = [
+            'Main' => null,
+            'EmptyCategories' => new Categories(),
+            'Foo' => 'Bar',
+        ];
+
+        ProductTransformer::addAttributes($xml, $attributes);
+        $children = $xml->children();
+
+        $this->assertCount(1, $children);
+        $this->assertEquals('Foo', $children[0]->getName());
+        $this->assertEquals('Bar', (string) $children[0]);
+    }
+
+    /**
+     * @dataProvider transformedTypesToString
+     */
+    public function testItTransformsNotObjectTypeToString($value, $expectedString): void
+    {
+        $result = ProductTransformer::attributeAsString($value);
+        $this->assertSame($expectedString, $result);
+    }
+
+    public function transformedTypesToString()
+    {
+        return [
+            [1, '1'],
+            [1.2, '1.2'],
+            ['foo', 'foo'],
+            [Category::fromId(111), '111'],
+        ];
+    }
+
+    /**
+     * @dataProvider transfomedObjectsProvider
+     */
+    public function testItTransformsAttributeObjectAsString($object, $expectedResult): void
+    {
+        if ($object instanceof stdClass) {
+            $this->expectException(InvalidDomainException::class);
+        }
+
+        $result = ProductTransformer::attributeObjectAsString($object);
+        $this->assertSame($expectedResult, $result);
+    }
+
+    public function transfomedObjectsProvider()
+    {
+        $categories = new Categories();
+        $categories->add(Category::fromId(222));
+        $categories->add(Category::fromId(333));
+
+        return [
+            [Category::fromId(111), '111'],
+            [new Categories(), null],
+            [$categories, '222,333'],
+            [Brand::fromName('Linio'), 'Linio'],
+            [new stdClass(), null],
+        ];
     }
 }
