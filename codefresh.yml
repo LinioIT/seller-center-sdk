@@ -1,7 +1,7 @@
 version: '1.0'
 stages:
   - clone
-  - test  
+  - test
 steps:
   main_clone:
     title: Clone repository
@@ -16,11 +16,19 @@ steps:
     image: codefresh/cli
     commands:
       - echo GITHUB_TOKEN=$(codefresh get context github --decrypt -o yaml | yq -r .spec.data.auth.password) >> ${{CF_VOLUME_PATH}}/env_vars_to_export
-  tests:
-    stage: test        
-    title: Run code quality
+  tests_php74:
+    stage: test
+    title: Run PHP tests 7.4
     image: gcr.io/linio-support/docker-php:7.4
-    commands:      
+    commands:
       - composer config -g github-oauth.github.com ${GITHUB_TOKEN}
-      - composer install --no-scripts -o --no-interaction --no-suggest      
+      - composer install --no-scripts -o --no-interaction --no-suggest
+      - composer test
+  test_php71:
+    title: Run PHP tests 7.1
+    stage: test
+    image: gcr.io/linio-support/docker-php:7.1
+    commands:
+      - composer config -g github-oauth.github.com ${GITHUB_TOKEN}
+      - composer install --no-scripts -o --no-interaction --no-suggest
       - composer test
