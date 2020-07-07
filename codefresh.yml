@@ -24,7 +24,7 @@ steps:
       - composer config -g github-oauth.github.com ${GITHUB_TOKEN}
       - composer install --no-scripts -o --no-interaction --no-suggest
       - composer test
-  test_php71:
+  tests_php71:
     title: Run PHP tests 7.1
     stage: test
     image: gcr.io/linio-support/docker-php:7.1
