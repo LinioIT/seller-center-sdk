@@ -12,6 +12,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Changed
 * Update Readme documentation
+* Make `ProductData` constructor's parameters optional
+* Do not build XML request with `null` values (useful when not updating the entire product)
 
 ### Fixed
 
