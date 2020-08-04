@@ -9,6 +9,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Added
 * Support linio util v3
+* Support to update seller sku
 
 ### Changed
 * Update Readme documentation
