@@ -24,6 +24,11 @@ class Product implements JsonSerializable
     /**
      * @var string|null
      */
+    protected $newSellerSku = null;
+
+    /**
+     * @var string|null
+     */
     protected $shopSku;
 
     /**
@@ -210,6 +215,11 @@ class Product implements JsonSerializable
         return $this->sellerSku;
     }
 
+    public function getNewSellerSku(): ?string
+    {
+        return $this->newSellerSku;
+    }
+
     public function getShopSku(): ?string
     {
         return $this->shopSku;
@@ -333,9 +343,14 @@ class Product implements JsonSerializable
         return $this->images;
     }
 
-    public function setSellerSku($sku): void
+    public function setSellerSku(string $sellerSku): void
     {
-        $this->sellerSku = $sku;
+        $this->sellerSku = $sellerSku;
+    }
+
+    public function setNewSellerSku(string $newSellerSku): void
+    {
+        $this->newSellerSku = $newSellerSku;
     }
 
     public function setParentSku(string $parentSku): void
@@ -460,6 +475,7 @@ class Product implements JsonSerializable
     {
         return [
             Attribute::FEED_SELLER_SKU => $this->sellerSku,
+            Attribute::FEED_NEW_SELLER_SKU => $this->newSellerSku,
             Attribute::FEED_NAME => $this->name,
             Attribute::FEED_VARIATION => $this->variation,
             Attribute::FEED_STATUS => $this->status,
@@ -482,6 +498,7 @@ class Product implements JsonSerializable
     {
         $serialized = new stdClass();
         $serialized->sellerSku = $this->sellerSku;
+        $serialized->newSellerSku = $this->newSellerSku;
         $serialized->shopSku = $this->shopSku;
         $serialized->productSin = $this->productSin;
         $serialized->parentSku = $this->parentSku;

@@ -23,6 +23,7 @@ use SimpleXMLElement;
 class ProductTest extends LinioTestCase
 {
     protected $sellerSku = '2145819109aaeu7';
+    protected $newSellerSku = null;
     protected $name = 'Magic Product';
     protected $variation = 'XL';
     protected $primaryCategory;
@@ -418,6 +419,25 @@ class ProductTest extends LinioTestCase
         $this->assertEquals($expectedAvailable, $product->getAvailable());
     }
 
+    public function testItSetNewSellerSku(): void
+    {
+        $product = Product::fromBasicData(
+            $this->sellerSku,
+            $this->name,
+            $this->variation,
+            $this->primaryCategory,
+            $this->description,
+            $this->brand,
+            $this->price,
+            $this->productId,
+            $this->taxClass,
+            $this->productData
+        );
+
+        $product->setNewSellerSku('newSellerSku');
+        $this->assertEquals('newSellerSku', $product->getNewSellerSku());
+    }
+
     public function testItThrowsExceptionWhenSellerSkuIsNull(): void
     {
         $this->expectException(EmptyArgumentException::class);
@@ -790,6 +810,7 @@ class ProductTest extends LinioTestCase
         $xml = sprintf(
             '<Product>
                     <SellerSku>%s</SellerSku>
+                    <NewSellerSku>%s</NewSellerSku>
                     <Name>%s</Name>
                     <ShopSku>%s</ShopSku>
                     <ProductSin>%s</ProductSin>
@@ -809,6 +830,7 @@ class ProductTest extends LinioTestCase
                     </ProductData>        
                 </Product>',
             $this->sellerSku,
+            $this->newSellerSku,
             $this->name,
             $this->shopSku,
             $this->productSin,
@@ -831,7 +853,7 @@ class ProductTest extends LinioTestCase
         $product = ProductFactory::make($simpleXml);
 
         $expectedJson = sprintf(
-            '{"sellerSku":"%s","shopSku":"%s","productSin":"%s","parentSku":null,"status":"active","name":"%s","variation":"%s","primaryCategory":{"categoryId":null,"name":"%s","globalIdentifier":null,"attributeSetId":null,"children": [],"attributes": []},"categories": [],"description":"%s","brand": {"brandId": null,"name": "%s","globalIdentifier": null},"price":%d,"salePrice":null,"saleStartDate":null,"saleEndDate":null,"productId":"%s","taxClass":"%s","productData":{"ConditionType":"%s","PackageHeight":%d,"PackageWidth":%d,"PackageLength":%d,"PackageWeight":%d},"quantity":0,"available":0,"mainImage":null,"images":[]}',
+            '{"sellerSku":"%s","newSellerSku":null,"shopSku":"%s","productSin":"%s","parentSku":null,"status":"active","name":"%s","variation":"%s","primaryCategory":{"categoryId":null,"name":"%s","globalIdentifier":null,"attributeSetId":null,"children": [],"attributes": []},"categories": [],"description":"%s","brand": {"brandId": null,"name": "%s","globalIdentifier": null},"price":%d,"salePrice":null,"saleStartDate":null,"saleEndDate":null,"productId":"%s","taxClass":"%s","productData":{"ConditionType":"%s","PackageHeight":%d,"PackageWidth":%d,"PackageLength":%d,"PackageWeight":%d},"quantity":0,"available":0,"mainImage":null,"images":[]}',
             $this->sellerSku,
             $this->shopSku,
             $this->productSin,

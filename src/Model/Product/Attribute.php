@@ -7,6 +7,7 @@ namespace Linio\SellerCenter\Model\Product;
 class Attribute
 {
     public const FEED_SELLER_SKU = 'SellerSku';
+    public const FEED_NEW_SELLER_SKU = 'NewSellerSku';
     public const FEED_NAME = 'Name';
     public const FEED_DESCRIPTION = 'Description';
     public const FEED_PRIMARY_CATEGORY = 'PrimaryCategory';
