@@ -57,14 +57,30 @@ A string with the format written above for getting orders updated before that da
 ``` 
 A valid order item ID in the environment for get its document.
 
+## Local setup
+
+**Prerequisites**:
+- [docker-compose](https://docs.docker.com/compose/install/)
+
+First, we need to build the local docker image. To do this, run the following command:
+
+> `docker-compose build`
+
+We will be using an alias for executing the development commands.
+
+> `alias dcli='docker-compose -f docker-compose.cli.yml run --rm'`
+
+**Install dependencies**:
+
+> `dcli composer install`
 
 Running tests
 -------------
 
 To run the project tests and validate the coding standards:
 
-    $ composer test
+    $ dcli composer test
 
 To run specific unit tests you can use --filter option:
 
-    $ php vendor/bin/phpunit --filter=ClassName::MethodName
+    $ dcli php vendor/bin/phpunit --filter=ClassName::MethodName

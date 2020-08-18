@@ -22,7 +22,7 @@ Edit your composer.json to add the repository URL:
 
 Then require the package:
 
-    $ composer require linio/seller-center-SDK
+    $ composer require linio/seller-center-sdk
 
 Quick start
 -----
