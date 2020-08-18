@@ -34,27 +34,33 @@ class FeedManagerTest extends LinioTestCase
         $this->assertContainsOnlyInstancesOf(Feed::class, $feeds);
 
         $values = array_values($feeds);
+        $this->assertFeeds($values, $expectedFeeds);
+    }
 
-        foreach ($values as $key => $feed) {
-            $this->assertEquals($expectedFeeds[$key]->id, $feed->getId());
-            $this->assertEquals((string) $expectedFeeds[$key]->status, $feed->getStatus());
-            $this->assertEquals((string) $expectedFeeds[$key]->action, $feed->getAction());
-            $this->assertEquals((string) $expectedFeeds[$key]->source, $feed->getSource());
-            $this->assertEquals((int) $expectedFeeds[$key]->totalRecords, $feed->getTotalRecords());
-            $this->assertEquals((int) $expectedFeeds[$key]->processedRecords, $feed->getProcessedRecords());
-            $this->assertEquals((int) $expectedFeeds[$key]->failedRecords, $feed->getFailedRecords());
+    /**
+     * @dataProvider feedProvider
+     */
+    public function testItReturnsFeedCollectionFromValidXmlOnFeedOffsetList(string $xml, $expectedFeeds, $size): void
+    {
+        $env = $this->getParameters();
+        $configuration = new Configuration($env['key'], $env['username'], $env['endpoint'], $env['version']);
 
-            if (!empty($expectedFeeds[$key]->failureReport)) {
-                $this->assertSame(
-                    (string) $expectedFeeds[$key]->failureReport->mimeType,
-                    $feed->getFailureReports()->getMimeType()
-                );
-                $this->assertSame(
-                    (string) $expectedFeeds[$key]->failureReport->file,
-                    $feed->getFailureReports()->getFile()
-                );
-            }
-        }
+        $client = $this->createClientWithResponse($xml);
+
+        $sdkClient = new SellerCenterSdk($configuration, $client);
+
+        $feeds = $sdkClient->feeds()->getFeedOffsetList(
+            1,
+            1,
+            'processing',
+            new DateTimeImmutable(),
+            new DateTimeImmutable()
+        );
+
+        $this->assertContainsOnlyInstancesOf(Feed::class, $feeds);
+
+        $values = array_values($feeds);
+        $this->assertFeeds($values, $expectedFeeds);
     }
 
     public function feedProvider()
@@ -397,6 +403,34 @@ class FeedManagerTest extends LinioTestCase
         $sdkClient = new SellerCenterSdk($configuration, $client);
 
         $sdkClient->feeds()->getFeedStatusById('aa19d73f-ab3a-48c1-b196-9a1f18e5280e');
+    }
+
+    /**
+     * @param Feed[] $feeds
+     * @param stdClass[] $expectedFeeds
+     */
+    private function assertFeeds(array $feeds, array $expectedFeeds): void
+    {
+        foreach ($feeds as $key => $feed) {
+            $this->assertEquals($expectedFeeds[$key]->id, $feed->getId());
+            $this->assertEquals((string) $expectedFeeds[$key]->status, $feed->getStatus());
+            $this->assertEquals((string) $expectedFeeds[$key]->action, $feed->getAction());
+            $this->assertEquals((string) $expectedFeeds[$key]->source, $feed->getSource());
+            $this->assertEquals((int) $expectedFeeds[$key]->totalRecords, $feed->getTotalRecords());
+            $this->assertEquals((int) $expectedFeeds[$key]->processedRecords, $feed->getProcessedRecords());
+            $this->assertEquals((int) $expectedFeeds[$key]->failedRecords, $feed->getFailedRecords());
+
+            if (!empty($expectedFeeds[$key]->failureReport)) {
+                $this->assertSame(
+                    (string) $expectedFeeds[$key]->failureReport->mimeType,
+                    $feed->getFailureReports()->getMimeType()
+                );
+                $this->assertSame(
+                    (string) $expectedFeeds[$key]->failureReport->file,
+                    $feed->getFailureReports()->getFile()
+                );
+            }
+        }
     }
 
     public function testItReturnsFeedCount(): void
