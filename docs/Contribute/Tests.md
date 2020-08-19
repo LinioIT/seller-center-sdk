@@ -81,6 +81,10 @@ To run the project tests and validate the coding standards:
 
     $ dcli composer test
 
-To run specific unit tests you can use --filter option:
+To run all unit tests you can use:
 
-    $ dcli php vendor/bin/phpunit --filter=ClassName::MethodName
+    $ dcli phpunit
+
+To run specific unit test you can use --filter option:
+
+    $ dcli phpunit --filter=ClassName::MethodName

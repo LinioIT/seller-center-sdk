@@ -15,6 +15,13 @@ services:
       - .:/application
     entrypoint: composer
 
+  phpunit:
+    image: linio/seller-center-sdk:latest
+    init: true
+    volumes:
+      - .:/application
+    entrypoint: vendor/bin/phpunit
+
   php:
     image: linio/seller-center-sdk:latest
     init: true
