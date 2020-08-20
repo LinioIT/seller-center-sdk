@@ -10,6 +10,7 @@ use SimpleXMLElement;
 
 class FeedResponseFactory
 {
+    private const XML_MODEL = 'Feed';
     private const REQUIRED_FIELDS = [
         'RequestId',
         'RequestAction',
@@ -19,7 +20,7 @@ class FeedResponseFactory
 
     public static function make(SimpleXMLElement $xml): FeedResponse
     {
-        XmlStructureValidator::validateStructure($xml, 'Feed', self::REQUIRED_FIELDS);
+        XmlStructureValidator::validateStructure($xml, self::XML_MODEL, self::REQUIRED_FIELDS);
 
         $requestParameters = [];
         if (property_exists($xml, 'RequestParameters')) {
