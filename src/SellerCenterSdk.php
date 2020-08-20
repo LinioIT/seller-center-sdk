@@ -23,6 +23,26 @@ use Psr\Log\NullLogger;
 class SellerCenterSdk
 {
     /**
+     * @var Configuration
+     */
+    protected $configuration;
+
+    /**
+     * @var ClientInterface
+     */
+    protected $client;
+
+    /**
+     * @var LoggerInterface
+     */
+    protected $logger;
+
+    /**
+     * @var Parameters
+     */
+    protected $parameters;
+
+    /**
      * @var BrandManager
      */
     protected $brands;
@@ -56,26 +76,6 @@ class SellerCenterSdk
      * @var WebhookManager
      */
     protected $webhooks;
-
-    /**
-     * @var Parameters
-     */
-    protected $parameters;
-
-    /**
-     * @var Configuration
-     */
-    protected $configuration;
-
-    /**
-     * @var ClientInterface
-     */
-    protected $client;
-
-    /**
-     * @var LoggerInterface
-     */
-    protected $logger;
 
     /**
      * @var ProductManager
