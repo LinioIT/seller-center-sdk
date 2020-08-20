@@ -28,8 +28,11 @@ class FeedResponseFactory
             throw new InvalidXmlStructureException('Feed', 'Timestamp');
         }
 
+        $requestId = !empty($xml->RequestId) ?
+            (string) $xml->RequestId : null;
+
         return new FeedResponse(
-            (string) $xml->RequestId,
+            $requestId,
             (string) $xml->RequestAction,
             (string) $xml->ResponseType,
             (string) $xml->Timestamp

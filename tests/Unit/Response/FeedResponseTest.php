@@ -112,12 +112,8 @@ class FeedResponseTest extends TestCase
         FeedResponseFactory::make($xml->Head);
     }
 
-    public function testThrowsExceptionWhenRequestIdIsNull(): void
+    public function testCreatesAFeedFromAnXmlWithNullRequestId(): void
     {
-        $this->expectException(EmptyArgumentException::class);
-
-        $this->expectExceptionMessage('The parameter RequestId should not be null.');
-
         $invalidResponse = '<?xml version="1.0" encoding="UTF-8"?>
             <SuccessResponse>
                 <Head>
@@ -130,7 +126,10 @@ class FeedResponseTest extends TestCase
             </SuccessResponse>';
 
         $xml = simplexml_load_string($invalidResponse);
-        FeedResponseFactory::make($xml->Head);
+        $feedResponse = FeedResponseFactory::make($xml->Head);
+
+        $this->assertInstanceOf(FeedResponse::class, $feedResponse);
+        $this->assertNull($feedResponse->getRequestId());
     }
 
     public function testThrowsExceptionWhenRequestActionIsNull(): void
