@@ -9,12 +9,20 @@ use SimpleXMLElement;
 
 class XmlStructureValidator
 {
+    /**
+     * @param string[] $properties
+     */
     public static function validateStructure(SimpleXMLElement $xml, string $model, array $properties): void
     {
         foreach ($properties as $property) {
-            if (!property_exists($xml, $property)) {
-                throw new InvalidXmlStructureException($model, $property);
-            }
+            self::validateProperty($xml, $model, $property);
+        }
+    }
+
+    public static function validateProperty(SimpleXMLElement $xml, string $model, string $property): void
+    {
+        if (!property_exists($xml, $property)) {
+            throw new InvalidXmlStructureException($model, $property);
         }
     }
 }
