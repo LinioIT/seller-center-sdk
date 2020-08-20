@@ -29,8 +29,18 @@ class FeedResponse
      */
     protected $timestamp;
 
-    public function __construct(?string $requestId, string $requestAction, string $responseType, string $timestamp)
-    {
+    /**
+     * @var mixed[]
+     */
+    protected $requestParameters;
+
+    public function __construct(
+        ?string $requestId,
+        string $requestAction,
+        string $responseType,
+        string $timestamp,
+        array $requestParameters
+    ) {
         if (empty($requestAction)) {
             throw new EmptyArgumentException('RequestAction');
         }
@@ -45,6 +55,7 @@ class FeedResponse
         $this->requestAction = $requestAction;
         $this->responseType = $responseType ?? null;
         $this->timestamp = $date ? $date : null;
+        $this->requestParameters = $requestParameters;
     }
 
     public function getRequestId(): ?string
@@ -65,5 +76,13 @@ class FeedResponse
     public function getTimestamp(): ?DateTimeImmutable
     {
         return $this->timestamp;
+    }
+
+    /**
+     * @return mixed[]
+     */
+    public function getRequestParameters(): array
+    {
+        return $this->requestParameters;
     }
 }

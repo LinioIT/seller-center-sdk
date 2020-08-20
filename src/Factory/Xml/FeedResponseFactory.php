@@ -28,6 +28,13 @@ class FeedResponseFactory
             throw new InvalidXmlStructureException('Feed', 'Timestamp');
         }
 
+        $requestParameters = [];
+        if (property_exists($xml, 'RequestParameters')) {
+            foreach ($xml->RequestParameters->children() as $item) {
+                $requestParameters[$item->getName()] = (string) $item;
+            }
+        }
+
         $requestId = !empty($xml->RequestId) ?
             (string) $xml->RequestId : null;
 
@@ -35,7 +42,8 @@ class FeedResponseFactory
             $requestId,
             (string) $xml->RequestAction,
             (string) $xml->ResponseType,
-            (string) $xml->Timestamp
+            (string) $xml->Timestamp,
+            $requestParameters
         );
     }
 }

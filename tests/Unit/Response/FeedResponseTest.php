@@ -5,8 +5,8 @@ declare(strict_types=1);
 namespace Linio\SellerCenter\Unit\Response;
 
 use DateTime;
-use Exception;
 use Linio\SellerCenter\Exception\EmptyArgumentException;
+use Linio\SellerCenter\Exception\InvalidXmlStructureException;
 use Linio\SellerCenter\Factory\Xml\FeedResponseFactory;
 use Linio\SellerCenter\Response\FeedResponse;
 use PHPStan\Testing\TestCase;
@@ -36,9 +36,34 @@ class FeedResponseTest extends TestCase
         $this->assertEquals($feedResponse->getTimestamp(), DateTime::createFromFormat("Y-m-d\TH:i:sO", (string) $xml->Head->Timestamp));
     }
 
+    public function testCreatesAFeedFromAnXmlWithRequestParametersField(): void
+    {
+        $successResponse = '<?xml version="1.0" encoding="UTF-8"?>
+            <SuccessResponse>
+              <Head>
+                <RequestId></RequestId>
+                <RequestAction>FeedCancel</RequestAction>
+                <ResponseType></ResponseType>
+                <Timestamp>2015-07-01T11:11:11+0000</Timestamp>
+                <RequestParameters>
+                  <FeedID>c685b76e-180d-484c-b0ef-7e9aee9e3f98</FeedID>
+                </RequestParameters>
+              </Head>
+              <Body/>
+            </SuccessResponse>
+        ';
+
+        $xml = simplexml_load_string($successResponse);
+        $feedResponse = FeedResponseFactory::make($xml->Head);
+
+        $requestParameters = $feedResponse->getRequestParameters();
+        $this->assertInstanceOf(FeedResponse::class, $feedResponse);
+        $this->assertEquals((string) $xml->Head->RequestParameters->FeedID, $requestParameters['FeedID']);
+    }
+
     public function testThrowsAExceptionWithoutARequestIdInTheXml(): void
     {
-        $this->expectException(Exception::class);
+        $this->expectException(InvalidXmlStructureException::class);
         $this->expectExceptionMessage('The xml structure is not valid for a Feed. The property RequestId should exist.');
 
         $invalidResponse = '<?xml version="1.0" encoding="UTF-8"?>
@@ -57,7 +82,7 @@ class FeedResponseTest extends TestCase
 
     public function testThrowsAExceptionWithoutARequestActionInTheXml(): void
     {
-        $this->expectException(Exception::class);
+        $this->expectException(InvalidXmlStructureException::class);
         $this->expectExceptionMessage('The xml structure is not valid for a Feed. The property RequestAction should exist.');
 
         $invalidResponse = '<?xml version="1.0" encoding="UTF-8"?>
@@ -76,7 +101,7 @@ class FeedResponseTest extends TestCase
 
     public function testThrowsAExceptionWithoutAResponseTypeInTheXml(): void
     {
-        $this->expectException(Exception::class);
+        $this->expectException(InvalidXmlStructureException::class);
         $this->expectExceptionMessage('The xml structure is not valid for a Feed. The property ResponseType should exist.');
 
         $invalidResponse = '<?xml version="1.0" encoding="UTF-8"?>
@@ -95,7 +120,7 @@ class FeedResponseTest extends TestCase
 
     public function testThrowsAExceptionWithoutATimestampInTheXml(): void
     {
-        $this->expectException(Exception::class);
+        $this->expectException(InvalidXmlStructureException::class);
         $this->expectExceptionMessage('The xml structure is not valid for a Feed. The property Timestamp should exist.');
 
         $invalidResponse = '<?xml version="1.0" encoding="UTF-8"?>
