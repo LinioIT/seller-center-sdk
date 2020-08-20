@@ -6,7 +6,6 @@ namespace Linio\SellerCenter\Unit\Response;
 
 use DateTime;
 use Linio\SellerCenter\Exception\EmptyArgumentException;
-use Linio\SellerCenter\Exception\InvalidXmlStructureException;
 use Linio\SellerCenter\Factory\Xml\FeedResponseFactory;
 use Linio\SellerCenter\Response\FeedResponse;
 use PHPStan\Testing\TestCase;
@@ -59,82 +58,6 @@ class FeedResponseTest extends TestCase
         $requestParameters = $feedResponse->getRequestParameters();
         $this->assertInstanceOf(FeedResponse::class, $feedResponse);
         $this->assertEquals((string) $xml->Head->RequestParameters->FeedID, $requestParameters['FeedID']);
-    }
-
-    public function testThrowsAExceptionWithoutARequestIdInTheXml(): void
-    {
-        $this->expectException(InvalidXmlStructureException::class);
-        $this->expectExceptionMessage('The xml structure is not valid for a Feed. The property RequestId should exist.');
-
-        $invalidResponse = '<?xml version="1.0" encoding="UTF-8"?>
-            <SuccessResponse>
-                <Head>
-                    <RequestAction>ProductCreate</RequestAction>
-                    <ResponseType/>
-                    <Timestamp>2016-06-22T04:40:14+0200</Timestamp>
-                </Head>
-                <Body/>
-            </SuccessResponse>';
-
-        $xml = simplexml_load_string($invalidResponse);
-        FeedResponseFactory::make($xml->Head);
-    }
-
-    public function testThrowsAExceptionWithoutARequestActionInTheXml(): void
-    {
-        $this->expectException(InvalidXmlStructureException::class);
-        $this->expectExceptionMessage('The xml structure is not valid for a Feed. The property RequestAction should exist.');
-
-        $invalidResponse = '<?xml version="1.0" encoding="UTF-8"?>
-            <SuccessResponse>
-                <Head>
-                    <RequestId>cb106552-87f3-450b-aa8b-412246a24b34</RequestId>
-                    <ResponseType/>
-                    <Timestamp>2016-06-22T04:40:14+0200</Timestamp>
-                </Head>
-                <Body/>
-            </SuccessResponse>';
-
-        $xml = simplexml_load_string($invalidResponse);
-        FeedResponseFactory::make($xml->Head);
-    }
-
-    public function testThrowsAExceptionWithoutAResponseTypeInTheXml(): void
-    {
-        $this->expectException(InvalidXmlStructureException::class);
-        $this->expectExceptionMessage('The xml structure is not valid for a Feed. The property ResponseType should exist.');
-
-        $invalidResponse = '<?xml version="1.0" encoding="UTF-8"?>
-            <SuccessResponse>
-                <Head>
-                    <RequestId>cb106552-87f3-450b-aa8b-412246a24b34</RequestId>
-                    <RequestAction>ProductCreate</RequestAction>
-                    <Timestamp>2016-06-22T04:40:14+0200</Timestamp>
-                </Head>
-                <Body/>
-            </SuccessResponse>';
-
-        $xml = simplexml_load_string($invalidResponse);
-        FeedResponseFactory::make($xml->Head);
-    }
-
-    public function testThrowsAExceptionWithoutATimestampInTheXml(): void
-    {
-        $this->expectException(InvalidXmlStructureException::class);
-        $this->expectExceptionMessage('The xml structure is not valid for a Feed. The property Timestamp should exist.');
-
-        $invalidResponse = '<?xml version="1.0" encoding="UTF-8"?>
-            <SuccessResponse>
-                <Head>
-                    <RequestId>cb106552-87f3-450b-aa8b-412246a24b34</RequestId>
-                    <RequestAction>ProductCreate</RequestAction>
-                    <ResponseType>Xml</ResponseType>
-                </Head>
-                <Body/>
-            </SuccessResponse>';
-
-        $xml = simplexml_load_string($invalidResponse);
-        FeedResponseFactory::make($xml->Head);
     }
 
     public function testCreatesAFeedFromAnXmlWithNullRequestId(): void
