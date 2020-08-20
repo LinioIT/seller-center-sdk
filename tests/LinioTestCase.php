@@ -41,4 +41,9 @@ class LinioTestCase extends TestCase
 
         return Json::decode($appData);
     }
+
+    public function getSchema(string $schema): string
+    {
+        return file_get_contents(__DIR__ . '/_schemas/' . $schema);
+    }
 }
