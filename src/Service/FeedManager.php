@@ -187,7 +187,7 @@ class FeedManager
     public function getFeedCount(): FeedCount
     {
         $action = 'FeedCount';
-        $requestId = uniqid((string) mt_rand());
+        $requestId = bin2hex(random_bytes(16));
 
         $response = $this->getResponse($action, $requestId);
 

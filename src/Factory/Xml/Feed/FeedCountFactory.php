@@ -10,14 +10,22 @@ use SimpleXMLElement;
 
 class FeedCountFactory
 {
+    public const FEED_COUNT = 'FeedCount';
+    public const PROPERTIES = [
+        'Total',
+        'Queued',
+        'Processing',
+        'Finished',
+        'Canceled',
+    ];
+
     public static function make(SimpleXMLElement $xml): FeedCount
     {
-        self::validateStructure($xml, 'FeedCount');
-        self::validateStructure($xml->FeedCount, 'Total');
-        self::validateStructure($xml->FeedCount, 'Queued');
-        self::validateStructure($xml->FeedCount, 'Processing');
-        self::validateStructure($xml->FeedCount, 'Finished');
-        self::validateStructure($xml->FeedCount, 'Canceled');
+        self::validateStructure($xml, self::FEED_COUNT);
+
+        foreach (self::PROPERTIES as $property) {
+            self::validateStructure($xml->FeedCount, $property);
+        }
 
         return new FeedCount(
             (int) $xml->FeedCount->Total,
@@ -31,7 +39,7 @@ class FeedCountFactory
     private static function validateStructure(SimpleXMLElement $xml, string $property): void
     {
         if (!property_exists($xml, $property)) {
-            throw new InvalidXmlStructureException('FeedCount', $property);
+            throw new InvalidXmlStructureException(self::FEED_COUNT, $property);
         }
     }
 }
