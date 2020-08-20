@@ -4,8 +4,8 @@ declare(strict_types=1);
 
 namespace Linio\SellerCenter;
 
-use GuzzleHttp\Client;
-use GuzzleHttp\ClientInterface;
+use Http\Discovery\HttpClientDiscovery;
+use Http\Discovery\Psr17FactoryDiscovery;
 use Linio\SellerCenter\Application\Configuration;
 use Linio\SellerCenter\Application\Parameters;
 use Linio\SellerCenter\Service\BrandManager;
@@ -17,6 +17,9 @@ use Linio\SellerCenter\Service\ProductManager;
 use Linio\SellerCenter\Service\QualityControlManager;
 use Linio\SellerCenter\Service\ShipmentManager;
 use Linio\SellerCenter\Service\WebhookManager;
+use Psr\Http\Client\ClientInterface;
+use Psr\Http\Message\RequestFactoryInterface;
+use Psr\Http\Message\StreamFactoryInterface;
 use Psr\Log\LoggerInterface;
 use Psr\Log\NullLogger;
 
@@ -36,6 +39,16 @@ class SellerCenterSdk
      * @var LoggerInterface
      */
     protected $logger;
+
+    /**
+     * @var RequestFactoryInterface
+     */
+    protected $requestFactory;
+
+    /**
+     * @var StreamFactoryInterface
+     */
+    protected $streamFactory;
 
     /**
      * @var Parameters
@@ -90,11 +103,15 @@ class SellerCenterSdk
     public function __construct(
         Configuration $configuration,
         ?ClientInterface $client = null,
-        ?LoggerInterface $logger = null
+        ?LoggerInterface $logger = null,
+        ?RequestFactoryInterface $requestFactory = null,
+        ?StreamFactoryInterface $streamFactory = null
     ) {
         $this->configuration = $configuration;
-        $this->client = $client ?? new Client();
+        $this->client = $client ?? HttpClientDiscovery::find();
         $this->logger = $logger ?? new NullLogger();
+        $this->requestFactory = $requestFactory ?? Psr17FactoryDiscovery::findRequestFactory();
+        $this->streamFactory = $streamFactory ?? Psr17FactoryDiscovery::findStreamFactory();
         $this->parameters = Parameters::fromBasics($configuration->getUser(), $configuration->getVersion());
     }
 
@@ -105,7 +122,9 @@ class SellerCenterSdk
                 $this->configuration,
                 $this->client,
                 $this->parameters,
-                $this->logger
+                $this->logger,
+                $this->requestFactory,
+                $this->streamFactory
             );
         }
 
@@ -119,7 +138,9 @@ class SellerCenterSdk
                 $this->configuration,
                 $this->client,
                 $this->parameters,
-                $this->logger
+                $this->logger,
+                $this->requestFactory,
+                $this->streamFactory
             );
         }
 
@@ -133,7 +154,9 @@ class SellerCenterSdk
                 $this->configuration,
                 $this->client,
                 $this->parameters,
-                $this->logger
+                $this->logger,
+                $this->requestFactory,
+                $this->streamFactory
             );
         }
 
@@ -147,7 +170,9 @@ class SellerCenterSdk
                 $this->configuration,
                 $this->client,
                 $this->parameters,
-                $this->logger
+                $this->logger,
+                $this->requestFactory,
+                $this->streamFactory
             );
         }
 
@@ -161,7 +186,9 @@ class SellerCenterSdk
                 $this->configuration,
                 $this->client,
                 $this->parameters,
-                $this->logger
+                $this->logger,
+                $this->requestFactory,
+                $this->streamFactory
             );
         }
 
@@ -175,7 +202,9 @@ class SellerCenterSdk
                 $this->configuration,
                 $this->client,
                 $this->parameters,
-                $this->logger
+                $this->logger,
+                $this->requestFactory,
+                $this->streamFactory
             );
         }
 
@@ -189,7 +218,9 @@ class SellerCenterSdk
                 $this->configuration,
                 $this->client,
                 $this->parameters,
-                $this->logger
+                $this->logger,
+                $this->requestFactory,
+                $this->streamFactory
             );
         }
 
@@ -203,7 +234,9 @@ class SellerCenterSdk
                 $this->configuration,
                 $this->client,
                 $this->parameters,
-                $this->logger
+                $this->logger,
+                $this->requestFactory,
+                $this->streamFactory
             );
         }
 
@@ -217,7 +250,9 @@ class SellerCenterSdk
                 $this->configuration,
                 $this->client,
                 $this->parameters,
-                $this->logger
+                $this->logger,
+                $this->requestFactory,
+                $this->streamFactory
             );
         }
 

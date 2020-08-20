@@ -4,16 +4,19 @@ declare(strict_types=1);
 
 namespace Linio\SellerCenter\Unit\Service;
 
-use GuzzleHttp\ClientInterface;
 use Linio\SellerCenter\Application\Configuration;
 use Linio\SellerCenter\Application\Parameters;
 use Linio\SellerCenter\LinioTestCase;
+use Linio\SellerCenter\Response\SuccessResponse;
 use Linio\SellerCenter\Service\BaseManager;
-use PHPUnit\Framework\MockObject\MockObject;
 use Prophecy\Argument;
 use Prophecy\Prophecy\ObjectProphecy;
+use Psr\Http\Client\ClientInterface;
+use Psr\Http\Message\RequestFactoryInterface;
 use Psr\Http\Message\RequestInterface;
 use Psr\Http\Message\ResponseInterface;
+use Psr\Http\Message\StreamFactoryInterface;
+use Psr\Http\Message\StreamInterface;
 use Psr\Log\LoggerInterface;
 
 class BaseManagerTest extends LinioTestCase
@@ -39,7 +42,17 @@ class BaseManagerTest extends LinioTestCase
     protected $loggerStub;
 
     /**
-     * @var BaseManager|MockObject
+     * @var ObjectProphecy
+     */
+    protected $requestFactory;
+
+    /**
+     * @var ObjectProphecy
+     */
+    protected $streamFactory;
+
+    /**
+     * @var BaseManager
      */
     private $baseManager;
 
@@ -49,13 +62,17 @@ class BaseManagerTest extends LinioTestCase
         $this->clientStub = $this->prophesize(ClientInterface::class);
         $this->parametersStub = new Parameters();
         $this->loggerStub = $this->prophesize(LoggerInterface::class);
+        $this->requestFactory = $this->prophesize(RequestFactoryInterface::class);
+        $this->streamFactory = $this->prophesize(StreamFactoryInterface::class);
 
-        $this->baseManager = $this->getMockForAbstractClass(BaseManager::class, [
+        $this->baseManager = new BaseManager(
             $this->configurationStub,
             $this->clientStub->reveal(),
             $this->parametersStub,
             $this->loggerStub->reveal(),
-        ]);
+            $this->requestFactory->reveal(),
+            $this->streamFactory->reveal()
+        );
     }
 
     public function testItGeneratesRequestIds(): void
@@ -76,23 +93,60 @@ class BaseManagerTest extends LinioTestCase
 
     public function testItExecutesAction(): void
     {
+        $request = $this->prophesize(RequestInterface::class);
+        $request
+            ->withHeader(Argument::type('string'), Argument::type('string'))
+            ->shouldBeCalled()
+            ->willReturn($request->reveal());
+        $request
+            ->withBody(Argument::type(StreamInterface::class))
+            ->shouldBeCalled()
+            ->willReturn($request->reveal());
+        $request->getUri()->shouldBeCalled();
+        $request->getBody()->shouldBeCalled();
+        $request->getMethod()->shouldBeCalled();
+
         $response = $this->prophesize(ResponseInterface::class);
         $response->getBody()->shouldBeCalled()->willReturn($this->getRawSuccessResponse());
+
+        $this->streamFactory
+            ->createStream(Argument::type('string'))
+            ->shouldBeCalled()
+            ->willReturn($this->prophesize(StreamInterface::class)->reveal());
+
+        $this->requestFactory
+            ->createRequest(Argument::type('string'), Argument::type('string'))
+            ->shouldBeCalled()
+            ->willReturn($request->reveal());
 
         $this->loggerStub
             ->debug(Argument::type('string'), Argument::type('array'))
             ->shouldBeCalledTimes(3);
 
         $this->clientStub
-            ->send(
-                Argument::type(RequestInterface::class),
-                Argument::type('array')
-            )
+            ->sendRequest(Argument::type(RequestInterface::class))
             ->shouldBeCalled()
             ->willReturn($response->reveal());
 
-        $this->baseManager->executeAction('FooAction', $this->parametersStub, '');
-        $this->assertTrue(true);
+        $result = $this->baseManager->executeAction('FooAction', '', $this->parametersStub);
+        $this->assertInstanceOf(SuccessResponse::class, $result);
+    }
+
+    /**
+     * @dataProvider fullEndpointsProvider
+     */
+    public function testItBuildsFullEndpoint(string $expected, string $endpoint, array $query): void
+    {
+        $result = $this->baseManager->buildFullEndpoint($endpoint, $query);
+        $this->assertSame($expected, $result);
+    }
+
+    public function fullEndpointsProvider()
+    {
+        return [
+            ['http://linio.com/?foo=bar', 'http://linio.com/', ['foo' => 'bar']],
+            ['http://linio.com/', 'http://linio.com/', []],
+        ];
     }
 
     private function getRawSuccessResponse(): string

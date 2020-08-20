@@ -26,13 +26,17 @@
         "php": "^7.1",
         "ext-json": "*",
         "ext-simplexml": "*",
-        "guzzlehttp/guzzle": "^6.3",
         "linio/util": "^2.2|^3.0",
+        "php-http/client-implementation": "^1.0",
+        "php-http/discovery": "^1.9",
+        "php-http/httplug": "^2.2",
+        "psr/http-factory": "^1.0",
         "psr/log": "^1.1"
     },
     "require-dev": {
         "friendsofphp/php-cs-fixer": "^2.16",
         "fzaninotto/faker": "^1.8",
+        "http-interop/http-factory-guzzle": "^1.0",
         "infection/infection": "^0.13.6",
         "phpspec/prophecy": "^1.8",
         "phpstan/phpstan": "^0.11.15",

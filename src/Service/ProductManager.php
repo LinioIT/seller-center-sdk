@@ -5,122 +5,45 @@ declare(strict_types=1);
 namespace Linio\SellerCenter\Service;
 
 use DateTimeInterface;
-use GuzzleHttp\ClientInterface;
-use GuzzleHttp\Psr7\Request;
 use Linio\Component\Util\Json;
-use Linio\SellerCenter\Application\Configuration;
 use Linio\SellerCenter\Application\Parameters;
-use Linio\SellerCenter\Application\Security\Signature;
 use Linio\SellerCenter\Contract\ProductFilters;
 use Linio\SellerCenter\Exception\EmptyArgumentException;
 use Linio\SellerCenter\Factory\Xml\FeedResponseFactory;
 use Linio\SellerCenter\Factory\Xml\Product\ProductsFactory;
-use Linio\SellerCenter\Formatter\LogMessageFormatter;
 use Linio\SellerCenter\Model\Product\Images;
 use Linio\SellerCenter\Model\Product\Product;
 use Linio\SellerCenter\Model\Product\Products;
 use Linio\SellerCenter\Response\FeedResponse;
-use Linio\SellerCenter\Response\HandleResponse;
 use Linio\SellerCenter\Transformer\Product\ProductsTransformer;
-use Psr\Log\LoggerInterface;
 
-class ProductManager
+class ProductManager extends BaseManager
 {
-    /**
-     * @var LoggerInterface
-     */
-    protected $logger;
-
-    /**
-     * @var Configuration
-     */
-    protected $configuration;
-
-    /**
-     * @var ClientInterface
-     */
-    protected $client;
-
-    /**
-     * @var Parameters
-     */
-    protected $parameters;
-
     public const DEFAULT_LIMIT = 1000;
     public const DEFAULT_OFFSET = 0;
     public const DEFAULT_FILTER = 'all';
-
-    public function __construct(
-        Configuration $configuration,
-        ClientInterface $client,
-        Parameters $parameters,
-        LoggerInterface $logger
-    ) {
-        $this->configuration = $configuration;
-        $this->client = $client;
-        $this->parameters = $parameters;
-        $this->logger = $logger;
-    }
+    private const PRODUCT_CREATE_ACTION = 'ProductCreate';
+    private const PRODUCT_UPDATE_ACTION = 'ProductUpdate';
+    private const PRODUCT_REMOVE_ACTION = 'ProductRemove';
+    private const IMAGE_ACTION = 'Image';
+    private const GET_PRODUCTS_ACTION = 'GetProducts';
 
     public function productCreate(Products $products): FeedResponse
     {
-        $action = 'ProductCreate';
-
-        $parameters = clone $this->parameters;
-        $parameters->set(['Action' => $action]);
-        $parameters->set([
-            'Signature' => Signature::generate($parameters, $this->configuration->getKey())->get(),
-        ]);
+        $action = self::PRODUCT_CREATE_ACTION;
 
         $xml = ProductsTransformer::asXmlString($products);
 
-        $requestId = uniqid((string) mt_rand());
+        $requestId = $this->generateRequestId();
 
-        $request = new Request('POST', $this->configuration->getEndpoint(), [
-            'Content-type' => 'text/xml; charset=UTF8',
-            'Request-ID' => $requestId,
-        ], $xml);
-
-        $this->logger->debug(
-            LogMessageFormatter::fromAction($requestId, $action, LogMessageFormatter::TYPE_REQUEST),
-            [
-                'url' => (string) $request->getUri(),
-                'method' => $request->getMethod(),
-                'body' => (string) $request->getBody(),
-                'parameters' => $parameters->all(),
-            ]
-        );
-
-        $response = $this->client->send($request, [
-            'query' => $parameters->all(),
-        ]);
-
-        $body = (string) $response->getBody();
-
-        $this->logger->debug(
-            LogMessageFormatter::fromAction($requestId, $action, LogMessageFormatter::TYPE_RESPONSE),
-            [
-                'statusCode' => $response->getStatusCode(),
-                'body' => $body,
-            ]
-        );
-
-        $builtResponse = HandleResponse::parse($body);
-
-        $this->logger->debug(
-            LogMessageFormatter::fromAction($requestId, $action, LogMessageFormatter::TYPE_BUILT_RESPONSE),
-            [
-                'head' => $builtResponse->getHead()->asXML(),
-                'body' => $builtResponse->getBody()->asXML(),
-            ]
-        );
+        $builtResponse = $this->executeAction($action, $requestId, null, 'POST', $xml);
 
         $feedResponse = FeedResponseFactory::make($builtResponse->getHead());
 
         $this->logger->info(
             sprintf(
                 '%d::%s::APIResponse::SellerCenterSdk: the product was created',
-                $request->getHeaderLine('Request-ID'),
+                $requestId,
                 $action
             )
         );
@@ -130,63 +53,20 @@ class ProductManager
 
     public function productUpdate(Products $products): FeedResponse
     {
-        $action = 'ProductUpdate';
-
-        $parameters = clone $this->parameters;
-        $parameters->set(['Action' => $action]);
-        $parameters->set([
-            'Signature' => Signature::generate($parameters, $this->configuration->getKey())->get(),
-        ]);
+        $action = self::PRODUCT_UPDATE_ACTION;
 
         $xml = ProductsTransformer::asXmlString($products);
 
-        $requestId = uniqid((string) mt_rand());
+        $requestId = $this->generateRequestId();
 
-        $request = new Request('POST', $this->configuration->getEndpoint(), [
-            'Content-type' => 'text/xml; charset=UTF8',
-            'Request-ID' => $requestId,
-        ], $xml);
-
-        $this->logger->debug(
-            LogMessageFormatter::fromAction($requestId, $action, LogMessageFormatter::TYPE_REQUEST),
-            [
-                'url' => (string) $request->getUri(),
-                'method' => $request->getMethod(),
-                'body' => (string) $request->getBody(),
-                'parameters' => $parameters->all(),
-            ]
-        );
-
-        $response = $this->client->send($request, [
-            'query' => $parameters->all(),
-        ]);
-
-        $body = (string) $response->getBody();
-
-        $this->logger->debug(
-            LogMessageFormatter::fromAction($requestId, $action, LogMessageFormatter::TYPE_RESPONSE),
-            [
-                'statusCode' => $response->getStatusCode(),
-                'body' => $body,
-            ]
-        );
-
-        $builtResponse = HandleResponse::parse($body);
-
-        $this->logger->debug(
-            LogMessageFormatter::fromAction($requestId, $action, LogMessageFormatter::TYPE_BUILT_RESPONSE),
-            [
-                'head' => $builtResponse->getHead()->asXML(),
-                'body' => $builtResponse->getBody()->asXML(),
-            ]
-        );
+        $builtResponse = $this->executeAction($action, $requestId, null, 'POST', $xml);
 
         $feedResponse = FeedResponseFactory::make($builtResponse->getHead());
 
         $this->logger->info(
             sprintf(
                 '%d::%s::APIResponse::SellerCenterSdk: the product was updated',
-                $request->getHeaderLine('Request-ID'),
+                $requestId,
                 $action
             )
         );
@@ -196,63 +76,20 @@ class ProductManager
 
     public function productRemove(Products $products): FeedResponse
     {
-        $action = 'ProductRemove';
-
-        $parameters = clone $this->parameters;
-        $parameters->set(['Action' => $action]);
-        $parameters->set([
-            'Signature' => Signature::generate($parameters, $this->configuration->getKey())->get(),
-        ]);
+        $action = self::PRODUCT_REMOVE_ACTION;
 
         $xml = ProductsTransformer::skusAsXmlString($products);
 
-        $requestId = uniqid((string) mt_rand());
+        $requestId = $this->generateRequestId();
 
-        $request = new Request('POST', $this->configuration->getEndpoint(), [
-            'Content-type' => 'text/xml; charset=UTF8',
-            'Request-ID' => $requestId,
-        ], $xml);
-
-        $this->logger->debug(
-            LogMessageFormatter::fromAction($requestId, $action, LogMessageFormatter::TYPE_REQUEST),
-            [
-                'url' => (string) $request->getUri(),
-                'method' => $request->getMethod(),
-                'body' => (string) $request->getBody(),
-                'parameters' => $parameters->all(),
-            ]
-        );
-
-        $response = $this->client->send($request, [
-            'query' => $parameters->all(),
-        ]);
-
-        $body = (string) $response->getBody();
-
-        $this->logger->debug(
-            LogMessageFormatter::fromAction($requestId, $action, LogMessageFormatter::TYPE_RESPONSE),
-            [
-                'statusCode' => $response->getStatusCode(),
-                'body' => $body,
-            ]
-        );
-
-        $builtResponse = HandleResponse::parse($body);
-
-        $this->logger->debug(
-            LogMessageFormatter::fromAction($requestId, $action, LogMessageFormatter::TYPE_BUILT_RESPONSE),
-            [
-                'head' => $builtResponse->getHead()->asXML(),
-                'body' => $builtResponse->getBody()->asXML(),
-            ]
-        );
+        $builtResponse = $this->executeAction($action, $requestId, null, 'POST', $xml);
 
         $feedResponse = FeedResponseFactory::make($builtResponse->getHead());
 
         $this->logger->info(
             sprintf(
                 '%d::%s::APIResponse::SellerCenterSdk: the product was removed',
-                $request->getHeaderLine('Request-ID'),
+                $requestId,
                 $action
             )
         );
@@ -262,13 +99,7 @@ class ProductManager
 
     public function addImage(array $productImages): FeedResponse
     {
-        $action = 'Image';
-
-        $parameters = clone $this->parameters;
-        $parameters->set(['Action' => $action]);
-        $parameters->set([
-            'Signature' => Signature::generate($parameters, $this->configuration->getKey())->get(),
-        ]);
+        $action = self::IMAGE_ACTION;
 
         $products = new Products();
 
@@ -283,53 +114,16 @@ class ProductManager
 
         $xml = ProductsTransformer::imagesAsXmlString($products);
 
-        $requestId = uniqid((string) mt_rand());
+        $requestId = $this->generateRequestId();
 
-        $request = new Request('POST', $this->configuration->getEndpoint(), [
-            'Content-type' => 'text/xml; charset=UTF8',
-            'Request-ID' => $requestId,
-        ], $xml);
-
-        $this->logger->debug(
-            LogMessageFormatter::fromAction($requestId, $action, LogMessageFormatter::TYPE_REQUEST),
-            [
-                'url' => (string) $request->getUri(),
-                'method' => $request->getMethod(),
-                'body' => (string) $request->getBody(),
-                'parameters' => $parameters->all(),
-            ]
-        );
-
-        $response = $this->client->send($request, [
-            'query' => $parameters->all(),
-        ]);
-
-        $body = (string) $response->getBody();
-
-        $this->logger->debug(
-            LogMessageFormatter::fromAction($requestId, $action, LogMessageFormatter::TYPE_RESPONSE),
-            [
-                'statusCode' => $response->getStatusCode(),
-                'body' => $body,
-            ]
-        );
-
-        $builtResponse = HandleResponse::parse($body);
-
-        $this->logger->debug(
-            LogMessageFormatter::fromAction($requestId, $action, LogMessageFormatter::TYPE_BUILT_RESPONSE),
-            [
-                'head' => $builtResponse->getHead()->asXML(),
-                'body' => $builtResponse->getBody()->asXML(),
-            ]
-        );
+        $builtResponse = $this->executeAction($action, $requestId, null, 'POST', $xml);
 
         $feedResponse = FeedResponseFactory::make($builtResponse->getHead());
 
         $this->logger->info(
             sprintf(
                 '%d::%s::APIResponse::SellerCenterSdk: the images was added',
-                $request->getHeaderLine('Request-ID'),
+                $requestId,
                 $action
             )
         );
@@ -339,51 +133,11 @@ class ProductManager
 
     protected function getProducts(Parameters $parameters): array
     {
-        $action = 'GetProducts';
+        $action = self::GET_PRODUCTS_ACTION;
 
-        $parameters->set(['Action' => $action]);
-        $parameters->set([
-            'Signature' => Signature::generate($parameters, $this->configuration->getKey())->get(),
-        ]);
+        $requestId = $this->generateRequestId();
 
-        $requestId = uniqid((string) mt_rand());
-
-        $request = new Request('GET', $this->configuration->getEndpoint(), [
-            'Request-ID' => $requestId,
-        ]);
-
-        $this->logger->debug(
-            LogMessageFormatter::fromAction($requestId, $action, LogMessageFormatter::TYPE_REQUEST),
-            [
-                'url' => (string) $request->getUri(),
-                'method' => $request->getMethod(),
-                'body' => (string) $request->getBody(),
-                'parameters' => $parameters->all(),
-            ]
-        );
-
-        $response = $this->client->send($request, [
-            'query' => $parameters->all(),
-        ]);
-
-        $body = (string) $response->getBody();
-
-        $this->logger->debug(
-            LogMessageFormatter::fromAction($requestId, $action, LogMessageFormatter::TYPE_RESPONSE),
-            [
-                'body' => $body,
-            ]
-        );
-
-        $builtResponse = HandleResponse::parse($body);
-
-        $this->logger->debug(
-            LogMessageFormatter::fromAction($requestId, $action, LogMessageFormatter::TYPE_BUILT_RESPONSE),
-            [
-                'head' => $builtResponse->getHead()->asXML(),
-                'body' => $builtResponse->getBody()->asXML(),
-            ]
-        );
+        $builtResponse = $this->executeAction($action, $requestId, $parameters);
 
         $products = ProductsFactory::make($builtResponse->getBody());
 
@@ -392,7 +146,7 @@ class ProductManager
         $this->logger->info(
             sprintf(
                 '%d::%s::APIResponse::SellerCenterSdk: %d products was recovered',
-                $request->getHeaderLine('Request-ID'),
+                $requestId,
                 $action,
                 count($products->all())
             )

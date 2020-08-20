@@ -4,8 +4,6 @@ declare(strict_types=1);
 
 namespace Linio\SellerCenter\Application;
 
-use GuzzleHttp\Psr7\Uri;
-
 class Configuration
 {
     /**
@@ -46,9 +44,9 @@ class Configuration
         return $this->key;
     }
 
-    public function getEndpoint(): Uri
+    public function getEndpoint(): string
     {
-        return new Uri($this->endpoint);
+        return $this->endpoint;
     }
 
     public function getVersion(): string

@@ -5,74 +5,35 @@ declare(strict_types=1);
 namespace Linio\SellerCenter\Service;
 
 use DateTimeInterface;
-use GuzzleHttp\Psr7\Request;
-use Linio\SellerCenter\Application\Security\Signature;
 use Linio\SellerCenter\Factory\Xml\Feed\FeedFactory;
 use Linio\SellerCenter\Factory\Xml\Feed\FeedsFactory;
-use Linio\SellerCenter\Formatter\LogMessageFormatter;
 use Linio\SellerCenter\Model\Feed\Feed;
-use Linio\SellerCenter\Response\HandleResponse;
 
 class FeedManager extends BaseManager
 {
+    private const FEED_STATUS_ACTION = 'FeedStatus';
+    private const FEED_LIST_ACTION = 'FeedList';
     private const FEED_OFFSET_LIST_ACTION = 'FeedOffsetList';
 
     public function getFeedStatusById(string $id): Feed
     {
-        $action = 'FeedStatus';
-
+        $action = self::FEED_STATUS_ACTION;
         $parameters = clone $this->parameters;
+
         $parameters->set([
-            'Action' => $action,
             'FeedID' => $id,
         ]);
-        $parameters->set([
-            'Signature' => Signature::generate($parameters, $this->configuration->getKey())->get(),
-        ]);
 
-        $requestId = uniqid((string) mt_rand());
+        $requestId = $this->generateRequestId();
 
-        $request = new Request('GET', $this->configuration->getEndpoint(), [
-            'Request-ID' => $requestId,
-        ]);
-
-        $this->logger->debug(
-            LogMessageFormatter::fromAction($requestId, $action, LogMessageFormatter::TYPE_REQUEST),
-            [
-                'url' => (string) $request->getUri(),
-                'method' => $request->getMethod(),
-                'body' => (string) $request->getBody(),
-                'parameters' => $parameters->all(),
-            ]
-        );
-
-        $response = $this->client->send($request, ['query' => $parameters->all()]);
-
-        $body = (string) $response->getBody();
-
-        $this->logger->debug(
-            LogMessageFormatter::fromAction($requestId, $action, LogMessageFormatter::TYPE_RESPONSE),
-            [
-                'body' => $body,
-            ]
-        );
-
-        $builtResponse = HandleResponse::parse($body);
-
-        $this->logger->debug(
-            LogMessageFormatter::fromAction($requestId, $action, LogMessageFormatter::TYPE_BUILT_RESPONSE),
-            [
-                'head' => $builtResponse->getHead()->asXML(),
-                'body' => $builtResponse->getBody()->asXML(),
-            ]
-        );
+        $builtResponse = $this->executeAction($action, $requestId, $parameters);
 
         $feedResponse = FeedFactory::make($builtResponse->getBody()->FeedDetail);
 
         $this->logger->info(
             sprintf(
                 '%d::%s::APIResponse::SellerCenterSdk: the feed was recovered',
-                $request->getHeaderLine('Request-ID'),
+                $requestId,
                 $action
             )
         );
@@ -85,52 +46,11 @@ class FeedManager extends BaseManager
      */
     public function getFeedList(): array
     {
-        $action = 'FeedList';
-
-        $parameters = clone $this->parameters;
-        $parameters->set([
-            'Action' => $action,
-        ]);
-        $parameters->set([
-            'Signature' => Signature::generate($parameters, $this->configuration->getKey())->get(),
-        ]);
+        $action = self::FEED_LIST_ACTION;
 
         $requestId = uniqid((string) mt_rand());
 
-        $request = new Request('GET', $this->configuration->getEndpoint(), [
-            'Request-ID' => $requestId,
-        ]);
-
-        $this->logger->debug(
-            LogMessageFormatter::fromAction($requestId, $action, LogMessageFormatter::TYPE_REQUEST),
-            [
-                'url' => (string) $request->getUri(),
-                'method' => $request->getMethod(),
-                'body' => (string) $request->getBody(),
-                'parameters' => $parameters->all(),
-            ]
-        );
-
-        $response = $this->client->send($request, ['query' => $parameters->all()]);
-
-        $body = (string) $response->getBody();
-
-        $this->logger->debug(
-            LogMessageFormatter::fromAction($requestId, $action, LogMessageFormatter::TYPE_RESPONSE),
-            [
-                'body' => $body,
-            ]
-        );
-
-        $builtResponse = HandleResponse::parse($body);
-
-        $this->logger->debug(
-            LogMessageFormatter::fromAction($requestId, $action, LogMessageFormatter::TYPE_BUILT_RESPONSE),
-            [
-                'head' => $builtResponse->getHead()->asXML(),
-                'body' => $builtResponse->getBody()->asXML(),
-            ]
-        );
+        $builtResponse = $this->executeAction($action, $requestId);
 
         $list = FeedsFactory::make($builtResponse->getBody());
 
@@ -139,7 +59,7 @@ class FeedManager extends BaseManager
         $this->logger->info(
             sprintf(
                 '%d::%s::APIResponse::SellerCenterSdk: %d feeds was recovered',
-                $request->getHeaderLine('Request-ID'),
+                $requestId,
                 $action,
                 count($list->all())
             )
@@ -156,7 +76,7 @@ class FeedManager extends BaseManager
         ?DateTimeInterface $updatedAfter = null
     ) {
         $action = self::FEED_OFFSET_LIST_ACTION;
-        $parameters = $this->makeParametersForAction($action);
+        $parameters = clone $this->parameters;
 
         $formattedCreatedAfter = null;
         $formattedUpdatedAfter = null;
@@ -178,7 +98,7 @@ class FeedManager extends BaseManager
         ]);
 
         $requestId = $this->generateRequestId();
-        $response = $this->executeAction($action, $parameters, $requestId);
+        $response = $this->executeAction($action, $requestId, $parameters);
         $list = FeedsFactory::make($response->getBody());
 
         $this->logger->info(sprintf(

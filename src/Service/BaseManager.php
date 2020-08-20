@@ -4,15 +4,16 @@ declare(strict_types=1);
 
 namespace Linio\SellerCenter\Service;
 
-use GuzzleHttp\ClientInterface;
-use GuzzleHttp\Psr7\Request;
 use Linio\SellerCenter\Application\Configuration;
 use Linio\SellerCenter\Application\Parameters;
 use Linio\SellerCenter\Application\Security\Signature;
 use Linio\SellerCenter\Formatter\LogMessageFormatter;
 use Linio\SellerCenter\Response\HandleResponse;
 use Linio\SellerCenter\Response\SuccessResponse;
+use Psr\Http\Client\ClientInterface;
+use Psr\Http\Message\RequestFactoryInterface;
 use Psr\Http\Message\RequestInterface;
+use Psr\Http\Message\StreamFactoryInterface;
 use Psr\Log\LoggerInterface;
 
 class BaseManager
@@ -39,26 +40,30 @@ class BaseManager
      */
     protected $parameters;
 
+    /**
+     * @var RequestFactoryInterface
+     */
+    protected $requestFactory;
+
+    /**
+     * @var StreamFactoryInterface
+     */
+    protected $streamFactory;
+
     public function __construct(
         Configuration $configuration,
         ClientInterface $client,
         Parameters $parameters,
-        LoggerInterface $logger
+        LoggerInterface $logger,
+        RequestFactoryInterface $requestFactory,
+        StreamFactoryInterface $streamFactory
     ) {
         $this->configuration = $configuration;
         $this->client = $client;
         $this->parameters = $parameters;
         $this->logger = $logger;
-    }
-
-    public function makeParametersForAction(string $actionName): Parameters
-    {
-        $parameters = clone $this->parameters;
-        $parameters->set([
-            'Action' => $actionName,
-        ]);
-
-        return $parameters;
+        $this->requestFactory = $requestFactory;
+        $this->streamFactory = $streamFactory;
     }
 
     public function generateRequestId(): string
@@ -68,19 +73,32 @@ class BaseManager
 
     public function executeAction(
         string $action,
-        Parameters $parameters,
         string $requestId,
-        string $httpMethod = 'GET'
+        ?Parameters $parameters = null,
+        string $httpMethod = 'GET',
+        string $body = ''
     ): SuccessResponse {
-        $request = new Request($httpMethod, $this->configuration->getEndpoint(), [
-            'Request-ID' => $requestId,
-        ]);
+        if (!$parameters) {
+            $parameters = clone $this->parameters;
+        }
+
+        $parameters->set(['Action' => $action]);
+        $streamBody = $this->streamFactory->createStream($body);
+
+        $fullEndpoint = $this->buildFullEndpoint(
+            $this->configuration->getEndpoint(),
+            $this->buildQuery($parameters)
+        );
+
+        $request = $this->requestFactory
+            ->createRequest($httpMethod, $fullEndpoint)
+            ->withHeader('Request-ID', $requestId)
+            ->withHeader('Content-type', 'text/xml; charset=UTF8')
+            ->withBody($streamBody);
 
         $this->logRequest($action, $requestId, $request, $parameters);
 
-        $response = $this->client->send($request, [
-            'query' => $this->buildQuery($parameters),
-        ]);
+        $response = $this->client->sendRequest($request);
 
         $body = (string) $response->getBody();
 
@@ -101,6 +119,15 @@ class BaseManager
                 $this->configuration->getKey()
             )->get(),
         ];
+    }
+
+    public function buildFullEndpoint(string $endpoint, ?array $query): string
+    {
+        if (empty($query)) {
+            return $endpoint;
+        }
+
+        return sprintf('%s?%s', $endpoint, http_build_query($query));
     }
 
     private function logRequest(

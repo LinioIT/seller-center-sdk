@@ -4,31 +4,81 @@ declare(strict_types=1);
 
 namespace Linio\SellerCenter\Unit\Service;
 
-use GuzzleHttp\Client;
 use Linio\SellerCenter\Application\Configuration;
 use Linio\SellerCenter\Application\Parameters;
 use Linio\SellerCenter\LinioTestCase;
 use Linio\SellerCenter\Service\QualityControlManager;
+use Prophecy\Prophecy\ObjectProphecy;
+use Psr\Http\Client\ClientInterface;
+use Psr\Http\Message\RequestFactoryInterface;
+use Psr\Http\Message\StreamFactoryInterface;
 use Psr\Log\Test\TestLogger;
 use ReflectionClass;
 use ReflectionMethod;
 
 class QualityControlManagerTest extends LinioTestCase
 {
-    public function testItReturnsTheTheLoggerWhenIsSet(): void
+    /**
+     * @var ObjectProphecy
+     */
+    protected $configurationStub;
+
+    /**
+     * @var ObjectProphecy
+     */
+    protected $clientStub;
+
+    /**
+     * @var Parameters
+     */
+    protected $parametersStub;
+
+    /**
+     * @var TestLogger
+     */
+    protected $loggerStub;
+
+    /**
+     * @var ObjectProphecy
+     */
+    protected $requestFactory;
+
+    /**
+     * @var ObjectProphecy
+     */
+    protected $streamFactory;
+
+    /**
+     * @var QualityControlManager
+     */
+    private $qualityControlManager;
+
+    public function setUp(): void
     {
-        $configuration = $this->prophesize(Configuration::class);
-        $client = $this->prophesize(Client::class);
-        $logger = $this->prophesize(TestLogger::class);
-        $parameters = $this->prophesize(Parameters::class);
+        $this->configurationStub = new Configuration('foo', 'bar', 'baz');
+        $this->clientStub = $this->prophesize(ClientInterface::class);
+        $this->parametersStub = new Parameters();
+        $this->loggerStub = new TestLogger();
+        $this->requestFactory = $this->prophesize(RequestFactoryInterface::class);
+        $this->streamFactory = $this->prophesize(StreamFactoryInterface::class);
 
-        $qcManager = new QualityControlManager($configuration->reveal(), $client->reveal(), $parameters->reveal(), $logger->reveal());
+        $this->qualityControlManager = new QualityControlManager(
+            $this->configurationStub,
+            $this->clientStub->reveal(),
+            $this->parametersStub,
+            $this->loggerStub,
+            $this->requestFactory->reveal(),
+            $this->streamFactory->reveal()
+        );
+    }
 
+    public function testItReturnsTheLoggerWhenIsSet(): void
+    {
         $reflectionClass = new ReflectionClass(QualityControlManager::class);
         $property = $reflectionClass->getProperty('logger');
         $property->setAccessible(true);
 
-        $setted = $property->getValue($qcManager);
+        $setted = $property->getValue($this->qualityControlManager);
 
         $this->assertInstanceOf(TestLogger::class, $setted);
     }
@@ -43,19 +93,12 @@ class QualityControlManagerTest extends LinioTestCase
         $method = new ReflectionMethod(QualityControlManager::class, 'setListDimensions');
         $method->setAccessible(true);
 
-        $configuration = $this->prophesize(Configuration::class);
-        $client = $this->prophesize(Client::class);
-        $logger = $this->prophesize(TestLogger::class);
-        $parameters = $this->prophesize(Parameters::class);
-
-        $qcManager = new QualityControlManager($configuration->reveal(), $client->reveal(), $parameters->reveal(), $logger->reveal());
-
         $parameters = Parameters::fromBasics($config['username'], $config['version']);
 
         $expected = clone $parameters;
         $expected->set(['Limit' => $expectedLimit, 'Offset' => $expectedOffset]);
 
-        $method->invokeArgs($qcManager, [&$parameters, $limit, $offset]);
+        $method->invokeArgs($this->qualityControlManager, [&$parameters, $limit, $offset]);
 
         $this->assertSame($expected->all(), $parameters->all());
     }

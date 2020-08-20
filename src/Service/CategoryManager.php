@@ -4,101 +4,24 @@ declare(strict_types=1);
 
 namespace Linio\SellerCenter\Service;
 
-use GuzzleHttp\ClientInterface;
-use GuzzleHttp\Psr7\Request;
 use Linio\Component\Util\Json;
-use Linio\SellerCenter\Application\Configuration;
-use Linio\SellerCenter\Application\Parameters;
-use Linio\SellerCenter\Application\Security\Signature;
 use Linio\SellerCenter\Factory\Xml\Category\AttributesSetFactory;
 use Linio\SellerCenter\Factory\Xml\Category\CategoriesFactory;
 use Linio\SellerCenter\Factory\Xml\Category\CategoryAttributesFactory;
-use Linio\SellerCenter\Formatter\LogMessageFormatter;
-use Linio\SellerCenter\Response\HandleResponse;
-use Psr\Log\LoggerInterface;
 
-class CategoryManager
+class CategoryManager extends BaseManager
 {
-    /**
-     * @var LoggerInterface
-     */
-    protected $logger;
-
-    /**
-     * @var Configuration
-     */
-    protected $configuration;
-
-    /**
-     * @var ClientInterface
-     */
-    protected $client;
-
-    /**
-     * @var Parameters
-     */
-    protected $parameters;
-
-    public function __construct(
-        Configuration $configuration,
-        ClientInterface $client,
-        Parameters $parameters,
-        LoggerInterface $logger
-    ) {
-        $this->configuration = $configuration;
-        $this->client = $client;
-        $this->parameters = $parameters;
-        $this->logger = $logger;
-    }
+    private const GET_CATEGORY_TREE_ACTION = 'GetCategoryTree';
+    private const GET_CATEGORY_ATTRIBUTES_ACTION = 'GetCategoryAttributes';
+    private const GET_CATEGORIES_BY_ATTRIBUTE_SET = 'GetCategoriesByAttributeSet';
 
     public function getCategoryTree(): array
     {
-        $action = 'GetCategoryTree';
+        $action = self::GET_CATEGORY_TREE_ACTION;
 
-        $parameters = clone $this->parameters;
-        $parameters->set(['Action' => $action]);
-        $parameters->set([
-            'Signature' => Signature::generate($parameters, $this->configuration->getKey())->get(),
-        ]);
+        $requestId = $this->generateRequestId();
 
-        $requestId = uniqid((string) mt_rand());
-
-        $request = new Request('GET', $this->configuration->getEndpoint(), [
-            'Request-ID' => $requestId,
-        ]);
-
-        $this->logger->debug(
-            LogMessageFormatter::fromAction($requestId, $action, LogMessageFormatter::TYPE_REQUEST),
-            [
-                'url' => (string) $request->getUri(),
-                'method' => $request->getMethod(),
-                'body' => (string) $request->getBody(),
-                'parameters' => $parameters->all(),
-            ]
-        );
-
-        $response = $this->client->send($request, [
-            'query' => $parameters->all(),
-        ]);
-
-        $body = (string) $response->getBody();
-
-        $this->logger->debug(
-            LogMessageFormatter::fromAction($requestId, $action, LogMessageFormatter::TYPE_RESPONSE),
-            [
-                'body' => $body,
-            ]
-        );
-
-        $builtResponse = HandleResponse::parse($body);
-
-        $this->logger->debug(
-            LogMessageFormatter::fromAction($requestId, $action, LogMessageFormatter::TYPE_BUILT_RESPONSE),
-            [
-                'head' => $builtResponse->getHead()->asXML(),
-                'body' => $builtResponse->getBody()->asXML(),
-            ]
-        );
+        $builtResponse = $this->executeAction($action, $requestId);
 
         $categories = CategoriesFactory::make($builtResponse->getBody());
 
@@ -107,7 +30,7 @@ class CategoryManager
         $this->logger->info(
             sprintf(
                 '%d::%s::APIResponse::SellerCenterSdk: %d categories was recovered',
-                $request->getHeaderLine('Request-ID'),
+                $requestId,
                 $action,
                 count($categories->all())
             )
@@ -118,55 +41,16 @@ class CategoryManager
 
     public function getCategoryAttributes(int $categoryId): array
     {
-        $action = 'GetCategoryAttributes';
+        $action = self::GET_CATEGORY_ATTRIBUTES_ACTION;
 
         $parameters = clone $this->parameters;
         $parameters->set([
-            'Action' => $action,
             'PrimaryCategory' => $categoryId,
         ]);
-        $parameters->set([
-            'Signature' => Signature::generate($parameters, $this->configuration->getKey())->get(),
-        ]);
 
-        $requestId = uniqid((string) mt_rand());
+        $requestId = $this->generateRequestId();
 
-        $request = new Request('GET', $this->configuration->getEndpoint(), [
-            'Request-ID' => $requestId,
-        ]);
-
-        $this->logger->debug(
-            LogMessageFormatter::fromAction($requestId, $action, LogMessageFormatter::TYPE_REQUEST),
-            [
-                'url' => (string) $request->getUri(),
-                'method' => $request->getMethod(),
-                'body' => (string) $request->getBody(),
-                'parameters' => $parameters->all(),
-            ]
-        );
-
-        $response = $this->client->send($request, [
-            'query' => $parameters->all(),
-        ]);
-
-        $body = (string) $response->getBody();
-
-        $this->logger->debug(
-            LogMessageFormatter::fromAction($requestId, $action, LogMessageFormatter::TYPE_RESPONSE),
-            [
-                'body' => $body,
-            ]
-        );
-
-        $builtResponse = HandleResponse::parse($body);
-
-        $this->logger->debug(
-            LogMessageFormatter::fromAction($requestId, $action, LogMessageFormatter::TYPE_BUILT_RESPONSE),
-            [
-                'head' => $builtResponse->getHead()->asXML(),
-                'body' => $builtResponse->getBody()->asXML(),
-            ]
-        );
+        $builtResponse = $this->executeAction($action, $requestId, $parameters);
 
         $categoryAttributes = CategoryAttributesFactory::make($builtResponse->getBody());
 
@@ -175,7 +59,7 @@ class CategoryManager
         $this->logger->info(
             sprintf(
                 '%d::%s::APIResponse::SellerCenterSdk: %d category attributes was recovered',
-                $request->getHeaderLine('Request-ID'),
+                $requestId,
                 $action,
                 count($categoryAttributes->all())
             )
@@ -186,10 +70,9 @@ class CategoryManager
 
     public function getCategoriesByAttributesSet(?array $attributesSetIds): array
     {
-        $action = 'GetCategoriesByAttributeSet';
+        $action = self::GET_CATEGORIES_BY_ATTRIBUTE_SET;
 
         $parameters = clone $this->parameters;
-        $parameters->set(['Action' => $action]);
 
         $attributesSetValue = 0;
 
@@ -198,47 +81,10 @@ class CategoryManager
         }
 
         $parameters->set(['AttributeSet' => $attributesSetValue]);
-        $parameters->set([
-            'Signature' => Signature::generate($parameters, $this->configuration->getKey())->get(),
-        ]);
 
-        $requestId = uniqid((string) mt_rand());
+        $requestId = $this->generateRequestId();
 
-        $request = new Request('GET', $this->configuration->getEndpoint(), [
-            'Request-ID' => $requestId,
-        ]);
-
-        $this->logger->debug(
-            LogMessageFormatter::fromAction($requestId, $action, LogMessageFormatter::TYPE_REQUEST),
-            [
-                'url' => (string) $request->getUri(),
-                'method' => $request->getMethod(),
-                'body' => (string) $request->getBody(),
-                'parameters' => $parameters->all(),
-            ]
-        );
-
-        $response = $this->client->send($request, [
-            'query' => $parameters->all(),
-        ]);
-
-        $body = (string) $response->getBody();
-
-        $this->logger->debug(
-            LogMessageFormatter::fromAction($requestId, $action, LogMessageFormatter::TYPE_RESPONSE),
-            [
-                'body' => $body,
-            ]
-        );
-        $builtResponse = HandleResponse::parse($body);
-
-        $this->logger->debug(
-            LogMessageFormatter::fromAction($requestId, $action, LogMessageFormatter::TYPE_BUILT_RESPONSE),
-            [
-                'head' => $builtResponse->getHead()->asXML(),
-                'body' => $builtResponse->getBody()->asXML(),
-            ]
-        );
+        $builtResponse = $this->executeAction($action, $requestId);
 
         $attributesSet = AttributesSetFactory::make($builtResponse->getBody());
 
@@ -247,7 +93,7 @@ class CategoryManager
         $this->logger->info(
             sprintf(
                 '%d::%s::APIResponse::SellerCenterSdk: %d attributes set was recovered',
-                $request->getHeaderLine('Request-ID'),
+                $requestId,
                 $action,
                 count($attributesSet->all())
             )
