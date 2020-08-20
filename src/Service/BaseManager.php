@@ -63,7 +63,7 @@ class BaseManager
 
     public function generateRequestId(): string
     {
-        return uniqid((string) mt_rand());
+        return bin2hex(random_bytes(16));
     }
 
     public function executeAction(
