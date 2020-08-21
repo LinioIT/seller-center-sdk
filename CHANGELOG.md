@@ -9,7 +9,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Added
 * [`Order`] Added `setOrderItems` method
-* [FeedManager](docs/Managers/Feed.md). Support to API `FeedCount` method 
+* [[FeedManager](docs/Managers/Feed.md)] Support to API `FeedCount` method 
+* [[FeedManager](docs/Managers/Feed.md)] Support [FeedOffsetList](https://developers.linio.com/reference/feedoffsetlist) action
 
 ### Changed
 

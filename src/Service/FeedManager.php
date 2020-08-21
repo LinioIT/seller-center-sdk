@@ -151,13 +151,16 @@ class FeedManager extends BaseManager
         return $feedsResponse;
     }
 
+    /**
+     * @return Feed[]
+     */
     public function getFeedOffsetList(
         ?int $offset = null,
         ?int $pageSize = null,
         ?string $status = null,
         ?DateTimeInterface $createdAfter = null,
         ?DateTimeInterface $updatedAfter = null
-    ) {
+    ): array {
         $action = self::FEED_OFFSET_LIST_ACTION;
         $parameters = $this->makeParametersForAction($action);
 

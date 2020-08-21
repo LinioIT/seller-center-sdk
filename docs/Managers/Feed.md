@@ -19,4 +19,23 @@ Also it's possible to get an entire feed list as an array:
 $feedList = $sdk->feeds()->getFeedList();
 ```
 
+Or partial feed list with the following parameters:
+
+| Parameter       | Type               | Description                                                                     | Required | Default |
+|-----------------|--------------------|---------------------------------------------------------------------------------|----------|---------|
+| `$offset`       | ?int               | Zero-based offset into the list of all feeds.                                   | No       | -       |
+| `$pageSize`     | ?int               | The number of entries to retrieve, i.e. the page size.                          | No       | -       |
+| `$status`       | ?string            | If supplied, only feeds with this status are returned.                          | No       | -       |
+| `$createdAfter` | ?DateTimeInterface | If supplied, only feeds created after this date will be included in the result. | No       | -       |
+| `$updatedAfter` | ?DateTimeInterface | If supplied, only feeds updated after this date will be included in the result. | No       | -       |
+
+**Example:**
+
+```php
+$offset = 1;
+$limit = 1;
+
+$feedList = $sdk->feeds()->getFeedOffsetList($offset, $limit);
+```
+
 The `Feed` instance has a getter for every attribute in the XML response.
