@@ -39,7 +39,7 @@ class FeedResponse
         string $requestAction,
         string $responseType,
         string $timestamp,
-        array $requestParameters
+        array $requestParameters = []
     ) {
         if (empty($requestAction)) {
             throw new EmptyArgumentException('RequestAction');
