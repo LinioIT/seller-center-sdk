@@ -398,4 +398,37 @@ class FeedManagerTest extends LinioTestCase
 
         $sdkClient->feeds()->getFeedStatusById('aa19d73f-ab3a-48c1-b196-9a1f18e5280e');
     }
+
+    public function testItReturnsFeedCount(): void
+    {
+        $env = $this->getParameters();
+        $configuration = new Configuration($env['key'], $env['username'], $env['endpoint'], $env['version']);
+
+        $total = 5;
+        $queued = 4;
+        $processing = 3;
+        $finished = 2;
+        $canceled = 1;
+
+        $xmlSchema = sprintf(
+            $this->getSchema('FeedCount.xml'),
+            $total,
+            $queued,
+            $processing,
+            $finished,
+            $canceled
+        );
+
+        $client = $this->createClientWithResponse($xmlSchema);
+
+        $sdkClient = new SellerCenterSdk($configuration, $client);
+
+        $feedCount = $sdkClient->feeds()->getFeedCount();
+
+        $this->assertEquals($total, $feedCount->getTotal());
+        $this->assertEquals($queued, $feedCount->getQueued());
+        $this->assertEquals($processing, $feedCount->getProcessing());
+        $this->assertEquals($finished, $feedCount->getFinished());
+        $this->assertEquals($canceled, $feedCount->getCanceled());
+    }
 }

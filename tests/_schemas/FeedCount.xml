@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<SuccessResponse>
+     <Head>
+          <RequestId/>
+          <RequestAction>FeedCount</RequestAction>
+          <ResponseType>FeedCount</ResponseType>
+          <Timestamp>2020-08-19T14:10:38-0500</Timestamp>
+     </Head>
+     <Body>
+          <FeedCount>
+               <Total>%d</Total>
+               <Queued>%d</Queued>
+               <Processing>%d</Processing>
+               <Finished>%d</Finished>
+               <Canceled>%d</Canceled>
+          </FeedCount>
+     </Body>
+</SuccessResponse>
