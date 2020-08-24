@@ -297,6 +297,11 @@ class Order implements JsonSerializable
         return $this->orderItems;
     }
 
+    public function setOrderItems(OrderItems $orderItems): void
+    {
+        $this->orderItems = $orderItems;
+    }
+
     public function jsonSerialize(): stdClass
     {
         $serialized = new stdClass();
