@@ -16,7 +16,7 @@ use Linio\SellerCenter\Model\Order\OrderItems;
 
 class OrderTest extends LinioTestCase
 {
-    public function testItReturnsValidOrder(): void
+    public function testItReturnsValidOrder(): Order
     {
         $simpleXml = simplexml_load_string($this->getValidOrderXmlStructure());
 
@@ -45,6 +45,26 @@ class OrderTest extends LinioTestCase
         $this->assertInstanceOf(DateTimeImmutable::class, $order->getPromisedShippingTime());
         $this->assertEquals((string) $simpleXml->ExtraAttributes, $order->getExtraAttributes());
         $this->assertSame((string) $simpleXml->Statuses->Status[0], $order->getStatuses()[0]);
+
+        return $order;
+    }
+
+    /**
+     * @depends testItReturnsValidOrder
+     */
+    public function testItSetsOrderItemListToExistentOrder(Order $order): void
+    {
+        $this->assertNull($order->getOrderItems());
+
+        $orderItem = $this->prophesize(OrderItem::class);
+        $orderItem->getOrderItemId()->willReturn(1);
+
+        $orderItems = new OrderItems();
+        $orderItems->add($orderItem->reveal());
+
+        $order->setOrderItems($orderItems);
+
+        $this->assertInstanceOf(OrderItems::class, $order->getOrderItems());
     }
 
     public function testItThrowsAExceptionWithoutAOrderIdInTheXml(): void
