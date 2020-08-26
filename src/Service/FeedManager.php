@@ -4,10 +4,8 @@ declare(strict_types=1);
 
 namespace Linio\SellerCenter\Service;
 
-use GuzzleHttp\ClientInterface;
+use DateTimeInterface;
 use GuzzleHttp\Psr7\Request;
-use Linio\SellerCenter\Application\Configuration;
-use Linio\SellerCenter\Application\Parameters;
 use Linio\SellerCenter\Application\Security\Signature;
 use Linio\SellerCenter\Factory\Xml\Feed\FeedCountFactory;
 use Linio\SellerCenter\Factory\Xml\Feed\FeedFactory;
@@ -16,42 +14,11 @@ use Linio\SellerCenter\Formatter\LogMessageFormatter;
 use Linio\SellerCenter\Model\Feed\Feed;
 use Linio\SellerCenter\Model\Feed\FeedCount;
 use Linio\SellerCenter\Response\HandleResponse;
-use Psr\Log\LoggerInterface;
 use SimpleXMLElement;
 
-class FeedManager
+class FeedManager extends BaseManager
 {
-    /**
-     * @var LoggerInterface
-     */
-    protected $logger;
-
-    /**
-     * @var Configuration
-     */
-    protected $configuration;
-
-    /**
-     * @var ClientInterface
-     */
-    protected $client;
-
-    /**
-     * @var Parameters
-     */
-    protected $parameters;
-
-    public function __construct(
-        Configuration $configuration,
-        ClientInterface $client,
-        Parameters $parameters,
-        LoggerInterface $logger
-    ) {
-        $this->configuration = $configuration;
-        $this->client = $client;
-        $this->parameters = $parameters;
-        $this->logger = $logger;
-    }
+    private const FEED_OFFSET_LIST_ACTION = 'FeedOffsetList';
 
     public function getFeedStatusById(string $id): Feed
     {
@@ -182,6 +149,52 @@ class FeedManager
         );
 
         return $feedsResponse;
+    }
+
+    /**
+     * @return Feed[]
+     */
+    public function getFeedOffsetList(
+        ?int $offset = null,
+        ?int $pageSize = null,
+        ?string $status = null,
+        ?DateTimeInterface $createdAfter = null,
+        ?DateTimeInterface $updatedAfter = null
+    ): array {
+        $action = self::FEED_OFFSET_LIST_ACTION;
+        $parameters = $this->makeParametersForAction($action);
+
+        $formattedCreatedAfter = null;
+        $formattedUpdatedAfter = null;
+
+        if ($createdAfter) {
+            $formattedCreatedAfter = $createdAfter->format(self::DATE_TIME_FORMAT);
+        }
+
+        if ($updatedAfter) {
+            $formattedCreatedAfter = $updatedAfter->format(self::DATE_TIME_FORMAT);
+        }
+
+        $parameters->set([
+            'Offset' => $offset,
+            'PageSize' => $pageSize,
+            'Status' => $status,
+            'CreationDate' => $formattedCreatedAfter,
+            'UpdatedDate' => $formattedCreatedAfter,
+        ]);
+
+        $requestId = $this->generateRequestId();
+        $response = $this->executeAction($action, $parameters, $requestId);
+        $list = FeedsFactory::make($response->getBody());
+
+        $this->logger->info(sprintf(
+            '%d::%s::APIResponse::SellerCenterSdk: %d feeds was recovered',
+            $requestId,
+            $action,
+            count($list->all())
+        ));
+
+        return array_values($list->all());
     }
 
     public function getFeedCount(): FeedCount
