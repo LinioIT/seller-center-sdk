@@ -39,3 +39,21 @@ $feedList = $sdk->feeds()->getFeedOffsetList($offset, $limit);
 ```
 
 The `Feed` instance has a getter for every attribute in the XML response.
+
+-----------
+
+## Canceling feed
+
+It's possible to cancel a feed using the method `feedCancel`.
+
+| Parameter | Type | Description | Required | Default |
+| --------- | ---- | ----------- | -------- | ------- |
+| `$feedId` | string | The ID of the feed to cancel | Yes | - |
+
+#### Example
+
+```php
+$feedId = '6b4e9a86-2a65-44e3-ae8e-3f752fc265f8';
+
+$feedResponse = $sdk->feeds()->feedCancel($feedId);
+```

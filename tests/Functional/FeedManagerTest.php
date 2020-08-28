@@ -11,6 +11,7 @@ use Linio\SellerCenter\Exception\InvalidXmlStructureException;
 use Linio\SellerCenter\Model\Feed\Feed;
 use Linio\SellerCenter\Model\Feed\FeedError;
 use Linio\SellerCenter\Model\Feed\FeedErrors;
+use Linio\SellerCenter\Response\FeedResponse;
 use stdClass;
 
 class FeedManagerTest extends LinioTestCase
@@ -61,6 +62,21 @@ class FeedManagerTest extends LinioTestCase
 
         $values = array_values($feeds);
         $this->assertFeeds($values, $expectedFeeds);
+    }
+
+    public function testItCancelsAFeedById(): void
+    {
+        $env = $this->getParameters();
+        $configuration = new Configuration($env['key'], $env['username'], $env['endpoint'], $env['version']);
+
+        $xml = $this->getSchema('Feed/FeedCancel.xml');
+        $client = $this->createClientWithResponse($xml);
+
+        $sdkClient = new SellerCenterSdk($configuration, $client);
+
+        $feedResponse = $sdkClient->feeds()->feedCancel('c685b76e-180d-484c-b0ef-7e9aee9e3f98');
+
+        $this->assertInstanceOf(FeedResponse::class, $feedResponse);
     }
 
     public function feedProvider()

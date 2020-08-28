@@ -10,15 +10,18 @@ use Linio\SellerCenter\Application\Security\Signature;
 use Linio\SellerCenter\Factory\Xml\Feed\FeedCountFactory;
 use Linio\SellerCenter\Factory\Xml\Feed\FeedFactory;
 use Linio\SellerCenter\Factory\Xml\Feed\FeedsFactory;
+use Linio\SellerCenter\Factory\Xml\FeedResponseFactory;
 use Linio\SellerCenter\Formatter\LogMessageFormatter;
 use Linio\SellerCenter\Model\Feed\Feed;
 use Linio\SellerCenter\Model\Feed\FeedCount;
+use Linio\SellerCenter\Response\FeedResponse;
 use Linio\SellerCenter\Response\HandleResponse;
 use SimpleXMLElement;
 
 class FeedManager extends BaseManager
 {
     private const FEED_OFFSET_LIST_ACTION = 'FeedOffsetList';
+    private const FEED_CANCEL_ACTION = 'FeedCancel';
 
     public function getFeedStatusById(string $id): Feed
     {
@@ -261,5 +264,29 @@ class FeedManager extends BaseManager
         );
 
         return $builtResponse->getBody();
+    }
+
+    public function feedCancel(string $id): FeedResponse
+    {
+        $action = self::FEED_CANCEL_ACTION;
+        $parameters = $this->makeParametersForAction($action);
+        $parameters->set([
+            'FeedID' => $id,
+        ]);
+
+        $requestId = $this->generateRequestId();
+        $response = $this->executeAction($action, $parameters, $requestId, 'POST');
+
+        $feedResponse = FeedResponseFactory::make($response->getHead());
+
+        $this->logger->info(
+            sprintf(
+                '%d::%s::APIResponse::SellerCenterSdk: the feed was cancel',
+                $requestId,
+                $action
+            )
+        );
+
+        return $feedResponse;
     }
 }

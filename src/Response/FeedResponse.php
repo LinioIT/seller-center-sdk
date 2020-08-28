@@ -10,7 +10,7 @@ use Linio\SellerCenter\Exception\EmptyArgumentException;
 class FeedResponse
 {
     /**
-     * @var string
+     * @var string|null
      */
     protected $requestId;
 
@@ -29,12 +29,18 @@ class FeedResponse
      */
     protected $timestamp;
 
-    public function __construct(string $requestId, string $requestAction, string $responseType, string $timestamp)
-    {
-        if (empty($requestId)) {
-            throw new EmptyArgumentException('RequestId');
-        }
+    /**
+     * @var mixed[]
+     */
+    protected $requestParameters;
 
+    public function __construct(
+        ?string $requestId,
+        string $requestAction,
+        string $responseType,
+        string $timestamp,
+        array $requestParameters = []
+    ) {
         if (empty($requestAction)) {
             throw new EmptyArgumentException('RequestAction');
         }
@@ -49,9 +55,10 @@ class FeedResponse
         $this->requestAction = $requestAction;
         $this->responseType = $responseType ?? null;
         $this->timestamp = $date ? $date : null;
+        $this->requestParameters = $requestParameters;
     }
 
-    public function getRequestId(): string
+    public function getRequestId(): ?string
     {
         return $this->requestId;
     }
@@ -69,5 +76,13 @@ class FeedResponse
     public function getTimestamp(): ?DateTimeImmutable
     {
         return $this->timestamp;
+    }
+
+    /**
+     * @return mixed[]
+     */
+    public function getRequestParameters(): array
+    {
+        return $this->requestParameters;
     }
 }
