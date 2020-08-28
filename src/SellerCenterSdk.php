@@ -4,10 +4,12 @@ declare(strict_types=1);
 
 namespace Linio\SellerCenter;
 
-use GuzzleHttp\Client;
-use GuzzleHttp\ClientInterface;
+use Http\Discovery\HttpClientDiscovery;
+use Linio\SellerCenter\Adapter\Client\GuzzleClientAdapter;
+use Linio\SellerCenter\Adapter\Client\PsrClientAdapter;
 use Linio\SellerCenter\Application\Configuration;
 use Linio\SellerCenter\Application\Parameters;
+use Linio\SellerCenter\Contract\ClientInterface;
 use Linio\SellerCenter\Service\BrandManager;
 use Linio\SellerCenter\Service\CategoryManager;
 use Linio\SellerCenter\Service\DocumentManager;
@@ -87,15 +89,32 @@ class SellerCenterSdk
      */
     protected $shipment;
 
+    /**
+     * @param \GuzzleHttp\ClientInterface|\Psr\Http\Client\ClientInterface|null $client
+     */
     public function __construct(
         Configuration $configuration,
-        ?ClientInterface $client = null,
+        $client = null,
         ?LoggerInterface $logger = null
     ) {
         $this->configuration = $configuration;
-        $this->client = $client ?? new Client();
         $this->logger = $logger ?? new NullLogger();
         $this->parameters = Parameters::fromBasics($configuration->getUser(), $configuration->getVersion());
+        $this->setClient($client ?? HttpClientDiscovery::find());
+    }
+
+    /**
+     * @param \GuzzleHttp\ClientInterface|\Psr\Http\Client\ClientInterface $client
+     */
+    public function setClient($client): void
+    {
+        if (is_subclass_of($client, GuzzleClientAdapter::GUZZLE_CLASS)) {
+            $this->client = new GuzzleClientAdapter($client);
+
+            return;
+        }
+
+        $this->client = new PsrClientAdapter($client);
     }
 
     public function brands(): BrandManager

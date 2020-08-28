@@ -4,9 +4,9 @@ declare(strict_types=1);
 
 namespace Linio\SellerCenter\Service;
 
-use GuzzleHttp\Client;
 use Linio\SellerCenter\Application\Configuration;
 use Linio\SellerCenter\Application\Parameters;
+use Linio\SellerCenter\Contract\ClientInterface;
 use Linio\SellerCenter\LinioTestCase;
 use Psr\Log\Test\TestLogger;
 use ReflectionClass;
@@ -16,7 +16,7 @@ class ShipmentManagerTest extends LinioTestCase
     public function testItReturnsTheLoggerWhenIsSet(): void
     {
         $configuration = $this->prophesize(Configuration::class);
-        $client = $this->prophesize(Client::class);
+        $client = $this->prophesize(ClientInterface::class);
         $logger = $this->prophesize(TestLogger::class);
         $parameters = $this->prophesize(Parameters::class);
 

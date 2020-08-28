@@ -5,15 +5,15 @@ declare(strict_types=1);
 namespace Linio\SellerCenter;
 
 use GuzzleHttp\Client;
-use GuzzleHttp\Psr7\Request;
-use GuzzleHttp\Psr7\Response;
 use Prophecy\Argument;
+use Psr\Http\Message\RequestInterface;
+use Psr\Http\Message\ResponseInterface;
 
 trait ClientHelper
 {
     public function createClientWithResponse($body, $statusCode = 200)
     {
-        $response = $this->prophesize(Response::class);
+        $response = $this->prophesize(ResponseInterface::class);
 
         $response
             ->getBody()
@@ -24,7 +24,9 @@ trait ClientHelper
             ->willReturn($statusCode);
 
         $client = $this->prophesize(Client::class);
-        $client->send(Argument::type(Request::class), Argument::type('array'))->willReturn($response);
+        $client
+            ->send(Argument::type(RequestInterface::class), Argument::type('array'))
+            ->willReturn($response);
 
         return $client->reveal();
     }
