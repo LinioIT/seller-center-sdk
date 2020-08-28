@@ -69,20 +69,7 @@ class FeedManagerTest extends LinioTestCase
         $env = $this->getParameters();
         $configuration = new Configuration($env['key'], $env['username'], $env['endpoint'], $env['version']);
 
-        $xml = '<?xml version="1.0" encoding="UTF-8"?>
-            <SuccessResponse>
-              <Head>
-                <RequestId></RequestId>
-                <RequestAction>FeedCancel</RequestAction>
-                <ResponseType></ResponseType>
-                <Timestamp>2015-07-01T11:11:11+0000</Timestamp>
-                <RequestParameters>
-                  <FeedID>c685b76e-180d-484c-b0ef-7e9aee9e3f98</FeedID>
-                </RequestParameters>
-              </Head>
-              <Body/>
-            </SuccessResponse>
-        ';
+        $xml = $this->getSchema('Feed/FeedCancel.xml');
         $client = $this->createClientWithResponse($xml);
 
         $sdkClient = new SellerCenterSdk($configuration, $client);
