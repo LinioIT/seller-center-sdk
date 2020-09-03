@@ -101,7 +101,7 @@ class FeedCountTest extends LinioTestCase
         int $canceled = 0
     ): SimpleXMLElement {
         $xmlSchema = sprintf(
-            $this->getSchema('FeedCount.xml'),
+            $this->getSchema('Feed/FeedCount.xml'),
             $total,
             $queued,
             $processing,

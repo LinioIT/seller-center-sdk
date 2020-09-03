@@ -19,7 +19,7 @@ class FeedManagerTest extends LinioTestCase
     use ClientHelper;
 
     /**
-     * @dataProvider feedProvider
+     * @dataProvider Linio\SellerCenter\FeedManagerProvider::feedProvider
      */
     public function testItReturnsFeedCollectionFromValidXml(string $xml, $expectedFeeds, $size): void
     {
@@ -39,7 +39,7 @@ class FeedManagerTest extends LinioTestCase
     }
 
     /**
-     * @dataProvider feedProvider
+     * @dataProvider Linio\SellerCenter\FeedManagerProvider::feedProvider
      */
     public function testItReturnsFeedCollectionFromValidXmlOnFeedOffsetList(string $xml, $expectedFeeds, $size): void
     {
@@ -79,84 +79,6 @@ class FeedManagerTest extends LinioTestCase
         $this->assertInstanceOf(FeedResponse::class, $feedResponse);
     }
 
-    public function feedProvider()
-    {
-        $return = [];
-        $limit = 20;
-
-        for ($i = 1; $i <= $limit; $i++) {
-            $size = random_int(1, 10);
-            $result = $this->getPendingFeedXml();
-            $return[] = [$result['xml'], $result['feeds'], $size];
-        }
-
-        return $return;
-    }
-
-    public function getPendingFeedXml(int $feedSize = 1): array
-    {
-        $xml = '<?xml version="1.0" encoding="UTF-8"?>
-        <SuccessResponse>
-        <Head>
-        <RequestId></RequestId>
-        <RequestAction>FeedList</RequestAction>
-        <ResponseType>Feed</ResponseType>
-        <Timestamp>2013-10-28T16:33:55+0000</Timestamp>
-        </Head>
-        <Body>';
-
-        for ($i = 0; $i <= $feedSize; $i++) {
-            $feed = $this->pendingFeed();
-
-            $xml .= sprintf(
-                '<Feed>
-                  <Feed>%s</Feed>
-                  <Status>%s</Status>
-                  <Action>%s</Action>
-                  <CreationDate>%s</CreationDate>
-                  <UpdatedDate>%s</UpdatedDate>
-                  <Source>%s</Source>
-                  <TotalRecords>%s</TotalRecords>
-                  <ProcessedRecords>%s</ProcessedRecords>
-                  <FailedRecords>%s</FailedRecords>
-                  <FailureReports></FailureReports>
-                </Feed>',
-                $feed->id,
-                $feed->status,
-                $feed->action,
-                $feed->creationDate,
-                $feed->updatedDate,
-                $feed->source,
-                $feed->totalRecords,
-                $feed->processedRecords,
-                $feed->failedRecords
-            );
-
-            $feeds[] = $feed;
-        }
-
-        $xml .= '</Body>
-        </SuccessResponse>';
-
-        return ['xml' => $xml, 'feeds' => $feeds];
-    }
-
-    public function pendingFeed(): stdClass
-    {
-        $feedData = new stdClass();
-        $feedData->id = $this->getFaker()->uuid;
-        $feedData->status = 'Queued';
-        $feedData->action = 'ProductUpdate';
-        $feedData->creationDate = $this->getFaker()->dateTime()->format('Y-m-d H:i:s');
-        $feedData->updatedDate = $this->getFaker()->dateTime()->format('Y-m-d H:i:s');
-        $feedData->source = 'api';
-        $feedData->totalRecords = random_int(0, 100000);
-        $feedData->processedRecords = 0;
-        $feedData->failedRecords = 0;
-
-        return $feedData;
-    }
-
     public function testItReturnsErrorResponseException(): void
     {
         $this->expectException(ErrorResponseException::class);
@@ -183,7 +105,7 @@ class FeedManagerTest extends LinioTestCase
     }
 
     /**
-     * @dataProvider xmlTypesProvider
+     * @dataProvider Linio\SellerCenter\FeedManagerProvider::xmlTypesProvider
      */
     public function testItReturnsFeedInstanceFromValidXml($xml): void
     {
@@ -210,132 +132,11 @@ class FeedManagerTest extends LinioTestCase
         $this->assertContainsOnlyInstancesOf(FeedError::class, $feed->getErrors()->all());
     }
 
-    public function xmlTypesProvider()
-    {
-        return [
-            [
-                'productUpdate' => '<?xml version="1.0" encoding="UTF-8"?>
-                    <SuccessResponse>
-                         <Head>
-                              <RequestId/>
-                              <RequestAction>FeedStatus</RequestAction>
-                              <ResponseType>FeedDetail</ResponseType>
-                              <Timestamp>2018-12-18T07:55:07-0600</Timestamp>
-                              <RequestParameters>
-                                   <FeedID>aa19d73f-ab3a-48c1-b196-9a1f18e5280e</FeedID>
-                              </RequestParameters>
-                         </Head>
-                         <Body>
-                              <FeedDetail>
-                                   <Feed>aa19d73f-ab3a-48c1-b196-9a1f18e5280e</Feed>
-                                   <Status>Finished</Status>
-                                   <Action>ProductUpdate</Action>
-                                   <CreationDate>2018-12-17 13:46:25</CreationDate>
-                                   <UpdatedDate>2018-12-17 13:50:43</UpdatedDate>
-                                   <Source>api</Source>
-                                   <TotalRecords>1232</TotalRecords>
-                                   <ProcessedRecords>1190</ProcessedRecords>
-                                   <FailedRecords>114</FailedRecords>
-                                   <FeedErrors>
-                                        <Error>
-                                             <Code>1</Code>
-                                             <Message>Negative value is not allowed</Message>
-                                             <SellerSku>9786077351993</SellerSku>
-                                        </Error>
-                                        <Error>
-                                             <Code>1</Code>
-                                             <Message>Seller SKU \'9788441418011\' not found</Message>
-                                             <SellerSku>9788441418011</SellerSku>
-                                        </Error>
-                                        <Error>
-                                             <Code>1</Code>
-                                             <Message>Seller SKU \'9788498455984\' not found</Message>
-                                             <SellerSku>9788498455984</SellerSku>
-                                        </Error>
-                                   </FeedErrors>
-                              </FeedDetail>
-                         </Body>
-                    </SuccessResponse>',
-            ],
-            [
-                'ProductCreate' => '<?xml version="1.0" encoding="UTF-8"?>
-                    <SuccessResponse>
-                         <Head>
-                              <RequestId/>
-                              <RequestAction>FeedStatus</RequestAction>
-                              <ResponseType>FeedDetail</ResponseType>
-                              <Timestamp>2018-12-18T07:55:07-0600</Timestamp>
-                              <RequestParameters>
-                                   <FeedID>aa19d73f-ab3a-48c1-b196-9a1f18e5280e</FeedID>
-                              </RequestParameters>
-                         </Head>
-                         <Body>
-                              <FeedDetail>
-                                   <Feed>aa19d73f-ab3a-48c1-b196-9a1f18e5280e</Feed>
-                                   <Status>Finished</Status>
-                                   <Action>ProductCreate</Action>
-                                   <CreationDate>2018-12-17 13:46:25</CreationDate>
-                                   <UpdatedDate>2018-12-17 13:50:43</UpdatedDate>
-                                   <Source>api</Source>
-                                   <TotalRecords>1232</TotalRecords>
-                                   <ProcessedRecords>1190</ProcessedRecords>
-                                   <FailedRecords>114</FailedRecords>
-                                   <FeedErrors>
-                                        <Error>
-                                             <Code>0</Code>
-                                             <Message>SellerSku cannot be empty</Message>
-                                             <SellerSku/>
-                                        </Error>
-                                   </FeedErrors>
-                              </FeedDetail>
-                         </Body>
-                    </SuccessResponse>',
-            ],
-        ];
-    }
-
-    public function testItThrowsXMLStructureException(): void
+    public function testItThrowsXMLStructureExceptionWhenDontPassStatus(): void
     {
         $this->expectException(InvalidXmlStructureException::class);
 
-        $xml = '<?xml version="1.0" encoding="UTF-8"?>
-        <SuccessResponse>
-          <Head>
-            <RequestId></RequestId>
-            <RequestAction>FeedList</RequestAction>
-            <ResponseType>Feed</ResponseType>
-            <Timestamp>2013-10-28T16:33:55+0000</Timestamp>
-          </Head>
-          <Body>
-            <Feed>
-              <Feed>829a8d2a-d370-4fa6-8613-8554f43d5fed</Feed>
-              <Status>Processing</Status>
-              <Action>ProductCreate</Action>
-              <CreationDate>2013-10-23 15:43:26</CreationDate>
-              <UpdatedDate></UpdatedDate>
-              <Source>api</Source>
-              <TotalRecords>9999</TotalRecords>
-              <ProcessedRecords>0</ProcessedRecords>
-              <FailedRecords>0</FailedRecords>
-              <FailureReports></FailureReports>
-            </Feed>
-            <Feed>
-              <Feed>829a8d2a-d370-4fa6-8613-8554f43d5fed</Feed>
-              <Action>ProductCreate</Action>
-              <CreationDate>2013-10-23 15:43:26</CreationDate>
-              <UpdatedDate></UpdatedDate>
-              <Source>api</Source>
-              <TotalRecords>9999</TotalRecords>
-              <ProcessedRecords>0</ProcessedRecords>
-              <FailedRecords>10</FailedRecords>
-              <FailureReports>
-                <MimeType>text/csv</MimeType>
-                <File>IkVycm9yIjsiV2FybmluZyI7IlNlbGdFN....</File>
-              </FailureReports>
-            </Feed>
-          </Body>
-        </SuccessResponse>';
-
+        $xml = $this->getSchema('Feed/FeedInvalidStatusPending.xml');
         $env = $this->getParameters();
         $configuration = new Configuration($env['key'], $env['username'], $env['endpoint'], $env['version']);
         $client = $this->createClientWithResponse($xml);
@@ -345,47 +146,11 @@ class FeedManagerTest extends LinioTestCase
         $sdkClient->feeds()->getFeedList();
     }
 
-    public function testItThrowsXMLStructureException2(): void
+    public function testItThrowsXMLStructureExceptionWhenDontPassFeedId(): void
     {
         $this->expectException(InvalidXmlStructureException::class);
 
-        $xml = '<?xml version="1.0" encoding="UTF-8"?>
-        <SuccessResponse>
-          <Head>
-            <RequestId></RequestId>
-            <RequestAction>FeedList</RequestAction>
-            <ResponseType>Feed</ResponseType>
-            <Timestamp>2013-10-28T16:33:55+0000</Timestamp>
-          </Head>
-          <Body>
-            <Feed>
-              <Status>Processing</Status>
-              <Action>ProductCreate</Action>
-              <CreationDate>2013-10-23 15:43:26</CreationDate>
-              <UpdatedDate></UpdatedDate>
-              <Source>api</Source>
-              <TotalRecords>9999</TotalRecords>
-              <ProcessedRecords>0</ProcessedRecords>
-              <FailedRecords>0</FailedRecords>
-              <FailureReports></FailureReports>
-            </Feed>
-            <Feed>
-              <Feed>829a8d2a-d370-4fa6-8613-8554f43d5fed</Feed>
-              <Status>Processing</Status>
-              <Action>ProductCreate</Action>
-              <CreationDate>2013-10-23 15:43:26</CreationDate>
-              <UpdatedDate></UpdatedDate>
-              <Source>api</Source>
-              <TotalRecords>9999</TotalRecords>
-              <ProcessedRecords>0</ProcessedRecords>
-              <FailedRecords>10</FailedRecords>
-              <FailureReports>
-                <MimeType>text/csv</MimeType>
-                <File>IkVycm9yIjsiV2FybmluZyI7IlNlbGdFN....</File>
-              </FailureReports>
-            </Feed>
-          </Body>
-        </SuccessResponse>';
+        $xml = $this->getSchema('Feed/FeedInvalidWithFeedPending.xml');
 
         $env = $this->getParameters();
         $configuration = new Configuration($env['key'], $env['username'], $env['endpoint'], $env['version']);
@@ -461,7 +226,7 @@ class FeedManagerTest extends LinioTestCase
         $canceled = 1;
 
         $xmlSchema = sprintf(
-            $this->getSchema('FeedCount.xml'),
+            $this->getSchema('Feed/FeedCount.xml'),
             $total,
             $queued,
             $processing,
