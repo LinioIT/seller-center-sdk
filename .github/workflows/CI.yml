@@ -1,4 +1,4 @@
-name: PHP
+name: CI
 
 on:
   push:
