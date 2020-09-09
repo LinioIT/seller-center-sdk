@@ -5,13 +5,13 @@ declare(strict_types=1);
 namespace Linio\SellerCenter;
 
 use stdClass;
-use Linio\SellerCenter\FeedManagerTest;
 
 class FeedManagerProvider
 {
     public function xmlTypesProvider(): array
     {
         $feedManager = new FeedManagerTest();
+
         return [
             ['productUpdate' => $feedManager->getSchema('Feed/FeedProductUpdate.xml')],
             ['ProductCreate' => $feedManager->getSchema('Feed/FeedProductCreate.xml')],
