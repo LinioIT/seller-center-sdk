@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<SuccessResponse>
+        <Head>
+            <RequestId/>
+            <RequestAction>FeedStatus</RequestAction>
+            <ResponseType>FeedDetail</ResponseType>
+            <Timestamp>2018-12-18T07:55:07-0600</Timestamp>
+            <RequestParameters>
+                <FeedID>aa19d73f-ab3a-48c1-b196-9a1f18e5280e</FeedID>
+            </RequestParameters>
+        </Head>
+        <Body>
+            <FeedDetail>
+                <Feed>aa19d73f-ab3a-48c1-b196-9a1f18e5280e</Feed>
+                <Status>Finished</Status>
+                <Action>ProductCreate</Action>
+                <CreationDate>2018-12-17 13:46:25</CreationDate>
+                <UpdatedDate>2018-12-17 13:50:43</UpdatedDate>
+                <Source>api</Source>
+                <TotalRecords>1232</TotalRecords>
+                <ProcessedRecords>1190</ProcessedRecords>
+                <FailedRecords>114</FailedRecords>
+                <FeedErrors>
+                    <Error>
+                            <Code>0</Code>
+                            <Message>SellerSku cannot be empty</Message>
+                            <SellerSku/>
+                    </Error>
+                </FeedErrors>
+            </FeedDetail>
+        </Body>
+</SuccessResponse>

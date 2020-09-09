@@ -5,91 +5,16 @@ declare(strict_types=1);
 namespace Linio\SellerCenter;
 
 use stdClass;
-use Linio\SellerCenter\LinioTestCase;
+use Linio\SellerCenter\FeedManagerTest;
 
 class FeedManagerProvider
 {
     public function xmlTypesProvider(): array
     {
+        $feedManager = new FeedManagerTest();
         return [
-            [
-                'productUpdate' => '<?xml version="1.0" encoding="UTF-8"?>
-                    <SuccessResponse>
-                         <Head>
-                              <RequestId/>
-                              <RequestAction>FeedStatus</RequestAction>
-                              <ResponseType>FeedDetail</ResponseType>
-                              <Timestamp>2018-12-18T07:55:07-0600</Timestamp>
-                              <RequestParameters>
-                                   <FeedID>aa19d73f-ab3a-48c1-b196-9a1f18e5280e</FeedID>
-                              </RequestParameters>
-                         </Head>
-                         <Body>
-                              <FeedDetail>
-                                   <Feed>aa19d73f-ab3a-48c1-b196-9a1f18e5280e</Feed>
-                                   <Status>Finished</Status>
-                                   <Action>ProductUpdate</Action>
-                                   <CreationDate>2018-12-17 13:46:25</CreationDate>
-                                   <UpdatedDate>2018-12-17 13:50:43</UpdatedDate>
-                                   <Source>api</Source>
-                                   <TotalRecords>1232</TotalRecords>
-                                   <ProcessedRecords>1190</ProcessedRecords>
-                                   <FailedRecords>114</FailedRecords>
-                                   <FeedErrors>
-                                        <Error>
-                                             <Code>1</Code>
-                                             <Message>Negative value is not allowed</Message>
-                                             <SellerSku>9786077351993</SellerSku>
-                                        </Error>
-                                        <Error>
-                                             <Code>1</Code>
-                                             <Message>Seller SKU \'9788441418011\' not found</Message>
-                                             <SellerSku>9788441418011</SellerSku>
-                                        </Error>
-                                        <Error>
-                                             <Code>1</Code>
-                                             <Message>Seller SKU \'9788498455984\' not found</Message>
-                                             <SellerSku>9788498455984</SellerSku>
-                                        </Error>
-                                   </FeedErrors>
-                              </FeedDetail>
-                         </Body>
-                    </SuccessResponse>',
-            ],
-            [
-                'ProductCreate' => '<?xml version="1.0" encoding="UTF-8"?>
-                    <SuccessResponse>
-                         <Head>
-                              <RequestId/>
-                              <RequestAction>FeedStatus</RequestAction>
-                              <ResponseType>FeedDetail</ResponseType>
-                              <Timestamp>2018-12-18T07:55:07-0600</Timestamp>
-                              <RequestParameters>
-                                   <FeedID>aa19d73f-ab3a-48c1-b196-9a1f18e5280e</FeedID>
-                              </RequestParameters>
-                         </Head>
-                         <Body>
-                              <FeedDetail>
-                                   <Feed>aa19d73f-ab3a-48c1-b196-9a1f18e5280e</Feed>
-                                   <Status>Finished</Status>
-                                   <Action>ProductCreate</Action>
-                                   <CreationDate>2018-12-17 13:46:25</CreationDate>
-                                   <UpdatedDate>2018-12-17 13:50:43</UpdatedDate>
-                                   <Source>api</Source>
-                                   <TotalRecords>1232</TotalRecords>
-                                   <ProcessedRecords>1190</ProcessedRecords>
-                                   <FailedRecords>114</FailedRecords>
-                                   <FeedErrors>
-                                        <Error>
-                                             <Code>0</Code>
-                                             <Message>SellerSku cannot be empty</Message>
-                                             <SellerSku/>
-                                        </Error>
-                                   </FeedErrors>
-                              </FeedDetail>
-                         </Body>
-                    </SuccessResponse>',
-            ],
+            ['productUpdate' => $feedManager->getSchema('Feed/FeedProductUpdate.xml')],
+            ['ProductCreate' => $feedManager->getSchema('Feed/FeedProductCreate.xml')],
         ];
     }
 
@@ -109,13 +34,13 @@ class FeedManagerProvider
 
     private function pendingFeed(): stdClass
     {
-        $linioTestCase = new LinioTestCase();
+        $feedManager = new FeedManagerTest();
         $feedData = new stdClass();
-        $feedData->id = $linioTestCase->getFaker()->uuid;
+        $feedData->id = $feedManager->getFaker()->uuid;
         $feedData->status = 'Queued';
         $feedData->action = 'ProductUpdate';
-        $feedData->creationDate = $linioTestCase->getFaker()->dateTime()->format('Y-m-d H:i:s');
-        $feedData->updatedDate = $linioTestCase->getFaker()->dateTime()->format('Y-m-d H:i:s');
+        $feedData->creationDate = $feedManager->getFaker()->dateTime()->format('Y-m-d H:i:s');
+        $feedData->updatedDate = $feedManager->getFaker()->dateTime()->format('Y-m-d H:i:s');
         $feedData->source = 'api';
         $feedData->totalRecords = random_int(0, 100000);
         $feedData->processedRecords = 0;
