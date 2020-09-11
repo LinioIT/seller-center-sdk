@@ -108,13 +108,13 @@ class SellerCenterSdk
      */
     public function setClient($client): void
     {
-        if (is_subclass_of($client, GuzzleClientAdapter::GUZZLE_CLASS)) {
-            $this->client = new GuzzleClientAdapter($client);
+        if (is_subclass_of($client, \Psr\Http\Client\ClientInterface::class)) {
+            $this->client = new PsrClientAdapter($client);
 
             return;
         }
 
-        $this->client = new PsrClientAdapter($client);
+        $this->client = new GuzzleClientAdapter($client);
     }
 
     public function brands(): BrandManager
