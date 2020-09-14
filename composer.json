@@ -56,7 +56,8 @@
                 "tests/",
                 "tests/Functional",
                 "tests/Integration",
-                "tests/Unit"
+                "tests/Unit",
+                "tests/Providers"
             ]
         }
     },
