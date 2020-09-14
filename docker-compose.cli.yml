@@ -13,6 +13,7 @@ services:
     init: true
     volumes:
       - .:/application
+      - ./docker/php.ini:/usr/local/etc/php/conf.d/php.ini
     entrypoint: composer
 
   phpunit:
@@ -27,5 +28,6 @@ services:
     init: true
     volumes:
       - .:/application
+      - ./docker/php.ini:/usr/local/etc/php/conf.d/php.ini
     environment:
       LINIO_ENV: local
