@@ -22,11 +22,11 @@ class GuzzleClientAdapter implements ClientInterface
      */
     public function __construct($client)
     {
-        $guzzleVersion = $this->getGuzzleVersion($client);
+        // $guzzleVersion = $this->getGuzzleVersion($client);
 
-        if ($guzzleVersion !== '6') {
-            throw new Exception('Linio\'s SDK supports Guzzle v6 or greater');
-        }
+        // if ($guzzleVersion !== '6') {
+        //     throw new Exception('Linio\'s SDK supports Guzzle v6 or greater');
+        // }
 
         $this->client = $client;
     }

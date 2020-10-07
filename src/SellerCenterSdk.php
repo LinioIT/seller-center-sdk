@@ -97,10 +97,11 @@ class SellerCenterSdk
         $client = null,
         ?LoggerInterface $logger = null
     ) {
+        $client = $client ? $client : HttpClientDiscovery::find();
         $this->configuration = $configuration;
         $this->logger = $logger ?? new NullLogger();
         $this->parameters = Parameters::fromBasics($configuration->getUser(), $configuration->getVersion());
-        $this->setClient($client ?? HttpClientDiscovery::find());
+        $this->setClient($client);
     }
 
     /**
@@ -108,13 +109,13 @@ class SellerCenterSdk
      */
     public function setClient($client): void
     {
-        if (is_subclass_of($client, \Psr\Http\Client\ClientInterface::class)) {
-            $this->client = new PsrClientAdapter($client);
+        if (is_subclass_of($client, \GuzzleHttp\ClientInterface::class)) {
+            $this->client = new GuzzleClientAdapter($client);
 
             return;
         }
 
-        $this->client = new GuzzleClientAdapter($client);
+        $this->client = new PsrClientAdapter($client);
     }
 
     public function brands(): BrandManager

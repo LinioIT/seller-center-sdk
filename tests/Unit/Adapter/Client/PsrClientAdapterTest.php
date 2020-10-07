@@ -4,8 +4,8 @@ declare(strict_types=1);
 
 namespace Linio\SellerCenter\Adapter\Client;
 
-use GuzzleHttp\Psr7\Uri;
 use Linio\SellerCenter\LinioTestCase;
+use Nyholm\Psr7\Uri;
 use Prophecy\Argument;
 use Prophecy\Prophecy\ObjectProphecy;
 use Psr\Http\Client\ClientInterface;
