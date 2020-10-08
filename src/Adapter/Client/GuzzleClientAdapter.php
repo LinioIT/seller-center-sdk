@@ -12,6 +12,8 @@ use Psr\Http\Message\ResponseInterface;
 class GuzzleClientAdapter implements ClientInterface
 {
     public const GUZZLE_CLASS = '\GuzzleHttp\ClientInterface';
+    public const GUZZLE_SUPPORTED_VERSION = 6;
+
     /**
      * @var \GuzzleHttp\ClientInterface
      */
@@ -22,11 +24,11 @@ class GuzzleClientAdapter implements ClientInterface
      */
     public function __construct($client)
     {
-        // $guzzleVersion = $this->getGuzzleVersion($client);
+        $guzzleVersion = $this->getGuzzleVersion($client);
 
-        // if ($guzzleVersion !== '6') {
-        //     throw new Exception('Linio\'s SDK supports Guzzle v6 or greater');
-        // }
+        if ($guzzleVersion < self::GUZZLE_SUPPORTED_VERSION) {
+            throw new Exception('Linio\'s SDK supports Guzzle v6 or greater');
+        }
 
         $this->client = $client;
     }
@@ -44,20 +46,18 @@ class GuzzleClientAdapter implements ClientInterface
     /**
      * @param \GuzzleHttp\ClientInterface $client
      */
-    private function getGuzzleVersion($client): string
+    public function getGuzzleVersion($client): int
     {
         $guzzleClass = self::GUZZLE_CLASS;
 
         if (!is_subclass_of($client, $guzzleClass)) {
-            return '';
+            return 0;
         }
 
         if (!defined(sprintf('%s::VERSION', $guzzleClass))) {
-            // @codeCoverageIgnoreStart
-            return '';
-            // @codeCoverageIgnoreEnd
+            return 7;
         }
 
-        return substr($guzzleClass::VERSION, 0, 1);
+        return (int) substr($guzzleClass::VERSION, 0, 1);
     }
 }

@@ -41,7 +41,7 @@ class PsrClientAdapter implements ClientInterface
             return $endpoint;
         }
 
-        $uriFactory = Psr17FactoryDiscovery::findUrlFactory();
+        $uriFactory = Psr17FactoryDiscovery::findUriFactory();
         $uriWithQueryString = sprintf('%s?%s', (string) $endpoint, http_build_query($query));
 
         return $uriFactory->createUri($uriWithQueryString);
