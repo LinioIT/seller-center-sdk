@@ -42,6 +42,10 @@
         "phpunit/phpunit": "^7.5",
         "symfony/var-dumper": "^4.4"
     },
+    "suggest" : {
+        "php-http/guzzle5-adapter": "~2.0 || To use Guzzle client v5. See more: https://github.com/LinioIT/seller-center-sdk/tree/master#quick-start",
+        "php-http/guzzle6-adapter": "~2.0 || To use Guzzle client v6. See more: https://github.com/LinioIT/seller-center-sdk/tree/master#quick-start"
+    },
     "config": {
         "preferred-install": {
             "*": "dist"
