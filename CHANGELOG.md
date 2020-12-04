@@ -13,6 +13,14 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Fixed
 
+## [1.0.0] - 2020-12-04
+
+### Added
+
+### Changed
+* Remove guzzle as dependency and start using PHP standards interfaces (https://www.php-fig.org/psr/) keeping the compatibility with Guzzle 6 to not breaking current SDK implementations.  
+### Fixed
+
 ## [0.4.0] - 2020-08-31
 
 ### Added
@@ -88,7 +96,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 Initial Release
 
-[Unreleased]: https://github.com/LinioIT/seller-center-sdk/compare/v0.4.0...HEAD
+[Unreleased]: https://github.com/LinioIT/seller-center-sdk/compare/v1.0.0...HEAD
+[1.0.0]: https://github.com/LinioIT/seller-center-sdk/releases/tag/v1.0.0
 [0.4.0]: https://github.com/LinioIT/seller-center-sdk/releases/tag/v0.4.0
 [0.3.0]: https://github.com/LinioIT/seller-center-sdk/releases/tag/v0.3.0
 [0.2.1]: https://github.com/LinioIT/seller-center-sdk/releases/tag/v0.2.1
