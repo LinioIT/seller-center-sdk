@@ -4,12 +4,12 @@ declare(strict_types=1);
 
 namespace Linio\SellerCenter\Service;
 
-use GuzzleHttp\ClientInterface;
-use GuzzleHttp\Psr7\Request;
 use Linio\Component\Util\Json;
 use Linio\SellerCenter\Application\Configuration;
 use Linio\SellerCenter\Application\Parameters;
 use Linio\SellerCenter\Application\Security\Signature;
+use Linio\SellerCenter\Contract\ClientInterface;
+use Linio\SellerCenter\Factory\RequestFactory;
 use Linio\SellerCenter\Factory\Xml\Document\DocumentFactory;
 use Linio\SellerCenter\Formatter\LogMessageFormatter;
 use Linio\SellerCenter\Model\Document\Document;
@@ -66,7 +66,7 @@ class DocumentManager
 
         $requestId = uniqid((string) mt_rand());
 
-        $request = new Request('GET', $this->configuration->getEndpoint(), [
+        $request = RequestFactory::make('GET', $this->configuration->getEndpoint(), [
             'Request-ID' => $requestId,
         ]);
 

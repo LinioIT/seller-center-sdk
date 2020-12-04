@@ -4,14 +4,14 @@ declare(strict_types=1);
 
 namespace Linio\SellerCenter\Service;
 
-use GuzzleHttp\ClientInterface;
-use GuzzleHttp\Psr7\Request;
 use Linio\Component\Util\Json;
 use Linio\SellerCenter\Application\Configuration;
 use Linio\SellerCenter\Application\Parameters;
 use Linio\SellerCenter\Application\Security\Signature;
+use Linio\SellerCenter\Contract\ClientInterface;
 use Linio\SellerCenter\Exception\EmptyArgumentException;
 use Linio\SellerCenter\Exception\InvalidUrlException;
+use Linio\SellerCenter\Factory\RequestFactory;
 use Linio\SellerCenter\Factory\Xml\Webhook\EventsFactory;
 use Linio\SellerCenter\Factory\Xml\Webhook\WebhooksFactory;
 use Linio\SellerCenter\Formatter\LogMessageFormatter;
@@ -75,7 +75,7 @@ class WebhookManager
 
         $requestId = uniqid((string) mt_rand());
 
-        $request = new Request('POST', $this->configuration->getEndpoint(), [
+        $request = RequestFactory::make('POST', $this->configuration->getEndpoint(), [
             'Content-type' => 'text/xml; charset=UTF8',
             'Request-ID' => $requestId,
         ], $xml);
@@ -146,7 +146,7 @@ class WebhookManager
 
         $requestId = uniqid((string) mt_rand());
 
-        $request = new Request('POST', $this->configuration->getEndpoint(), [
+        $request = RequestFactory::make('POST', $this->configuration->getEndpoint(), [
             'Content-type' => 'text/xml; charset=UTF8',
             'Request-ID' => $requestId,
         ], $xml);
@@ -205,7 +205,7 @@ class WebhookManager
 
         $requestId = uniqid((string) mt_rand());
 
-        $request = new Request('GET', $this->configuration->getEndpoint(), [
+        $request = RequestFactory::make('GET', $this->configuration->getEndpoint(), [
             'Request-ID' => $requestId,
         ]);
 
@@ -296,7 +296,7 @@ class WebhookManager
 
         $requestId = uniqid((string) mt_rand());
 
-        $request = new Request('GET', $this->configuration->getEndpoint(), [
+        $request = RequestFactory::make('GET', $this->configuration->getEndpoint(), [
             'Request-ID' => $requestId,
         ]);
 

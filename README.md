@@ -39,16 +39,35 @@ $configuration = new \Linio\SellerCenter\Application\Configuration('api-key-prov
 
 ### Accessing the functionalities
 
-All the interaction with the platform will be guided through the SDK class **SellerCenterSdk**.  To create it you need to provide a specific configuration and an *HTTP Client*. 
+All the interaction with the platform will be guided through the SDK class **SellerCenterSdk**.  To create it you need to provide a specific configuration and optionally a *HTTP Client*. 
+> Note: We support HTTP Client for Guzzle v6 higher or any PSR7 HTTP Client. 
+>* If you want to use Guzzle v5 you MUST install as dependency `php-http/guzzle5-adapter` And You MUST NOT pass a client into constructor.
+>* For Guzzle v6 take it in consideration.
+>   * If you are using Guzzle v6 and passing a client into constructor you don't need any dependency. 
+>   * If you are using Guzzle v6 and not passing a client into constructor you will need a `php-http/guzzle6-adapter` dependency. 
 
+#### Client use case.
 ```php
-$client = new \GuzzleHttp\Client();
+$client = new Client(); // Guzzle >= v6 only or a PSR7 HTTP Client
 
 $configuration = new \Linio\SellerCenter\Application\Configuration('api-key-provided', 'api-username-provided', 'https://enviroment-seller-center-api.com', '1.0');
 
 $sdk = new \Linio\SellerCenter\SellerCenterSdk($configuration, $client);
 ```
 
+#### Without Client or Guzzle v5 use case.
+>Note:
+>* case Guzzle v5
+>   * ```$ composer require php-http/guzzle5-adapter```
+>* case Guzzle v6
+>   * ```$ composer require php-http/guzzle6-adapter```
+>* For PSR7 HTTP Client no further more dependency is required.
+
+```php
+$configuration = new \Linio\SellerCenter\Application\Configuration('api-key-provided', 'api-username-provided', 'https://enviroment-seller-center-api.com', '1.0');
+
+$sdk = new \Linio\SellerCenter\SellerCenterSdk($configuration);
+```
 One you have the SDK instance you can access to all the functionalities group in a series of managers.
 
 ```php

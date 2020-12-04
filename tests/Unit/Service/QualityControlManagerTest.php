@@ -4,9 +4,9 @@ declare(strict_types=1);
 
 namespace Linio\SellerCenter\Unit\Service;
 
-use GuzzleHttp\Client;
 use Linio\SellerCenter\Application\Configuration;
 use Linio\SellerCenter\Application\Parameters;
+use Linio\SellerCenter\Contract\ClientInterface;
 use Linio\SellerCenter\LinioTestCase;
 use Linio\SellerCenter\Service\QualityControlManager;
 use Psr\Log\Test\TestLogger;
@@ -18,7 +18,7 @@ class QualityControlManagerTest extends LinioTestCase
     public function testItReturnsTheTheLoggerWhenIsSet(): void
     {
         $configuration = $this->prophesize(Configuration::class);
-        $client = $this->prophesize(Client::class);
+        $client = $this->prophesize(ClientInterface::class);
         $logger = $this->prophesize(TestLogger::class);
         $parameters = $this->prophesize(Parameters::class);
 
@@ -44,7 +44,7 @@ class QualityControlManagerTest extends LinioTestCase
         $method->setAccessible(true);
 
         $configuration = $this->prophesize(Configuration::class);
-        $client = $this->prophesize(Client::class);
+        $client = $this->prophesize(ClientInterface::class);
         $logger = $this->prophesize(TestLogger::class);
         $parameters = $this->prophesize(Parameters::class);
 

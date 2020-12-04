@@ -4,11 +4,11 @@ declare(strict_types=1);
 
 namespace Linio\SellerCenter\Service;
 
-use GuzzleHttp\ClientInterface;
-use GuzzleHttp\Psr7\Request;
 use Linio\SellerCenter\Application\Configuration;
 use Linio\SellerCenter\Application\Parameters;
 use Linio\SellerCenter\Application\Security\Signature;
+use Linio\SellerCenter\Contract\ClientInterface;
+use Linio\SellerCenter\Factory\RequestFactory;
 use Linio\SellerCenter\Factory\Xml\Shipment\ShipmentProvidersFactory;
 use Linio\SellerCenter\Formatter\LogMessageFormatter;
 use Linio\SellerCenter\Response\HandleResponse;
@@ -60,7 +60,7 @@ class ShipmentManager
 
         $requestId = uniqid((string) mt_rand());
 
-        $request = new Request('GET', $this->configuration->getEndpoint(), [
+        $request = RequestFactory::make('GET', $this->configuration->getEndpoint(), [
             'Request-ID' => $requestId,
         ]);
 

@@ -5,8 +5,8 @@ declare(strict_types=1);
 namespace Linio\SellerCenter\Service;
 
 use DateTimeInterface;
-use GuzzleHttp\Psr7\Request;
 use Linio\SellerCenter\Application\Security\Signature;
+use Linio\SellerCenter\Factory\RequestFactory;
 use Linio\SellerCenter\Factory\Xml\Feed\FeedCountFactory;
 use Linio\SellerCenter\Factory\Xml\Feed\FeedFactory;
 use Linio\SellerCenter\Factory\Xml\Feed\FeedsFactory;
@@ -38,7 +38,7 @@ class FeedManager extends BaseManager
 
         $requestId = uniqid((string) mt_rand());
 
-        $request = new Request('GET', $this->configuration->getEndpoint(), [
+        $request = RequestFactory::make('GET', $this->configuration->getEndpoint(), [
             'Request-ID' => $requestId,
         ]);
 
@@ -103,7 +103,7 @@ class FeedManager extends BaseManager
 
         $requestId = uniqid((string) mt_rand());
 
-        $request = new Request('GET', $this->configuration->getEndpoint(), [
+        $request = RequestFactory::make('GET', $this->configuration->getEndpoint(), [
             'Request-ID' => $requestId,
         ]);
 
@@ -228,7 +228,7 @@ class FeedManager extends BaseManager
             'Signature' => Signature::generate($parameters, $this->configuration->getKey())->get(),
         ]);
 
-        $request = new Request('GET', $this->configuration->getEndpoint(), [
+        $request = RequestFactory::make('GET', $this->configuration->getEndpoint(), [
             'Request-ID' => $requestId,
         ]);
 

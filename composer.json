@@ -26,18 +26,25 @@
         "php": "^7.1",
         "ext-json": "*",
         "ext-simplexml": "*",
-        "guzzlehttp/guzzle": "^6.3",
         "linio/util": "^2.2|^3.0",
+        "nyholm/psr7": "^1.3",
+        "php-http/discovery": "^1.12",
+        "php-http/httplug": "^2.2",
         "psr/log": "^1.1"
     },
     "require-dev": {
         "friendsofphp/php-cs-fixer": "^2.16",
         "fzaninotto/faker": "^1.8",
         "infection/infection": "^0.13.6",
+        "php-http/guzzle6-adapter": "^2.0",
         "phpspec/prophecy": "^1.8",
         "phpstan/phpstan": "^0.11.15",
         "phpunit/phpunit": "^7.5",
         "symfony/var-dumper": "^4.4"
+    },
+    "suggest" : {
+        "php-http/guzzle5-adapter": "~2.0 || To use Guzzle client v5. See more: https://github.com/LinioIT/seller-center-sdk/tree/master#quick-start",
+        "php-http/guzzle6-adapter": "~2.0 || To use Guzzle client v6. See more: https://github.com/LinioIT/seller-center-sdk/tree/master#quick-start"
     },
     "config": {
         "preferred-install": {

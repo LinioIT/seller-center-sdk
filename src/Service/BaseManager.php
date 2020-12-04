@@ -4,11 +4,11 @@ declare(strict_types=1);
 
 namespace Linio\SellerCenter\Service;
 
-use GuzzleHttp\ClientInterface;
-use GuzzleHttp\Psr7\Request;
 use Linio\SellerCenter\Application\Configuration;
 use Linio\SellerCenter\Application\Parameters;
 use Linio\SellerCenter\Application\Security\Signature;
+use Linio\SellerCenter\Contract\ClientInterface;
+use Linio\SellerCenter\Factory\RequestFactory;
 use Linio\SellerCenter\Formatter\LogMessageFormatter;
 use Linio\SellerCenter\Response\HandleResponse;
 use Linio\SellerCenter\Response\SuccessResponse;
@@ -72,7 +72,7 @@ class BaseManager
         string $requestId,
         string $httpMethod = 'GET'
     ): SuccessResponse {
-        $request = new Request($httpMethod, $this->configuration->getEndpoint(), [
+        $request = RequestFactory::make($httpMethod, $this->configuration->getEndpoint(), [
             'Request-ID' => $requestId,
         ]);
 
