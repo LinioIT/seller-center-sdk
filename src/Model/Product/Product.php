@@ -162,7 +162,7 @@ class Product implements JsonSerializable
         }
 
         if (empty($description)) {
-            throw  new EmptyArgumentException('Description');
+            throw new EmptyArgumentException('Description');
         }
 
         if ($price <= 0) {
