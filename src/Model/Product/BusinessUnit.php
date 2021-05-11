@@ -171,7 +171,7 @@ class BusinessUnit implements JsonSerializable
 
     public function setSalePrice(?float $specialPrice): void
     {
-        if ($specialPrice < 0 && $specialPrice > $this->price) {
+        if ($specialPrice < 0 || $specialPrice > $this->price) {
             throw new InvalidDomainException('SpecialPrice');
         }
         $this->specialPrice = $specialPrice;

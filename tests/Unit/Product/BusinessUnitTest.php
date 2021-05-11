@@ -37,6 +37,8 @@ class BusinessUnitTest extends TestCase
         $this->assertEquals($businessUnit->getStock(), $this->stock);
         $this->assertEquals($businessUnit->getStatus(), $this->status);
         $this->assertEquals($businessUnit->getIsPublished(), $this->isPublished);
+        $this->assertEquals($businessUnit->getSaleStartDateString(), null);
+        $this->assertEquals($businessUnit->getSaleEndDateString(), null);
     }
 
     public function testItCreatesABusinessUnitWithMandatoryAndOptionalParameters(): void
@@ -138,6 +140,22 @@ class BusinessUnitTest extends TestCase
             $this->status,
             $this->isPublished,
             'Another Ecommerce'
+        );
+    }
+
+    public function testItThrowsExceptionWhenSpecialPriceIsIncorrect(): void
+    {
+        $this->expectException(InvalidDomainException::class);
+        $this->expectExceptionMessage('The parameter SpecialPrice is invalid.');
+
+        $businessUnit = new BusinessUnit(
+            $this->operatorCode,
+            $this->price,
+            $this->stock,
+            $this->status,
+            $this->isPublished,
+            'Falabella',
+            -1000
         );
     }
 }
