@@ -123,11 +123,11 @@ class BusinessUnit implements JsonSerializable
 
     public function getSaleEndDateString(): ?string
     {
-        if (empty($this->saleEndDate)) {
+        if (empty($this->specialToDate)) {
             return null;
         }
 
-        return $this->saleEndDate->format('Y-m-d H:i:s');
+        return $this->specialToDate->format('Y-m-d H:i:s');
     }
 
     public function getStock(): int
