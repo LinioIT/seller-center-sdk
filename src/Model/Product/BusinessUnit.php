@@ -212,12 +212,12 @@ class BusinessUnit implements JsonSerializable
     public function jsonSerialize(): stdClass
     {
         $serialized = new stdClass();
-        $serialized->businessUnit = $this->businessUnit;
+        $serialized->businessUnit = $this->businessUnit ?? '';
         $serialized->operatorCode = $this->operatorCode;
         $serialized->price = $this->price;
-        $serialized->specialPrice = $this->specialPrice;
-        $serialized->specialFromDate = $this->specialFromDate;
-        $serialized->specialToDate = $this->specialToDate;
+        $serialized->specialPrice = $this->specialPrice ?? '';
+        $serialized->specialFromDate = $this->specialFromDate ?? '';
+        $serialized->specialToDate = $this->specialToDate ?? '';
         $serialized->stock = $this->stock;
         $serialized->status = $this->status;
         $serialized->isPublished = $this->isPublished;
