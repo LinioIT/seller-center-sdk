@@ -21,6 +21,7 @@ services:
     init: true
     volumes:
       - .:/application
+      - ./docker/php.ini:/usr/local/etc/php/conf.d/php.ini
     entrypoint: vendor/bin/phpunit
 
   php:
