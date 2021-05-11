@@ -66,6 +66,8 @@ class BusinessUnitTest extends TestCase
         $this->assertEquals($businessUnit->getSalePrice(), $this->specialPrice);
         $this->assertEquals($businessUnit->getSaleStartDate(), $this->specialFromDate);
         $this->assertEquals($businessUnit->getSaleEndDate(), $this->specialToDate);
+        $this->assertEquals($businessUnit->getSaleStartDateString(), $this->specialFromDate->format('Y-m-d H:i:s'));
+        $this->assertEquals($businessUnit->getSaleEndDateString(), $this->specialToDate->format('Y-m-d H:i:s'));
     }
 
     public function testItThrowsExceptionWhenOperatorCodeIsIncorrect(): void
