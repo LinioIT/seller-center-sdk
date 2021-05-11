@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace Linio\SellerCenter\Unit\Product;
 
 use DateTimeImmutable;
+use Linio\Component\Util\Json;
 use Linio\SellerCenter\Exception\InvalidDomainException;
 use Linio\SellerCenter\Model\Product\BusinessUnit;
 use PHPStan\Testing\TestCase;
@@ -157,5 +158,27 @@ class BusinessUnitTest extends TestCase
             'Falabella',
             -1000
         );
+    }
+
+    public function testItReturnsAJsonRepresentation(): void
+    {
+        $businessUnit = new BusinessUnit(
+            $this->operatorCode,
+            $this->price,
+            $this->stock,
+            $this->status,
+            $this->isPublished
+        );
+
+        $expectedJson = sprintf(
+            '{"businessUnit":"","operatorCode":"%s","price":%f,"specialPrice":"","specialFromDate":"","specialToDate":"","stock":%d,"status":"%s","isPublished":%d}',
+            $this->operatorCode,
+            $this->price,
+            $this->stock,
+            $this->status,
+            $this->isPublished
+        );
+
+        $this->assertJsonStringEqualsJsonString($expectedJson, Json::encode($businessUnit));
     }
 }
