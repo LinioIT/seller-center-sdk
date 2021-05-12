@@ -12,14 +12,49 @@ use PHPStan\Testing\TestCase;
 
 class BusinessUnitTest extends TestCase
 {
+    /**
+     * @var string|null
+     */
     protected $businessUnit = 'Falabella';
+
+    /**
+     * @var string
+     */
     protected $operatorCode = 'facl';
+
+    /**
+     * @var float
+     */
     protected $price = 12990.00;
+
+    /**
+     * @var float|null
+     */
     protected $specialPrice = 12000.00;
+
+    /**
+     * @var DateTimeInterface|null
+     */
     protected $specialFromDate;
+
+    /**
+     * @var DateTimeInterface|null
+     */
     protected $specialToDate;
+
+    /**
+     * @var int
+     */
     protected $stock = 4;
+
+    /**
+     * @var string
+     */
     protected $status = 'active';
+
+    /**
+     * @var int
+     */
     protected $isPublished = 1;
 
     public function testItCreatesABusinessUnitWithMandatoryParameters(): void
