@@ -9,11 +9,11 @@ use Linio\Component\Util\Json;
 use Linio\SellerCenter\Exception\InvalidDomainException;
 use Linio\SellerCenter\Exception\InvalidXmlStructureException;
 use Linio\SellerCenter\Factory\Xml\Product\BusinessUnitFactory;
+use Linio\SellerCenter\LinioTestCase;
 use Linio\SellerCenter\Model\Product\BusinessUnit;
-use PHPStan\Testing\TestCase;
 use SimpleXMLElement;
 
-class BusinessUnitTest extends TestCase
+class BusinessUnitTest extends LinioTestCase
 {
     /**
      * @var string|null
@@ -116,17 +116,7 @@ class BusinessUnitTest extends TestCase
         $this->specialFromDate = DateTimeImmutable::createFromFormat(DATE_ATOM, '2021-5-10T14:54:23+00:00');
         $this->specialToDate = DateTimeImmutable::createFromFormat(DATE_ATOM, '2021-5-20T14:54:23+00:00');
         $xml = sprintf(
-            '<BusinessUnit>
-            <BusinessUnit>%s</BusinessUnit>
-            <OperatorCode>%s</OperatorCode>
-            <Price>%f</Price>
-            <SpecialPrice>%f</SpecialPrice>
-            <SpecialFromDate>%s</SpecialFromDate>
-            <SpecialToDate>%s</SpecialToDate>
-            <Stock>%d</Stock>
-            <Status>%s</Status>
-            <IsPublished>%d</IsPublished>
-          </BusinessUnit>',
+            $this->getSchema('Product/BusinessUnit.xml'),
             $this->businessUnit,
             $this->operatorCode,
             $this->price,
@@ -266,105 +256,40 @@ class BusinessUnitTest extends TestCase
     public function testItThrowsAExceptionWithoutAOperatorCodeInTheXml(): void
     {
         $this->expectException(InvalidXmlStructureException::class);
-
         $this->expectExceptionMessage('The xml structure is not valid for a BusinessUnit. The property OperatorCode should exist');
 
-        $xml = '
-          <BusinessUnit>
-            <BusinessUnit>Falabella</BusinessUnit>
-            <Price>1500.00</Price>
-            <SpecialPrice>1200.00</SpecialPrice>
-            <SpecialFromDate>2020-12-01 00:00:00</SpecialFromDate>
-            <SpecialToDate>2020-12-30 00:00:00</SpecialToDate>
-            <Stock>15</Stock>
-            <Status>active</Status>
-            <IsPublished>0</IsPublished>
-          </BusinessUnit>';
-
-        BusinessUnitFactory::make(new SimpleXMLElement($xml));
+        BusinessUnitFactory::make(new SimpleXMLElement($this->getSchema('Product/BusinessUnitWithoutOperatorCode.xml')));
     }
 
     public function testItThrowsAExceptionWithoutAPriceInTheXml(): void
     {
         $this->expectException(InvalidXmlStructureException::class);
-
         $this->expectExceptionMessage('The xml structure is not valid for a BusinessUnit. The property Price should exist');
 
-        $xml = '
-          <BusinessUnit>
-            <BusinessUnit>Falabella</BusinessUnit>
-            <OperatorCode>facl</OperatorCode>
-            <SpecialPrice>1200.00</SpecialPrice>
-            <SpecialFromDate>2020-12-01 00:00:00</SpecialFromDate>
-            <SpecialToDate>2020-12-30 00:00:00</SpecialToDate>
-            <Stock>15</Stock>
-            <Status>active</Status>
-            <IsPublished>0</IsPublished>
-          </BusinessUnit>';
-
-        BusinessUnitFactory::make(new SimpleXMLElement($xml));
+        BusinessUnitFactory::make(new SimpleXMLElement($this->getSchema('Product/BusinessUnitWithoutPrice.xml')));
     }
 
     public function testItThrowsAExceptionWithoutAStockInTheXml(): void
     {
         $this->expectException(InvalidXmlStructureException::class);
-
         $this->expectExceptionMessage('The xml structure is not valid for a BusinessUnit. The property Stock should exist');
 
-        $xml = '
-          <BusinessUnit>
-            <BusinessUnit>Falabella</BusinessUnit>
-            <OperatorCode>facl</OperatorCode>
-            <Price>1500.00</Price>
-            <SpecialPrice>1200.00</SpecialPrice>
-            <SpecialFromDate>2020-12-01 00:00:00</SpecialFromDate>
-            <SpecialToDate>2020-12-30 00:00:00</SpecialToDate>
-            <Status>active</Status>
-            <IsPublished>0</IsPublished>
-          </BusinessUnit>';
-
-        BusinessUnitFactory::make(new SimpleXMLElement($xml));
+        BusinessUnitFactory::make(new SimpleXMLElement($this->getSchema('Product/BusinessUnitWithoutStock.xml')));
     }
 
     public function testItThrowsAExceptionWithoutAStatusInTheXml(): void
     {
         $this->expectException(InvalidXmlStructureException::class);
-
         $this->expectExceptionMessage('The xml structure is not valid for a BusinessUnit. The property Status should exist');
 
-        $xml = '
-          <BusinessUnit>
-            <BusinessUnit>Falabella</BusinessUnit>
-            <OperatorCode>facl</OperatorCode>
-            <Price>1500.00</Price>
-            <SpecialPrice>1200.00</SpecialPrice>
-            <SpecialFromDate>2020-12-01 00:00:00</SpecialFromDate>
-            <SpecialToDate>2020-12-30 00:00:00</SpecialToDate>
-            <Stock>15</Stock>
-            <IsPublished>0</IsPublished>
-          </BusinessUnit>';
-
-        BusinessUnitFactory::make(new SimpleXMLElement($xml));
+        BusinessUnitFactory::make(new SimpleXMLElement($this->getSchema('Product/BusinessUnitWithoutStatus.xml')));
     }
 
     public function testItThrowsAExceptionWithoutAIsPublishedInTheXml(): void
     {
         $this->expectException(InvalidXmlStructureException::class);
-
         $this->expectExceptionMessage('The xml structure is not valid for a BusinessUnit. The property IsPublished should exist');
 
-        $xml = '
-          <BusinessUnit>
-            <BusinessUnit>Falabella</BusinessUnit>
-            <OperatorCode>facl</OperatorCode>
-            <Price>1500.00</Price>
-            <SpecialPrice>1200.00</SpecialPrice>
-            <SpecialFromDate>2020-12-01 00:00:00</SpecialFromDate>
-            <SpecialToDate>2020-12-30 00:00:00</SpecialToDate>
-            <Stock>15</Stock>
-            <Status>active</Status>
-          </BusinessUnit>';
-
-        BusinessUnitFactory::make(new SimpleXMLElement($xml));
+        BusinessUnitFactory::make(new SimpleXMLElement($this->getSchema('Product/BusinessUnitWithoutIsPublished.xml')));
     }
 }
