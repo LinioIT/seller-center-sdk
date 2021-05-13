@@ -46,33 +46,7 @@ class BusinessUnitsTest extends LinioTestCase
 
     public function testCreatesABusinessUnitsFromAXml(): void
     {
-        $xml = simplexml_load_string(
-            '<Product>
-              <BusinessUnits>
-                <BusinessUnit>
-                  <BusinessUnit>Falabella</BusinessUnit>
-                  <OperatorCode>facl</OperatorCode>
-                  <Price>1500.00</Price>
-                  <SpecialPrice>1200.00</SpecialPrice>
-                  <SpecialFromDate>2020-12-01 00:00:00</SpecialFromDate>
-                  <SpecialToDate>2020-12-30 00:00:00</SpecialToDate>
-                  <Stock>15</Stock>
-                  <Status>active</Status>
-                  <IsPublished>0</IsPublished>
-                </BusinessUnit>
-                <BusinessUnit>
-                  <BusinessUnit>Linio</BusinessUnit>
-                  <OperatorCode>licl</OperatorCode>
-                  <Price>1500.00</Price>
-                  <SpecialPrice>1200.00</SpecialPrice>
-                  <SpecialFromDate>2020-12-01 00:00:00</SpecialFromDate>
-                  <SpecialToDate>2020-12-30 00:00:00</SpecialToDate>
-                  <Stock>15</Stock>
-                  <IsPublished>0</IsPublished>
-                </BusinessUnit>
-              </BusinessUnits>
-            </Product>'
-        );
+        $xml = simplexml_load_string($this->getSchema('Product/ProductWithOnlyBusinessUnits.xml'));
 
         $businessUnits = BusinessUnitsFactory::make($xml);
 
