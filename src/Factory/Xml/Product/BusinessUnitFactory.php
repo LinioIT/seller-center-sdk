@@ -49,10 +49,6 @@ class BusinessUnitFactory
             $businessUnit->setSalePrice((float) $element->SpecialPrice);
         }
 
-        if (!empty($element->SpecialPrice)) {
-            $businessUnit->setSalePrice((float) $element->SpecialPrice);
-        }
-
         if (!empty($element->SpecialFromDate)) {
             $saleStartDate = DateTimeImmutable::createFromFormat('Y-m-d H:i:s', (string) $element->SpecialFromDate);
 
