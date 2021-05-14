@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace Linio\SellerCenter\Product;
 
+use Linio\SellerCenter\Factory\Xml\Product\BusinessUnitsFactory;
 use Linio\SellerCenter\LinioTestCase;
 use Linio\SellerCenter\Model\Product\BusinessUnit;
 use Linio\SellerCenter\Model\Product\BusinessUnits;
@@ -41,6 +42,23 @@ class BusinessUnitsTest extends LinioTestCase
                 'Falabella'
             )
         );
+    }
+
+    public function testCreatesABusinessUnitsFromAXml(): void
+    {
+        $xml = simplexml_load_string($this->getSchema('Product/ProductWithOnlyBusinessUnits.xml'));
+
+        $businessUnits = BusinessUnitsFactory::make($xml);
+
+        $operatorCode = 'facl';
+
+        $businessUnit = $businessUnits->findByOperatorCode($operatorCode);
+
+        $xmlBusinessUnit = $xml->BusinessUnits->BusinessUnit[0];
+
+        $this->assertInstanceOf(BusinessUnits::class, $businessUnits);
+        $this->assertInstanceOf(BusinessUnit::class, $businessUnit);
+        $this->assertEquals($businessUnit->getOperatorCode(), (string) $xmlBusinessUnit->OperatorCode);
     }
 
     public function testItCreatesABusinessUnitsAndReturnsAnEmptyArray(): void
