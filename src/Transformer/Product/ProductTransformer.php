@@ -8,12 +8,13 @@ use Linio\SellerCenter\Exception\InvalidDomainException;
 use Linio\SellerCenter\Model\Brand\Brand;
 use Linio\SellerCenter\Model\Category\Categories;
 use Linio\SellerCenter\Model\Category\Category;
-use Linio\SellerCenter\Model\Product\Product;
+use Linio\SellerCenter\Model\Product\BaseProduct;
+use Linio\SellerCenter\Model\Product\GlobalProduct;
 use SimpleXMLElement;
 
 class ProductTransformer
 {
-    public static function asXml(SimpleXMLElement &$xml, Product $product): void
+    public static function asXml(SimpleXMLElement &$xml, BaseProduct $product): void
     {
         $body = $xml->addChild('Product');
         self::addAttributes($body, $product->all());
@@ -32,6 +33,21 @@ class ProductTransformer
             }
 
             $productData->addChild((string) $attributeKey, htmlspecialchars((string) $attributeValue));
+        }
+
+        if ($product instanceof GlobalProduct) {
+            $businessUnits = $product->getBusinessUnits()->all();
+
+            if (!empty($businessUnits)) {
+                $businessUnitsElement = $body->addChild('BusinessUnits');
+                foreach ($businessUnits as $aBusinessUnit) {
+                    $businessUnitElement = $businessUnitsElement->addChild('BusinessUnit');
+                    $businessUnitAttributes = $aBusinessUnit->getAllAttributes();
+                    foreach ($businessUnitAttributes as $attributeKey => $attributeValue) {
+                        $businessUnitElement->addChild((string) $attributeKey, htmlspecialchars((string) $attributeValue));
+                    }
+                }
+            }
         }
     }
 
@@ -98,13 +114,13 @@ class ProductTransformer
         return implode(',', $categoriesIds);
     }
 
-    public static function skuAsXml(SimpleXMLElement &$xml, Product $product): void
+    public static function skuAsXml(SimpleXMLElement &$xml, BaseProduct $product): void
     {
         $body = $xml->addChild('Product');
         $body->addChild('SellerSku', htmlspecialchars($product->getSellerSku()));
     }
 
-    public static function imagesAsXml(SimpleXMLElement $xml, Product $product): void
+    public static function imagesAsXml(SimpleXMLElement $xml, BaseProduct $product): void
     {
         $body = $xml->addChild('ProductImage');
 

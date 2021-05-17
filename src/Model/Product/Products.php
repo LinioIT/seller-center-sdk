@@ -9,11 +9,11 @@ use Linio\SellerCenter\Contract\CollectionInterface;
 class Products implements CollectionInterface
 {
     /**
-     * @var Product[]
+     * @var BaseProduct[]
      */
     protected $collection = [];
 
-    public function findBySellerSku(string $sellerSku): ?Product
+    public function findBySellerSku(string $sellerSku): ?BaseProduct
     {
         if (!key_exists($sellerSku, $this->collection)) {
             return null;
@@ -40,7 +40,7 @@ class Products implements CollectionInterface
         return $this->collection;
     }
 
-    public function add(Product $product): void
+    public function add(BaseProduct $product): void
     {
         $this->collection[$product->getSellerSku()] = $product;
     }
