@@ -241,55 +241,38 @@ class BusinessUnitTest extends LinioTestCase
             $this->isPublished
         );
 
-        $expectedJson = sprintf(
-            '{"businessUnit":"","operatorCode":"%s","price":%f,"specialPrice":"","specialFromDate":"","specialToDate":"","stock":%d,"status":"%s","isPublished":%d}',
-            $this->operatorCode,
-            $this->price,
-            $this->stock,
-            $this->status,
-            $this->isPublished
-        );
+        $expectedJson = Json::decode($this->getSchema('Product/BusinessUnit.json'));
 
-        $this->assertJsonStringEqualsJsonString($expectedJson, Json::encode($businessUnit));
+        $expectedJson['operatorCode'] = $this->operatorCode;
+        $expectedJson['price'] = $this->price;
+        $expectedJson['stock'] = $this->stock;
+        $expectedJson['status'] = $this->status;
+        $expectedJson['isPublished'] = $this->isPublished;
+
+        $this->assertJsonStringEqualsJsonString(Json::encode($expectedJson), Json::encode($businessUnit));
     }
 
-    public function testItThrowsAExceptionWithoutAOperatorCodeInTheXml(): void
-    {
+    /**
+     * @dataProvider invalidXmlStructure
+     */
+    public function testItThrowsAExceptionWithoutMandatoryParametersInTheXml(
+        string $property,
+        string $schema
+    ): void {
         $this->expectException(InvalidXmlStructureException::class);
-        $this->expectExceptionMessage('The xml structure is not valid for a BusinessUnit. The property OperatorCode should exist');
+        $this->expectExceptionMessage('The xml structure is not valid for a BusinessUnit. The property ' . $property . ' should exist');
 
-        BusinessUnitFactory::make(new SimpleXMLElement($this->getSchema('Product/BusinessUnitWithoutOperatorCode.xml')));
+        BusinessUnitFactory::make(new SimpleXMLElement($this->getSchema($schema)));
     }
 
-    public function testItThrowsAExceptionWithoutAPriceInTheXml(): void
+    public function invalidXmlStructure(): array
     {
-        $this->expectException(InvalidXmlStructureException::class);
-        $this->expectExceptionMessage('The xml structure is not valid for a BusinessUnit. The property Price should exist');
-
-        BusinessUnitFactory::make(new SimpleXMLElement($this->getSchema('Product/BusinessUnitWithoutPrice.xml')));
-    }
-
-    public function testItThrowsAExceptionWithoutAStockInTheXml(): void
-    {
-        $this->expectException(InvalidXmlStructureException::class);
-        $this->expectExceptionMessage('The xml structure is not valid for a BusinessUnit. The property Stock should exist');
-
-        BusinessUnitFactory::make(new SimpleXMLElement($this->getSchema('Product/BusinessUnitWithoutStock.xml')));
-    }
-
-    public function testItThrowsAExceptionWithoutAStatusInTheXml(): void
-    {
-        $this->expectException(InvalidXmlStructureException::class);
-        $this->expectExceptionMessage('The xml structure is not valid for a BusinessUnit. The property Status should exist');
-
-        BusinessUnitFactory::make(new SimpleXMLElement($this->getSchema('Product/BusinessUnitWithoutStatus.xml')));
-    }
-
-    public function testItThrowsAExceptionWithoutAIsPublishedInTheXml(): void
-    {
-        $this->expectException(InvalidXmlStructureException::class);
-        $this->expectExceptionMessage('The xml structure is not valid for a BusinessUnit. The property IsPublished should exist');
-
-        BusinessUnitFactory::make(new SimpleXMLElement($this->getSchema('Product/BusinessUnitWithoutIsPublished.xml')));
+        return [
+            ['IsPublished', 'Product/BusinessUnitWithoutIsPublished.xml'],
+            ['Status', 'Product/BusinessUnitWithoutStatus.xml'],
+            ['Stock', 'Product/BusinessUnitWithoutStock.xml'],
+            ['Price', 'Product/BusinessUnitWithoutPrice.xml'],
+            ['OperatorCode', 'Product/BusinessUnitWithoutOperatorCode.xml'],
+        ];
     }
 }
