@@ -191,7 +191,8 @@ class ProductTest extends LinioTestCase
             $this->price,
             $this->productId,
             $this->taxClass,
-            $this->productData
+            $this->productData,
+            $this->images
         );
 
         $product->setShopSku($this->shopSku);
@@ -205,7 +206,6 @@ class ProductTest extends LinioTestCase
         $product->setQuantity($this->quantity);
         $product->setAvailable($this->available);
         $product->setMainImage($this->mainImage);
-        $product->attachImages($this->images);
 
         $this->assertInstanceOf(Product::class, $product);
         $this->assertEquals($product->getSellerSku(), $this->sellerSku);

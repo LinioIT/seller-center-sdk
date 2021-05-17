@@ -23,4 +23,5 @@ class Attribute
     public const FEED_CATEGORIES = 'Categories';
     public const FEED_PARENT_SKU = 'ParentSku';
     public const FEED_QUANTITY = 'Quantity';
+    public const FEED_QCSTATUS = 'QCStatus';
 }

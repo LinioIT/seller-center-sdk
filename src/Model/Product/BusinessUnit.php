@@ -13,6 +13,15 @@ use stdClass;
 
 class BusinessUnit implements JsonSerializable
 {
+    public const FEED_BUSINESS_UNIT = 'BusinessUnit';
+    public const FEED_OPERATOR_CODE = 'OperatorCode';
+    public const FEED_PRICE = 'Price';
+    public const FEED_SPECIAL_PRICE = 'SpecialPrice';
+    public const FEED_SPECIAL_FROM_DATE = 'SpecialFromDate';
+    public const FEED_SPECIAL_TO_DATE = 'SpecialToDate';
+    public const FEED_STOCK = 'Stock';
+    public const FEED_STATUS = 'Status';
+    public const FEED_IS_PUBLISHED = 'IsPublished';
     public const BUSINESS_UNITS = ['falabella', 'sodimac', 'linio'];
 
     /**
@@ -143,6 +152,23 @@ class BusinessUnit implements JsonSerializable
     public function getIsPublished(): int
     {
         return $this->isPublished;
+    }
+
+    public function getAllAttributes(): array
+    {
+        $attributes = [];
+
+        $attributes[self::FEED_BUSINESS_UNIT] = $this->businessUnit ?? '';
+        $attributes[self::FEED_OPERATOR_CODE] = $this->operatorCode;
+        $attributes[self::FEED_PRICE] = $this->price;
+        $attributes[self::FEED_SPECIAL_PRICE] = $this->specialPrice ?? '';
+        $attributes[self::FEED_SPECIAL_FROM_DATE] = $this->specialFromDate ?? '';
+        $attributes[self::FEED_SPECIAL_TO_DATE] = $this->specialToDate ?? '';
+        $attributes[self::FEED_STOCK] = $this->stock;
+        $attributes[self::FEED_STATUS] = $this->status;
+        $attributes[self::FEED_IS_PUBLISHED] = $this->isPublished;
+
+        return $attributes;
     }
 
     public function setBusinessUnit(?string $businessUnit): void
