@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Product>
+  <SellerSku>%s</SellerSku>
+  <ParentSku>%s</ParentSku>
+  <NewSellerSku>%s</NewSellerSku>
+  <Name>%s</Name>
+  <ShopSku>%s</ShopSku>
+  <ProductSin>%s</ProductSin>
+  <Brand>%s</Brand>
+  <Description>%s</Description>
+  <TaxClass>%s</TaxClass>
+  <Variation>%s</Variation>
+  <ProductId>%s</ProductId>
+  <PrimaryCategory>%s</PrimaryCategory>
+  <Categories>TV, Audio y Video,Smart TV</Categories>
+  <QCStatus>%s</QCStatus>
+  <MainImage>https://i.linio.com.co/p/4a3e6ac763e2289c2952e0b00fd7b4a5-catalog.jpg</MainImage>
+  <Images>
+    <Image>https://i.linio.com.co/p/4a3e6ac763e2289c2952e0b00fd7b4a5-catalog.jpg</Image>
+    <Image>https://i.linio.com.co/p/4a3e6ac763e2289c2952e0b00fd7b4a6-catalog.jpg</Image>
+  </Images>
+  <ProductData>
+      <ConditionType>%s</ConditionType>
+      <PackageHeight>%s</PackageHeight>
+      <PackageLength>%s</PackageLength>
+      <PackageWidth>%s</PackageWidth>
+      <PackageWeight>%s</PackageWeight>
+  </ProductData>        
+  <BusinessUnits>
+    <BusinessUnit>
+      <BusinessUnit>Falabella</BusinessUnit>
+      <OperatorCode>%s</OperatorCode>
+      <Price>%d</Price>
+      <SpecialPrice>1200.00</SpecialPrice>
+      <SpecialFromDate>2020-12-01 00:00:00</SpecialFromDate>
+      <SpecialToDate>2020-12-30 00:00:00</SpecialToDate>
+      <Stock>%d</Stock>
+      <Status>%s</Status>
+      <IsPublished>%d</IsPublished>
+    </BusinessUnit>
+  </BusinessUnits>
+</Product>

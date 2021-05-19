@@ -74,6 +74,12 @@ class ProductTest extends LinioTestCase
             $this->packageWeight
         );
 
+        $this->productData->add('ShortDescription', '<ul><li>Prueba atributo T&B&nbsp;</li><li>Prueba atributo T&B&nbsp;</li><li>Prueba atributo T&B&nbsp;</li><li>Prueba atributo T&B&nbsp;</li></ul>');
+        $this->productData->add('Color', 'Negro');
+        $this->productData->add('ToysFeatures', 'BPA-Free');
+        $this->productData->add('Gender', 'Niña');
+        $this->productData->add('AgeGroup', '0 - 12 Meses');
+
         $this->categories = new Categories();
         $this->categories->add(Category::fromId($this->faker->randomNumber));
         $this->categories->add(Category::fromId($this->faker->randomNumber));
@@ -123,27 +129,9 @@ class ProductTest extends LinioTestCase
     public function testItCreatesAProductFromAnXml(): void
     {
         $xml = sprintf(
-            '<Product>
-                    <SellerSku>%s</SellerSku>
-                    <Name>%s</Name>
-                    <ShopSku>%s</ShopSku>
-                    <ProductSin>%s</ProductSin>
-                    <Brand>%s</Brand>
-                    <Description>%s</Description>
-                    <TaxClass>%s</TaxClass>
-                    <Variation>%s</Variation>
-                    <Price>%s</Price>
-                    <ProductId>%s</ProductId>
-                    <PrimaryCategory>%s</PrimaryCategory>
-                    <ProductData>
-                        <ConditionType>%s</ConditionType>
-                        <PackageHeight>%s</PackageHeight>
-                        <PackageLength>%s</PackageLength>
-                        <PackageWidth>%s</PackageWidth>
-                        <PackageWeight>%s</PackageWeight>
-                    </ProductData>        
-                </Product>',
+            $this->getSchema('Product/Product.xml'),
             $this->sellerSku,
+            $this->newSellerSku,
             $this->name,
             $this->shopSku,
             $this->productSin,
@@ -154,6 +142,7 @@ class ProductTest extends LinioTestCase
             $this->price,
             $this->productId,
             $this->primaryCategory->getName(),
+            $this->status,
             $this->conditionType,
             $this->packageHeight,
             $this->packageLength,
@@ -282,44 +271,27 @@ class ProductTest extends LinioTestCase
 
     public function testItMakesAProductFromXml(): void
     {
-        $sXml = '<Product>.
-                    <SellerSku>e81u09ejdm109</SellerSku>
-                    <ShopSku>HA997TB1EVQQ2LCO-9273602</ShopSku>
-                    <ProductSin>4K173432N2D5</ProductSin>
-                    <Name>Prueba atributo T&amp;B Prueba atributo T&amp;B</Name>
-                    <Variation>...</Variation>
-                    <ParentSku>prueba atr</ParentSku>
-                    <Quantity>1</Quantity>
-                    <Available>1</Available>
-                    <Price>9999.00</Price>
-                    <SalePrice/>
-                    <SaleStartDate/>
-                    <SaleEndDate/>
-                    <Status>active</Status>
-                    <ProductId>2222222</ProductId>
-                    <Url>http://www.linio.com.co/7716458.html</Url>
-                    <MainImage>https://i.linio.com.co/p/4a3e6ac763e2289c2952e0b00fd7b4a5-catalog.jpg</MainImage>
-                    <Images>
-                    <Image>https://i.linio.com.co/p/4a3e6ac763e2289c2952e0b00fd7b4a5-catalog.jpg</Image>
-                    <Image>https://i.linio.com.co/p/4a3e6ac763e2289c2952e0b00fd7b4a6-catalog.jpg</Image>
-                    </Images>
-                    <Description>Prueba atributo T&amp;B Prueba atributo T&amp;B Prueba atributo T&amp;B&lt;div&gt;Prueba atributo T&amp;B&amp;nbsp;Prueba atributo T&amp;B&amp;nbsp;Prueba atributo T&amp;B&amp;nbsp;&lt;b&gt;Prueba atributo&lt;/b&gt; T&amp;B Prueba atributo T&amp;B Prueba atributo T&amp;B Prueba atributo T&amp;B Prueba atributo T&amp;B&lt;/div&gt;&lt;div&gt;Prueba atributo T&amp;B&amp;nbsp;Prueba atributo T&amp;B&amp;nbsp;Prueba atributo T&amp;B&amp;nbsp;Prueba atributo T&amp;B Prueba atributo T&amp;B Prueba atributo T&amp;B Prueba atributo T&amp;B Prueba atributo T&amp;B&lt;/div&gt;&lt;div&gt;Prueba atributo T&amp;B&amp;nbsp;Prueba atributo T&amp;B&amp;nbsp;Prueba atributo T&amp;B&amp;nbsp;&lt;b&gt;Prueba atributo &lt;/b&gt;T&amp;B Prueba atributo T&amp;B Prueba atributo T&amp;B Prueba atributo T&amp;B Prueba atributo T&amp;B&lt;/div&gt;&lt;div&gt;Prueba atributo T&amp;B&amp;nbsp;Prueba atributo T&amp;B&lt;b&gt;&amp;nbsp;Prueba atributo&lt;/b&gt; T&amp;B&amp;nbsp;Prueba atributo T&amp;B Prueba atributo T&amp;B Prueba atributo T&amp;B Prueba atributo T&amp;B Prueba atributo T&amp;B&lt;/div&gt;&lt;div&gt;Prueba atributo T&amp;B&amp;nbsp;Prueba atributo T&amp;B&amp;nbsp;Prueba atributo T&amp;B&amp;nbsp;Prueba atributo T&amp;B Prueba atributo T&amp;B Prueba atributo T&amp;B Prueba atributo T&amp;B Prueba atributo T&amp;B&lt;/div&gt;&lt;div&gt;Prueba atributo T&amp;B&amp;nbsp;Prueba atributo T&amp;B&amp;nbsp;Prueba atributo T&amp;B&amp;nbsp;Prueba atributo T&amp;B Prueba atributo T&amp;B&amp;nbsp;&lt;/div&gt;</Description>
-                    <TaxClass>IVA 19%</TaxClass>
-                    <Brand>Hasbro</Brand>
-                    <PrimaryCategory>Inflables</PrimaryCategory>
-                    <ProductData>
-                        <ShortDescription>&lt;ul&gt;&lt;li&gt;Prueba atributo T&amp;B&amp;nbsp;&lt;/li&gt;&lt;li&gt;Prueba atributo T&amp;B&amp;nbsp;&lt;/li&gt;&lt;li&gt;Prueba atributo T&amp;B&amp;nbsp;&lt;/li&gt;&lt;li&gt;Prueba atributo T&amp;B&amp;nbsp;&lt;/li&gt;&lt;/ul&gt;</ShortDescription>
-                        <Color>Negro</Color>
-                        <ToysFeatures>BPA-Free</ToysFeatures>
-                        <Gender>Niña</Gender>
-                        <AgeGroup>0 - 12 Meses</AgeGroup>
-                        <ConditionType>Nuevo</ConditionType>
-                        <PackageHeight>7</PackageHeight>
-                        <PackageWidth>0</PackageWidth>
-                        <PackageLength>15</PackageLength>
-                        <PackageWeight>0.5</PackageWeight>
-                    </ProductData>
-                </Product>';
+        $sXml = sprintf(
+            $this->getSchema('Product/Product.xml'),
+            $this->sellerSku,
+            $this->newSellerSku,
+            $this->name,
+            $this->shopSku,
+            $this->productSin,
+            $this->brand->getName(),
+            $this->description,
+            $this->taxClass,
+            $this->variation,
+            $this->price,
+            $this->productId,
+            $this->primaryCategory->getName(),
+            $this->status,
+            $this->conditionType,
+            $this->packageHeight,
+            $this->packageLength,
+            $this->packageWidth,
+            $this->packageWeight
+        );
 
         $xml = new SimpleXMLElement($sXml);
 
@@ -541,294 +513,13 @@ class ProductTest extends LinioTestCase
         );
     }
 
-    public function testItThrowsAExceptionWithoutASellerSkuInTheXml(): void
+    /**
+     * @dataProvider invalidXmlStructure
+     */
+    public function testItThrowsAExceptionWithoutAMandatoryPropertyInTheXml($property): void
     {
-        $this->expectException(InvalidXmlStructureException::class);
-
-        $this->expectExceptionMessage('The xml structure is not valid for a Product. The property SellerSku should exist');
-
-        $xml = '<Product>
-                    <Name>Dr. Fawzi\'s Snakeoil (original)</Name>
-                    <Brand>Dr. Fawzis Magic potions</Brand>
-                    <Description>Dr. Fawzi\'s Snakeoil solves every problem even if you don\'t have one.</Description>
-                    <TaxClass>default</TaxClass>
-                    <Variation>64GB</Variation>
-                    <Price>1000.00</Price>
-                    <ProductId>721321frefgreh</ProductId>
-                    <PrimaryCategory>43253</PrimaryCategory>
-                    <ProductData>
-                      <ConditionType>Nuevo</ConditionType>
-                      <PackageHeight>10.00</PackageHeight>
-                      <PackageLength>0.00</PackageLength>
-                      <PackageWidth>5.00</PackageWidth>
-                      <PackageWeight>0.70</PackageWeight>
-                    </ProductData>        
-                  </Product>';
-
-        ProductFactory::make(new SimpleXMLElement($xml));
-    }
-
-    public function testItThrowsAExceptionWithoutANameInTheXml(): void
-    {
-        $this->expectException(InvalidXmlStructureException::class);
-
-        $this->expectExceptionMessage('The xml structure is not valid for a Product. The property Name should exist');
-
-        $xml = '<Product>
-                    <SellerSku>NI006ELAAGWDNAFAMZ-43340</SellerSku>
-                    <Brand>Dr. Fawzis Magic potions</Brand>
-                    <Description>Dr. Fawzi\'s Snakeoil solves every problem even if you don\'t have one.</Description>
-                    <TaxClass>default</TaxClass>
-                    <Variation>64GB</Variation>
-                    <Price>1000.00</Price>
-                    <ProductId>721321frefgreh</ProductId>
-                    <PrimaryCategory>43253</PrimaryCategory>
-                    <ProductData>
-                      <ConditionType>Nuevo</ConditionType>
-                      <PackageHeight>10.00</PackageHeight>
-                      <PackageLength>0.00</PackageLength>
-                      <PackageWidth>5.00</PackageWidth>
-                      <PackageWeight>0.70</PackageWeight>
-                    </ProductData>        
-                  </Product>';
-
-        ProductFactory::make(new SimpleXMLElement($xml));
-    }
-
-    public function testItThrowsAExceptionWithoutABrandInTheXml(): void
-    {
-        $this->expectException(InvalidXmlStructureException::class);
-
-        $this->expectExceptionMessage('The xml structure is not valid for a Product. The property Brand should exist');
-
-        $xml = '<Product>
-                    <SellerSku>NI006ELAAGWDNAFAMZ-43340</SellerSku>
-                    <Name>Dr. Fawzi\'s Snakeoil (original)</Name>
-                    <Description>Dr. Fawzi\'s Snakeoil solves every problem even if you don\'t have one.</Description>
-                    <TaxClass>default</TaxClass>
-                    <Variation>64GB</Variation>
-                    <Price>1000.00</Price>
-                    <ProductId>721321frefgreh</ProductId>
-                    <PrimaryCategory>43253</PrimaryCategory>
-                    <ProductData>
-                      <ConditionType>Nuevo</ConditionType>
-                      <PackageHeight>10.00</PackageHeight>
-                      <PackageLength>0.00</PackageLength>
-                      <PackageWidth>5.00</PackageWidth>
-                      <PackageWeight>0.70</PackageWeight>
-                    </ProductData>        
-                  </Product>';
-
-        ProductFactory::make(new SimpleXMLElement($xml));
-    }
-
-    public function testItThrowsAExceptionWithoutADescriptionInTheXml(): void
-    {
-        $this->expectException(InvalidXmlStructureException::class);
-
-        $this->expectExceptionMessage('The xml structure is not valid for a Product. The property Description should exist');
-
-        $xml = '<Product>
-                    <SellerSku>NI006ELAAGWDNAFAMZ-43340</SellerSku>
-                    <Name>Dr. Fawzi\'s Snakeoil (original)</Name>
-                    <Brand>Dr. Fawzis Magic potions</Brand>
-                    <TaxClass>default</TaxClass>
-                    <Variation>64GB</Variation>
-                    <Price>1000.00</Price>
-                    <ProductId>721321frefgreh</ProductId>
-                    <PrimaryCategory>43253</PrimaryCategory>
-                    <ProductData>
-                      <ConditionType>Nuevo</ConditionType>
-                      <PackageHeight>10.00</PackageHeight>
-                      <PackageLength>0.00</PackageLength>
-                      <PackageWidth>5.00</PackageWidth>
-                      <PackageWeight>0.70</PackageWeight>
-                    </ProductData>        
-                  </Product>';
-
-        ProductFactory::make(new SimpleXMLElement($xml));
-    }
-
-    public function testItThrowsAExceptionWithoutATaxClassInTheXml(): void
-    {
-        $this->expectException(InvalidXmlStructureException::class);
-
-        $this->expectExceptionMessage('The xml structure is not valid for a Product. The property TaxClass should exist');
-
-        $xml = '<Product>
-                    <SellerSku>NI006ELAAGWDNAFAMZ-43340</SellerSku>
-                    <Name>Dr. Fawzi\'s Snakeoil (original)</Name>
-                    <Brand>Dr. Fawzis Magic potions</Brand>
-                    <Description>Dr. Fawzi\'s Snakeoil solves every problem even if you don\'t have one.</Description>
-                    <Variation>64GB</Variation>
-                    <Price>1000.00</Price>
-                    <ProductId>721321frefgreh</ProductId>
-                    <PrimaryCategory>43253</PrimaryCategory>
-                    <ProductData>
-                      <ConditionType>Nuevo</ConditionType>
-                      <PackageHeight>10.00</PackageHeight>
-                      <PackageLength>0.00</PackageLength>
-                      <PackageWidth>5.00</PackageWidth>
-                      <PackageWeight>0.70</PackageWeight>
-                    </ProductData>        
-                  </Product>';
-
-        ProductFactory::make(new SimpleXMLElement($xml));
-    }
-
-    public function testItThrowsAExceptionWithoutAVariationInTheXml(): void
-    {
-        $this->expectException(InvalidXmlStructureException::class);
-
-        $this->expectExceptionMessage('The xml structure is not valid for a Product. The property Variation should exist');
-
-        $xml = '<Product>
-                    <SellerSku>NI006ELAAGWDNAFAMZ-43340</SellerSku>
-                    <Name>Dr. Fawzi\'s Snakeoil (original)</Name>
-                    <Brand>Dr. Fawzis Magic potions</Brand>
-                    <Description>Dr. Fawzi\'s Snakeoil solves every problem even if you don\'t have one.</Description>
-                    <TaxClass>default</TaxClass>
-                    <Price>1000.00</Price>
-                    <ProductId>721321frefgreh</ProductId>
-                    <PrimaryCategory>43253</PrimaryCategory>
-                    <ProductData>
-                      <ConditionType>Nuevo</ConditionType>
-                      <PackageHeight>10.00</PackageHeight>
-                      <PackageLength>0.00</PackageLength>
-                      <PackageWidth>5.00</PackageWidth>
-                      <PackageWeight>0.70</PackageWeight>
-                    </ProductData>        
-                  </Product>';
-
-        ProductFactory::make(new SimpleXMLElement($xml));
-    }
-
-    public function testItThrowsAExceptionWithoutAPriceInTheXml(): void
-    {
-        $this->expectException(InvalidXmlStructureException::class);
-
-        $this->expectExceptionMessage('The xml structure is not valid for a Product. The property Price should exist');
-
-        $xml = '<Product>
-                    <SellerSku>NI006ELAAGWDNAFAMZ-43340</SellerSku>
-                    <Name>Dr. Fawzi\'s Snakeoil (original)</Name>
-                    <Brand>Dr. Fawzis Magic potions</Brand>
-                    <Description>Dr. Fawzi\'s Snakeoil solves every problem even if you don\'t have one.</Description>
-                    <TaxClass>default</TaxClass>
-                    <Variation>64GB</Variation>
-                    <ProductId>721321frefgreh</ProductId>
-                    <PrimaryCategory>43253</PrimaryCategory>
-                    <ProductData>
-                      <ConditionType>Nuevo</ConditionType>
-                      <PackageHeight>10.00</PackageHeight>
-                      <PackageLength>0.00</PackageLength>
-                      <PackageWidth>5.00</PackageWidth>
-                      <PackageWeight>0.70</PackageWeight>
-                    </ProductData>        
-                  </Product>';
-
-        ProductFactory::make(new SimpleXMLElement($xml));
-    }
-
-    public function testItThrowsAExceptionWithoutAProductIdInTheXml(): void
-    {
-        $this->expectException(InvalidXmlStructureException::class);
-
-        $this->expectExceptionMessage('The xml structure is not valid for a Product. The property ProductId should exist');
-
-        $xml = '<Product>
-                    <SellerSku>NI006ELAAGWDNAFAMZ-43340</SellerSku>
-                    <Name>Dr. Fawzi\'s Snakeoil (original)</Name>
-                    <Brand>Dr. Fawzis Magic potions</Brand>
-                    <Description>Dr. Fawzi\'s Snakeoil solves every problem even if you don\'t have one.</Description>
-                    <TaxClass>default</TaxClass>
-                    <Variation>64GB</Variation>
-                    <Price>1000.00</Price>
-                    <PrimaryCategory>43253</PrimaryCategory>
-                    <ProductData>
-                      <ConditionType>Nuevo</ConditionType>
-                      <PackageHeight>10.00</PackageHeight>
-                      <PackageLength>0.00</PackageLength>
-                      <PackageWidth>5.00</PackageWidth>
-                      <PackageWeight>0.70</PackageWeight>
-                    </ProductData>        
-                  </Product>';
-
-        ProductFactory::make(new SimpleXMLElement($xml));
-    }
-
-    public function testItThrowsAExceptionWithoutAPrimaryCategoryInTheXml(): void
-    {
-        $this->expectException(InvalidXmlStructureException::class);
-
-        $this->expectExceptionMessage('The xml structure is not valid for a Product. The property PrimaryCategory should exist');
-
-        $xml = '<Product>
-                    <SellerSku>NI006ELAAGWDNAFAMZ-43340</SellerSku>
-                    <Name>Dr. Fawzi\'s Snakeoil (original)</Name>
-                    <Brand>Dr. Fawzis Magic potions</Brand>
-                    <Description>Dr. Fawzi\'s Snakeoil solves every problem even if you don\'t have one.</Description>
-                    <TaxClass>default</TaxClass>
-                    <Variation>64GB</Variation>
-                    <Price>1000.00</Price>
-                    <ProductId>721321frefgreh</ProductId>
-                    <ProductData>
-                      <ConditionType>Nuevo</ConditionType>
-                      <PackageHeight>10.00</PackageHeight>
-                      <PackageLength>0.00</PackageLength>
-                      <PackageWidth>5.00</PackageWidth>
-                      <PackageWeight>0.70</PackageWeight>
-                    </ProductData>        
-                  </Product>';
-
-        ProductFactory::make(new SimpleXMLElement($xml));
-    }
-
-    public function testItThrowsAExceptionWithoutAProductDataInTheXml(): void
-    {
-        $this->expectException(InvalidXmlStructureException::class);
-
-        $this->expectExceptionMessage('The xml structure is not valid for a Product. The property ProductData should exist');
-
-        $xml = '<Product>
-                    <SellerSku>NI006ELAAGWDNAFAMZ-43340</SellerSku>
-                    <Name>Dr. Fawzi\'s Snakeoil (original)</Name>
-                    <Brand>Dr. Fawzis Magic potions</Brand>
-                    <Description>Dr. Fawzi\'s Snakeoil solves every problem even if you don\'t have one.</Description>
-                    <TaxClass>default</TaxClass>
-                    <Variation>64GB</Variation>
-                    <Price>1000.00</Price>
-                    <ProductId>721321frefgreh</ProductId>
-                    <PrimaryCategory>43253</PrimaryCategory>    
-                  </Product>';
-
-        ProductFactory::make(new SimpleXMLElement($xml));
-    }
-
-    public function testItReturnsAJsonRepresentation(): void
-    {
-        $xml = sprintf(
-            '<Product>
-                    <SellerSku>%s</SellerSku>
-                    <NewSellerSku>%s</NewSellerSku>
-                    <Name>%s</Name>
-                    <ShopSku>%s</ShopSku>
-                    <ProductSin>%s</ProductSin>
-                    <Brand>%s</Brand>
-                    <Description>%s</Description>
-                    <TaxClass>%s</TaxClass>
-                    <Variation>%s</Variation>
-                    <Price>%s</Price>
-                    <ProductId>%s</ProductId>
-                    <PrimaryCategory>%s</PrimaryCategory>
-                    <ProductData>
-                        <ConditionType>%s</ConditionType>
-                        <PackageHeight>%s</PackageHeight>
-                        <PackageLength>%s</PackageLength>
-                        <PackageWidth>%s</PackageWidth>
-                        <PackageWeight>%s</PackageWeight>
-                    </ProductData>        
-                </Product>',
+        $xmlString = sprintf(
+            $this->getSchema('Product/Product.xml'),
             $this->sellerSku,
             $this->newSellerSku,
             $this->name,
@@ -841,6 +532,78 @@ class ProductTest extends LinioTestCase
             $this->price,
             $this->productId,
             $this->primaryCategory->getName(),
+            $this->status,
+            $this->conditionType,
+            $this->packageHeight,
+            $this->packageLength,
+            $this->packageWidth,
+            $this->packageWeight
+        );
+
+        $xml = new SimpleXMLElement($xmlString);
+
+        switch ($property) {
+          case 'SellerSku':
+              unset($xml->SellerSku);
+              break;
+          case 'Name':
+              unset($xml->Name);
+              break;
+          case 'Brand':
+              unset($xml->Brand);
+              break;
+          case 'Description':
+              unset($xml->Description);
+              break;
+          case 'TaxClass':
+              unset($xml->TaxClass);
+              break;
+          case 'Variation':
+              unset($xml->Variation);
+              break;
+          case 'Price':
+              unset($xml->Price);
+              break;
+          case 'ProductId':
+              unset($xml->ProductId);
+              break;
+          case 'PrimaryCategory':
+              unset($xml->PrimaryCategory);
+              break;
+          case 'ProductData':
+              unset($xml->ProductData);
+              break;
+        }
+
+        $this->expectException(InvalidXmlStructureException::class);
+
+        $this->expectExceptionMessage(
+            sprintf(
+                'The xml structure is not valid for a Product. The property %s should exist',
+                $property
+            )
+        );
+
+        ProductFactory::make($xml);
+    }
+
+    public function testItReturnsAJsonRepresentation(): void
+    {
+        $xml = sprintf(
+            $this->getSchema('Product/Product.xml'),
+            $this->sellerSku,
+            $this->newSellerSku,
+            $this->name,
+            $this->shopSku,
+            $this->productSin,
+            $this->brand->getName(),
+            $this->description,
+            $this->taxClass,
+            $this->variation,
+            $this->price,
+            $this->productId,
+            $this->primaryCategory->getName(),
+            $this->status,
             $this->conditionType,
             $this->packageHeight,
             $this->packageLength,
@@ -852,27 +615,26 @@ class ProductTest extends LinioTestCase
 
         $product = ProductFactory::make($simpleXml);
 
-        $expectedJson = sprintf(
-            '{"sellerSku":"%s","newSellerSku":null,"shopSku":"%s","productSin":"%s","parentSku":null,"status":"active","name":"%s","variation":"%s","primaryCategory":{"categoryId":null,"name":"%s","globalIdentifier":null,"attributeSetId":null,"children": [],"attributes": []},"categories": [],"description":"%s","brand": {"brandId": null,"name": "%s","globalIdentifier": null},"price":%d,"salePrice":null,"saleStartDate":null,"saleEndDate":null,"productId":"%s","taxClass":"%s","productData":{"ConditionType":"%s","PackageHeight":%d,"PackageWidth":%d,"PackageLength":%d,"PackageWeight":%d},"quantity":0,"available":0,"mainImage":null,"images":[]}',
-            $this->sellerSku,
-            $this->shopSku,
-            $this->productSin,
-            $this->name,
-            $this->variation,
-            $this->primaryCategory->getName(),
-            $this->description,
-            $this->brand->getName(),
-            $this->price,
-            $this->productId,
-            $this->taxClass,
-            $this->conditionType,
-            $this->packageHeight,
-            $this->packageWidth,
-            $this->packageLength,
-            $this->packageWeight
-        );
+        $expectedJson = Json::decode($this->getSchema('Product/Product.json'));
+        $expectedJson['status'] = $this->status;
+        $expectedJson['taxClass'] = $this->taxClass;
+        $expectedJson['productId'] = $this->productId;
+        $expectedJson['brand']['name'] = $this->brand->getName();
+        $expectedJson['description'] = $this->description;
+        $expectedJson['primaryCategory']['name'] = $this->primaryCategory->getName();
+        $expectedJson['variation'] = $this->variation;
+        $expectedJson['name'] = $this->name;
+        $expectedJson['productSin'] = $this->productSin;
+        $expectedJson['shopSku'] = $this->shopSku;
+        $expectedJson['sellerSku'] = $this->sellerSku;
+        $expectedJson['price'] = $this->price;
+        $expectedJson['productData']['ConditionType'] = $this->conditionType;
+        $expectedJson['productData']['PackageHeight'] = $this->packageHeight;
+        $expectedJson['productData']['PackageWidth'] = $this->packageWidth;
+        $expectedJson['productData']['PackageLength'] = $this->packageLength;
+        $expectedJson['productData']['PackageWeight'] = $this->packageWeight;
 
-        $this->assertJsonStringEqualsJsonString($expectedJson, Json::encode($product));
+        $this->assertJsonStringEqualsJsonString(Json::encode($expectedJson), Json::encode($product));
     }
 
     public function invalidPrices(): array
@@ -905,6 +667,22 @@ class ProductTest extends LinioTestCase
             [3, 1, 3, 1],
             [5, 5, 5, 5],
             [3, 5, 3, 0],
+        ];
+    }
+
+    public function invalidXmlStructure(): array
+    {
+        return [
+            ['SellerSku'],
+            ['Name'],
+            ['Brand'],
+            ['Description'],
+            ['TaxClass'],
+            ['Variation'],
+            ['Price'],
+            ['ProductId'],
+            ['PrimaryCategory'],
+            ['ProductData'],
         ];
     }
 }

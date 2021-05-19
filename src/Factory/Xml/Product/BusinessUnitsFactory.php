@@ -14,7 +14,7 @@ class BusinessUnitsFactory
     {
         $businessUnits = new BusinessUnits();
 
-        foreach ($xml->BusinessUnits->BusinessUnit as $item) {
+        foreach ($xml->BusinessUnit as $item) {
             try {
                 $businessUnit = BusinessUnitFactory::make($item);
             } catch (Exception $e) {

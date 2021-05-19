@@ -1,0 +1,74 @@
+{
+  "sellerSku":"%s",
+  "newSellerSku":null,
+  "shopSku":"%s",
+  "productSin":"%s",
+  "parentSku":null,
+  "status":"active",
+  "name":"%s",
+  "variation":"%s",
+  "primaryCategory":{
+    "categoryId":null,
+    "name":"%s",
+    "globalIdentifier":null,
+    "attributeSetId":null,
+    "children": [],
+    "attributes": []
+  },
+  "categories": [
+    {
+        "categoryId": null,
+        "name": "TV, Audio y Video",
+        "globalIdentifier": null,
+        "attributeSetId": null,
+        "children": [],
+        "attributes": []
+    },
+    {
+        "categoryId": null,
+        "name": "Smart TV",
+        "globalIdentifier": null,
+        "attributeSetId": null,
+        "children": [],
+        "attributes": []
+    }
+  ],
+
+  "description":"%s",
+  "brand": {
+    "brandId": null,
+    "name": "%s",
+    "globalIdentifier": null
+  },
+  "price":"",
+  "salePrice":null,
+  "saleStartDate":null,
+  "saleEndDate":null,
+  "productId":"%s",
+  "taxClass":"%s",
+  "images": [
+    {
+        "url": "https://i.linio.com.co/p/4a3e6ac763e2289c2952e0b00fd7b4a5-catalog.jpg"
+    },
+    {
+        "url": "https://i.linio.com.co/p/4a3e6ac763e2289c2952e0b00fd7b4a6-catalog.jpg"
+    }
+  ],
+  "mainImage": {
+      "url": "https://i.linio.com.co/p/4a3e6ac763e2289c2952e0b00fd7b4a5-catalog.jpg"
+  },
+  "productData":{
+    "ConditionType":"%s",
+    "PackageHeight":"",
+    "PackageWidth":"",
+    "PackageLength":"",
+    "PackageWeight":"",
+    "ShortDescription":"<ul><li>Prueba atributo T&B&nbsp;<\/li><li>Prueba atributo T&B&nbsp;<\/li><li>Prueba atributo T&B&nbsp;<\/li><li>Prueba atributo T&B&nbsp;<\/li><\/ul>",
+    "Color":"Negro",
+    "ToysFeatures":"BPA-Free",
+    "Gender":"Ni\u00f1a",
+    "AgeGroup":"0 - 12 Meses"
+  },
+  "quantity":0,
+  "available":0
+}

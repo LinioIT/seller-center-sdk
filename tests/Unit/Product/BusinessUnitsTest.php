@@ -46,7 +46,7 @@ class BusinessUnitsTest extends LinioTestCase
 
     public function testCreatesABusinessUnitsFromAXml(): void
     {
-        $xml = simplexml_load_string($this->getSchema('Product/ProductWithOnlyBusinessUnits.xml'));
+        $xml = simplexml_load_string($this->getSchema('Product/BusinessUnits.xml'));
 
         $businessUnits = BusinessUnitsFactory::make($xml);
 
@@ -54,7 +54,7 @@ class BusinessUnitsTest extends LinioTestCase
 
         $businessUnit = $businessUnits->findByOperatorCode($operatorCode);
 
-        $xmlBusinessUnit = $xml->BusinessUnits->BusinessUnit[0];
+        $xmlBusinessUnit = $xml->BusinessUnit[0];
 
         $this->assertInstanceOf(BusinessUnits::class, $businessUnits);
         $this->assertInstanceOf(BusinessUnit::class, $businessUnit);
