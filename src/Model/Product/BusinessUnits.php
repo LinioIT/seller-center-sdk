@@ -4,9 +4,10 @@ declare(strict_types=1);
 
 namespace Linio\SellerCenter\Model\Product;
 
+use JsonSerializable;
 use Linio\SellerCenter\Contract\CollectionInterface;
 
-class BusinessUnits implements CollectionInterface
+class BusinessUnits implements CollectionInterface, JsonSerializable
 {
     /**
      * @var BusinessUnit[]
@@ -43,5 +44,10 @@ class BusinessUnits implements CollectionInterface
     public function add(BusinessUnit $businessUnit): void
     {
         $this->collection[$businessUnit->getOperatorCode()] = $businessUnit;
+    }
+
+    public function jsonSerialize(): array
+    {
+        return array_values($this->collection);
     }
 }

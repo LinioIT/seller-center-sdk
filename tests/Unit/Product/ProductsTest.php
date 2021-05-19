@@ -10,6 +10,9 @@ use Linio\SellerCenter\LinioTestCase;
 use Linio\SellerCenter\Model\Brand\Brand;
 use Linio\SellerCenter\Model\Category\Categories;
 use Linio\SellerCenter\Model\Category\Category;
+use Linio\SellerCenter\Model\Product\BusinessUnit;
+use Linio\SellerCenter\Model\Product\BusinessUnits;
+use Linio\SellerCenter\Model\Product\GlobalProduct;
 use Linio\SellerCenter\Model\Product\Image;
 use Linio\SellerCenter\Model\Product\Product;
 use Linio\SellerCenter\Model\Product\ProductData;
@@ -44,6 +47,30 @@ class ProductsTest extends LinioTestCase
             new ProductData('Nuevo', 3, 0, 5, 4)
         );
 
+        $businessUnits = new BusinessUnits();
+        $businessUnit = new BusinessUnit(
+            'facl',
+            1299.00,
+            100,
+            'active',
+            0
+        );
+        $businessUnits->add($businessUnit);
+
+        $globalProduct = GlobalProduct::fromBasicData(
+            '2145819109aaeu7g',
+            'Magic Global Product ',
+            'XL',
+            Category::fromId($this->faker->randomNumber),
+            'This is a bold product.',
+            Brand::fromName('Samsung'),
+            $businessUnits,
+            'IVA exento 0%',
+            '123326998',
+            new ProductData('Nuevo', 3, 0, 5, 4)
+        );
+        $globalProduct->setQcStatus('pending');
+
         $categories = new Categories();
         $categories->add(Category::fromId($this->faker->randomNumber));
         $categories->add(Category::fromId($this->faker->randomNumber));
@@ -61,7 +88,18 @@ class ProductsTest extends LinioTestCase
             new Image('http://static.somecdn.com/rear.jpeg'),
         ]);
 
+        $globalProduct->getImages()->addMany([
+            new Image('http://static.somecdn.com/moneyshot.jpeg'),
+            new Image('http://static.somecdn.com/front.jpeg'),
+            new Image('http://static.somecdn.com/rear.jpeg'),
+        ]);
+
+        $emptyProduct = new Product();
+        $emptyProduct->setSellerSku('2145819109aaeu7e');
+
         $this->products->add($product);
+        $this->products->add($globalProduct);
+        $this->products->add($emptyProduct);
     }
 
     public function testFindsAndReturnTheProductBySellerSku(): void
