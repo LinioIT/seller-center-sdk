@@ -260,7 +260,13 @@ class BusinessUnitTest extends LinioTestCase
         string $schema
     ): void {
         $this->expectException(InvalidXmlStructureException::class);
-        $this->expectExceptionMessage('The xml structure is not valid for a BusinessUnit. The property ' . $property . ' should exist');
+
+        $this->expectExceptionMessage(
+            sprintf(
+                'The xml structure is not valid for a BusinessUnit. The property %s should exist',
+                $property
+            )
+        );
 
         BusinessUnitFactory::make(new SimpleXMLElement($this->getSchema($schema)));
     }
