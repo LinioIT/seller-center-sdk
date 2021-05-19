@@ -158,7 +158,7 @@ class BusinessUnitTest extends LinioTestCase
         $specialPrice
     ): void {
         $this->expectException(InvalidDomainException::class);
-        $this->expectExceptionMessage('The parameter ' . $parameter . ' is invalid.');
+        $this->expectExceptionMessage(sprintf('The parameter %s is invalid.', $parameter));
 
         $businessUnit = new BusinessUnit(
             $operatorCode,
@@ -234,7 +234,12 @@ class BusinessUnitTest extends LinioTestCase
         }
 
         $this->expectException(InvalidXmlStructureException::class);
-        $this->expectExceptionMessage('The xml structure is not valid for a BusinessUnit. The property ' . $property . ' should exist');
+        $this->expectExceptionMessage(
+            sprintf(
+                'The xml structure is not valid for a BusinessUnit. The property %s should exist',
+                $property
+            )
+        );
 
         BusinessUnitFactory::make($xml);
     }
