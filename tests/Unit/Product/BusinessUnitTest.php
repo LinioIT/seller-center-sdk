@@ -215,24 +215,8 @@ class BusinessUnitTest extends LinioTestCase
 
         $xml = new SimpleXMLElement($xmlString);
 
-        switch ($property) {
-            case 'IsPublished':
-                unset($xml->IsPublished);
-                break;
-            case 'Status':
-                unset($xml->Status);
-                break;
-            case 'Stock':
-                unset($xml->Stock);
-                break;
-            case 'Price':
-                unset($xml->Price);
-                break;
-            case 'OperatorCode':
-                unset($xml->OperatorCode);
-                break;
-        }
-
+        unset($xml->{$property});
+        
         $this->expectException(InvalidXmlStructureException::class);
         $this->expectExceptionMessage(
             sprintf(
