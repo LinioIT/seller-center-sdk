@@ -482,39 +482,6 @@ class ProductTest extends LinioTestCase
 
         $xml = new SimpleXMLElement($xmlString);
 
-        switch ($property) {
-          case 'SellerSku':
-              unset($xml->SellerSku);
-              break;
-          case 'Name':
-              unset($xml->Name);
-              break;
-          case 'Brand':
-              unset($xml->Brand);
-              break;
-          case 'Description':
-              unset($xml->Description);
-              break;
-          case 'TaxClass':
-              unset($xml->TaxClass);
-              break;
-          case 'Variation':
-              unset($xml->Variation);
-              break;
-          case 'Price':
-              unset($xml->Price);
-              break;
-          case 'ProductId':
-              unset($xml->ProductId);
-              break;
-          case 'PrimaryCategory':
-              unset($xml->PrimaryCategory);
-              break;
-          case 'ProductData':
-              unset($xml->ProductData);
-              break;
-        }
-
         $this->expectException(InvalidXmlStructureException::class);
 
         $this->expectExceptionMessage(
@@ -523,6 +490,8 @@ class ProductTest extends LinioTestCase
                 $property
             )
         );
+
+        unset($xml->{$property});
 
         ProductFactory::make($xml);
     }

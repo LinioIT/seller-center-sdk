@@ -253,7 +253,7 @@ class GlobalProductTest extends LinioTestCase
     /**
      * @dataProvider invalidXmlStructure
      */
-    public function testItThrowsAExceptionWithoutASellerSkuInTheXml($property): void
+    public function testItThrowsAExceptionWithoutAPropertyInTheXml($property): void
     {
         $xmlString = $this->createXmlStringForAGlobalProduct();
 
@@ -267,39 +267,28 @@ class GlobalProductTest extends LinioTestCase
         );
 
         $xml = new SimpleXMLElement($xmlString);
-
-        switch ($property) {
-          case 'SellerSku':
-              unset($xml->SellerSku);
-              break;
-          case 'Name':
-              unset($xml->Name);
-              break;
-          case 'Brand':
-              unset($xml->Brand);
-              break;
-          case 'Description':
-              unset($xml->Description);
-              break;
-          case 'TaxClass':
-              unset($xml->TaxClass);
-              break;
-          case 'Variation':
-              unset($xml->Variation);
-              break;
-          case 'ProductId':
-              unset($xml->ProductId);
-              break;
-          case 'PrimaryCategory':
-              unset($xml->PrimaryCategory);
-              break;
-          case 'ProductData':
-              unset($xml->ProductData);
-              break;
-          case 'BusinessUnits':
-              unset($xml->BusinessUnits->BusinessUnit);
-              break;
+        if ($property == 'BusinessUnit') {
+            unset($xml->BusinessUnits->{$property});
+        } else {
+            unset($xml->{$property});
         }
+
+        ProductFactory::make($xml);
+    }
+
+    public function testItThrowsAExceptionWithoutABusinessUnitInTheXml(): void
+    {
+        $xmlString = $this->createXmlStringForAGlobalProduct('Product/GlobalProductWithoutBusinessUnit.xml');
+        $this->expectException(InvalidXmlStructureException::class);
+
+        $this->expectExceptionMessage(
+            sprintf(
+                'The xml structure is not valid for a Product. The property %s should exist',
+                'BusinessUnit'
+            )
+        );
+
+        $xml = new SimpleXMLElement($xmlString);
 
         ProductFactory::make($xml);
     }
@@ -316,14 +305,14 @@ class GlobalProductTest extends LinioTestCase
             ['ProductId'],
             ['PrimaryCategory'],
             ['ProductData'],
-            ['BusinessUnits'],
+            ['BusinessUnit'],
         ];
     }
 
-    public function createXmlStringForAGlobalProduct(): string
+    public function createXmlStringForAGlobalProduct(string $schema = 'Product/GlobalProduct.xml'): string
     {
         return sprintf(
-            $this->getSchema('Product/GlobalProduct.xml'),
+            $this->getSchema($schema),
             $this->sellerSku,
             $this->parentSku,
             $this->newSellerSku,
