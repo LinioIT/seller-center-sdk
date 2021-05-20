@@ -176,40 +176,21 @@ class ProductFactory
 
     private static function validateBaseProductXmlStructure(SimpleXMLElement $element): void
     {
-        if (!property_exists($element, 'SellerSku')) {
-            throw new InvalidXmlStructureException('Product', 'SellerSku');
-        }
-
-        if (!property_exists($element, 'Name')) {
-            throw new InvalidXmlStructureException('Product', 'Name');
-        }
-
-        if (!property_exists($element, 'Variation')) {
-            throw new InvalidXmlStructureException('Product', 'Variation');
-        }
-
-        if (!property_exists($element, 'PrimaryCategory')) {
-            throw new InvalidXmlStructureException('Product', 'PrimaryCategory');
-        }
-
-        if (!property_exists($element, 'Description')) {
-            throw new InvalidXmlStructureException('Product', 'Description');
-        }
-
-        if (!property_exists($element, 'Brand')) {
-            throw new InvalidXmlStructureException('Product', 'Brand');
-        }
-
-        if (!property_exists($element, 'ProductId')) {
-            throw new InvalidXmlStructureException('Product', 'ProductId');
-        }
-
-        if (!property_exists($element, 'TaxClass')) {
-            throw new InvalidXmlStructureException('Product', 'TaxClass');
-        }
-
-        if (!property_exists($element, 'ProductData')) {
-            throw new InvalidXmlStructureException('Product', 'ProductData');
+        $properties = [
+            'SellerSku',
+            'Name',
+            'Variation',
+            'PrimaryCategory',
+            'Description',
+            'Brand',
+            'ProductId',
+            'TaxClass',
+            'ProductData',
+        ];
+        foreach ($properties as $property) {
+            if (!property_exists($element, $property)) {
+                throw new InvalidXmlStructureException('Product', $property);
+            }
         }
     }
 }
