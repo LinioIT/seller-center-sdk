@@ -54,7 +54,7 @@ class BusinessUnitsTest extends LinioTestCase
 
         $businessUnit = $businessUnits->findByOperatorCode($operatorCode);
 
-        $xmlBusinessUnit = reset($xml->BusinessUnit);
+        $xmlBusinessUnit = $xml->BusinessUnit[0];
 
         $this->assertInstanceOf(BusinessUnits::class, $businessUnits);
         $this->assertInstanceOf(BusinessUnit::class, $businessUnit);
