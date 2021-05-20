@@ -475,7 +475,7 @@ class ProductManagerTest extends LinioTestCase
             return $this->getSchema('Product/ProductsResponse.xml');
         }
 
-        return $this->getSchema($schema);;
+        return $this->getSchema($schema);
     }
 
     public function primaryProduct(): Product
