@@ -38,7 +38,7 @@
         <ProductData>
               <ConditionType>Nuevo</ConditionType>
               <PackageWidth>5</PackageWidth>
-              <PackageLength>0</PackageLength>
+              <PackageLength>5</PackageLength>
               <PackageHeight>5</PackageHeight>
               <PackageWeight>1</PackageWeight>
               <ShortDescription>1,2,3,4</ShortDescription>
@@ -72,10 +72,10 @@
         <Categories>Collares, arneses y correas para perros,Arneses para perros</Categories>
         <ProductData>
               <ConditionType>Nuevo</ConditionType>
-              <PackageWidth>0</PackageWidth>
-              <PackageLength>0</PackageLength>
-              <PackageHeight>0</PackageHeight>
-              <PackageWeight>0</PackageWeight>
+              <PackageWidth>5</PackageWidth>
+              <PackageLength>5</PackageLength>
+              <PackageHeight>5</PackageHeight>
+              <PackageWeight>1</PackageWeight>
               <ShortDescription>1,2,3,4</ShortDescription>
         </ProductData>
       </Product>
@@ -110,7 +110,7 @@
               <ConditionType>Reacondicionado</ConditionType>
               <PackageWidth>5</PackageWidth>
               <PackageLength>5</PackageLength>
-              <PackageHeight>5</PackageHeight>
+              <PackageHeight>0</PackageHeight>
               <PackageWeight>1</PackageWeight>
               <ShortDescription>1,2,3,4</ShortDescription>
         </ProductData>
