@@ -128,27 +128,7 @@ class ProductTest extends LinioTestCase
 
     public function testItCreatesAProductFromAnXml(): void
     {
-        $xml = sprintf(
-            $this->getSchema('Product/Product.xml'),
-            $this->sellerSku,
-            $this->newSellerSku,
-            $this->name,
-            $this->shopSku,
-            $this->productSin,
-            $this->brand->getName(),
-            $this->description,
-            $this->taxClass,
-            $this->variation,
-            $this->price,
-            $this->productId,
-            $this->primaryCategory->getName(),
-            $this->status,
-            $this->conditionType,
-            $this->packageHeight,
-            $this->packageLength,
-            $this->packageWidth,
-            $this->packageWeight
-        );
+        $xml = $this->createXmlStringForAProduct();
 
         $product = ProductFactory::make(new SimpleXMLElement($xml));
 
@@ -271,27 +251,7 @@ class ProductTest extends LinioTestCase
 
     public function testItMakesAProductFromXml(): void
     {
-        $sXml = sprintf(
-            $this->getSchema('Product/Product.xml'),
-            $this->sellerSku,
-            $this->newSellerSku,
-            $this->name,
-            $this->shopSku,
-            $this->productSin,
-            $this->brand->getName(),
-            $this->description,
-            $this->taxClass,
-            $this->variation,
-            $this->price,
-            $this->productId,
-            $this->primaryCategory->getName(),
-            $this->status,
-            $this->conditionType,
-            $this->packageHeight,
-            $this->packageLength,
-            $this->packageWidth,
-            $this->packageWeight
-        );
+        $sXml = $this->createXmlStringForAProduct();
 
         $xml = new SimpleXMLElement($sXml);
 
@@ -518,27 +478,7 @@ class ProductTest extends LinioTestCase
      */
     public function testItThrowsAExceptionWithoutAMandatoryPropertyInTheXml($property): void
     {
-        $xmlString = sprintf(
-            $this->getSchema('Product/Product.xml'),
-            $this->sellerSku,
-            $this->newSellerSku,
-            $this->name,
-            $this->shopSku,
-            $this->productSin,
-            $this->brand->getName(),
-            $this->description,
-            $this->taxClass,
-            $this->variation,
-            $this->price,
-            $this->productId,
-            $this->primaryCategory->getName(),
-            $this->status,
-            $this->conditionType,
-            $this->packageHeight,
-            $this->packageLength,
-            $this->packageWidth,
-            $this->packageWeight
-        );
+        $xmlString = $this->createXmlStringForAProduct();
 
         $xml = new SimpleXMLElement($xmlString);
 
@@ -589,28 +529,7 @@ class ProductTest extends LinioTestCase
 
     public function testItReturnsAJsonRepresentation(): void
     {
-        $xml = sprintf(
-            $this->getSchema('Product/Product.xml'),
-            $this->sellerSku,
-            $this->newSellerSku,
-            $this->name,
-            $this->shopSku,
-            $this->productSin,
-            $this->brand->getName(),
-            $this->description,
-            $this->taxClass,
-            $this->variation,
-            $this->price,
-            $this->productId,
-            $this->primaryCategory->getName(),
-            $this->status,
-            $this->conditionType,
-            $this->packageHeight,
-            $this->packageLength,
-            $this->packageWidth,
-            $this->packageWeight
-        );
-
+        $xml = $this->createXmlStringForAProduct();
         $simpleXml = simplexml_load_string($xml);
 
         $product = ProductFactory::make($simpleXml);
@@ -684,5 +603,30 @@ class ProductTest extends LinioTestCase
             ['PrimaryCategory'],
             ['ProductData'],
         ];
+    }
+
+    public function createXmlStringForAProduct(): string
+    {
+        return sprintf(
+            $this->getSchema('Product/Product.xml'),
+            $this->sellerSku,
+            $this->newSellerSku,
+            $this->name,
+            $this->shopSku,
+            $this->productSin,
+            $this->brand->getName(),
+            $this->description,
+            $this->taxClass,
+            $this->variation,
+            $this->price,
+            $this->productId,
+            $this->primaryCategory->getName(),
+            $this->status,
+            $this->conditionType,
+            $this->packageHeight,
+            $this->packageLength,
+            $this->packageWidth,
+            $this->packageWeight
+        );
     }
 }
