@@ -232,129 +232,26 @@ class ProductsTest extends LinioTestCase
         $this->assertEquals($product->getSellerSku(), $xmlProduct->SellerSku);
     }
 
+    public function testCreatesAGlobalProductFromAXml(): void
+    {
+        $response = $this->getResponseMock($this->getSchema('Product/GlobalProductsResponse.xml'));
+        $products = ProductsFactory::make($response->Body);
+
+        $sku = 'jasku-10003';
+
+        $product = $products->findBySellerSku($sku);
+
+        $xmlProduct = $response->Body->Products->Product[2];
+
+        $this->assertInstanceOf(Products::class, $products);
+        $this->assertInstanceOf(GlobalProduct::class, $product);
+        $this->assertEquals($product->getSellerSku(), $xmlProduct->SellerSku);
+    }
+
     public function getResponseMock($xml = null)
     {
         if (empty($xml)) {
-            $xml = '<?xml version="1.0" encoding="UTF-8"?>
-                    <SuccessResponse>
-                         <Head>
-                              <RequestId/>
-                              <RequestAction>GetProducts</RequestAction>
-                              <ResponseType>Products</ResponseType>
-                              <Timestamp>2019-02-05T11:39:11-0300</Timestamp>
-                         </Head>
-                         <Body>
-                              <Products>
-                                   <Product>
-                                        <SellerSku>jasku-10001</SellerSku>
-                                        <ShopSku>A89AS7A7S99</ShopSku>
-                                        <ProductSin>SAU8SAY87AS</ProductSin>
-                                        <Name>jasku-10001</Name>
-                                        <Variation>...</Variation>
-                                        <ParentSku>jasku-10001</ParentSku>
-                                        <Quantity>1000</Quantity>
-                                        <Available>1000</Available>
-                                        <Price>22000.00</Price>
-                                        <SalePrice>20000.00</SalePrice>
-                                        <SaleStartDate>2019-01-23 00:00:00</SaleStartDate>
-                                        <SaleEndDate>2019-02-25 00:00:00</SaleEndDate>
-                                        <Status>active</Status>
-                                        <ProductId>jasku-10001</ProductId>
-                                        <Url/>
-                                        <MainImage/>
-                                        <Images>
-                                          <Image>http://static.somesite.com/p/image1.jpg</Image>
-                                          <Image>http://static.somesite.com/p/image2.jpg</Image>
-                                          <Image>http://static.somesite.com/p/image3.jpg</Image>
-                                        </Images>
-                                        <Description>fdsfdsfds&lt;span&gt;&lt;/span&gt;</Description>
-                                        <TaxClass>IVA 19%</TaxClass>
-                                        <Brand>GENERIC</Brand>
-                                        <PrimaryCategory>Bicicletas</PrimaryCategory>
-                                        <Categories>Sillas Portabebes para Bicicletas</Categories>
-                                        <ProductData>
-                                             <ConditionType>Nuevo</ConditionType>
-                                             <PackageWidth>5</PackageWidth>
-                                             <PackageLength>0</PackageLength>
-                                             <PackageHeight>5</PackageHeight>
-                                             <PackageWeight>1</PackageWeight>
-                                             <ShortDescription>1,2,3,4</ShortDescription>
-                                        </ProductData>
-                                   </Product>
-                                   <Product>
-                                        <SellerSku>jasku-10002</SellerSku>
-                                        <ShopSku>NE32HE293ED9</ShopSku>
-                                        <ProductSin>MDWIJ239DAD9H</ProductSin>
-                                        <Variation>0</Variation>
-                                        <ParentSku>jasku-10002</ParentSku>
-                                        <Quantity>1000</Quantity>
-                                        <Available>1000</Available>
-                                        <Price>22000.00</Price>
-                                        <SalePrice>20000.00</SalePrice>
-                                        <SaleStartDate>2019-01-23 00:00:00</SaleStartDate>
-                                        <SaleEndDate>2019-02-25 00:00:00</SaleEndDate>
-                                        <Status>active</Status>
-                                        <ProductId>jasku-10002</ProductId>
-                                        <Url/>
-                                        <MainImage/>
-                                        <Images>
-                                          <Image>http://static.somesite.com/p/image1.jpg</Image>
-                                          <Image>http://static.somesite.com/p/image2.jpg</Image>
-                                          <Image>http://static.somesite.com/p/image3.jpg</Image>
-                                        </Images>
-                                        <Description>ndjdhmq mamnk</Description>
-                                        <TaxClass>IVA 19%</TaxClass>
-                                        <Brand>GENERIC</Brand>
-                                        <PrimaryCategory>Perros</PrimaryCategory>
-                                        <Categories>Collares, arneses y correas para perros,Arneses para perros</Categories>
-                                        <ProductData>
-                                             <ConditionType>Nuevo</ConditionType>
-                                             <PackageWidth>0</PackageWidth>
-                                             <PackageLength>0</PackageLength>
-                                             <PackageHeight>0</PackageHeight>
-                                             <PackageWeight>0</PackageWeight>
-                                             <ShortDescription>1,2,3,4</ShortDescription>
-                                        </ProductData>
-                                   </Product>
-                                   <Product>
-                                        <SellerSku>jasku-10003</SellerSku>
-                                        <ShopSku>MMIDJ20M10JDM10</ShopSku>
-                                        <ProductSin>MWQI10923D109J</ProductSin>
-                                        <Name>jasku-10003</Name>
-                                        <Variation>XL</Variation>
-                                        <ParentSku>jasku-10003</ParentSku>
-                                        <Quantity>1000</Quantity>
-                                        <Available>1000</Available>
-                                        <Price>22000.00</Price>
-                                        <SalePrice>20000.00</SalePrice>
-                                        <SaleStartDate>2019-01-23 00:00:00</SaleStartDate>
-                                        <SaleEndDate>2019-02-25 00:00:00</SaleEndDate>
-                                        <Status>active</Status>
-                                        <ProductId>jasku-10003</ProductId>
-                                        <Url/>
-                                        <MainImage/>
-                                        <Images>
-                                          <Image>http://static.somesite.com/p/image1.jpg</Image>
-                                          <Image>http://static.somesite.com/p/image2.jpg</Image>
-                                          <Image>http://static.somesite.com/p/image3.jpg</Image>
-                                        </Images>
-                                        <Description>fdsfdsfds&lt;span&gt;&lt;/span&gt;</Description>
-                                        <TaxClass>IVA 19%</TaxClass>
-                                        <Brand>GENERIC</Brand>
-                                        <PrimaryCategory>TVs</PrimaryCategory>
-                                        <Categories>TV, Audio y Video,Smart TV</Categories>
-                                        <ProductData>
-                                             <ConditionType>Reacondicionado</ConditionType>
-                                             <PackageWidth>5</PackageWidth>
-                                             <PackageLength>5</PackageLength>
-                                             <PackageHeight>5</PackageHeight>
-                                             <PackageWeight>1</PackageWeight>
-                                             <ShortDescription>1,2,3,4</ShortDescription>
-                                        </ProductData>
-                                   </Product>
-                              </Products>
-                         </Body>
-                    </SuccessResponse>';
+            $xml = $this->getSchema('Product/ProductsResponse.xml');
         }
 
         return simplexml_load_string($xml);

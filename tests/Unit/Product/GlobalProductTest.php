@@ -6,6 +6,8 @@ namespace Linio\SellerCenter\Unit\Product;
 
 use DateTimeImmutable;
 use Linio\Component\Util\Json;
+use Linio\SellerCenter\Exception\InvalidXmlStructureException;
+use Linio\SellerCenter\Factory\Xml\Product\ProductFactory;
 use Linio\SellerCenter\LinioTestCase;
 use Linio\SellerCenter\Model\Brand\Brand;
 use Linio\SellerCenter\Model\Category\Categories;
@@ -16,6 +18,7 @@ use Linio\SellerCenter\Model\Product\GlobalProduct;
 use Linio\SellerCenter\Model\Product\Image;
 use Linio\SellerCenter\Model\Product\Images;
 use Linio\SellerCenter\Model\Product\ProductData;
+use SimpleXMLElement;
 
 class GlobalProductTest extends LinioTestCase
 {
@@ -39,6 +42,7 @@ class GlobalProductTest extends LinioTestCase
     protected $status = 'inactive';
     protected $qcStatus = 'approved';
     protected $stock = 100;
+    protected $isPublished = 0;
     protected $categories;
     protected $salePrice = 4000.00;
     protected $saleStartDate;
@@ -79,7 +83,7 @@ class GlobalProductTest extends LinioTestCase
             $this->price,
             $this->stock,
             $this->status,
-            0
+            $this->isPublished
         );
         $this->businessUnits->add($businessUnit);
 
@@ -173,6 +177,45 @@ class GlobalProductTest extends LinioTestCase
         $this->assertEquals($product->getQcStatus(), $this->qcStatus);
     }
 
+    public function testItMakesAProductFromXml(): void
+    {
+        $sXml = $this->createXmlStringForAGlobalProduct();
+
+        $xml = new SimpleXMLElement($sXml);
+
+        $product = ProductFactory::make($xml);
+
+        $this->assertInstanceOf(GlobalProduct::class, $product);
+        $this->assertEquals((string) $xml->SellerSku, $product->getSellerSku());
+        $this->assertEquals((string) $xml->Name, $product->getName());
+        $this->assertEquals((string) $xml->Variation, $product->getVariation());
+        $this->assertEquals((string) $xml->ProductId, $product->getProductId());
+        $this->assertEquals((string) $xml->Description, $product->getDescription());
+        $this->assertEquals((string) $xml->TaxClass, $product->getTaxClass());
+        $this->assertEquals((string) $xml->Brand, $product->getBrand()->getName());
+        $this->assertEquals((string) $xml->PrimaryCategory, $product->getPrimaryCategory()->getName());
+        $this->assertInstanceOf(ProductData::class, $product->getProductData());
+        $this->assertInstanceOf(BusinessUnits::class, $product->getBusinessUnits());
+        $this->assertEquals($product->getProductData()->getAttribute('ConditionType'), (string) $xml->ProductData->ConditionType);
+        $this->assertEquals($product->getProductData()->getAttribute('PackageHeight'), (float) $xml->ProductData->PackageHeight);
+        $this->assertEquals($product->getProductData()->getAttribute('PackageLength'), (float) $xml->ProductData->PackageLength);
+        $this->assertEquals($product->getProductData()->getAttribute('PackageWidth'), (float) $xml->ProductData->PackageWidth);
+        $this->assertEquals($product->getProductData()->getAttribute('PackageWeight'), (float) $xml->ProductData->PackageWeight);
+
+        $this->assertEquals((string) $xml->ShopSku, $product->getShopSku());
+        $this->assertEquals((string) $xml->ProductSin, $product->getProductSin());
+        $this->assertEquals((int) $xml->BusinessUnits->BusinessUnit[0]->Stock, $product->getBusinessUnits()->findByOperatorCode($this->operatorCode)->getStock());
+        $this->assertEquals((float) $xml->BusinessUnits->BusinessUnit[0]->SpecialPrice, $product->getBusinessUnits()->findByOperatorCode($this->operatorCode)->getSalePrice());
+        $this->assertEquals((string) $xml->BusinessUnits->BusinessUnit[0]->SpecialFromDate, $product->getBusinessUnits()->findByOperatorCode($this->operatorCode)->getSaleStartDateString());
+        $this->assertEquals((string) $xml->BusinessUnits->BusinessUnit[0]->SpecialToDate, $product->getBusinessUnits()->findByOperatorCode($this->operatorCode)->getSaleEndDateString());
+        $this->assertEquals((string) $xml->BusinessUnits->BusinessUnit[0]->Status, $product->getBusinessUnits()->findByOperatorCode($this->operatorCode)->getStatus());
+        $this->assertInstanceOf(Image::class, $product->getMainImage());
+        $this->assertEquals((string) $xml->MainImage, $product->getMainImage()->getUrl());
+        $this->assertInstanceOf(Images::class, $product->getImages());
+        $this->assertContainsOnlyInstancesOf(Image::class, $product->getImages()->all());
+        $this->assertCount(2, $product->getImages()->all());
+    }
+
     public function testItReturnsAJsonRepresentation(): void
     {
         $product = GlobalProduct::fromBasicData(
@@ -205,5 +248,94 @@ class GlobalProductTest extends LinioTestCase
         $expectedJson['images'][2]['url'] = $this->images->all()[2]->getUrl();
 
         $this->assertJsonStringEqualsJsonString(Json::encode($expectedJson), Json::encode($product));
+    }
+
+    /**
+     * @dataProvider invalidXmlStructure
+     */
+    public function testItThrowsAExceptionWithoutAPropertyInTheXml($property): void
+    {
+        $xmlString = $this->createXmlStringForAGlobalProduct();
+
+        $this->expectException(InvalidXmlStructureException::class);
+
+        $this->expectExceptionMessage(
+            sprintf(
+                'The xml structure is not valid for a Product. The property %s should exist',
+                $property
+            )
+        );
+
+        $xml = new SimpleXMLElement($xmlString);
+        if ($property == 'BusinessUnit') {
+            unset($xml->BusinessUnits->{$property});
+        } else {
+            unset($xml->{$property});
+        }
+
+        ProductFactory::make($xml);
+    }
+
+    public function testItThrowsAExceptionWithoutABusinessUnitInTheXml(): void
+    {
+        $xmlString = $this->createXmlStringForAGlobalProduct('Product/GlobalProductWithoutBusinessUnit.xml');
+        $this->expectException(InvalidXmlStructureException::class);
+
+        $this->expectExceptionMessage(
+            sprintf(
+                'The xml structure is not valid for a Product. The property %s should exist',
+                'BusinessUnit'
+            )
+        );
+
+        $xml = new SimpleXMLElement($xmlString);
+
+        ProductFactory::make($xml);
+    }
+
+    public function invalidXmlStructure(): array
+    {
+        return [
+            ['SellerSku'],
+            ['Name'],
+            ['Brand'],
+            ['Description'],
+            ['TaxClass'],
+            ['Variation'],
+            ['ProductId'],
+            ['PrimaryCategory'],
+            ['ProductData'],
+            ['BusinessUnit'],
+        ];
+    }
+
+    public function createXmlStringForAGlobalProduct(string $schema = 'Product/GlobalProduct.xml'): string
+    {
+        return sprintf(
+            $this->getSchema($schema),
+            $this->sellerSku,
+            $this->parentSku,
+            $this->newSellerSku,
+            $this->name,
+            $this->shopSku,
+            $this->productSin,
+            $this->brand->getName(),
+            $this->description,
+            $this->taxClass,
+            $this->variation,
+            $this->productId,
+            $this->primaryCategory->getName(),
+            $this->qcStatus,
+            $this->conditionType,
+            $this->packageHeight,
+            $this->packageLength,
+            $this->packageWidth,
+            $this->packageWeight,
+            $this->operatorCode,
+            $this->price,
+            $this->stock,
+            $this->status,
+            $this->isPublished
+        );
     }
 }

@@ -144,90 +144,30 @@ class BusinessUnitTest extends LinioTestCase
         $this->assertEquals($businessUnit->getSaleEndDateString(), $this->specialToDate->format('Y-m-d H:i:s'));
     }
 
-    public function testItThrowsExceptionWhenOperatorCodeIsIncorrect(): void
-    {
+    /**
+     * @dataProvider invalidParameters
+     */
+    public function testItThrowsExceptionWhenParameterIsIncorrect(
+        $parameter,
+        $operatorCode,
+        $price,
+        $stock,
+        $status,
+        $isPublished,
+        $businessUnit,
+        $specialPrice
+    ): void {
         $this->expectException(InvalidDomainException::class);
-        $this->expectExceptionMessage('The parameter OperatorCode is invalid.');
-
-        new BusinessUnit(
-            'faco',
-            $this->price,
-            $this->stock,
-            $this->status,
-            $this->isPublished
-        );
-    }
-
-    public function testItThrowsExceptionWhenPriceIsIncorrect(): void
-    {
-        $this->expectException(InvalidDomainException::class);
-        $this->expectExceptionMessage('The parameter Price is invalid.');
-
-        new BusinessUnit(
-            $this->operatorCode,
-            -1,
-            $this->stock,
-            $this->status,
-            $this->isPublished
-        );
-    }
-
-    public function testItThrowsExceptionWhenStockIsIncorrect(): void
-    {
-        $this->expectException(InvalidDomainException::class);
-        $this->expectExceptionMessage('The parameter Stock is invalid.');
+        $this->expectExceptionMessage(sprintf('The parameter %s is invalid.', $parameter));
 
         $businessUnit = new BusinessUnit(
-            $this->operatorCode,
-            $this->price,
-            -1,
-            $this->status,
-            $this->isPublished
-        );
-    }
-
-    public function testItThrowsExceptionWhenStatusIsIncorrect(): void
-    {
-        $this->expectException(InvalidDomainException::class);
-        $this->expectExceptionMessage('The parameter Status is invalid.');
-
-        $businessUnit = new BusinessUnit(
-            $this->operatorCode,
-            $this->price,
-            $this->stock,
-            'Unavailable',
-            $this->isPublished
-        );
-    }
-
-    public function testItThrowsExceptionWhenBusinessUnitIsIncorrect(): void
-    {
-        $this->expectException(InvalidDomainException::class);
-        $this->expectExceptionMessage('The parameter BusinessUnit is invalid.');
-
-        $businessUnit = new BusinessUnit(
-            $this->operatorCode,
-            $this->price,
-            $this->stock,
-            $this->status,
-            $this->isPublished,
-            'Another Ecommerce'
-        );
-    }
-
-    public function testItThrowsExceptionWhenSpecialPriceIsIncorrect(): void
-    {
-        $this->expectException(InvalidDomainException::class);
-        $this->expectExceptionMessage('The parameter SpecialPrice is invalid.');
-
-        $businessUnit = new BusinessUnit(
-            $this->operatorCode,
-            $this->price,
-            $this->stock,
-            $this->status,
-            $this->isPublished,
-            'Falabella',
-            -1000
+            $operatorCode,
+            $price,
+            $stock,
+            $status,
+            $isPublished,
+            $businessUnit,
+            $specialPrice
         );
     }
 
@@ -256,11 +196,28 @@ class BusinessUnitTest extends LinioTestCase
      * @dataProvider invalidXmlStructure
      */
     public function testItThrowsAExceptionWithoutMandatoryParametersInTheXml(
-        string $property,
-        string $schema
+        string $property
     ): void {
-        $this->expectException(InvalidXmlStructureException::class);
+        $this->specialFromDate = DateTimeImmutable::createFromFormat(DATE_ATOM, '2021-5-10T14:54:23+00:00');
+        $this->specialToDate = DateTimeImmutable::createFromFormat(DATE_ATOM, '2021-5-20T14:54:23+00:00');
+        $xmlString = sprintf(
+            $this->getSchema('Product/BusinessUnit.xml'),
+            $this->businessUnit,
+            $this->operatorCode,
+            $this->price,
+            $this->specialPrice,
+            $this->specialFromDate->format('Y-m-d H:i:s'),
+            $this->specialToDate->format('Y-m-d H:i:s'),
+            $this->stock,
+            $this->status,
+            $this->isPublished
+        );
 
+        $xml = new SimpleXMLElement($xmlString);
+
+        unset($xml->{$property});
+
+        $this->expectException(InvalidXmlStructureException::class);
         $this->expectExceptionMessage(
             sprintf(
                 'The xml structure is not valid for a BusinessUnit. The property %s should exist',
@@ -268,17 +225,29 @@ class BusinessUnitTest extends LinioTestCase
             )
         );
 
-        BusinessUnitFactory::make(new SimpleXMLElement($this->getSchema($schema)));
+        BusinessUnitFactory::make($xml);
     }
 
     public function invalidXmlStructure(): array
     {
         return [
-            ['IsPublished', 'Product/BusinessUnitWithoutIsPublished.xml'],
-            ['Status', 'Product/BusinessUnitWithoutStatus.xml'],
-            ['Stock', 'Product/BusinessUnitWithoutStock.xml'],
-            ['Price', 'Product/BusinessUnitWithoutPrice.xml'],
-            ['OperatorCode', 'Product/BusinessUnitWithoutOperatorCode.xml'],
+            ['IsPublished'],
+            ['Status'],
+            ['Stock'],
+            ['Price'],
+            ['OperatorCode'],
+        ];
+    }
+
+    public function invalidParameters(): array
+    {
+        return [
+            ['SpecialPrice', $this->operatorCode, $this->price, $this->stock, $this->status, $this->isPublished, $this->businessUnit, -1000],
+            ['BusinessUnit', $this->operatorCode, $this->price, $this->stock, $this->status, $this->isPublished, 'Another ecommerce', $this->specialPrice],
+            ['Status', $this->operatorCode, $this->price, $this->stock, 'Unavailable', $this->isPublished, $this->businessUnit, $this->specialPrice],
+            ['Stock', $this->operatorCode, $this->price, -1, $this->status, $this->isPublished, $this->businessUnit, $this->specialPrice],
+            ['Price', $this->operatorCode, -1, $this->stock, $this->status, $this->isPublished, $this->businessUnit, $this->specialPrice],
+            ['OperatorCode', 'faco', $this->price, $this->stock, $this->status, $this->isPublished, $this->businessUnit, $this->specialPrice],
         ];
     }
 }
