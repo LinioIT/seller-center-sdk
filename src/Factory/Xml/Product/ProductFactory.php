@@ -30,7 +30,7 @@ class ProductFactory
         return $product;
     }
 
-    public static function makeProduct(SimpleXMLElement $element): Product
+    private static function makeProduct(SimpleXMLElement $element): Product
     {
         if (!property_exists($element, 'Price')) {
             throw new InvalidXmlStructureException('Product', 'Price');
@@ -117,7 +117,7 @@ class ProductFactory
         return $product;
     }
 
-    public static function makeGlobalProduct(SimpleXMLElement $element): GlobalProduct
+    private static function makeGlobalProduct(SimpleXMLElement $element): GlobalProduct
     {
         if ($element->BusinessUnits->BusinessUnit->count() == 0) {
             throw new InvalidXmlStructureException('Product', 'BusinessUnits');
@@ -174,7 +174,7 @@ class ProductFactory
         return $product;
     }
 
-    private static function ValidateBaseProductXmlStructure(SimpleXMLElement $element): void
+    private static function validateBaseProductXmlStructure(SimpleXMLElement $element): void
     {
         if (!property_exists($element, 'SellerSku')) {
             throw new InvalidXmlStructureException('Product', 'SellerSku');
