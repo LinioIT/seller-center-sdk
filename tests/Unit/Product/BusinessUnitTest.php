@@ -216,7 +216,7 @@ class BusinessUnitTest extends LinioTestCase
         $xml = new SimpleXMLElement($xmlString);
 
         unset($xml->{$property});
-        
+
         $this->expectException(InvalidXmlStructureException::class);
         $this->expectExceptionMessage(
             sprintf(
