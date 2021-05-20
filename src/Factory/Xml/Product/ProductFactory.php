@@ -22,12 +22,10 @@ class ProductFactory
         self::ValidateBaseProductXmlStructure($element);
 
         if (!property_exists($element, 'BusinessUnits')) {
-            $product = self::makeProduct($element);
-        } else {
-            $product = self::makeGlobalProduct($element);
+            return self::makeProduct($element);
         }
 
-        return $product;
+        return self::makeGlobalProduct($element);
     }
 
     private static function makeProduct(SimpleXMLElement $element): Product
@@ -120,7 +118,7 @@ class ProductFactory
     private static function makeGlobalProduct(SimpleXMLElement $element): GlobalProduct
     {
         if ($element->BusinessUnits->BusinessUnit->count() == 0) {
-            throw new InvalidXmlStructureException('Product', 'BusinessUnits');
+            throw new InvalidXmlStructureException('Product', 'BusinessUnit');
         }
 
         $businessUnits = BusinessUnitsFactory::make($element->BusinessUnits);
