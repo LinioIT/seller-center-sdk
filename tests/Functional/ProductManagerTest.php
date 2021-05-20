@@ -11,6 +11,7 @@ use Linio\SellerCenter\Application\Configuration;
 use Linio\SellerCenter\Model\Brand\Brand;
 use Linio\SellerCenter\Model\Category\Categories;
 use Linio\SellerCenter\Model\Category\Category;
+use Linio\SellerCenter\Model\Product\GlobalProduct;
 use Linio\SellerCenter\Model\Product\Image;
 use Linio\SellerCenter\Model\Product\Product;
 use Linio\SellerCenter\Model\Product\ProductData;
@@ -34,6 +35,106 @@ class ProductManagerTest extends LinioTestCase
 
         $this->products->add($this->primaryProduct());
         $this->products->add($this->secondProduct());
+    }
+
+    public function testItReturnsACollectionOfGlobalProducts(): void
+    {
+        $client = $this->createClientWithResponse($this->getResponse('Product/GlobalProductsResponse.xml'));
+
+        $env = $this->getParameters();
+        $configuration = new Configuration($env['key'], $env['username'], $env['endpoint'], $env['version']);
+
+        $sdkClient = new SellerCenterSdk($configuration, $client);
+
+        $result = $sdkClient->products()->getAllProducts();
+
+        $this->assertIsArray($result);
+        $this->assertContainsOnlyInstancesOf(GlobalProduct::class, $result);
+    }
+
+    public function testItReturnsACollectionOfGlobalProductsCreatedAfterADateTime(): void
+    {
+        $client = $this->createClientWithResponse($this->getResponse('Product/GlobalProductsResponse.xml'));
+
+        $env = $this->getParameters();
+        $configuration = new Configuration($env['key'], $env['username'], $env['endpoint'], $env['version']);
+
+        $sdkClient = new SellerCenterSdk($configuration, $client);
+
+        $createdAfter = DateTimeImmutable::createFromFormat('Y-m-d H:i:s', '2018-09-01 00:00:00');
+
+        $result = $sdkClient->products()->getProductsCreatedAfter($createdAfter);
+
+        $this->assertIsArray($result);
+        $this->assertContainsOnlyInstancesOf(GlobalProduct::class, $result);
+    }
+
+    public function testItReturnsACollectionOfGlobalProductsCreatedBeforeADateTime(): void
+    {
+        $client = $this->createClientWithResponse($this->getResponse('Product/GlobalProductsResponse.xml'));
+
+        $env = $this->getParameters();
+        $configuration = new Configuration($env['key'], $env['username'], $env['endpoint'], $env['version']);
+
+        $sdkClient = new SellerCenterSdk($configuration, $client);
+
+        $createdBefore = DateTimeImmutable::createFromFormat('Y-m-d H:i:s', '2019-01-23 00:00:00');
+
+        $result = $sdkClient->products()->getProductsCreatedBefore($createdBefore);
+
+        $this->assertIsArray($result);
+        $this->assertContainsOnlyInstancesOf(GlobalProduct::class, $result);
+    }
+
+    public function testItReturnsACollectionOfGlobalProductsUpdatedAfterADateTime(): void
+    {
+        $client = $this->createClientWithResponse($this->getResponse('Product/GlobalProductsResponse.xml'));
+
+        $env = $this->getParameters();
+        $configuration = new Configuration($env['key'], $env['username'], $env['endpoint'], $env['version']);
+
+        $sdkClient = new SellerCenterSdk($configuration, $client);
+
+        $updatedAfter = DateTimeImmutable::createFromFormat('Y-m-d H:i:s', '2019-01-23 00:00:00');
+
+        $result = $sdkClient->products()->getProductsUpdatedAfter($updatedAfter);
+
+        $this->assertIsArray($result);
+        $this->assertContainsOnlyInstancesOf(GlobalProduct::class, $result);
+    }
+
+    public function testItReturnsACollectionOfGlobalProductsUpdatedBeforeADateTime(): void
+    {
+        $client = $this->createClientWithResponse($this->getResponse('Product/GlobalProductsResponse.xml'));
+
+        $env = $this->getParameters();
+        $configuration = new Configuration($env['key'], $env['username'], $env['endpoint'], $env['version']);
+
+        $sdkClient = new SellerCenterSdk($configuration, $client);
+
+        $updatedBefore = DateTimeImmutable::createFromFormat('Y-m-d H:i:s', '2019-01-23 00:00:00');
+
+        $result = $sdkClient->products()->getProductsUpdatedBefore($updatedBefore);
+
+        $this->assertIsArray($result);
+        $this->assertContainsOnlyInstancesOf(GlobalProduct::class, $result);
+    }
+
+    public function testItReturnsACollectionOfGlobalProductsSearchedByValue(): void
+    {
+        $client = $this->createClientWithResponse($this->getResponse('Product/GlobalProductsResponse.xml'));
+
+        $env = $this->getParameters();
+        $configuration = new Configuration($env['key'], $env['username'], $env['endpoint'], $env['version']);
+
+        $sdkClient = new SellerCenterSdk($configuration, $client);
+
+        $search = 'pil';
+
+        $result = $sdkClient->products()->searchProducts($search);
+
+        $this->assertIsArray($result);
+        $this->assertContainsOnlyInstancesOf(GlobalProduct::class, $result);
     }
 
     public function testItReturnsACollectionOfProducts(): void
@@ -368,128 +469,13 @@ class ProductManagerTest extends LinioTestCase
         ];
     }
 
-    public function getResponse(): string
+    public function getResponse($schema = null): string
     {
-        return '<?xml version="1.0" encoding="UTF-8"?>
-                    <SuccessResponse>
-                         <Head>
-                              <RequestId/>
-                              <RequestAction>GetProducts</RequestAction>
-                              <ResponseType>Products</ResponseType>
-                              <Timestamp>2019-02-05T11:39:11-0300</Timestamp>
-                         </Head>
-                         <Body>
-                              <Products>
-                                   <Product>
-                                        <SellerSku>jasku-10001</SellerSku>
-                                        <ShopSku>A89AS7A7S99</ShopSku>
-                                        <ProductSin>SAU8SAY87AS</ProductSin>
-                                        <Name>jasku-10001</Name>
-                                        <Variation>0</Variation>
-                                        <ParentSku>jasku-10001</ParentSku>
-                                        <Quantity>1000</Quantity>
-                                        <Available>1000</Available>
-                                        <Price>22000.00</Price>
-                                        <SalePrice>20000.00</SalePrice>
-                                        <SaleStartDate>2019-01-23 00:00:00</SaleStartDate>
-                                        <SaleEndDate>2019-02-25 00:00:00</SaleEndDate>
-                                        <Status>active</Status>
-                                        <ProductId>jasku-10001</ProductId>
-                                        <Url/>
-                                        <MainImage/>
-                                        <Images>
-                                          <Image>http://static.somesite.com/p/image1.jpg</Image>
-                                          <Image>http://static.somesite.com/p/image2.jpg</Image>
-                                          <Image>http://static.somesite.com/p/image3.jpg</Image>
-                                        </Images>
-                                        <Description>fdsfdsfds&lt;span&gt;&lt;/span&gt;</Description>
-                                        <TaxClass>IVA 19%</TaxClass>
-                                        <Brand>GENERIC</Brand>
-                                        <PrimaryCategory>Sillas Portabebes para Bicicletas</PrimaryCategory>
-                                        <Categories>1232,32132</Categories>
-                                        <ProductData>
-                                             <ConditionType>Nuevo</ConditionType>
-                                             <PackageWidth>5</PackageWidth>
-                                             <PackageLength>5</PackageLength>
-                                             <PackageHeight>5</PackageHeight>
-                                             <PackageWeight>1</PackageWeight>
-                                             <ShortDescription>1,2,3,4</ShortDescription>
-                                        </ProductData>
-                                   </Product>
-                                   <Product>
-                                        <SellerSku>jasku-10002</SellerSku>
-                                        <ShopSku>NE32HE293ED9</ShopSku>
-                                        <ProductSin>MDWIJ239DAD9H</ProductSin>
-                                        <Variation>...</Variation>
-                                        <ParentSku>jasku-10002</ParentSku>
-                                        <Quantity>1000</Quantity>
-                                        <Available>1000</Available>
-                                        <Price>22000.00</Price>
-                                        <SalePrice>20000.00</SalePrice>
-                                        <SaleStartDate>2019-01-23 00:00:00</SaleStartDate>
-                                        <SaleEndDate>2019-02-25 00:00:00</SaleEndDate>
-                                        <Status>active</Status>
-                                        <ProductId>jasku-10002</ProductId>
-                                        <Url/>
-                                        <MainImage/>
-                                        <Images>
-                                          <Image>http://static.somesite.com/p/image1.jpg</Image>
-                                          <Image>http://static.somesite.com/p/image2.jpg</Image>
-                                          <Image>http://static.somesite.com/p/image3.jpg</Image>
-                                        </Images>
-                                        <Description>ndjdhmq mamnk</Description>
-                                        <TaxClass>IVA 19%</TaxClass>
-                                        <Brand>GENERIC</Brand>
-                                        <PrimaryCategory>Andadores de seguridad</PrimaryCategory>
-                                        <Categories>2713,78123</Categories>
-                                        <ProductData>
-                                             <ConditionType>Nuevo</ConditionType>
-                                             <PackageWidth>5</PackageWidth>
-                                             <PackageLength>5</PackageLength>
-                                             <PackageHeight>5</PackageHeight>
-                                             <PackageWeight>1</PackageWeight>
-                                             <ShortDescription>1,2,3,4</ShortDescription>
-                                        </ProductData>
-                                   </Product>
-                                   <Product>
-                                        <SellerSku>jasku-10003</SellerSku>
-                                        <ShopSku>MMIDJ20M10JDM10</ShopSku>
-                                        <ProductSin>MWQI10923D109J</ProductSin>
-                                        <Name>jasku-10003</Name>
-                                        <Variation>...</Variation>
-                                        <ParentSku>jasku-10003</ParentSku>
-                                        <Quantity>1000</Quantity>
-                                        <Available>1000</Available>
-                                        <Price>22000.00</Price>
-                                        <SalePrice>20000.00</SalePrice>
-                                        <SaleStartDate>2019-01-23 00:00:00</SaleStartDate>
-                                        <SaleEndDate>2019-02-25 00:00:00</SaleEndDate>
-                                        <Status>active</Status>
-                                        <ProductId>jasku-10003</ProductId>
-                                        <Url/>
-                                        <MainImage/>
-                                        <Images>
-                                          <Image>http://static.somesite.com/p/image1.jpg</Image>
-                                          <Image>http://static.somesite.com/p/image2.jpg</Image>
-                                          <Image>http://static.somesite.com/p/image3.jpg</Image>
-                                        </Images>
-                                        <Description>fdsfdsfds&lt;span&gt;&lt;/span&gt;</Description>
-                                        <TaxClass>IVA 19%</TaxClass>
-                                        <Brand>GENERIC</Brand>
-                                        <PrimaryCategory>Sillas Portabebes para Bicicletas</PrimaryCategory>
-                                        <Categories>2819,23819</Categories>
-                                        <ProductData>
-                                             <ConditionType>Reacondicionado</ConditionType>
-                                             <PackageWidth>5</PackageWidth>
-                                             <PackageLength>5</PackageLength>
-                                             <PackageHeight>0</PackageHeight>
-                                             <PackageWeight>1</PackageWeight>
-                                             <ShortDescription>1,2,3,4</ShortDescription>
-                                        </ProductData>
-                                   </Product>
-                              </Products>
-                         </Body>
-                    </SuccessResponse>';
+        if (empty($schema)) {
+            return $this->getSchema('Product/ProductsResponse.xml');
+        }
+
+        return $this->getSchema($schema);;
     }
 
     public function primaryProduct(): Product
