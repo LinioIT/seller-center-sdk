@@ -179,32 +179,7 @@ class GlobalProductTest extends LinioTestCase
 
     public function testItMakesAProductFromXml(): void
     {
-        $sXml = sprintf(
-            $this->getSchema('Product/GlobalProduct.xml'),
-            $this->sellerSku,
-            $this->parentSku,
-            $this->newSellerSku,
-            $this->name,
-            $this->shopSku,
-            $this->productSin,
-            $this->brand->getName(),
-            $this->description,
-            $this->taxClass,
-            $this->variation,
-            $this->productId,
-            $this->primaryCategory->getName(),
-            $this->qcStatus,
-            $this->conditionType,
-            $this->packageHeight,
-            $this->packageLength,
-            $this->packageWidth,
-            $this->packageWeight,
-            $this->operatorCode,
-            $this->price,
-            $this->stock,
-            $this->status,
-            $this->isPublished
-        );
+        $sXml = $this->createXmlStringForAGlobalProduct();
 
         $xml = new SimpleXMLElement($sXml);
 
@@ -280,32 +255,7 @@ class GlobalProductTest extends LinioTestCase
      */
     public function testItThrowsAExceptionWithoutASellerSkuInTheXml($property): void
     {
-        $xmlString = sprintf(
-            $this->getSchema('Product/GlobalProduct.xml'),
-            $this->sellerSku,
-            $this->parentSku,
-            $this->newSellerSku,
-            $this->name,
-            $this->shopSku,
-            $this->productSin,
-            $this->brand->getName(),
-            $this->description,
-            $this->taxClass,
-            $this->variation,
-            $this->productId,
-            $this->primaryCategory->getName(),
-            $this->qcStatus,
-            $this->conditionType,
-            $this->packageHeight,
-            $this->packageLength,
-            $this->packageWidth,
-            $this->packageWeight,
-            $this->operatorCode,
-            $this->price,
-            $this->stock,
-            $this->status,
-            $this->isPublished
-        );
+        $xmlString = $this->createXmlStringForAGlobalProduct();
 
         $this->expectException(InvalidXmlStructureException::class);
 
@@ -368,5 +318,35 @@ class GlobalProductTest extends LinioTestCase
             ['ProductData'],
             ['BusinessUnits'],
         ];
+    }
+
+    public function createXmlStringForAGlobalProduct(): string
+    {
+        return sprintf(
+            $this->getSchema('Product/GlobalProduct.xml'),
+            $this->sellerSku,
+            $this->parentSku,
+            $this->newSellerSku,
+            $this->name,
+            $this->shopSku,
+            $this->productSin,
+            $this->brand->getName(),
+            $this->description,
+            $this->taxClass,
+            $this->variation,
+            $this->productId,
+            $this->primaryCategory->getName(),
+            $this->qcStatus,
+            $this->conditionType,
+            $this->packageHeight,
+            $this->packageLength,
+            $this->packageWidth,
+            $this->packageWeight,
+            $this->operatorCode,
+            $this->price,
+            $this->stock,
+            $this->status,
+            $this->isPublished
+        );
     }
 }
