@@ -234,7 +234,7 @@ class ProductsTest extends LinioTestCase
 
     public function testCreatesAGlobalProductFromAXml(): void
     {
-        $response = $this->getResponseMock($this->getSchema('Product/GlobalProductsResponse.xml'));
+        $response = $this->getResponseMock('Product/GlobalProductsResponse.xml');
         $products = ProductsFactory::make($response->Body);
 
         $sku = 'jasku-10003';
@@ -248,12 +248,8 @@ class ProductsTest extends LinioTestCase
         $this->assertEquals($product->getSellerSku(), $xmlProduct->SellerSku);
     }
 
-    public function getResponseMock($xml = null)
+    public function getResponseMock(string $xml = 'Product/ProductsResponse.xml')
     {
-        if (empty($xml)) {
-            $xml = $this->getSchema('Product/ProductsResponse.xml');
-        }
-
-        return simplexml_load_string($xml);
+        return simplexml_load_string($this->getSchema($xml));
     }
 }
