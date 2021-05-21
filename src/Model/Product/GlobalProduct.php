@@ -98,7 +98,6 @@ class GlobalProduct extends BaseProduct implements JsonSerializable
             Attribute::FEED_NEW_SELLER_SKU => $this->newSellerSku,
             Attribute::FEED_NAME => $this->name,
             Attribute::FEED_VARIATION => $this->variation,
-            Attribute::FEED_STATUS => $this->status,
             Attribute::FEED_PRIMARY_CATEGORY => $this->primaryCategory,
             Attribute::FEED_CATEGORIES => $this->categories,
             Attribute::FEED_DESCRIPTION => $this->description,
