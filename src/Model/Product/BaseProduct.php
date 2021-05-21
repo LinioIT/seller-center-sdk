@@ -41,11 +41,6 @@ abstract class BaseProduct implements JsonSerializable
     /**
      * @var string
      */
-    protected $status;
-
-    /**
-     * @var string
-     */
     protected $name;
 
     /**
