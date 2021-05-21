@@ -469,12 +469,8 @@ class ProductManagerTest extends LinioTestCase
         ];
     }
 
-    public function getResponse($schema = null): string
+    public function getResponse(string $schema = 'Product/ProductsResponse.xml'): string
     {
-        if (empty($schema)) {
-            return $this->getSchema('Product/ProductsResponse.xml');
-        }
-
         return $this->getSchema($schema);
     }
 
