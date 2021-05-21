@@ -142,6 +142,10 @@ class ProductFactory
             $productData
         );
 
+        if (!empty($element->QCStatus)) {
+            $product->setQcStatus((string) $element->QCStatus);
+        }
+
         if (!empty($element->ShopSku)) {
             $product->setShopSku((string) $element->ShopSku);
         }
