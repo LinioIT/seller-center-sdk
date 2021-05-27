@@ -215,14 +215,22 @@ The method `productCreate` could be used to create one or multiple products.
 
 | Parameter | Type | Description | Required | Default |
 | --------- | :----: | ----------- | :--------: | :-------: |
-| $products | array | Array of Product entities. | Yes | - | 
+| $products | Products | Collection of Product entities. | Yes | - | 
 
 Note: The creation of the product is asynchronous. The process will return a  feed ID to look for the creation status. The images cannot be created with this method. 
 
 
 Example:
 ```php
-$products = [ $product_1, $product_2, $product_3];
+$product_1 = Product::fromBasicData(...)
+$product_2 = Product::fromBasicData(...)
+$product_3 = Product::fromBasicData(...)
+
+$products = new Products();
+
+$products->add($product_1);
+$products->add($product_2);
+$products->add($product_3);
 
 // Create the products.
 $products = $sdk->products()->productCreate($products);
