@@ -330,7 +330,7 @@ class ProductManagerTest extends LinioTestCase
     /**
      * @dataProvider productActions
      */
-    public function testItReturnsAFeedResponseFromAProductActionRequest($action, $isGlobal): void
+    public function testItReturnsAFeedResponseFromAProductActionRequest(string $action, bool $isGlobal): void
     {
         $body = sprintf(
             $this->getSchema('Feed/ProductActionFeedResponse.xml'),
@@ -446,7 +446,7 @@ class ProductManagerTest extends LinioTestCase
         $productId = '123326998';
         $taxClass = 'IVA exento 0%';
         $productData = new ProductData('Nuevo', 0, 4, 5, 4);
- 
+
         if (!$isGlobal) {
             $product = Product::fromBasicData(
                 $sellerSku,
