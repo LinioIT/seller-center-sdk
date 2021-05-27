@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ErrorResponse>
+    <Head>
+        <RequestAction>%s</RequestAction>
+        <ErrorType>%s</ErrorType>
+        <ErrorCode>%d</ErrorCode>
+        <ErrorMessage>%s</ErrorMessage>
+    </Head>
+    <Body/>
+</ErrorResponse>
