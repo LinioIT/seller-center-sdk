@@ -25,9 +25,25 @@ class ProductManagerTest extends LinioTestCase
 {
     use ClientHelper;
 
+    /**
+     * @var Products
+     */
     protected $products;
+
+    /**
+     * @var Products
+     */
     protected $globalProducts;
+
+    /**
+     * @var Generator
+     */
     protected $faker;
+
+    /**
+     * @var Configuration
+     */
+    protected $configuration;
 
     public function setUp(): void
     {
@@ -43,265 +59,177 @@ class ProductManagerTest extends LinioTestCase
 
         $this->globalProducts->add($this->primaryProduct(true));
         $this->globalProducts->add($this->secondProduct(true));
-    }
-
-    public function testItReturnsACollectionOfGlobalProducts(): void
-    {
-        $client = $this->createClientWithResponse($this->getResponse('Product/GlobalProductsResponse.xml'));
 
         $env = $this->getParameters();
-        $configuration = new Configuration($env['key'], $env['username'], $env['endpoint'], $env['version']);
+        $this->configuration = new Configuration($env['key'], $env['username'], $env['endpoint'], $env['version']);
+    }
 
-        $sdkClient = new SellerCenterSdk($configuration, $client);
+    /**
+     * @dataProvider productsClasses
+     */
+    public function testItReturnsACollectionOfProducts(string $className): void
+    {
+        $client = $this->createClientWithResponse(
+            new $className() instanceof Product ? $this->getResponse() : $this->getResponse('Product/GlobalProductsResponse.xml')
+        );
+        $sdkClient = new SellerCenterSdk($this->configuration, $client);
 
         $result = $sdkClient->products()->getAllProducts();
 
         $this->assertIsArray($result);
-        $this->assertContainsOnlyInstancesOf(GlobalProduct::class, $result);
+        $this->assertContainsOnlyInstancesOf($className, $result);
     }
 
-    public function testItReturnsACollectionOfGlobalProductsCreatedAfterADateTime(): void
+    /**
+     * @dataProvider productsClasses
+     */
+    public function testItReturnsACollectionOfProductsCreatedAfterADateTime(string $className): void
     {
-        $client = $this->createClientWithResponse($this->getResponse('Product/GlobalProductsResponse.xml'));
+        $client = $this->createClientWithResponse(
+            new $className() instanceof Product ? $this->getResponse() : $this->getResponse('Product/GlobalProductsResponse.xml')
+        );
 
-        $env = $this->getParameters();
-        $configuration = new Configuration($env['key'], $env['username'], $env['endpoint'], $env['version']);
-
-        $sdkClient = new SellerCenterSdk($configuration, $client);
+        $sdkClient = new SellerCenterSdk($this->configuration, $client);
 
         $createdAfter = DateTimeImmutable::createFromFormat('Y-m-d H:i:s', '2018-09-01 00:00:00');
 
         $result = $sdkClient->products()->getProductsCreatedAfter($createdAfter);
 
         $this->assertIsArray($result);
-        $this->assertContainsOnlyInstancesOf(GlobalProduct::class, $result);
+        $this->assertContainsOnlyInstancesOf($className, $result);
     }
 
-    public function testItReturnsACollectionOfGlobalProductsCreatedBeforeADateTime(): void
+    /**
+     * @dataProvider productsClasses
+     */
+    public function testItReturnsACollectionOfProductsCreatedBeforeADateTime(string $className): void
     {
-        $client = $this->createClientWithResponse($this->getResponse('Product/GlobalProductsResponse.xml'));
+        $client = $this->createClientWithResponse(
+            new $className() instanceof Product ? $this->getResponse() : $this->getResponse('Product/GlobalProductsResponse.xml')
+        );
 
-        $env = $this->getParameters();
-        $configuration = new Configuration($env['key'], $env['username'], $env['endpoint'], $env['version']);
-
-        $sdkClient = new SellerCenterSdk($configuration, $client);
+        $sdkClient = new SellerCenterSdk($this->configuration, $client);
 
         $createdBefore = DateTimeImmutable::createFromFormat('Y-m-d H:i:s', '2019-01-23 00:00:00');
 
         $result = $sdkClient->products()->getProductsCreatedBefore($createdBefore);
 
         $this->assertIsArray($result);
-        $this->assertContainsOnlyInstancesOf(GlobalProduct::class, $result);
+        $this->assertContainsOnlyInstancesOf($className, $result);
     }
 
-    public function testItReturnsACollectionOfGlobalProductsUpdatedAfterADateTime(): void
+    /**
+     * @dataProvider productsClasses
+     */
+    public function testItReturnsACollectionOfProductsUpdatedAfterADateTime(string $className): void
     {
-        $client = $this->createClientWithResponse($this->getResponse('Product/GlobalProductsResponse.xml'));
-
-        $env = $this->getParameters();
-        $configuration = new Configuration($env['key'], $env['username'], $env['endpoint'], $env['version']);
-
-        $sdkClient = new SellerCenterSdk($configuration, $client);
+        $client = $this->createClientWithResponse(
+            new $className() instanceof Product ? $this->getResponse() : $this->getResponse('Product/GlobalProductsResponse.xml')
+        );
+        $sdkClient = new SellerCenterSdk($this->configuration, $client);
 
         $updatedAfter = DateTimeImmutable::createFromFormat('Y-m-d H:i:s', '2019-01-23 00:00:00');
 
         $result = $sdkClient->products()->getProductsUpdatedAfter($updatedAfter);
 
         $this->assertIsArray($result);
-        $this->assertContainsOnlyInstancesOf(GlobalProduct::class, $result);
+        $this->assertContainsOnlyInstancesOf($className, $result);
     }
 
-    public function testItReturnsACollectionOfGlobalProductsUpdatedBeforeADateTime(): void
+    /**
+     * @dataProvider productsClasses
+     */
+    public function testItReturnsACollectionOfProductsUpdatedBeforeADateTime(string $className): void
     {
-        $client = $this->createClientWithResponse($this->getResponse('Product/GlobalProductsResponse.xml'));
-
-        $env = $this->getParameters();
-        $configuration = new Configuration($env['key'], $env['username'], $env['endpoint'], $env['version']);
-
-        $sdkClient = new SellerCenterSdk($configuration, $client);
+        $client = $this->createClientWithResponse(
+            new $className() instanceof Product ? $this->getResponse() : $this->getResponse('Product/GlobalProductsResponse.xml')
+        );
+        $sdkClient = new SellerCenterSdk($this->configuration, $client);
 
         $updatedBefore = DateTimeImmutable::createFromFormat('Y-m-d H:i:s', '2019-01-23 00:00:00');
 
         $result = $sdkClient->products()->getProductsUpdatedBefore($updatedBefore);
 
         $this->assertIsArray($result);
-        $this->assertContainsOnlyInstancesOf(GlobalProduct::class, $result);
+        $this->assertContainsOnlyInstancesOf($className, $result);
     }
 
-    public function testItReturnsACollectionOfGlobalProductsSearchedByValue(): void
+    /**
+     * @dataProvider productsClasses
+     */
+    public function testItReturnsACollectionOfProductsSearchedByValue(string $className): void
     {
-        $client = $this->createClientWithResponse($this->getResponse('Product/GlobalProductsResponse.xml'));
-
-        $env = $this->getParameters();
-        $configuration = new Configuration($env['key'], $env['username'], $env['endpoint'], $env['version']);
-
-        $sdkClient = new SellerCenterSdk($configuration, $client);
+        $client = $this->createClientWithResponse(
+            new $className() instanceof Product ? $this->getResponse() : $this->getResponse('Product/GlobalProductsResponse.xml')
+        );
+        $sdkClient = new SellerCenterSdk($this->configuration, $client);
 
         $search = 'pil';
 
         $result = $sdkClient->products()->searchProducts($search);
 
         $this->assertIsArray($result);
-        $this->assertContainsOnlyInstancesOf(GlobalProduct::class, $result);
-    }
-
-    public function testItReturnsACollectionOfProducts(): void
-    {
-        $client = $this->createClientWithResponse($this->getResponse());
-
-        $env = $this->getParameters();
-        $configuration = new Configuration($env['key'], $env['username'], $env['endpoint'], $env['version']);
-
-        $sdkClient = new SellerCenterSdk($configuration, $client);
-
-        $result = $sdkClient->products()->getAllProducts();
-
-        $this->assertIsArray($result);
-        $this->assertContainsOnlyInstancesOf(Product::class, $result);
-    }
-
-    public function testItReturnsACollectionOfProductsCreatedAfterADateTime(): void
-    {
-        $client = $this->createClientWithResponse($this->getResponse());
-
-        $env = $this->getParameters();
-        $configuration = new Configuration($env['key'], $env['username'], $env['endpoint'], $env['version']);
-
-        $sdkClient = new SellerCenterSdk($configuration, $client);
-
-        $createdAfter = DateTimeImmutable::createFromFormat('Y-m-d H:i:s', '2018-09-01 00:00:00');
-
-        $result = $sdkClient->products()->getProductsCreatedAfter($createdAfter);
-
-        $this->assertIsArray($result);
-        $this->assertContainsOnlyInstancesOf(Product::class, $result);
-    }
-
-    public function testItReturnsACollectionOfProductsCreatedBeforeADateTime(): void
-    {
-        $client = $this->createClientWithResponse($this->getResponse());
-
-        $env = $this->getParameters();
-        $configuration = new Configuration($env['key'], $env['username'], $env['endpoint'], $env['version']);
-
-        $sdkClient = new SellerCenterSdk($configuration, $client);
-
-        $createdBefore = DateTimeImmutable::createFromFormat('Y-m-d H:i:s', '2019-01-23 00:00:00');
-
-        $result = $sdkClient->products()->getProductsCreatedBefore($createdBefore);
-
-        $this->assertIsArray($result);
-        $this->assertContainsOnlyInstancesOf(Product::class, $result);
-    }
-
-    public function testItReturnsACollectionOfProductsUpdatedAfterADateTime(): void
-    {
-        $client = $this->createClientWithResponse($this->getResponse());
-
-        $env = $this->getParameters();
-        $configuration = new Configuration($env['key'], $env['username'], $env['endpoint'], $env['version']);
-
-        $sdkClient = new SellerCenterSdk($configuration, $client);
-
-        $updatedAfter = DateTimeImmutable::createFromFormat('Y-m-d H:i:s', '2019-01-23 00:00:00');
-
-        $result = $sdkClient->products()->getProductsUpdatedAfter($updatedAfter);
-
-        $this->assertIsArray($result);
-        $this->assertContainsOnlyInstancesOf(Product::class, $result);
-    }
-
-    public function testItReturnsACollectionOfProductsUpdatedBeforeADateTime(): void
-    {
-        $client = $this->createClientWithResponse($this->getResponse());
-
-        $env = $this->getParameters();
-        $configuration = new Configuration($env['key'], $env['username'], $env['endpoint'], $env['version']);
-
-        $sdkClient = new SellerCenterSdk($configuration, $client);
-
-        $updatedBefore = DateTimeImmutable::createFromFormat('Y-m-d H:i:s', '2019-01-23 00:00:00');
-
-        $result = $sdkClient->products()->getProductsUpdatedBefore($updatedBefore);
-
-        $this->assertIsArray($result);
-        $this->assertContainsOnlyInstancesOf(Product::class, $result);
-    }
-
-    public function testItReturnsACollectionOfProductsSearchedByValue(): void
-    {
-        $client = $this->createClientWithResponse($this->getResponse());
-
-        $env = $this->getParameters();
-        $configuration = new Configuration($env['key'], $env['username'], $env['endpoint'], $env['version']);
-
-        $sdkClient = new SellerCenterSdk($configuration, $client);
-
-        $search = 'pil';
-
-        $result = $sdkClient->products()->searchProducts($search);
-
-        $this->assertIsArray($result);
-        $this->assertContainsOnlyInstancesOf(Product::class, $result);
+        $this->assertContainsOnlyInstancesOf($className, $result);
     }
 
     /**
      * @dataProvider filters
      */
-    public function testItReturnsACollectionOfProductsFiltered(string $filters): void
+    public function testItReturnsACollectionOfProductsFiltered(string $filters, string $className): void
     {
-        $client = $this->createClientWithResponse($this->getResponse());
-
-        $env = $this->getParameters();
-        $configuration = new Configuration($env['key'], $env['username'], $env['endpoint'], $env['version']);
-
-        $sdkClient = new SellerCenterSdk($configuration, $client);
+        $client = $this->createClientWithResponse(
+            new $className() instanceof Product ? $this->getResponse() : $this->getResponse('Product/GlobalProductsResponse.xml')
+        );
+        $sdkClient = new SellerCenterSdk($this->configuration, $client);
 
         $result = $sdkClient->products()->filterProducts($filters);
 
         $this->assertIsArray($result);
-        $this->assertContainsOnlyInstancesOf(Product::class, $result);
+        $this->assertContainsOnlyInstancesOf($className, $result);
     }
 
-    public function testItReturnsACollectionOfProductsBySkuSellerList(): void
+    /**
+     * @dataProvider productsClasses
+     */
+    public function testItReturnsACollectionOfProductsBySkuSellerList(string $className): void
     {
-        $client = $this->createClientWithResponse($this->getResponse());
-
-        $env = $this->getParameters();
-        $configuration = new Configuration($env['key'], $env['username'], $env['endpoint'], $env['version']);
-
-        $sdkClient = new SellerCenterSdk($configuration, $client);
+        $client = $this->createClientWithResponse(
+            new $className() instanceof Product ? $this->getResponse() : $this->getResponse('Product/GlobalProductsResponse.xml')
+        );
+        $sdkClient = new SellerCenterSdk($this->configuration, $client);
 
         $skuSellerList = ['jasku-10001', 'jasku-10002'];
 
         $result = $sdkClient->products()->getProductsBySellerSku($skuSellerList);
 
         $this->assertIsArray($result);
-        $this->assertContainsOnlyInstancesOf(Product::class, $result);
+        $this->assertContainsOnlyInstancesOf($className, $result);
     }
 
-    public function testItThrowsExceptionWithANullSkuSellerList(): void
+    /**
+     * @dataProvider productsClasses
+     */
+    public function testItThrowsExceptionWithANullSkuSellerList(string $className): void
     {
         $this->expectException(InvalidArgumentException::class);
 
-        $client = $this->createClientWithResponse($this->getResponse());
-
-        $env = $this->getParameters();
-        $configuration = new Configuration($env['key'], $env['username'], $env['endpoint'], $env['version']);
-
-        $sdkClient = new SellerCenterSdk($configuration, $client);
+        $client = $this->createClientWithResponse(
+            new $className() instanceof Product ? $this->getResponse() : $this->getResponse('Product/GlobalProductsResponse.xml')
+        );
+        $sdkClient = new SellerCenterSdk($this->configuration, $client);
 
         $sdkClient->products()->getProductsBySellerSku([]);
     }
 
-    public function testItReturnsACollectionOfProductsFromParameters(): void
+    /**
+     * @dataProvider productsClasses
+     */
+    public function testItReturnsACollectionOfProductsFromParameters(string $className): void
     {
-        $client = $this->createClientWithResponse($this->getResponse());
-
-        $env = $this->getParameters();
-        $configuration = new Configuration($env['key'], $env['username'], $env['endpoint'], $env['version']);
-
-        $sdkClient = new SellerCenterSdk($configuration, $client);
+        $client = $this->createClientWithResponse(
+            new $className() instanceof Product ? $this->getResponse() : $this->getResponse('Product/GlobalProductsResponse.xml')
+        );
+        $sdkClient = new SellerCenterSdk($this->configuration, $client);
 
         $createdBefore = DateTimeImmutable::createFromFormat('Y-m-d H:i:s', '2019-01-23 00:00:00');
         $createdAfter = DateTimeImmutable::createFromFormat('Y-m-d H:i:s', '2019-01-23 00:00:00');
@@ -324,7 +252,7 @@ class ProductManagerTest extends LinioTestCase
         );
 
         $this->assertIsArray($result);
-        $this->assertContainsOnlyInstancesOf(Product::class, $result);
+        $this->assertContainsOnlyInstancesOf($className, $result);
     }
 
     /**
@@ -338,11 +266,7 @@ class ProductManagerTest extends LinioTestCase
         );
 
         $client = $this->createClientWithResponse($body);
-
-        $env = $this->getParameters();
-        $configuration = new Configuration($env['key'], $env['username'], $env['endpoint'], $env['version']);
-
-        $sdkClient = new SellerCenterSdk($configuration, $client);
+        $sdkClient = new SellerCenterSdk($this->configuration, $client);
 
         $result = $sdkClient->products()->{$action}($isGlobal ? $this->globalProducts : $this->products);
 
@@ -365,56 +289,60 @@ class ProductManagerTest extends LinioTestCase
         );
 
         $client = $this->createClientWithResponse($body);
+        $sdkClient = new SellerCenterSdk($this->configuration, $client);
 
-        $env = $this->getParameters();
-        $configuration = new Configuration($env['key'], $env['username'], $env['endpoint'], $env['version']);
-
-        $sdk = new SellerCenterSdk($configuration, $client);
-
-        $result = $sdk->products()->addImage($images);
+        $result = $sdkClient->products()->addImage($images);
 
         $this->assertIsArray($this->products->all());
         $this->assertContainsOnlyInstancesOf(Product::class, $this->products->all());
         $this->assertInstanceOf(FeedResponse::class, $result);
     }
 
-    public function testItReturnsErrorResponseException(): void
+    /**
+     * @dataProvider productActions
+     */
+    public function testItReturnsErrorResponseException(string $action, bool $isGlobal): void
     {
         $this->expectException(Exception::class);
         $this->expectExceptionMessage('E0125: Test Error');
 
         $body = sprintf(
             $this->getSchema('Feed/ProductActionFeedResponseError.xml'),
-            'ProductCreate',
+            ucfirst($action),
             'Sender',
             125,
             'E0125: Test Error'
         );
 
         $client = $this->createClientWithResponse($body, 400);
+        $sdkClient = new SellerCenterSdk($this->configuration, $client);
 
-        $env = $this->getParameters();
-
-        $configuration = new Configuration($env['key'], $env['username'], $env['endpoint'], $env['version']);
-
-        $sdk = new SellerCenterSdk($configuration, $client);
-
-        $sdk->products()->productCreate($this->products);
+        $sdkClient->products()->productCreate($isGlobal ? $this->globalProducts : $this->products);
     }
 
     public function filters(): array
     {
         return [
-            ['all'],
-            ['live'],
-            ['inactive'],
-            ['deleted'],
-            ['image-missing'],
-            ['pending'],
-            ['rejected'],
-            ['sold-out'],
-            [''],
-            ['invalid-filter'],
+            ['all', Product::class],
+            ['live', Product::class],
+            ['inactive', Product::class],
+            ['deleted', Product::class],
+            ['image-missing', Product::class],
+            ['pending', Product::class],
+            ['rejected', Product::class],
+            ['sold-out', Product::class],
+            ['', Product::class],
+            ['invalid-filter', Product::class],
+            ['all', GlobalProduct::class],
+            ['live', GlobalProduct::class],
+            ['inactive', GlobalProduct::class],
+            ['deleted', GlobalProduct::class],
+            ['image-missing', GlobalProduct::class],
+            ['pending', GlobalProduct::class],
+            ['rejected', GlobalProduct::class],
+            ['sold-out', GlobalProduct::class],
+            ['', GlobalProduct::class],
+            ['invalid-filter', GlobalProduct::class],
         ];
     }
 
@@ -427,6 +355,14 @@ class ProductManagerTest extends LinioTestCase
             ['productUpdate', true],
             ['productRemove', false],
             ['productRemove', true],
+        ];
+    }
+
+    public function productsClasses(): array
+    {
+        return [
+            [Product::class],
+            [GlobalProduct::class],
         ];
     }
 
