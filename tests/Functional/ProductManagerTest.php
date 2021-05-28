@@ -11,6 +11,9 @@ use Linio\SellerCenter\Application\Configuration;
 use Linio\SellerCenter\Model\Brand\Brand;
 use Linio\SellerCenter\Model\Category\Categories;
 use Linio\SellerCenter\Model\Category\Category;
+use Linio\SellerCenter\Model\Product\BaseProduct;
+use Linio\SellerCenter\Model\Product\BusinessUnit;
+use Linio\SellerCenter\Model\Product\BusinessUnits;
 use Linio\SellerCenter\Model\Product\GlobalProduct;
 use Linio\SellerCenter\Model\Product\Image;
 use Linio\SellerCenter\Model\Product\Product;
@@ -23,6 +26,7 @@ class ProductManagerTest extends LinioTestCase
     use ClientHelper;
 
     protected $products;
+    protected $globalProducts;
     protected $faker;
 
     public function setUp(): void
@@ -32,9 +36,13 @@ class ProductManagerTest extends LinioTestCase
         $this->faker = $this->getFaker();
 
         $this->products = new Products();
+        $this->globalProducts = new Products();
 
         $this->products->add($this->primaryProduct());
         $this->products->add($this->secondProduct());
+
+        $this->globalProducts->add($this->primaryProduct(true));
+        $this->globalProducts->add($this->secondProduct(true));
     }
 
     public function testItReturnsACollectionOfGlobalProducts(): void
@@ -319,18 +327,15 @@ class ProductManagerTest extends LinioTestCase
         $this->assertContainsOnlyInstancesOf(Product::class, $result);
     }
 
-    public function testItReturnsAFeedResponseFromAProductCreateRequest(): void
+    /**
+     * @dataProvider productActions
+     */
+    public function testItReturnsAFeedResponseFromAProductActionRequest(string $action, bool $isGlobal): void
     {
-        $body = '<?xml version="1.0" encoding="UTF-8"?>
-                    <SuccessResponse>
-                        <Head>
-                            <RequestId>cb106552-87f3-450b-aa8b-412246a24b34</RequestId>
-                            <RequestAction>ProductCreate</RequestAction>
-                            <ResponseType/>
-                            <Timestamp>2016-06-22T04:40:14+0200</Timestamp>
-                        </Head>
-                        <Body/>
-                    </SuccessResponse>';
+        $body = sprintf(
+            $this->getSchema('Feed/ProductActionFeedResponse.xml'),
+            ucfirst($action)
+        );
 
         $client = $this->createClientWithResponse($body);
 
@@ -339,60 +344,13 @@ class ProductManagerTest extends LinioTestCase
 
         $sdkClient = new SellerCenterSdk($configuration, $client);
 
-        $result = $sdkClient->products()->productCreate($this->products);
+        $result = $sdkClient->products()->{$action}($isGlobal ? $this->globalProducts : $this->products);
 
-        $this->assertIsArray($this->products->all());
-        $this->assertContainsOnlyInstancesOf(Product::class, $this->products->all());
-        $this->assertInstanceOf(FeedResponse::class, $result);
-    }
-
-    public function testItReturnsAFeedResponseFromAProductUpdateRequest(): void
-    {
-        $body = '<?xml version="1.0" encoding="UTF-8"?>
-                    <SuccessResponse>
-                        <Head>
-                            <RequestId>cb106552-87f3-450b-aa8b-412246a24b34</RequestId>
-                            <RequestAction>ProductUpdate</RequestAction>
-                            <ResponseType/>
-                            <Timestamp>2016-06-22T04:40:14+0200</Timestamp>
-                        </Head>
-                        <Body/>
-                    </SuccessResponse>';
-
-        $client = $this->createClientWithResponse($body);
-
-        $parameters = $this->getParameters();
-        $configuration = new Configuration($parameters['key'], $parameters['username'], $parameters['endpoint'], $parameters['version']);
-
-        $sdk = new SellerCenterSdk($configuration, $client);
-
-        $result = $sdk->products()->productUpdate($this->products);
-
-        $this->assertInstanceOf(FeedResponse::class, $result);
-    }
-
-    public function testItReturnsAFeedResponseFromAProductRemoveRequest(): void
-    {
-        $body = '<?xml version="1.0" encoding="UTF-8"?>
-                    <SuccessResponse>
-                      <Head>
-                        <RequestId>f8bf8d09-1647-4136-b405-03c44f228cf5</RequestId>
-                        <RequestAction>ProductRemove</RequestAction>
-                        <ResponseType/>
-                        <Timestamp>2015-07-01T11:11:11+0000</Timestamp>
-                      </Head>
-                      <Body/>
-                    </SuccessResponse>';
-
-        $client = $this->createClientWithResponse($body);
-
-        $parameters = $this->getParameters();
-        $configuration = new Configuration($parameters['key'], $parameters['username'], $parameters['endpoint'], $parameters['version']);
-
-        $sdk = new SellerCenterSdk($configuration, $client);
-
-        $result = $sdk->products()->productRemove($this->products);
-
+        $this->assertIsArray($isGlobal ? $this->globalProducts->all() : $this->products->all());
+        $this->assertContainsOnlyInstancesOf(
+            $isGlobal ? GlobalProduct::class : Product::class,
+            $isGlobal ? $this->globalProducts->all() : $this->products->all()
+        );
         $this->assertInstanceOf(FeedResponse::class, $result);
     }
 
@@ -401,16 +359,10 @@ class ProductManagerTest extends LinioTestCase
      */
     public function testItReturnsFeedResponseFromAnAddImageRequest(array $images): void
     {
-        $body = '<?xml version="1.0" encoding="UTF-8"?>
-                    <SuccessResponse>
-                        <Head>
-                            <RequestId>cb106552-87f3-450b-aa8b-412246a24b34</RequestId>
-                            <RequestAction>Image</RequestAction>
-                            <ResponseType/>
-                            <Timestamp>2016-06-22T04:40:14+0200</Timestamp>
-                        </Head>
-                        <Body/>
-                    </SuccessResponse>';
+        $body = sprintf(
+            $this->getSchema('Feed/ProductActionFeedResponse.xml'),
+            'Image'
+        );
 
         $client = $this->createClientWithResponse($body);
 
@@ -431,16 +383,13 @@ class ProductManagerTest extends LinioTestCase
         $this->expectException(Exception::class);
         $this->expectExceptionMessage('E0125: Test Error');
 
-        $body = '<?xml version="1.0" encoding="UTF-8"?>
-        <ErrorResponse>
-            <Head>
-                <RequestAction>GetOrder</RequestAction>
-                <ErrorType>Sender</ErrorType>
-                <ErrorCode>125</ErrorCode>
-                <ErrorMessage>E0125: Test Error</ErrorMessage>
-            </Head>
-            <Body/>
-        </ErrorResponse>';
+        $body = sprintf(
+            $this->getSchema('Feed/ProductActionFeedResponseError.xml'),
+            'ProductCreate',
+            'Sender',
+            125,
+            'E0125: Test Error'
+        );
 
         $client = $this->createClientWithResponse($body, 400);
 
@@ -469,25 +418,71 @@ class ProductManagerTest extends LinioTestCase
         ];
     }
 
+    public function productActions(): array
+    {
+        return [
+            ['productCreate', false],
+            ['productCreate', true],
+            ['productUpdate', false],
+            ['productUpdate', true],
+            ['productRemove', false],
+            ['productRemove', true],
+        ];
+    }
+
     public function getResponse(string $schema = 'Product/ProductsResponse.xml'): string
     {
         return $this->getSchema($schema);
     }
 
-    public function primaryProduct(): Product
+    public function primaryProduct(bool $isGlobal = false): BaseProduct
     {
-        $product = Product::fromBasicData(
-            '2145819109aaeu7',
-            'Magic Product',
-            '0',
-            Category::fromName('Jeans'),
-            'This is a bold product.',
-            Brand::fromName('Samsung'),
-            5999.00,
-            'IVA exento 0%',
-            '123326998',
-            new ProductData('Nuevo', 0, 4, 5, 4)
-        );
+        $sellerSku = '2145819109aaeu7';
+        $name = 'Magic Product';
+        $variation = '0';
+        $primaryCategory = Category::fromName('Jeans');
+        $description = 'This is a bold product.';
+        $brand = Brand::fromName('Samsung');
+        $productId = '123326998';
+        $taxClass = 'IVA exento 0%';
+        $productData = new ProductData('Nuevo', 0, 4, 5, 4);
+
+        if (!$isGlobal) {
+            $product = Product::fromBasicData(
+                $sellerSku,
+                $name,
+                $variation,
+                $primaryCategory,
+                $description,
+                $brand,
+                5999.00,
+                $productId,
+                $taxClass,
+                $productData
+            );
+        } else {
+            $businessUnits = new BusinessUnits();
+            $businessUnit = new BusinessUnit(
+                'facl',
+                5999.00,
+                10,
+                'active',
+                0
+            );
+            $businessUnits->add($businessUnit);
+            $product = GlobalProduct::fromBasicData(
+                $sellerSku,
+                $name,
+                $variation,
+                $primaryCategory,
+                $description,
+                $brand,
+                $businessUnits,
+                $productId,
+                $taxClass,
+                $productData
+            );
+        }
 
         $product->getImages()->addMany([
             new Image('http://static.somecdn.com/moneyshot.jpeg'),
@@ -498,24 +493,59 @@ class ProductManagerTest extends LinioTestCase
         $categories = new Categories();
         $categories->add(Category::fromId($this->faker->randomNumber));
         $categories->add(Category::fromId($this->faker->randomNumber));
+        $product->setCategories($categories);
 
         return $product;
     }
 
-    public function secondProduct(): Product
+    public function secondProduct(bool $isGlobal = false): BaseProduct
     {
-        $product = Product::fromBasicData(
-            '2145887609aaeu7',
-            'Rare Product',
-            'Large',
-            Category::fromName('Camisas'),
-            'This is a bold product.',
-            Brand::fromName('Motorola'),
-            9999.00,
-            'IVA exento 0%',
-            '123810998',
-            new ProductData('Nuevo', 3, 0, 5, 4)
-        );
+        $sellerSku = '2145887609aaeu7';
+        $name = 'Rare Product';
+        $variation = 'Large';
+        $primaryCategory = Category::fromName('Camisas');
+        $description = 'This is a bold product.';
+        $brand = Brand::fromName('Motorola');
+        $productId = '123326998';
+        $taxClass = 'IVA exento 0%';
+        $productData = new ProductData('Nuevo', 3, 0, 5, 4);
+
+        if (!$isGlobal) {
+            $product = Product::fromBasicData(
+                $sellerSku,
+                $name,
+                $variation,
+                $primaryCategory,
+                $description,
+                $brand,
+                9999.00,
+                $productId,
+                $taxClass,
+                $productData
+            );
+        } else {
+            $businessUnits = new BusinessUnits();
+            $businessUnit = new BusinessUnit(
+                'facl',
+                5999.00,
+                10,
+                'active',
+                0
+            );
+            $businessUnits->add($businessUnit);
+            $product = GlobalProduct::fromBasicData(
+                $sellerSku,
+                $name,
+                $variation,
+                $primaryCategory,
+                $description,
+                $brand,
+                $businessUnits,
+                $productId,
+                $taxClass,
+                $productData
+            );
+        }
 
         $product->getImages()->addMany([
             new Image('http://static.somecdn.com/moneyshot.jpeg'),
