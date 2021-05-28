@@ -245,14 +245,22 @@ It's possible to update one or many products at once using the method `productUp
 
 | Parameter | Type | Description | Required | Default |
 | --------- | :----: | ----------- | :--------: | :-------: |
-| $products | array | Array of Product entities. | Yes | - | 
+| $products | Products | Collection of Product entities. | Yes | - | 
 
 Note: It's not possible to update the images with this method. 
 
 
 Example:
 ```php
-$products = [ $product_1, $product_2, $product_3];
+$product_1 = Product::fromBasicData(...)
+$product_2 = Product::fromBasicData(...)
+$product_3 = Product::fromBasicData(...)
+
+$products = new Products();
+
+$products->add($product_1);
+$products->add($product_2);
+$products->add($product_3);
 
 // Update the products.
 $products = $sdk->products()->productUpdate($products);
