@@ -13,13 +13,27 @@ use Linio\SellerCenter\Model\Product\BaseProduct;
 use Linio\SellerCenter\Model\Product\GlobalProduct;
 use Linio\SellerCenter\Model\Product\Image;
 use Linio\SellerCenter\Model\Product\Product;
+use Linio\SellerCenter\Validator\XmlStructureValidator;
 use SimpleXMLElement;
 
 class ProductFactory
 {
+    private const XML_MODEL = 'Product';
+    private const REQUIRED_FIELDS = [
+        'SellerSku',
+        'Name',
+        'Variation',
+        'PrimaryCategory',
+        'Description',
+        'Brand',
+        'ProductId',
+        'TaxClass',
+        'ProductData',
+    ];
+
     public static function make(SimpleXMLElement $element): BaseProduct
     {
-        self::ValidateBaseProductXmlStructure($element);
+        XmlStructureValidator::validateStructure($element, self::XML_MODEL, self::REQUIRED_FIELDS);
 
         if (!property_exists($element, 'BusinessUnits')) {
             return self::makeProduct($element);
@@ -30,9 +44,7 @@ class ProductFactory
 
     private static function makeProduct(SimpleXMLElement $element): Product
     {
-        if (!property_exists($element, 'Price')) {
-            throw new InvalidXmlStructureException('Product', 'Price');
-        }
+        XmlStructureValidator::validateProperty($element, self::XML_MODEL, 'Price');
 
         $brand = Brand::fromName((string) $element->Brand);
 
@@ -174,25 +186,5 @@ class ProductFactory
         }
 
         return $product;
-    }
-
-    private static function validateBaseProductXmlStructure(SimpleXMLElement $element): void
-    {
-        $properties = [
-            'SellerSku',
-            'Name',
-            'Variation',
-            'PrimaryCategory',
-            'Description',
-            'Brand',
-            'ProductId',
-            'TaxClass',
-            'ProductData',
-        ];
-        foreach ($properties as $property) {
-            if (!property_exists($element, $property)) {
-                throw new InvalidXmlStructureException('Product', $property);
-            }
-        }
     }
 }
