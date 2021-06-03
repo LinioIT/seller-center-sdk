@@ -1,0 +1,72 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<SuccessResponse>
+  <Head>
+    <RequestId/>
+    <RequestAction>GetOrder</RequestAction>
+    <ResponseType>Order</ResponseType>
+    <Timestamp>2019-02-27T12:52:46-0500</Timestamp>
+  </Head>
+  <Body>
+    <Orders>
+      <Order>
+        <OrderId>4687503</OrderId>
+        <CustomerFirstName>first_name+4687503</CustomerFirstName>
+        <CustomerLastName>last_name+</CustomerLastName>
+        <OrderNumber>206125233</OrderNumber>
+        <PaymentMethod>CashOnDelivery_Payment</PaymentMethod>
+        <Remarks/>
+        <DeliveryInfo>SE PAGA CON TARGETA DEBITO</DeliveryInfo>
+        <Price>61800.00</Price>
+        <GiftOption>0</GiftOption>
+        <GiftMessage/>
+        <VoucherCode/>
+        <CreatedAt>2018-08-27 08:48:20</CreatedAt>
+        <UpdatedAt>2018-08-28 17:09:47</UpdatedAt>
+        <AddressUpdatedAt>2018-08-27 13:48:20</AddressUpdatedAt>
+        <AddressBilling>
+          <FirstName>Labs</FirstName>
+          <LastName>Rocket</LastName>
+          <Phone/>
+          <Phone2/>
+          <Address1>Johannisstr. 20</Address1>
+          <Address2/>
+          <Address3/>
+          <Address4/>
+          <Address5/>
+          <CustomerEmail/>
+          <City>Berlin</City>
+          <Ward/>
+          <Region/>
+          <PostCode>10117</PostCode>
+          <Country>Germany</Country>
+        </AddressBilling>
+        <AddressShipping>
+          <FirstName>Rocket</FirstName>
+          <LastName>Labs</LastName>
+          <Phone/>
+          <Phone2/>
+          <Address1>Charlottenstraße 4</Address1>
+          <Address2/>
+          <Address3/>
+          <Address4/>
+          <Address5/>
+          <CustomerEmail/>
+          <City>Berlin</City>
+          <Ward/>
+          <Region/>
+          <PostCode>10969</PostCode>
+          <Country>Germany</Country>
+        </AddressShipping>
+        <NationalRegistrationNumber>94526898</NationalRegistrationNumber>
+        <ItemsCount>1</ItemsCount>
+        <PromisedShippingTime>2018-08-28 16:00:00</PromisedShippingTime>
+        <ExtraAttributes/>
+        <Statuses>
+          <Status>delivered</Status>
+          <Status>pending</Status>
+        </Statuses>
+        <OperatorCode>FACL</OperatorCode>
+      </Order>
+    </Orders>
+  </Body>
+</SuccessResponse>

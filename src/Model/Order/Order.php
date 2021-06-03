@@ -150,7 +150,7 @@ class Order implements JsonSerializable
         ?DateTimeInterface $promisedShippingTime,
         ?string $extraAttributes,
         array $statuses,
-        ?string $operatorCode
+        ?string $operatorCode = null
     ): Order {
         $order = new static();
 
