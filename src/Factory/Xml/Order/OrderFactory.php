@@ -5,96 +5,42 @@ declare(strict_types=1);
 namespace Linio\SellerCenter\Factory\Xml\Order;
 
 use DateTimeImmutable;
-use Linio\SellerCenter\Exception\InvalidXmlStructureException;
+use Linio\SellerCenter\Contract\BusinessUnitOperatorCodes;
+use Linio\SellerCenter\Exception\InvalidDomainException;
 use Linio\SellerCenter\Model\Order\Order;
+use Linio\SellerCenter\Validator\XmlStructureValidator;
 use SimpleXMLElement;
 
 class OrderFactory
 {
+    private const XML_MODEL = 'Order';
+    private const REQUIRED_FIELDS = [
+        'OrderId',
+        'CustomerFirstName',
+        'CustomerLastName',
+        'OrderNumber',
+        'PaymentMethod',
+        'Remarks',
+        'DeliveryInfo',
+        'Price',
+        'GiftOption',
+        'GiftMessage',
+        'VoucherCode',
+        'CreatedAt',
+        'UpdatedAt',
+        'AddressUpdatedAt',
+        'AddressBilling',
+        'AddressShipping',
+        'NationalRegistrationNumber',
+        'PromisedShippingTime',
+        'ItemsCount',
+        'ExtraAttributes',
+        'Statuses',
+    ];
+
     public static function make(SimpleXMLElement $element): Order
     {
-        if (!property_exists($element, 'OrderId')) {
-            throw new InvalidXmlStructureException('Order', 'OrderId');
-        }
-
-        if (!property_exists($element, 'CustomerFirstName')) {
-            throw new InvalidXmlStructureException('Order', 'CustomerFirstName');
-        }
-
-        if (!property_exists($element, 'CustomerLastName')) {
-            throw new InvalidXmlStructureException('Order', 'CustomerLastName');
-        }
-
-        if (!property_exists($element, 'OrderNumber')) {
-            throw new InvalidXmlStructureException('Order', 'OrderNumber');
-        }
-
-        if (!property_exists($element, 'PaymentMethod')) {
-            throw new InvalidXmlStructureException('Order', 'PaymentMethod');
-        }
-
-        if (!property_exists($element, 'Remarks')) {
-            throw new InvalidXmlStructureException('Order', 'Remarks');
-        }
-
-        if (!property_exists($element, 'DeliveryInfo')) {
-            throw new InvalidXmlStructureException('Order', 'DeliveryInfo');
-        }
-
-        if (!property_exists($element, 'Price')) {
-            throw new InvalidXmlStructureException('Order', 'Price');
-        }
-
-        if (!property_exists($element, 'GiftOption')) {
-            throw new InvalidXmlStructureException('Order', 'GiftOption');
-        }
-
-        if (!property_exists($element, 'GiftMessage')) {
-            throw new InvalidXmlStructureException('Order', 'GiftMessage');
-        }
-
-        if (!property_exists($element, 'VoucherCode')) {
-            throw new InvalidXmlStructureException('Order', 'VoucherCode');
-        }
-
-        if (!property_exists($element, 'CreatedAt')) {
-            throw new InvalidXmlStructureException('Order', 'CreatedAt');
-        }
-
-        if (!property_exists($element, 'UpdatedAt')) {
-            throw new InvalidXmlStructureException('Order', 'UpdatedAt');
-        }
-
-        if (!property_exists($element, 'AddressUpdatedAt')) {
-            throw new InvalidXmlStructureException('Order', 'AddressUpdatedAt');
-        }
-        if (!property_exists($element, 'AddressBilling')) {
-            throw new InvalidXmlStructureException('Order', 'AddressBilling');
-        }
-
-        if (!property_exists($element, 'AddressShipping')) {
-            throw new InvalidXmlStructureException('Order', 'AddressShipping');
-        }
-
-        if (!property_exists($element, 'NationalRegistrationNumber')) {
-            throw new InvalidXmlStructureException('Order', 'NationalRegistrationNumber');
-        }
-
-        if (!property_exists($element, 'ItemsCount')) {
-            throw new InvalidXmlStructureException('Order', 'ItemsCount');
-        }
-
-        if (!property_exists($element, 'PromisedShippingTime')) {
-            throw new InvalidXmlStructureException('Order', 'PromisedShippingTime');
-        }
-
-        if (!property_exists($element, 'ExtraAttributes')) {
-            throw new InvalidXmlStructureException('Order', 'ExtraAttributes');
-        }
-
-        if (!property_exists($element, 'Statuses')) {
-            throw new InvalidXmlStructureException('Order', 'Statuses');
-        }
+        XmlStructureValidator::validateStructure($element, self::XML_MODEL, self::REQUIRED_FIELDS);
 
         $giftOption = !empty($element->GiftOption);
 
@@ -119,6 +65,11 @@ class OrderFactory
             array_push($statuses, (string) $status);
         }
 
+        $operatorCode = (string) $element->OperatorCode ?? null;
+        if (!empty($operatorCode) && !in_array(strtolower($operatorCode), BusinessUnitOperatorCodes::OPERATOR_CODES)) {
+            throw new InvalidDomainException('OperatorCode');
+        }
+
         return Order::fromData(
             (int) $element->OrderId,
             (int) $element->OrderNumber,
@@ -140,7 +91,8 @@ class OrderFactory
             (int) $element->ItemsCount,
             $promisedShippingTime,
             (string) $element->ExtraAttributes,
-            $statuses
+            $statuses,
+            $operatorCode
         );
     }
 }
