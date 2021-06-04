@@ -1,0 +1,51 @@
+{
+  "orderId": "%d",
+  "customerFirstName": "%s",
+  "customerLastName": "%s",
+  "orderNumber": "%d",
+  "paymentMethod": "%s",
+  "remarks": "%s",
+  "deliveryInfo": "%s",
+  "price": "%d",
+  "giftOption": "%s",
+  "giftMessage": "",
+  "voucherCode": "",
+  "createdAt": "%s",
+  "updatedAt": "%s",
+  "addressUpdatedAt": "%s",
+  "addressBilling": {
+    "firstName": "%s",
+    "lastName": "%s",
+    "phone": null,
+    "phone2": null,
+    "address": "%s",
+    "customerEmail": null,
+    "city": "%s",
+    "ward": null,
+    "region": null,
+    "postCode": "%s",
+    "country": "%s"
+  },
+  "addressShipping": {
+    "firstName": "%s",
+    "lastName": "%s",
+    "phone": null,
+    "phone2": null,
+    "address": "%s",
+    "customerEmail": null,
+    "city": "%s",
+    "ward": null,
+    "region": null,
+    "postCode": "%s",
+    "country": "%s"
+  },
+  "nationalRegistrationNumber": "%s",
+  "itemsCount": "%d",
+  "promisedShippingTime": "%s",
+  "extraAttributes": "%s",
+  "statuses": [
+    "%s",
+    "%s"
+  ],
+  "orderItems": null
+}

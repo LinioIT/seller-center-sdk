@@ -121,6 +121,11 @@ class Order implements JsonSerializable
     protected $orderItems;
 
     /**
+     * @var string|null
+     */
+    protected $operatorCode;
+
+    /**
      * @return static
      */
     public static function fromData(
@@ -144,7 +149,8 @@ class Order implements JsonSerializable
         int $itemsCount,
         ?DateTimeInterface $promisedShippingTime,
         ?string $extraAttributes,
-        array $statuses
+        array $statuses,
+        ?string $operatorCode = null
     ): Order {
         $order = new static();
 
@@ -169,6 +175,7 @@ class Order implements JsonSerializable
         $order->promisedShippingTime = $promisedShippingTime;
         $order->extraAttributes = $extraAttributes;
         $order->statuses = $statuses;
+        $order->operatorCode = $operatorCode;
 
         return $order;
     }
@@ -295,6 +302,11 @@ class Order implements JsonSerializable
     public function getOrderItems(): ?OrderItems
     {
         return $this->orderItems;
+    }
+
+    public function getOperatorCode(): ?string
+    {
+        return $this->operatorCode;
     }
 
     public function setOrderItems(OrderItems $orderItems): void

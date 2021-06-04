@@ -1,0 +1,101 @@
+<?xml version="1.0" encoding="UTF-8"?>
+  <SuccessResponse>
+    <Head>
+        <RequestId/>
+        <RequestAction>GetMultipleOrderItems</RequestAction>
+        <ResponseType>OrderItems</ResponseType>
+        <Timestamp>2019-01-18T06:54:50-0500</Timestamp>
+    </Head>
+    <Body>
+      <Orders>
+        <Order>
+          <OrderId>4687503</OrderId>
+          <OrderNumber>206125233</OrderNumber>
+          <OrderItems>
+            <OrderItem>
+              <OrderItemId>6653173</OrderItemId>
+              <ShopId>7068646</ShopId>
+              <OrderId>4687503</OrderId>
+              <Name>RELOJ WEIDE DE ACERO INOXIDABLE DE ALTA CALIDAD 1009 SILVER BLACK</Name>
+              <Sku>WE817FA21TYC3LCO</Sku>
+              <Variation>Talla Única</Variation>
+              <ShopSku>WE895FA0Z828WLCO-2510173</ShopSku>
+              <ShippingType>Dropshipping</ShippingType>
+              <ItemPrice>55900.00</ItemPrice>
+              <PaidPrice>55900.00</PaidPrice>
+              <Currency>COP</Currency>
+              <WalletCredits>0.00</WalletCredits>
+              <TaxAmount>0.00</TaxAmount>
+              <CodCollectableAmount/>
+              <ShippingAmount>5900.00</ShippingAmount>
+              <ShippingServiceCost>4442.02</ShippingServiceCost>
+              <VoucherAmount>0</VoucherAmount>
+              <VoucherCode/>
+              <Status>delivered</Status>
+              <IsProcessable>1</IsProcessable>
+              <ShipmentProvider>TCC</ShipmentProvider>
+              <IsDigital>0</IsDigital>
+              <DigitalDeliveryInfo/>
+              <TrackingCode>427573467</TrackingCode>
+              <TrackingCodePre/>
+              <Reason/>
+              <ReasonDetail/>
+              <PurchaseOrderId>0</PurchaseOrderId>
+              <PurchaseOrderNumber/>
+              <PackageId>1000405653600</PackageId>
+              <PromisedShippingTime>2018-08-28 16:00:00</PromisedShippingTime>
+              <ExtraAttributes/>
+              <ShippingProviderType>standard</ShippingProviderType>
+              <CreatedAt>2018-08-27 08:48:20</CreatedAt>
+              <UpdatedAt>2018-08-28 17:09:47</UpdatedAt>
+              <ReturnStatus/>
+            </OrderItem>
+          </OrderItems>
+        </Order>
+        <Order>
+          <OrderId>4687808</OrderId>
+          <OrderNumber>800327689</OrderNumber>
+          <OrderItems>
+            <OrderItem>
+              <OrderItemId>6653602</OrderItemId>
+              <ShopId>7069240</ShopId>
+              <OrderId>4687808</OrderId>
+              <Name>Reloj Megir ML 2020 Impermeable Japones De Cuarzo Negro</Name>
+              <Sku>EP162FA80HRBLCO</Sku>
+              <Variation>Talla Única</Variation>
+              <ShopSku>ME803FA03DRNYLCO-3219643</ShopSku>
+              <ShippingType>Dropshipping</ShippingType>
+              <ItemPrice>119903.23</ItemPrice>
+              <PaidPrice>119903.23</PaidPrice>
+              <Currency>COP</Currency>
+              <WalletCredits>0.00</WalletCredits>
+              <TaxAmount>0.00</TaxAmount>
+              <CodCollectableAmount/>
+              <ShippingAmount>5903.62</ShippingAmount>
+              <ShippingServiceCost>4020.27</ShippingServiceCost>
+              <VoucherAmount>0</VoucherAmount>
+              <VoucherCode/>
+              <Status>delivered</Status>
+              <IsProcessable>1</IsProcessable>
+              <ShipmentProvider>Deprisa</ShipmentProvider>
+              <IsDigital>0</IsDigital>
+              <DigitalDeliveryInfo/>
+              <TrackingCode>999046151929</TrackingCode>
+              <TrackingCodePre/>
+              <Reason/>
+              <ReasonDetail/>
+              <PurchaseOrderId>0</PurchaseOrderId>
+              <PurchaseOrderNumber/>
+              <PackageId>1000405682300</PackageId>
+              <PromisedShippingTime>2018-08-28 16:00:00</PromisedShippingTime>
+              <ExtraAttributes/>
+              <ShippingProviderType>standard</ShippingProviderType>
+              <CreatedAt>2018-08-27 11:40:23</CreatedAt>
+              <UpdatedAt>2018-08-28 16:09:03</UpdatedAt>
+              <ReturnStatus/>
+            </OrderItem>
+          </OrderItems>
+        </Order>
+      </Orders>
+  </Body>
+</SuccessResponse>
