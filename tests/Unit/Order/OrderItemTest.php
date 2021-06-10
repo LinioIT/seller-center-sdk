@@ -89,6 +89,7 @@ class OrderItemTest extends LinioTestCase
         $this->assertEquals($orderItem->getCreatedAt(), DateTimeImmutable::createFromFormat('Y-m-d H:i:s', (string) $simpleXml->CreatedAt));
         $this->assertEquals($orderItem->getUpdatedAt(), DateTimeImmutable::createFromFormat('Y-m-d H:i:s', (string) $simpleXml->UpdatedAt));
         $this->assertEquals($orderItem->getReturnStatus(), (string) $simpleXml->ReturnStatus);
+        $this->assertEquals($orderItem->getSalesType(), (string) $simpleXml->SalesType);
     }
 
     public function testItReturnsTheNullWithoutAnExtraAttributeTag(): void
