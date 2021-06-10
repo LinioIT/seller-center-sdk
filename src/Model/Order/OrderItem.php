@@ -191,6 +191,11 @@ class OrderItem implements JsonSerializable
     protected $returnStatus;
 
     /**
+     * @var string|null
+     */
+    protected $salesType;
+
+    /**
      * @return static
      */
     public static function fromOrderItem(
@@ -229,7 +234,8 @@ class OrderItem implements JsonSerializable
         string $shippingProviderType,
         ?DateTimeImmutable $createdAt,
         ?DateTimeImmutable $updatedAt,
-        ?string $returnStatus
+        ?string $returnStatus,
+        ?string $salesType
     ): OrderItem {
         $orderItem = new static();
 
@@ -269,6 +275,7 @@ class OrderItem implements JsonSerializable
         $orderItem->createdAt = $createdAt;
         $orderItem->updatedAt = $updatedAt;
         $orderItem->returnStatus = $returnStatus;
+        $orderItem->salesType = $salesType;
 
         return $orderItem;
     }
@@ -472,6 +479,11 @@ class OrderItem implements JsonSerializable
         return !empty($this->returnStatus) ? $this->returnStatus : null;
     }
 
+    public function getSalesType(): ?string
+    {
+        return !empty($this->salesType) ? $this->salesType : null;
+    }
+
     public function jsonSerialize(): stdClass
     {
         $serialized = new stdClass();
@@ -511,6 +523,7 @@ class OrderItem implements JsonSerializable
         $serialized->createdAt = $this->createdAt;
         $serialized->updatedAt = $this->updatedAt;
         $serialized->returnStatus = $this->returnStatus;
+        $serialized->salesType = $this->salesType;
 
         return $serialized;
     }
