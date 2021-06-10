@@ -10,50 +10,45 @@ use Linio\SellerCenter\Exception\InvalidXmlStructureException;
 use Linio\SellerCenter\Factory\Xml\Order\OrderItemFactory;
 use Linio\SellerCenter\LinioTestCase;
 use Linio\SellerCenter\Model\Order\OrderItem;
-use SimpleXMLElement;
 
 class OrderItemTest extends LinioTestCase
 {
+    protected $orderItemId = 6750999;
+    protected $shopId = 7208215;
+    protected $orderId = 4758978;
+    protected $name = 'MEGIR 5006 RELOJ ACERO INOXIDABLE ROSA';
+    protected $sku = 'DJFKLJOEDKLFJ';
+    protected $variation = 'Talla Única';
+    protected $shopSku = 'ME803FA0UEI9YLCO-6073653';
+    protected $shippingType = 'Dropshipping';
+    protected $itemPrice = 89900.00;
+    protected $paidPrice = 89900.00;
+    protected $currency = 'COP';
+    protected $walletCredits = 0.00;
+    protected $taxAmount = 0.00;
+    protected $codCollectableAmount = 12;
+    protected $shippingAmount = 0.00;
+    protected $shippingServiceCost = 7000.00;
+    protected $voucherAmount = 0;
+    protected $voucherCode = 'msxnwinsiqni';
+    protected $status = 'pending';
+    protected $isProcessable = true;
+    protected $shipmentProvider = 'LOGISTICA';
+    protected $isDigital = false;
+    protected $digitalDeliveryInfo = 'OK';
+    protected $trackingCode = '1000414030800';
+    protected $trackingCodePre = '1000414030800';
+    protected $reason = 'OK';
+    protected $reasonDetail = 'OK';
+    protected $purchaseOrderId = 0;
+    protected $purchaseOrderNumber = '23781748362';
+    protected $packageId = '1000414030800';
+    protected $shippingProviderType = 'express';
+    protected $returnStatus = 'approved';
+
     public function testItReturnsTheValueWithEachAccessor(): void
     {
-        $simpleXml = simplexml_load_string(sprintf('<OrderItem>
-                    <OrderItemId>6750999</OrderItemId>
-                    <ShopId>7208215</ShopId>
-                    <OrderId>4758978</OrderId>
-                    <Name>MEGIR 5006 RELOJ ACERO INOXIDABLE ROSA</Name>
-                    <Sku>DJFKLJOEDKLFJ</Sku>
-                    <Variation>Talla Única</Variation>
-                    <ShopSku>ME803FA0UEI9YLCO-6073653</ShopSku>
-                    <ShippingType>Dropshipping</ShippingType>
-                    <ItemPrice>89900.00</ItemPrice>
-                    <PaidPrice>89900.00</PaidPrice>
-                    <Currency>COP</Currency>
-                    <WalletCredits>0.00</WalletCredits>
-                    <TaxAmount>0.00</TaxAmount>
-                    <CodCollectableAmount>schasmakcmaosmco</CodCollectableAmount>
-                    <ShippingAmount>0.00</ShippingAmount>
-                    <ShippingServiceCost>7000.00</ShippingServiceCost>
-                    <VoucherAmount>0</VoucherAmount>
-                    <VoucherCode>msxnwinsiqni</VoucherCode>
-                    <Status>pending</Status>
-                    <IsProcessable>1</IsProcessable>
-                    <ShipmentProvider>LOGISTICA</ShipmentProvider>
-                    <IsDigital>0</IsDigital>
-                    <DigitalDeliveryInfo>OK</DigitalDeliveryInfo>
-                    <TrackingCode>1000414030800</TrackingCode>
-                    <TrackingCodePre>1000414030800</TrackingCodePre>
-                    <Reason>OK</Reason>
-                    <ReasonDetail>OK</ReasonDetail>
-                    <PurchaseOrderId>0</PurchaseOrderId>
-                    <PurchaseOrderNumber>23781748362</PurchaseOrderNumber>
-                    <PackageId>1000414030800</PackageId>
-                    <PromisedShippingTime>2018-10-16 20:00:00</PromisedShippingTime>
-                    <ExtraAttributes>{"color":"red", "isGift":"true"}</ExtraAttributes>
-                    <ShippingProviderType>express</ShippingProviderType>
-                    <CreatedAt>2018-10-13 23:08:34</CreatedAt>
-                    <UpdatedAt>2018-10-14 13:30:50</UpdatedAt>
-                    <ReturnStatus>approved</ReturnStatus>
-               </OrderItem>'));
+        $simpleXml = simplexml_load_string($this->createXmlStringForOrderItems());
 
         $orderItem = OrderItemFactory::make($simpleXml);
 
@@ -98,44 +93,17 @@ class OrderItemTest extends LinioTestCase
 
     public function testItReturnsTheNullWithoutAnExtraAttributeTag(): void
     {
-        $simpleXml = simplexml_load_string(sprintf('<OrderItem>
-                    <OrderItemId>6750999</OrderItemId>
-                    <ShopId>7208215</ShopId>
-                    <OrderId>4758978</OrderId>
-                    <Name>MEGIR 5006 RELOJ ACERO INOXIDABLE ROSA</Name>
-                    <Sku>DJFKLJOEDKLFJ</Sku>
-                    <Variation>Talla Única</Variation>
-                    <ShopSku>ME803FA0UEI9YLCO-6073653</ShopSku>
-                    <ShippingType>Dropshipping</ShippingType>
-                    <ItemPrice>89900.00</ItemPrice>
-                    <PaidPrice>89900.00</PaidPrice>
-                    <Currency>COP</Currency>
-                    <WalletCredits>0.00</WalletCredits>
-                    <TaxAmount>0.00</TaxAmount>
-                    <CodCollectableAmount/>
-                    <ShippingAmount>0.00</ShippingAmount>
-                    <ShippingServiceCost>7000.00</ShippingServiceCost>
-                    <VoucherAmount>0</VoucherAmount>
-                    <VoucherCode/>
-                    <Status>pending</Status>
-                    <IsProcessable>1</IsProcessable>
-                    <ShipmentProvider>LOGISTICA</ShipmentProvider>
-                    <IsDigital>0</IsDigital>
-                    <DigitalDeliveryInfo/>
-                    <TrackingCode>1000414030800</TrackingCode>
-                    <TrackingCodePre/>
-                    <Reason/>
-                    <ReasonDetail/>
-                    <PurchaseOrderId>0</PurchaseOrderId>
-                    <PurchaseOrderNumber/>
-                    <PackageId>1000414030800</PackageId>
-                    <PromisedShippingTime>2018-10-16 20:00:00</PromisedShippingTime>
-                    <ShippingProviderType>express</ShippingProviderType>
-                    <ExtraAttributes></ExtraAttributes>
-                    <CreatedAt>invalid</CreatedAt>
-                    <UpdatedAt>invalid</UpdatedAt>
-                    <ReturnStatus/>
-               </OrderItem>'));
+        $simpleXml = simplexml_load_string($this->createXmlStringForOrderItems());
+        $simpleXml->CodCollectableAmount = null;
+        $simpleXml->VoucherCode = null;
+        $simpleXml->DigitalDeliveryInfo = null;
+        $simpleXml->TrackingCodePre = null;
+        $simpleXml->Reason = null;
+        $simpleXml->ReasonDetail = null;
+        $simpleXml->PurchaseOrderNumber = null;
+        $simpleXml->CreatedAt = null;
+        $simpleXml->UpdatedAt = null;
+        $simpleXml->ReturnStatus = null;
 
         $orderItem = OrderItemFactory::make($simpleXml);
 
@@ -155,14 +123,7 @@ class OrderItemTest extends LinioTestCase
 
     public function testItReturnsAOrderItemFromAnXml(): void
     {
-        $simpleXml = simplexml_load_string(
-            '<OrderItem>
-                    <OrderItemId>1</OrderItemId>
-                    <PurchaseOrderId>123456</PurchaseOrderId>
-                    <PurchaseOrderNumber>ABC-123456</PurchaseOrderNumber>
-                    <PackageId>MPDS-200131783-9800</PackageId>
-                  </OrderItem>'
-        );
+        $simpleXml = simplexml_load_string($this->createXmlStringForOrderItems());
 
         $orderItem = OrderItemFactory::makeFromStatus($simpleXml);
 
@@ -173,391 +134,155 @@ class OrderItemTest extends LinioTestCase
         $this->assertEquals((string) $simpleXml->PackageId, $orderItem->getPackageId());
     }
 
-    public function testItThrowsAExceptionWithoutAPurchaseOrderIdInTheXml(): void
-    {
-        $this->expectException(InvalidXmlStructureException::class);
-
-        $this->expectExceptionMessage('The xml structure is not valid for a OrderItem. The property PurchaseOrderId should exist.');
-
-        $simpleXml = simplexml_load_string(
-            '<OrderItem>
-                    <OrderItemId>1</OrderItemId>
-                    <PurchaseOrderNumber>ABC-123456</PurchaseOrderNumber>
-                    <PackageId>MPDS-200131783-9800</PackageId>
-                  </OrderItem>'
-        );
-
-        OrderItemFactory::makeFromStatus($simpleXml);
-    }
-
-    public function testItThrowsAExceptionWithoutAPurchaseOrderNumberInTheXml(): void
-    {
-        $this->expectException(InvalidXmlStructureException::class);
-
-        $this->expectExceptionMessage('The xml structure is not valid for a OrderItem. The property PurchaseOrderNumber should exist.');
-
-        $simpleXml = simplexml_load_string(
-            '<OrderItem>
-                    <OrderItemId>1</OrderItemId>
-                    <PurchaseOrderId>123456</PurchaseOrderId>
-                    <PackageId>MPDS-200131783-9800</PackageId>
-                  </OrderItem>'
-        );
-
-        OrderItemFactory::makeFromStatus($simpleXml);
-    }
-
     /**
      * @dataProvider simpleXmlElementsWithoutAParameter
      */
-    public function testThrowsAnExceptionWithoutAParameterInTheXml(SimpleXMLElement $simpleXml, string $message): void
+    public function testItThrowsAExceptionWithoutAPropertyInTheXml(string $property, bool $fromStatus): void
     {
         $this->expectException(InvalidXmlStructureException::class);
 
-        $this->expectExceptionMessage($message);
+        $this->expectExceptionMessage(
+            sprintf(
+                'The xml structure is not valid for a OrderItem. The property %s should exist.',
+                $property
+            )
+        );
 
-        OrderItemFactory::make($simpleXml);
-    }
+        $simpleXml = simplexml_load_string($this->createXmlStringForOrderItems());
 
-    public function simpleXmlElementsWithoutAParameter()
-    {
-        $xml = '<OrderItem>
-                    <OrderItemId>6752675</OrderItemId>
-                    <ShopId>4596164</ShopId>
-                    <OrderId>4760407</OrderId>
-                    <Name>RELOJ WEIDE 3401 ACERO INOXIDABLE BLACK RED DISEÑO MILITAR</Name>
-                    <Sku>WE880FA21TYC3LCO_DELETED_2019-01-08_11-00-08</Sku>
-                    <Variation>Talla Única</Variation>
-                    <ShopSku>WE895FA1GBRAKLCO-2457669</ShopSku>
-                    <ShippingType>Dropshipping</ShippingType>
-                    <ItemPrice>89900.00</ItemPrice>
-                    <PaidPrice>89900.00</PaidPrice>
-                    <Currency>COP</Currency>
-                    <WalletCredits>0.00</WalletCredits>
-                    <TaxAmount>14353.80</TaxAmount>
-                    <CodCollectableAmount/>
-                    <ShippingAmount>4900.00</ShippingAmount>
-                    <ShippingServiceCost>2398.70</ShippingServiceCost>
-                    <VoucherAmount>0</VoucherAmount>
-                    <VoucherCode/>
-                    <Status>pending</Status>
-                    <IsProcessable>1</IsProcessable>
-                    <ShipmentProvider>TCC</ShipmentProvider>
-                    <IsDigital>0</IsDigital>
-                    <DigitalDeliveryInfo/>
-                    <TrackingCode/>
-                    <TrackingCodePre/>
-                    <Reason/>￼
-                    <ReasonDetail/>
-                    <PurchaseOrderId>0</PurchaseOrderId>
-                    <PurchaseOrderNumber/>
-                    <PackageId>1000256620600</PackageId>
-                    <PromisedShippingTime>2017-12-20 16:00:00</PromisedShippingTime>
-                    <ExtraAttributes/>
-                    <ShippingProviderType>standard</ShippingProviderType>
-                    <CreatedAt>2018-10-15 10:08:31</CreatedAt>
-                    <UpdatedAt>2019-01-17 16:26:03</UpdatedAt>
-                    <ReturnStatus/>
-               </OrderItem>';
-
-        $xml1 = new SimpleXMLElement($xml);
-        unset($xml1->OrderItemId);
-
-        $xml2 = new SimpleXMLElement($xml);
-        unset($xml2->ShopId);
-
-        $xml3 = new SimpleXMLElement($xml);
-        unset($xml3->OrderId);
-
-        $xml4 = new SimpleXMLElement($xml);
-        unset($xml4->Name);
-
-        $xml5 = new SimpleXMLElement($xml);
-        unset($xml5->Sku);
-
-        $xml6 = new SimpleXMLElement($xml);
-        unset($xml6->Variation);
-
-        $xml7 = new SimpleXMLElement($xml);
-        unset($xml7->ShopSku);
-
-        $xml8 = new SimpleXMLElement($xml);
-        unset($xml8->ShippingType);
-
-        $xml9 = new SimpleXMLElement($xml);
-        unset($xml9->ItemPrice);
-
-        $xml10 = new SimpleXMLElement($xml);
-        unset($xml10->PaidPrice);
-
-        $xml11 = new SimpleXMLElement($xml);
-        unset($xml11->Currency);
-
-        $xml12 = new SimpleXMLElement($xml);
-        unset($xml12->WalletCredits);
-
-        $xml13 = new SimpleXMLElement($xml);
-        unset($xml13->TaxAmount);
-
-        $xml14 = new SimpleXMLElement($xml);
-        unset($xml14->CodCollectableAmount);
-
-        $xml15 = new SimpleXMLElement($xml);
-        unset($xml15->ShippingAmount);
-
-        $xml16 = new SimpleXMLElement($xml);
-        unset($xml16->ShippingServiceCost);
-
-        $xml17 = new SimpleXMLElement($xml);
-        unset($xml17->VoucherAmount);
-
-        $xml18 = new SimpleXMLElement($xml);
-        unset($xml18->VoucherCode);
-
-        $xml19 = new SimpleXMLElement($xml);
-        unset($xml19->Status);
-
-        $xml20 = new SimpleXMLElement($xml);
-        unset($xml20->IsProcessable);
-
-        $xml21 = new SimpleXMLElement($xml);
-        unset($xml21->ShipmentProvider);
-
-        $xml22 = new SimpleXMLElement($xml);
-        unset($xml22->IsDigital);
-
-        $xml23 = new SimpleXMLElement($xml);
-        unset($xml23->DigitalDeliveryInfo);
-
-        $xml24 = new SimpleXMLElement($xml);
-        unset($xml24->TrackingCode);
-
-        $xml25 = new SimpleXMLElement($xml);
-        unset($xml25->TrackingCodePre);
-
-        $xml26 = new SimpleXMLElement($xml);
-        unset($xml26->Reason);
-
-        $xml27 = new SimpleXMLElement($xml);
-        unset($xml27->ReasonDetail);
-
-        $xml28 = new SimpleXMLElement($xml);
-        unset($xml28->PurchaseOrderId);
-
-        $xml29 = new SimpleXMLElement($xml);
-        unset($xml29->PurchaseOrderNumber);
-
-        $xml30 = new SimpleXMLElement($xml);
-        unset($xml30->PackageId);
-
-        $xml31 = new SimpleXMLElement($xml);
-        unset($xml31->PromisedShippingTime);
-
-        $xml32 = new SimpleXMLElement($xml);
-        unset($xml32->ExtraAttributes);
-
-        $xml33 = new SimpleXMLElement($xml);
-        unset($xml33->ShippingProviderType);
-
-        $xml34 = new SimpleXMLElement($xml);
-        unset($xml34->CreatedAt);
-
-        $xml35 = new SimpleXMLElement($xml);
-        unset($xml35->UpdatedAt);
-
-        $xml36 = new SimpleXMLElement($xml);
-        unset($xml36->ReturnStatus);
-
-        return [
-            [$xml1, 'The xml structure is not valid for a OrderItem. The property OrderItemId should exist.'],
-            [$xml2, 'The xml structure is not valid for a OrderItem. The property ShopId should exist.'],
-            [$xml3, 'The xml structure is not valid for a OrderItem. The property OrderId should exist.'],
-            [$xml4, 'The xml structure is not valid for a OrderItem. The property Name should exist.'],
-            [$xml5, 'The xml structure is not valid for a OrderItem. The property Sku should exist.'],
-            [$xml6, 'The xml structure is not valid for a OrderItem. The property Variation should exist.'],
-            [$xml7, 'The xml structure is not valid for a OrderItem. The property ShopSku should exist.'],
-            [$xml8, 'The xml structure is not valid for a OrderItem. The property ShippingType should exist.'],
-            [$xml9, 'The xml structure is not valid for a OrderItem. The property ItemPrice should exist.'],
-            [$xml10, 'The xml structure is not valid for a OrderItem. The property PaidPrice should exist.'],
-            [$xml11, 'The xml structure is not valid for a OrderItem. The property Currency should exist.'],
-            [$xml12, 'The xml structure is not valid for a OrderItem. The property WalletCredits should exist.'],
-            [$xml13, 'The xml structure is not valid for a OrderItem. The property TaxAmount should exist.'],
-            [$xml14, 'The xml structure is not valid for a OrderItem. The property CodCollectableAmount should exist.'],
-            [$xml15, 'The xml structure is not valid for a OrderItem. The property ShippingAmount should exist.'],
-            [$xml16, 'The xml structure is not valid for a OrderItem. The property ShippingServiceCost should exist.'],
-            [$xml17, 'The xml structure is not valid for a OrderItem. The property VoucherAmount should exist.'],
-            [$xml18, 'The xml structure is not valid for a OrderItem. The property VoucherCode should exist.'],
-            [$xml19, 'The xml structure is not valid for a OrderItem. The property Status should exist.'],
-            [$xml20, 'The xml structure is not valid for a OrderItem. The property IsProcessable should exist.'],
-            [$xml21, 'The xml structure is not valid for a OrderItem. The property ShipmentProvider should exist.'],
-            [$xml22, 'The xml structure is not valid for a OrderItem. The property IsDigital should exist.'],
-            [$xml23, 'The xml structure is not valid for a OrderItem. The property DigitalDeliveryInfo should exist.'],
-            [$xml24, 'The xml structure is not valid for a OrderItem. The property TrackingCode should exist.'],
-            [$xml25, 'The xml structure is not valid for a OrderItem. The property TrackingCodePre should exist.'],
-            [$xml26, 'The xml structure is not valid for a OrderItem. The property Reason should exist.'],
-            [$xml27, 'The xml structure is not valid for a OrderItem. The property ReasonDetail should exist.'],
-            [$xml28, 'The xml structure is not valid for a OrderItem. The property PurchaseOrderId should exist.'],
-            [$xml29, 'The xml structure is not valid for a OrderItem. The property PurchaseOrderNumber should exist.'],
-            [$xml30, 'The xml structure is not valid for a OrderItem. The property PackageId should exist.'],
-            [$xml31, 'The xml structure is not valid for a OrderItem. The property PromisedShippingTime should exist.'],
-            [$xml32, 'The xml structure is not valid for a OrderItem. The property ExtraAttributes should exist.'],
-            [$xml33, 'The xml structure is not valid for a OrderItem. The property ShippingProviderType should exist.'],
-            [$xml34, 'The xml structure is not valid for a OrderItem. The property CreatedAt should exist.'],
-            [$xml35, 'The xml structure is not valid for a OrderItem. The property UpdatedAt should exist.'],
-            [$xml36, 'The xml structure is not valid for a OrderItem. The property ReturnStatus should exist.'],
-        ];
+        unset($simpleXml->{$property});
+        if ($fromStatus) {
+            OrderItemFactory::makeFromStatus($simpleXml);
+        } else {
+            OrderItemFactory::make($simpleXml);
+        }
     }
 
     public function testItReturnsAJsonRepresentation(): void
     {
-        $orderItemId = '6750999';
-        $shopId = '7208215';
-        $orderId = '4758978';
-        $name = 'MEGIR 5006 RELOJ ACERO INOXIDABLE ROSA';
-        $sku = 'DJFKLJOEDKLFJ';
-        $variation = 'Talla Única';
-        $shopSku = 'ME803FA0UEI9YLCO-6073653';
-        $shippingType = 'Dropshipping';
-        $itemPrice = '89900.00';
-        $paidPrice = '89900.00';
-        $currency = 'COP';
-        $walletCredits = '0.00';
-        $taxAmount = '0.00';
-        $codCollectableAmount = 12;
-        $shippingAmount = '0.00';
-        $shippingServiceCost = '7000.00';
-        $voucherAmount = '0';
-        $voucherCode = 'msxnwinsiqni';
-        $status = 'pending';
-        $isProcessable = true;
-        $shipmentProvider = 'LOGISTICA';
-        $isDigital = false;
-        $digitalDeliveryInfo = 'OK';
-        $trackingCode = '1000414030800';
-        $trackingCodePre = '1000414030800';
-        $reason = 'OK';
-        $reasonDetail = 'OK';
-        $purchaseOrderId = '0';
-        $purchaseOrderNumber = '23781748362';
-        $packageId = '1000414030800';
-        $shippingProviderType = 'express';
-        $returnStatus = 'approved';
-
-        $simpleXml = simplexml_load_string(
-            sprintf(
-                '<OrderItem>
-                    <OrderItemId>%s</OrderItemId>
-                    <ShopId>%s</ShopId>
-                    <OrderId>%s</OrderId>
-                    <Name>%s</Name>
-                    <Sku>%s</Sku>
-                    <Variation>%s</Variation>
-                    <ShopSku>%s</ShopSku>
-                    <ShippingType>%s</ShippingType>
-                    <ItemPrice>%s</ItemPrice>
-                    <PaidPrice>%s</PaidPrice>
-                    <Currency>%s</Currency>
-                    <WalletCredits>%s</WalletCredits>
-                    <TaxAmount>%s</TaxAmount>
-                    <CodCollectableAmount>%s</CodCollectableAmount>
-                    <ShippingAmount></ShippingAmount>
-                    <ShippingServiceCost>%s</ShippingServiceCost>
-                    <VoucherAmount>%s</VoucherAmount>
-                    <VoucherCode>%s</VoucherCode>
-                    <Status>%s</Status>
-                    <IsProcessable>%d</IsProcessable>
-                    <ShipmentProvider>%s</ShipmentProvider>
-                    <IsDigital>%d</IsDigital>
-                    <DigitalDeliveryInfo>%s</DigitalDeliveryInfo>
-                    <TrackingCode>%s</TrackingCode>
-                    <TrackingCodePre>%s</TrackingCodePre>
-                    <Reason>%s</Reason>
-                    <ReasonDetail>%s</ReasonDetail>
-                    <PurchaseOrderId>%s</PurchaseOrderId>
-                    <PurchaseOrderNumber>%s</PurchaseOrderNumber>
-                    <PackageId>%s</PackageId>
-                    <PromisedShippingTime>2018-10-16 20:00:00</PromisedShippingTime>
-                    <ExtraAttributes/>
-                    <ShippingProviderType>%s</ShippingProviderType>
-                    <CreatedAt>2018-10-13 23:08:34</CreatedAt>
-                    <UpdatedAt>2018-10-14 13:30:50</UpdatedAt>
-                    <ReturnStatus>%s</ReturnStatus>
-               </OrderItem>',
-                $orderItemId,
-                $shopId,
-                $orderId,
-                $name,
-                $sku,
-                $variation,
-                $shopSku,
-                $shippingType,
-                $itemPrice,
-                $paidPrice,
-                $currency,
-                $walletCredits,
-                $taxAmount,
-                $codCollectableAmount,
-                $shippingServiceCost,
-                $voucherAmount,
-                $voucherCode,
-                $status,
-                (int) $isProcessable,
-                $shipmentProvider,
-                (int) $isDigital,
-                $digitalDeliveryInfo,
-                $trackingCode,
-                $trackingCodePre,
-                $reason,
-                $reasonDetail,
-                $purchaseOrderId,
-                $purchaseOrderNumber,
-                $packageId,
-                $shippingProviderType,
-                $returnStatus
-            )
-        );
+        $simpleXml = simplexml_load_string($this->createXmlStringForOrderItems());
 
         $orderItem = OrderItemFactory::make($simpleXml);
+        $expectedJson = Json::decode($this->getSchema('Order/OrderItem.json'));
 
-        $expectedJson = sprintf(
-            '{"orderItemId":%d,"shopId":%d,"orderId":%d,"name":"%s","sku":"%s","variation":"%s","shopSku":"%s","shippingType":"%s","itemPrice":%d,"paidPrice":%d,"currency":"%s","walletCredits": %d,"taxAmount": %d,"codCollectableAmount":%d,"shippingAmount":%d,"shippingServiceCost":%d,"voucherAmount":%d,"voucherCode":"%s","status":"%s","isProcessable":%s,"shipmentProvider":"%s","isDigital":%s,"digitalDeliveryInfo":"%s","trackingCode":"%s","trackingCodePre":"%s","reason":"%s","reasonDetail":"%s","purchaseOrderId":%d,"purchaseOrderNumber":"%s","packageId":"%s","promisedShippingTime":%s,"extraAttributes": null,"shippingProviderType":"%s","createdAt":%s,"updatedAt":%s,"returnStatus":"%s"}',
-            $orderItemId,
-            $shopId,
-            $orderId,
-            $name,
-            $sku,
-            $variation,
-            $shopSku,
-            $shippingType,
-            $itemPrice,
-            $paidPrice,
-            $currency,
-            $walletCredits,
-            $taxAmount,
-            $codCollectableAmount,
-            $shippingAmount,
-            $shippingServiceCost,
-            $voucherAmount,
-            $voucherCode,
-            $status,
-            $isProcessable ? 'true' : 'false',
-            $shipmentProvider,
-            $isDigital ? 'true' : 'false',
-            $digitalDeliveryInfo,
-            $trackingCode,
-            $trackingCodePre,
-            $reason,
-            $reasonDetail,
-            $purchaseOrderId,
-            $purchaseOrderNumber,
-            $packageId,
-            Json::encode($orderItem->getPromisedShippingTime()),
-            $shippingProviderType,
-            Json::encode($orderItem->getCreatedAt()),
-            Json::encode($orderItem->getUpdatedAt()),
-            $returnStatus
+        $expectedJson['orderItemId'] = $this->orderItemId;
+        $expectedJson['shopId'] = $this->shopId;
+        $expectedJson['orderId'] = $this->orderId;
+        $expectedJson['name'] = $this->name;
+        $expectedJson['sku'] = $this->sku;
+        $expectedJson['variation'] = $this->variation;
+        $expectedJson['shopSku'] = $this->shopSku;
+        $expectedJson['shippingType'] = $this->shippingType;
+        $expectedJson['itemPrice'] = $this->itemPrice;
+        $expectedJson['paidPrice'] = $this->paidPrice;
+        $expectedJson['currency'] = $this->currency;
+        $expectedJson['walletCredits'] = $this->walletCredits;
+        $expectedJson['taxAmount'] = $this->taxAmount;
+        $expectedJson['codCollectableAmount'] = $this->codCollectableAmount;
+        $expectedJson['shippingAmount'] = $this->shippingAmount;
+        $expectedJson['shippingServiceCost'] = $this->shippingServiceCost;
+        $expectedJson['voucherAmount'] = $this->voucherAmount;
+        $expectedJson['voucherCode'] = $this->voucherCode;
+        $expectedJson['status'] = $this->status;
+        $expectedJson['isProcessable'] = $this->isProcessable;
+        $expectedJson['shipmentProvider'] = $this->shipmentProvider;
+        $expectedJson['isDigital'] = $this->isDigital;
+        $expectedJson['digitalDeliveryInfo'] = $this->digitalDeliveryInfo;
+        $expectedJson['trackingCode'] = $this->trackingCode;
+        $expectedJson['trackingCodePre'] = $this->trackingCodePre;
+        $expectedJson['reason'] = $this->reason;
+        $expectedJson['reasonDetail'] = $this->reasonDetail;
+        $expectedJson['purchaseOrderId'] = $this->purchaseOrderId;
+        $expectedJson['purchaseOrderNumber'] = $this->purchaseOrderNumber;
+        $expectedJson['packageId'] = $this->packageId;
+        $expectedJson['promisedShippingTime'] = $orderItem->getPromisedShippingTime();
+        $expectedJson['shippingProviderType'] = $this->shippingProviderType;
+        $expectedJson['createdAt'] = $orderItem->getCreatedAt();
+        $expectedJson['updatedAt'] = $orderItem->getUpdatedAt();
+        $expectedJson['returnStatus'] = $this->returnStatus;
+
+        $this->assertJsonStringEqualsJsonString(Json::encode($expectedJson), Json::encode($orderItem));
+    }
+
+    public function simpleXmlElementsWithoutAParameter(): array
+    {
+        return [
+            ['OrderItemId', false],
+            ['ShopId', false],
+            ['OrderId', false],
+            ['Name', false],
+            ['Sku', false],
+            ['Variation', false],
+            ['ShopSku', false],
+            ['ShippingType', false],
+            ['ItemPrice', false],
+            ['PaidPrice', false],
+            ['Currency', false],
+            ['WalletCredits', false],
+            ['TaxAmount', false],
+            ['CodCollectableAmount', false],
+            ['ShippingAmount', false],
+            ['ShippingServiceCost', false],
+            ['VoucherAmount', false],
+            ['VoucherCode', false],
+            ['Status', false],
+            ['IsProcessable', false],
+            ['ShipmentProvider', false],
+            ['IsDigital', false],
+            ['DigitalDeliveryInfo', false],
+            ['TrackingCode', false],
+            ['TrackingCodePre', false],
+            ['Reason', false],
+            ['ReasonDetail', false],
+            ['PurchaseOrderId', false],
+            ['PurchaseOrderNumber', false],
+            ['PackageId', false],
+            ['PromisedShippingTime', false],
+            ['ExtraAttributes', false],
+            ['ShippingProviderType', false],
+            ['CreatedAt', false],
+            ['UpdatedAt', false],
+            ['ReturnStatus', false],
+            ['PurchaseOrderId', true],
+            ['PurchaseOrderNumber', true],
+        ];
+    }
+
+    public function createXmlStringForOrderItems(string $schema = 'Order/OrderItem.xml'): string
+    {
+        return sprintf(
+            $this->getSchema($schema),
+            $this->orderItemId,
+            $this->shopId,
+            $this->orderId,
+            $this->name,
+            $this->sku,
+            $this->variation,
+            $this->shopSku,
+            $this->shippingType,
+            $this->itemPrice,
+            $this->paidPrice,
+            $this->currency,
+            $this->walletCredits,
+            $this->taxAmount,
+            $this->codCollectableAmount,
+            $this->shippingServiceCost,
+            $this->voucherAmount,
+            $this->voucherCode,
+            $this->status,
+            (int) $this->isProcessable,
+            $this->shipmentProvider,
+            (int) $this->isDigital,
+            $this->digitalDeliveryInfo,
+            $this->trackingCode,
+            $this->trackingCodePre,
+            $this->reason,
+            $this->reasonDetail,
+            $this->purchaseOrderId,
+            $this->purchaseOrderNumber,
+            $this->packageId,
+            $this->shippingProviderType,
+            $this->returnStatus
         );
-
-        $this->assertJsonStringEqualsJsonString($expectedJson, Json::encode($orderItem));
     }
 }

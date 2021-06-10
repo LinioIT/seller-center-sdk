@@ -178,19 +178,17 @@ class OrderTest extends LinioTestCase
         $orderItems->add($orderItem);
 
         $order = Order::fromItems($orderId, $orderNumber, $orderItems);
-        $json = Json::encode($order);
 
-        $expectedJson = sprintf(
-            '{"orderId":%d,"customerFirstName":null,"customerLastName":null,"orderNumber":%d,"paymentMethod":null,"remarks":null,"deliveryInfo":null,"price":null,"giftOption":null,"giftMessage":null,"voucherCode":null,"createdAt":null,"updatedAt":null,"addressUpdatedAt":null,"addressBilling":null,"addressShipping":null,"nationalRegistrationNumber":null,"itemsCount":null,"promisedShippingTime":null,"extraAttributes":null,"statuses":null,"orderItems":[{"orderItemId":%d,"shopId":null,"orderId":null,"name":null,"sku":null,"variation":null,"shopSku":null,"shippingType":null,"itemPrice":null,"paidPrice":null,"currency":null,"walletCredits":null,"taxAmount":null,"codCollectableAmount":null,"shippingAmount":null,"shippingServiceCost":null,"voucherAmount":null,"voucherCode":null,"status":null,"isProcessable":null,"shipmentProvider":null,"isDigital":null,"digitalDeliveryInfo":null,"trackingCode":null,"trackingCodePre":null,"reason":null,"reasonDetail":null,"purchaseOrderId":%d,"purchaseOrderNumber":"%s","packageId":"%s","promisedShippingTime":null,"extraAttributes":null,"shippingProviderType":null,"createdAt":null,"updatedAt":null,"returnStatus":null}]}',
-            $orderId,
-            $orderNumber,
-            $randomDigit,
-            $randomDigit,
-            $randomDigit,
-            $randomDigit
-        );
+        $expectedJson = Json::decode($this->getSchema('Order/OrderWithOrderItems.json'));
 
-        $this->assertJsonStringEqualsJsonString($expectedJson, Json::encode($order));
+        $expectedJson['orderId'] = $orderId;
+        $expectedJson['orderNumber'] = $orderNumber;
+        $expectedJson['orderItems'][0]['orderItemId'] = $randomDigit;
+        $expectedJson['orderItems'][0]['purchaseOrderId'] = $randomDigit;
+        $expectedJson['orderItems'][0]['purchaseOrderNumber'] = (string) $randomDigit;
+        $expectedJson['orderItems'][0]['packageId'] = (string) $randomDigit;
+
+        $this->assertJsonStringEqualsJsonString(Json::encode($expectedJson), Json::encode($order));
     }
 
     public function createXmlStringForAOrder(string $schema = 'Order/Order.xml'): string
