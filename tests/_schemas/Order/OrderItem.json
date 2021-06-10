@@ -35,5 +35,5 @@
   "createdAt": "%s",
   "updatedAt": "%s",
   "returnStatus": "%s",
-  "salesType": ""
+  "salesType": "PURE_MARKETPLACE"
 }
