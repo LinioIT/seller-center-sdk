@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<OrderItem>
+  <OrderItemId>%s</OrderItemId>
+  <ShopId>%s</ShopId>
+  <OrderId>%s</OrderId>
+  <Name>%s</Name>
+  <Sku>%s</Sku>
+  <Variation>%s</Variation>
+  <ShopSku>%s</ShopSku>
+  <ShippingType>%s</ShippingType>
+  <ItemPrice>%s</ItemPrice>
+  <PaidPrice>%s</PaidPrice>
+  <Currency>%s</Currency>
+  <WalletCredits>%s</WalletCredits>
+  <TaxAmount>%s</TaxAmount>
+  <CodCollectableAmount>%s</CodCollectableAmount>
+  <ShippingAmount></ShippingAmount>
+  <ShippingServiceCost>%s</ShippingServiceCost>
+  <VoucherAmount>%s</VoucherAmount>
+  <VoucherCode>%s</VoucherCode>
+  <Status>%s</Status>
+  <IsProcessable>%d</IsProcessable>
+  <ShipmentProvider>%s</ShipmentProvider>
+  <IsDigital>%d</IsDigital>
+  <DigitalDeliveryInfo>%s</DigitalDeliveryInfo>
+  <TrackingCode>%s</TrackingCode>
+  <TrackingCodePre>%s</TrackingCodePre>
+  <Reason>%s</Reason>
+  <ReasonDetail>%s</ReasonDetail>
+  <PurchaseOrderId>%s</PurchaseOrderId>
+  <PurchaseOrderNumber>%s</PurchaseOrderNumber>
+  <PackageId>%s</PackageId>
+  <PromisedShippingTime>2018-10-16 20:00:00</PromisedShippingTime>
+  <ExtraAttributes/>
+  <ShippingProviderType>%s</ShippingProviderType>
+  <CreatedAt>2018-10-13 23:08:34</CreatedAt>
+  <UpdatedAt>2018-10-14 13:30:50</UpdatedAt>
+  <ReturnStatus>%s</ReturnStatus>
+  <SalesType>PURE_MARKETPLACE</SalesType>
+</OrderItem>
