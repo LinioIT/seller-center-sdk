@@ -30,7 +30,7 @@ class AddressFactory
         XmlStructureValidator::validateStructure($element, self::XML_MODEL, self::REQUIRED_FIELDS);
 
         if (!property_exists($element, 'Address1')) {
-            throw new InvalidXmlStructureException('Address', 'Address');
+            throw new InvalidXmlStructureException('Address', 'Address1');
         }
 
         return new Address(
