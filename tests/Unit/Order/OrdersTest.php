@@ -68,62 +68,23 @@ class OrdersTest extends LinioTestCase
         $this->assertNull($order);
     }
 
-    public function testItThrowsAExceptionWithoutAOrderIdInTheXml(): void
+    /**
+     * @dataProvider simpleXmlElementsWithoutAParameter
+     */
+    public function testItThrowsAExceptionWithoutAPropertyInTheXml(string $property): void
     {
         $this->expectException(InvalidXmlStructureException::class);
 
-        $this->expectExceptionMessage('The xml structure is not valid for a Order. The property OrderId should exist.');
-
-        $simpleXml = simplexml_load_string(
-            '<Body>
-                      <Orders>
-                           <Order>
-                                <OrderNumber>206125233</OrderNumber>
-                                <OrderItems></OrderItems>
-                            </Order>
-                        </Orders>
-                    </Body>'
+        $this->expectExceptionMessage(
+            sprintf(
+                'The xml structure is not valid for a Order. The property %s should exist.',
+                $property
+            )
         );
 
-        OrdersItemsFactory::make($simpleXml);
-    }
+        $simpleXml = new SimpleXMLElement($this->getOrderResponse('Order/OrdersItems.xml'));
 
-    public function testItThrowsAExceptionWithoutAOrderNumberInTheXml(): void
-    {
-        $this->expectException(InvalidXmlStructureException::class);
-
-        $this->expectExceptionMessage('The xml structure is not valid for a Order. The property OrderNumber should exist.');
-
-        $simpleXml = simplexml_load_string(
-            '<Body>
-                      <Orders>
-                           <Order>
-                                <OrderId>4687503</OrderId>
-                                <OrderItems></OrderItems>
-                            </Order>
-                        </Orders>
-                    </Body>'
-        );
-
-        OrdersItemsFactory::make($simpleXml);
-    }
-
-    public function testItThrowsAExceptionWithoutAOrderItemsInTheXml(): void
-    {
-        $this->expectException(InvalidXmlStructureException::class);
-
-        $this->expectExceptionMessage('The xml structure is not valid for a Order. The property OrderItems should exist.');
-
-        $simpleXml = simplexml_load_string(
-            '<Body>
-                      <Orders>
-                           <Order>
-                                <OrderId>4687503</OrderId>
-                                <OrderNumber>206125233</OrderNumber>
-                            </Order>
-                        </Orders>
-                    </Body>'
-        );
+        unset($simpleXml->Orders->Order->{$property});
 
         OrdersItemsFactory::make($simpleXml);
     }
@@ -131,5 +92,14 @@ class OrdersTest extends LinioTestCase
     public function getOrderResponse(string $schema = 'Order/Orders.xml'): string
     {
         return $this->getSchema($schema);
+    }
+
+    public function simpleXmlElementsWithoutAParameter(): array
+    {
+        return [
+            ['OrderId'],
+            ['OrderNumber'],
+            ['OrderItems'],
+        ];
     }
 }

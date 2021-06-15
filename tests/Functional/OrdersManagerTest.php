@@ -347,16 +347,7 @@ class OrdersManagerTest extends LinioTestCase
         $this->expectException(Exception::class);
         $this->expectExceptionMessage('E0125: Test Error');
 
-        $body = '<?xml version="1.0" encoding="UTF-8"?>
-        <ErrorResponse>
-            <Head>
-                <RequestAction>GetOrder</RequestAction>
-                <ErrorType>Sender</ErrorType>
-                <ErrorCode>125</ErrorCode>
-                <ErrorMessage>E0125: Test Error</ErrorMessage>
-            </Head>
-            <Body/>
-        </ErrorResponse>';
+        $body = $this->getOrdersResponse('Order/ErrorResponse.xml');
 
         $client = $this->createClientWithResponse($body, 400);
 
