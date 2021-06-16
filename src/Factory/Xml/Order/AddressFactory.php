@@ -4,7 +4,6 @@ declare(strict_types=1);
 
 namespace Linio\SellerCenter\Factory\Xml\Order;
 
-use Linio\SellerCenter\Exception\InvalidXmlStructureException;
 use Linio\SellerCenter\Model\Order\Address;
 use Linio\SellerCenter\Validator\XmlStructureValidator;
 use SimpleXMLElement;
@@ -17,6 +16,7 @@ class AddressFactory
         'LastName',
         'Phone',
         'Phone2',
+        'Address1',
         'CustomerEmail',
         'City',
         'Ward',
@@ -28,10 +28,6 @@ class AddressFactory
     public static function make(SimpleXMLElement $element): Address
     {
         XmlStructureValidator::validateStructure($element, self::XML_MODEL, self::REQUIRED_FIELDS);
-
-        if (!property_exists($element, 'Address1')) {
-            throw new InvalidXmlStructureException('Address', 'Address');
-        }
 
         return new Address(
             (string) $element->FirstName,

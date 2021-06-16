@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Address>
+  <FirstName>%s</FirstName>
+  <LastName>%s</LastName>
+  <Phone>%s</Phone>
+  <Phone2></Phone2>
+  <Address1>%s</Address1>
+  <CustomerEmail>%s</CustomerEmail>
+  <City>%s</City>
+  <Ward>%s</Ward>
+  <Region>%s</Region>
+  <PostCode>%s</PostCode>
+  <Country>%s</Country>
+</Address>
