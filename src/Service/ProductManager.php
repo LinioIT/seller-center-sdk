@@ -386,7 +386,7 @@ class ProductManager
             ]
         );
 
-        $products = ProductsFactory::make($builtResponse->getBody());
+        $products = ProductsFactory::make($builtResponse->getBody(), $this->logger);
 
         $productsResponse = array_values($products->all());
 
