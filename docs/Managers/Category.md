@@ -39,7 +39,7 @@ Using this method it is possible to find a category that uses a specific attribu
 
 | Parameter | Type | Description | Required | Default |
 | --------- | ---- | ----------- | -------- | ------- |
-| `$attributesSetIds` | int[] | The list of attributes IDs to get the categories | No | - |
+| `$attributesSetIds` | int[] | The list of attributes IDs to get the categories | Yes | - |
 
 #### Example
 
@@ -47,5 +47,5 @@ Using this method it is possible to find a category that uses a specific attribu
 $attributesIds = [0, 1];
 
 // Search for categories that use the attribute id 0 and 1
-$attributesSet = $sdk->categories->getCategoriesByAttributesSet($attributesIds);
+$attributesSet = $sdk->categories()->getCategoriesByAttributesSet($attributesIds);
 ```
