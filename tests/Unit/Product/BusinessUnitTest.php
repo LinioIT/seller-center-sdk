@@ -243,7 +243,6 @@ class BusinessUnitTest extends LinioTestCase
     {
         return [
             ['SpecialPrice', $this->operatorCode, $this->price, $this->stock, $this->status, $this->isPublished, $this->businessUnit, -1000],
-            ['BusinessUnit', $this->operatorCode, $this->price, $this->stock, $this->status, $this->isPublished, 'Another ecommerce', $this->specialPrice],
             ['Status', $this->operatorCode, $this->price, $this->stock, 'Unavailable', $this->isPublished, $this->businessUnit, $this->specialPrice],
             ['Stock', $this->operatorCode, $this->price, -1, $this->status, $this->isPublished, $this->businessUnit, $this->specialPrice],
             ['Price', $this->operatorCode, -1, $this->stock, $this->status, $this->isPublished, $this->businessUnit, $this->specialPrice],
