@@ -5,33 +5,24 @@ declare(strict_types=1);
 namespace Linio\SellerCenter\Factory\Xml\Product;
 
 use DateTimeImmutable;
-use Linio\SellerCenter\Exception\InvalidXmlStructureException;
 use Linio\SellerCenter\Model\Product\BusinessUnit;
+use Linio\SellerCenter\Validator\XmlStructureValidator;
 use SimpleXMLElement;
 
 class BusinessUnitFactory
 {
+    private const XML_MODEL = 'BusinessUnit';
+    private const REQUIRED_FIELDS = [
+        'OperatorCode',
+        'Price',
+        'Stock',
+        'Status',
+        'IsPublished',
+    ];
+
     public static function make(SimpleXMLElement $element): BusinessUnit
     {
-        if (!property_exists($element, 'OperatorCode')) {
-            throw new InvalidXmlStructureException('BusinessUnit', 'OperatorCode');
-        }
-
-        if (!property_exists($element, 'Price')) {
-            throw new InvalidXmlStructureException('BusinessUnit', 'Price');
-        }
-
-        if (!property_exists($element, 'Stock')) {
-            throw new InvalidXmlStructureException('BusinessUnit', 'Stock');
-        }
-
-        if (!property_exists($element, 'Status')) {
-            throw new InvalidXmlStructureException('BusinessUnit', 'Status');
-        }
-
-        if (!property_exists($element, 'IsPublished')) {
-            throw new InvalidXmlStructureException('BusinessUnit', 'IsPublished');
-        }
+        XmlStructureValidator::validateStructure($element, self::XML_MODEL, self::REQUIRED_FIELDS);
 
         $businessUnit = new BusinessUnit(
             (string) $element->OperatorCode,
