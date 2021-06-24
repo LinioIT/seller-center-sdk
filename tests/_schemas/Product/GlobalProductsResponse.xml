@@ -40,6 +40,7 @@
         <TaxClass>IVA 19%</TaxClass>
         <Brand>GENERIC</Brand>
         <PrimaryCategory>Bicicletas</PrimaryCategory>
+        <QCStatus>approved</QCStatus>
         <Categories>Sillas Portabebes para Bicicletas</Categories>
         <ProductData>
               <ConditionType>Nuevo</ConditionType>
@@ -81,6 +82,7 @@
         <TaxClass>IVA 19%</TaxClass>
         <Brand>GENERIC</Brand>
         <PrimaryCategory>Perros</PrimaryCategory>
+        <QCStatus>approved</QCStatus>
         <Categories>Collares, arneses y correas para perros,Arneses para perros</Categories>
         <ProductData>
               <ConditionType>Nuevo</ConditionType>
@@ -123,6 +125,7 @@
         <TaxClass>IVA 19%</TaxClass>
         <Brand>GENERIC</Brand>
         <PrimaryCategory>TVs</PrimaryCategory>
+        <QCStatus>approved</QCStatus>
         <Categories>TV, Audio y Video,Smart TV</Categories>
         <ProductData>
               <ConditionType>Reacondicionado</ConditionType>
