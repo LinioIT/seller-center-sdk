@@ -105,7 +105,6 @@ class GlobalProduct extends BaseProduct implements JsonSerializable
             Attribute::FEED_PRODUCT_ID => $this->productId,
             Attribute::FEED_TAX_CLASS => $this->taxClass,
             Attribute::FEED_PARENT_SKU => $this->parentSku,
-            Attribute::FEED_QCSTATUS => $this->qcStatus,
         ];
     }
 
