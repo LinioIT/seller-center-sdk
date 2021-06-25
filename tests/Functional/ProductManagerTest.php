@@ -402,8 +402,7 @@ class ProductManagerTest extends LinioTestCase
                 'facl',
                 5999.00,
                 10,
-                'active',
-                0
+                'active'
             );
             $businessUnits->add($businessUnit);
             $product = GlobalProduct::fromBasicData(
@@ -465,8 +464,7 @@ class ProductManagerTest extends LinioTestCase
                 'facl',
                 5999.00,
                 10,
-                'active',
-                0
+                'active'
             );
             $businessUnits->add($businessUnit);
             $product = GlobalProduct::fromBasicData(
