@@ -235,7 +235,7 @@ class OrderItem implements JsonSerializable
         ?DateTimeImmutable $createdAt,
         ?DateTimeImmutable $updatedAt,
         ?string $returnStatus,
-        ?string $salesType
+        ?string $salesType = null
     ): OrderItem {
         $orderItem = new static();
 
