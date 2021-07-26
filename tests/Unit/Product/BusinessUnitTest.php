@@ -101,6 +101,7 @@ class BusinessUnitTest extends LinioTestCase
         $this->assertEquals($businessUnit->getOperatorCode(), $this->operatorCode);
         $this->assertEquals($businessUnit->getPrice(), $this->price);
         $this->assertEquals($businessUnit->getStock(), $this->stock);
+        $this->assertEquals($businessUnit->getAvailable(), $this->stock);
         $this->assertEquals($businessUnit->getStatus(), $this->status);
         $this->assertEquals($businessUnit->getIsPublished(), $this->isPublished);
         $this->assertEquals($businessUnit->getBusinessUnit(), $this->businessUnit);
