@@ -9,9 +9,10 @@ use JsonSerializable;
 use Linio\SellerCenter\Contract\BusinessUnitOperatorCodes;
 use Linio\SellerCenter\Contract\ProductStatus;
 use Linio\SellerCenter\Exception\InvalidDomainException;
+use Linio\SellerCenter\Model\Product\Contract\VariationProductInterface;
 use stdClass;
 
-class BusinessUnit implements JsonSerializable
+class BusinessUnit implements JsonSerializable, VariationProductInterface
 {
     public const FEED_BUSINESS_UNIT = 'BusinessUnit';
     public const FEED_OPERATOR_CODE = 'OperatorCode';
@@ -139,6 +140,11 @@ class BusinessUnit implements JsonSerializable
     }
 
     public function getStock(): int
+    {
+        return $this->stock;
+    }
+
+    public function getAvailable(): int
     {
         return $this->stock;
     }

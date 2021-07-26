@@ -11,9 +11,10 @@ use Linio\SellerCenter\Exception\InvalidDomainException;
 use Linio\SellerCenter\Model\Brand\Brand;
 use Linio\SellerCenter\Model\Category\Categories;
 use Linio\SellerCenter\Model\Category\Category;
+use Linio\SellerCenter\Model\Product\Contract\VariationProductInterface;
 use stdClass;
 
-class Product extends BaseProduct implements JsonSerializable
+class Product extends BaseProduct implements JsonSerializable, VariationProductInterface
 {
     /**
      * @var string
@@ -165,19 +166,19 @@ class Product extends BaseProduct implements JsonSerializable
         }
     }
 
-    public function setSalePrice(float $salePrice): void
+    public function setSalePrice(?float $salePrice): void
     {
         if ($salePrice > 0 && $salePrice < $this->price) {
             $this->salePrice = $salePrice;
         }
     }
 
-    public function setSaleStartDate(DateTimeInterface $saleStartDate): void
+    public function setSaleStartDate(?DateTimeInterface $saleStartDate): void
     {
         $this->saleStartDate = $saleStartDate;
     }
 
-    public function setSaleEndDate(DateTimeInterface $saleEndDate): void
+    public function setSaleEndDate(?DateTimeInterface $saleEndDate): void
     {
         $this->saleEndDate = $saleEndDate;
     }
