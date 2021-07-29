@@ -11,6 +11,7 @@ use Linio\SellerCenter\Contract\ClientInterface;
 use Linio\SellerCenter\Factory\RequestFactory;
 use Linio\SellerCenter\Factory\Xml\Shipment\ShipmentProvidersFactory;
 use Linio\SellerCenter\Formatter\LogMessageFormatter;
+use Linio\SellerCenter\Model\Shipment\ShipmentProvider;
 use Linio\SellerCenter\Response\HandleResponse;
 use Psr\Log\LoggerInterface;
 
@@ -48,6 +49,9 @@ class ShipmentManager
         $this->logger = $logger;
     }
 
+    /**
+     * @return  ShipmentProvider[]
+     */
     public function getShipmentProviders(): array
     {
         $action = 'GetShipmentProviders';

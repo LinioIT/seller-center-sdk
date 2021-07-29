@@ -15,6 +15,8 @@ use Linio\SellerCenter\Model\Order\Order;
 use Linio\SellerCenter\Model\Order\OrderItem;
 use Linio\SellerCenter\Model\Order\OrderItems;
 use Linio\SellerCenter\Service\OrderManager;
+use Prophecy\Argument;
+use Psr\Log\LoggerInterface;
 
 class OrdersManagerTest extends LinioTestCase
 {
@@ -399,6 +401,35 @@ class OrdersManagerTest extends LinioTestCase
         $configuration = new Configuration($parameters['key'], $parameters['username'], $parameters['endpoint'], $parameters['version']);
 
         $sdkClient = new SellerCenterSdk($configuration, $client);
+        $sdkClient->orders()->setStatusToCanceled(1, 'someReason', 'someReasonDetail');
+    }
+
+    public function testItLogsWhenSettingStatusToCanceledReturnSuccessResponse(): void
+    {
+        $body = '<?xml version="1.0" encoding="UTF-8"?>
+                <SuccessResponse>
+                  <Head>
+                    <RequestId></RequestId>
+                    <RequestAction>SetStatusToCanceled</RequestAction>
+                    <ResponseType></ResponseType>
+                    <Timestamp>2013-08-27T14:44:13+0000</Timestamp>
+                  </Head>
+                  <Body />
+                </SuccessResponse>';
+
+        $client = $this->createClientWithResponse($body, 400);
+
+        $parameters = $this->getParameters();
+        $configuration = new Configuration($parameters['key'], $parameters['username'], $parameters['endpoint'], $parameters['version']);
+        $logger = $this->prophesize(LoggerInterface::class);
+        $logger->debug(
+            Argument::type('string'),
+            Argument::type('array')
+        )->shouldBeCalled();
+        $logger->info(
+            Argument::type('string')
+        )->shouldBeCalled();
+        $sdkClient = new SellerCenterSdk($configuration, $client, $logger->reveal());
         $sdkClient->orders()->setStatusToCanceled(1, 'someReason', 'someReasonDetail');
     }
 

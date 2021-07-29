@@ -35,12 +35,12 @@ class Category implements JsonSerializable
     protected $children = [];
 
     /**
-     * @var array
+     * @var mixed[]
      */
     protected $attributes = [];
 
     /**
-     * @return static
+     * @param Category[] $children
      */
     public static function build(
         int $categoryId,
@@ -49,7 +49,7 @@ class Category implements JsonSerializable
         ?int $attributeSetId = null,
         array $children = null
     ): self {
-        $category = new static();
+        $category = new self();
 
         $category->categoryId = $categoryId;
         $category->name = $name;
@@ -65,24 +65,18 @@ class Category implements JsonSerializable
         return $category;
     }
 
-    /**
-     * @return static
-     */
     public static function fromId(int $id): self
     {
-        $category = new static();
+        $category = new self();
 
         $category->categoryId = $id;
 
         return $category;
     }
 
-    /**
-     * @return static
-     */
     public static function fromName(string $name): self
     {
-        $category = new static();
+        $category = new self();
 
         $category->name = $name;
 

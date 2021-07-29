@@ -5,15 +5,16 @@ declare(strict_types=1);
 namespace Linio\SellerCenter\Model\Product;
 
 use Linio\SellerCenter\Contract\CollectionInterface;
+use Linio\SellerCenter\Model\Product\Contract\ProductInterface;
 
 class Products implements CollectionInterface
 {
     /**
-     * @var BaseProduct[]
+     * @var ProductInterface[]
      */
     protected $collection = [];
 
-    public function findBySellerSku(string $sellerSku): ?BaseProduct
+    public function findBySellerSku(string $sellerSku): ?ProductInterface
     {
         if (!key_exists($sellerSku, $this->collection)) {
             return null;
@@ -22,6 +23,9 @@ class Products implements CollectionInterface
         return $this->collection[$sellerSku];
     }
 
+    /**
+     * @return ProductInterface[]
+     */
     public function searchByName(string $name): array
     {
         $result = [];
@@ -35,12 +39,15 @@ class Products implements CollectionInterface
         return $result;
     }
 
+    /**
+     * @return ProductInterface[]
+     */
     public function all(): array
     {
         return $this->collection;
     }
 
-    public function add(BaseProduct $product): void
+    public function add(ProductInterface $product): void
     {
         $this->collection[$product->getSellerSku()] = $product;
     }

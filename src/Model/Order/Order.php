@@ -111,7 +111,7 @@ class Order implements JsonSerializable
     protected $extraAttributes;
 
     /**
-     * @var array|null
+     * @var string[]|null
      */
     protected $statuses;
 
@@ -126,7 +126,7 @@ class Order implements JsonSerializable
     protected $operatorCode;
 
     /**
-     * @return static
+     * @param string[] $statuses
      */
     public static function fromData(
         int $orderId,
@@ -152,7 +152,7 @@ class Order implements JsonSerializable
         array $statuses,
         ?string $operatorCode = null
     ): Order {
-        $order = new static();
+        $order = new self();
 
         $order->orderId = $orderId;
         $order->orderNumber = $orderNumber;
@@ -180,12 +180,9 @@ class Order implements JsonSerializable
         return $order;
     }
 
-    /**
-     * @return static
-     */
     public static function fromItems(int $orderId, int $orderNumber, OrderItems $orderItems): Order
     {
-        $order = new static();
+        $order = new self();
 
         $order->orderId = $orderId;
         $order->orderNumber = $orderNumber;
@@ -294,6 +291,9 @@ class Order implements JsonSerializable
         return $this->extraAttributes;
     }
 
+    /**
+     * @return string[]|null
+     */
     public function getStatuses(): ?array
     {
         return $this->statuses;

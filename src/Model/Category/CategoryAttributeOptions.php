@@ -27,6 +27,9 @@ class CategoryAttributeOptions implements CollectionInterface, JsonSerializable
         $this->collection[] = $option;
     }
 
+    /**
+     * @return CategoryAttributeOption[]
+     */
     public function jsonSerialize(): array
     {
         return $this->collection;

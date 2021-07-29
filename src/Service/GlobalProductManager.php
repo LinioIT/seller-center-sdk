@@ -14,8 +14,9 @@ use Linio\SellerCenter\Contract\ProductFilters;
 use Linio\SellerCenter\Exception\EmptyArgumentException;
 use Linio\SellerCenter\Factory\RequestFactory;
 use Linio\SellerCenter\Factory\Xml\FeedResponseFactory;
-use Linio\SellerCenter\Factory\Xml\Product\ProductsFactory;
+use Linio\SellerCenter\Factory\Xml\Product\GlobalProductsFactory;
 use Linio\SellerCenter\Formatter\LogMessageFormatter;
+use Linio\SellerCenter\Model\Product\GlobalProduct;
 use Linio\SellerCenter\Model\Product\Images;
 use Linio\SellerCenter\Model\Product\Product;
 use Linio\SellerCenter\Model\Product\Products;
@@ -24,7 +25,7 @@ use Linio\SellerCenter\Response\HandleResponse;
 use Linio\SellerCenter\Transformer\Product\ProductsTransformer;
 use Psr\Log\LoggerInterface;
 
-class ProductManager
+class GlobalProductManager
 {
     /**
      * @var LoggerInterface
@@ -391,7 +392,7 @@ class ProductManager
             ]
         );
 
-        $products = ProductsFactory::make($builtResponse->getBody(), $this->logger);
+        $products = GlobalProductsFactory::make($builtResponse->getBody(), $this->logger);
 
         $productsResponse = array_values($products->all());
 
@@ -408,7 +409,7 @@ class ProductManager
     }
 
     /**
-     * @return Product[]
+     * @return GlobalProduct[]
      */
     public function getAllProducts(int $limit = self::DEFAULT_LIMIT, int $offset = self::DEFAULT_OFFSET): array
     {
@@ -420,7 +421,7 @@ class ProductManager
     }
 
     /**
-     * @return Product[]
+     * @return GlobalProduct[]
      */
     public function getProductsCreatedAfter(
         DateTimeInterface $createdAfter,
@@ -439,7 +440,7 @@ class ProductManager
     }
 
     /**
-     * @return Product[]
+     * @return GlobalProduct[]
      */
     public function getProductsCreatedBefore(
         DateTimeInterface $createdBefore,
@@ -458,7 +459,7 @@ class ProductManager
     }
 
     /**
-     * @return Product[]
+     * @return GlobalProduct[]
      */
     public function getProductsUpdatedAfter(
         DateTimeInterface $updatedAfter,
@@ -477,7 +478,7 @@ class ProductManager
     }
 
     /**
-     * @return Product[]
+     * @return GlobalProduct[]
      */
     public function getProductsUpdatedBefore(
         DateTimeInterface $updatedBefore,
@@ -496,7 +497,7 @@ class ProductManager
     }
 
     /**
-     * @return Product[]
+     * @return GlobalProduct[]
      */
     public function searchProducts(
         string $searchValue,
@@ -515,7 +516,7 @@ class ProductManager
     }
 
     /**
-     * @return Product[]
+     * @return GlobalProduct[]
      */
     public function filterProducts(
         string $filter,
@@ -540,7 +541,7 @@ class ProductManager
     /**
      * @param mixed[] $skuSellerList
      *
-     * @return Product[]
+     * @return GlobalProduct[]
      */
     public function getProductsBySellerSku(
         array $skuSellerList,
@@ -565,7 +566,7 @@ class ProductManager
     /**
      * @param mixed[]|null $skuSellerList
      *
-     * @return Product[]
+     * @return GlobalProduct[]
      */
     public function getProductsFromParameters(
         ?DateTimeInterface $createdAfter = null,

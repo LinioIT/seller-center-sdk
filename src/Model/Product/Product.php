@@ -11,10 +11,11 @@ use Linio\SellerCenter\Exception\InvalidDomainException;
 use Linio\SellerCenter\Model\Brand\Brand;
 use Linio\SellerCenter\Model\Category\Categories;
 use Linio\SellerCenter\Model\Category\Category;
+use Linio\SellerCenter\Model\Product\Contract\ProductInterface;
 use Linio\SellerCenter\Model\Product\Contract\VariationProductInterface;
 use stdClass;
 
-class Product extends BaseProduct implements JsonSerializable, VariationProductInterface
+class Product extends BaseProduct implements JsonSerializable, ProductInterface, VariationProductInterface
 {
     /**
      * @var string
@@ -50,6 +51,12 @@ class Product extends BaseProduct implements JsonSerializable, VariationProductI
      * @var int
      */
     protected $available;
+
+    public function __construct()
+    {
+        $this->productData = new ProductData();
+        $this->images = new Images();
+    }
 
     /**
      * @return static

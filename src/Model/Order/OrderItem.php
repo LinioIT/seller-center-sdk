@@ -166,7 +166,7 @@ class OrderItem implements JsonSerializable
     protected $promisedShippingTime;
 
     /**
-     * @var array|null
+     * @var mixed[]|null
      */
     protected $extraAttributes;
 
@@ -196,9 +196,9 @@ class OrderItem implements JsonSerializable
     protected $salesType;
 
     /**
-     * @return static
+     * @param mixed[]|null $extraAttributes
      */
-    public static function fromOrderItem(
+    final public static function fromOrderItem(
         int $orderItemId,
         int $shopId,
         int $orderId,
@@ -237,7 +237,7 @@ class OrderItem implements JsonSerializable
         ?string $returnStatus,
         ?string $salesType = null
     ): OrderItem {
-        $orderItem = new static();
+        $orderItem = new self();
 
         $orderItem->orderItemId = $orderItemId;
         $orderItem->shopId = $shopId;
@@ -280,16 +280,13 @@ class OrderItem implements JsonSerializable
         return $orderItem;
     }
 
-    /**
-     * @return static
-     */
     public static function fromStatus(
         int $orderItemId,
         int $purchaseOrderId,
         string $purchaseOrderNumber,
         ?string $packageId
     ): OrderItem {
-        $orderItem = new static();
+        $orderItem = new self();
 
         $orderItem->purchaseOrderId = $purchaseOrderId;
         $orderItem->purchaseOrderNumber = $purchaseOrderNumber;
@@ -454,6 +451,9 @@ class OrderItem implements JsonSerializable
         return $this->promisedShippingTime;
     }
 
+    /**
+     * @return mixed[]|null
+     */
     public function getExtraAttributes(): ?array
     {
         return !empty($this->extraAttributes) ? $this->extraAttributes : null;

@@ -8,13 +8,13 @@ use Linio\SellerCenter\Exception\InvalidDomainException;
 use Linio\SellerCenter\Model\Brand\Brand;
 use Linio\SellerCenter\Model\Category\Categories;
 use Linio\SellerCenter\Model\Category\Category;
-use Linio\SellerCenter\Model\Product\BaseProduct;
+use Linio\SellerCenter\Model\Product\Contract\ProductInterface;
 use Linio\SellerCenter\Model\Product\GlobalProduct;
 use SimpleXMLElement;
 
 class ProductTransformer
 {
-    public static function asXml(SimpleXMLElement &$xml, BaseProduct $product): void
+    public static function asXml(SimpleXMLElement &$xml, ProductInterface $product): void
     {
         $body = $xml->addChild('Product');
         self::addAttributes($body, $product->all());
@@ -51,6 +51,9 @@ class ProductTransformer
         }
     }
 
+    /**
+     * @param mixed[] $attributes
+     */
     public static function addAttributes(SimpleXMLElement $xml, array $attributes): void
     {
         foreach ($attributes as $attributeName => $attributeValue) {
@@ -69,6 +72,9 @@ class ProductTransformer
         }
     }
 
+    /**
+     * @phpstan-ignore-next-line
+     */
     public static function attributeAsString($attribute): ?string
     {
         if (is_object($attribute)) {
@@ -78,6 +84,9 @@ class ProductTransformer
         return (string) $attribute;
     }
 
+    /**
+     * @phpstan-ignore-next-line
+     */
     public static function attributeObjectAsString($attribute): ?string
     {
         $className = get_class($attribute);
@@ -114,13 +123,13 @@ class ProductTransformer
         return implode(',', $categoriesIds);
     }
 
-    public static function skuAsXml(SimpleXMLElement &$xml, BaseProduct $product): void
+    public static function skuAsXml(SimpleXMLElement &$xml, ProductInterface $product): void
     {
         $body = $xml->addChild('Product');
         $body->addChild('SellerSku', htmlspecialchars($product->getSellerSku()));
     }
 
-    public static function imagesAsXml(SimpleXMLElement $xml, BaseProduct $product): void
+    public static function imagesAsXml(SimpleXMLElement $xml, ProductInterface $product): void
     {
         $body = $xml->addChild('ProductImage');
 

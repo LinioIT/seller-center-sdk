@@ -11,6 +11,7 @@ use Linio\SellerCenter\Contract\ClientInterface;
 use Linio\SellerCenter\Factory\RequestFactory;
 use Linio\SellerCenter\Factory\Xml\Brand\BrandsFactory;
 use Linio\SellerCenter\Formatter\LogMessageFormatter;
+use Linio\SellerCenter\Model\Brand\Brand;
 use Linio\SellerCenter\Response\HandleResponse;
 use Psr\Log\LoggerInterface;
 
@@ -48,6 +49,9 @@ class BrandManager
         $this->logger = $logger;
     }
 
+    /**
+     * @return Brand[]
+     */
     public function getBrands(): array
     {
         $action = 'GetBrands';

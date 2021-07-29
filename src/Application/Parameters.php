@@ -9,16 +9,22 @@ use DateTimeImmutable;
 class Parameters
 {
     /**
-     * @var array
+     * @var mixed[] array
      */
     protected $parameters = [];
 
+    /**
+     * @param mixed[] $parameters
+     */
     public function set(array $parameters): void
     {
         $this->parameters = array_merge($this->parameters, $parameters);
         ksort($this->parameters);
     }
 
+    /**
+     * @return mixed[] $parameters
+     */
     public function all(): array
     {
         $parameters = $this->parameters;

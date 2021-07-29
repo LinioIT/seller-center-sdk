@@ -24,6 +24,9 @@ class FeedWarnings implements CollectionInterface, JsonSerializable
         $this->collection[] = $warning;
     }
 
+    /**
+     * @return FeedWarning[]
+     */
     public function jsonSerialize(): array
     {
         return $this->collection;

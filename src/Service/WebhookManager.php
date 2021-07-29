@@ -15,6 +15,7 @@ use Linio\SellerCenter\Factory\RequestFactory;
 use Linio\SellerCenter\Factory\Xml\Webhook\EventsFactory;
 use Linio\SellerCenter\Factory\Xml\Webhook\WebhooksFactory;
 use Linio\SellerCenter\Formatter\LogMessageFormatter;
+use Linio\SellerCenter\Model\Webhook\Event;
 use Linio\SellerCenter\Model\Webhook\Webhook;
 use Linio\SellerCenter\Response\HandleResponse;
 use Linio\SellerCenter\Transformer\Webhook\WebhookTransformer;
@@ -194,6 +195,9 @@ class WebhookManager
         );
     }
 
+    /**
+     * @return Webhook[]
+     */
     protected function getWebhooks(Parameters $parameters): array
     {
         $action = 'GetWebhooks';
@@ -269,6 +273,8 @@ class WebhookManager
     }
 
     /**
+     * @param string[] $webhookIds
+     *
      * @return Webhook[]
      */
     public function getWebhooksByIds(array $webhookIds): array
@@ -284,6 +290,9 @@ class WebhookManager
         return $this->getWebhooks($parameters);
     }
 
+    /**
+     * @return Event[]
+     */
     protected function getWebhookEntities(): array
     {
         $action = 'GetWebhookEntities';

@@ -33,6 +33,9 @@ class OrderItems implements CollectionInterface, JsonSerializable
         $this->collection[$orderItem->getOrderItemId()] = $orderItem;
     }
 
+    /**
+     * @return mixed[]
+     */
     public function jsonSerialize(): array
     {
         return array_values($this->collection);

@@ -93,12 +93,11 @@ abstract class BaseProduct implements JsonSerializable
      */
     protected $images;
 
-    public function __construct()
-    {
-        $this->productData = new ProductData();
-        $this->images = new Images();
-    }
+    abstract public function __construct();
 
+    /**
+     * @return mixed[]
+     */
     abstract public function all(): array;
 
     /**
@@ -295,7 +294,7 @@ abstract class BaseProduct implements JsonSerializable
         return $serialized;
     }
 
-    protected static function ValidateArguments($sellerSku, $name, $description, $productId): void
+    protected static function ValidateArguments(string $sellerSku, string $name, string $description, string $productId): void
     {
         if (empty($sellerSku)) {
             throw new EmptyArgumentException('SellerSku');

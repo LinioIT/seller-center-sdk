@@ -204,6 +204,8 @@ class OrderManager
     }
 
     /**
+     * @param mixed[] $orderIdList
+     *
      * @return Order[]
      */
     public function getMultipleOrderItems(array $orderIdList): array
@@ -280,6 +282,9 @@ class OrderManager
         return $multipleOrderItemsResponse;
     }
 
+    /**
+     * @return Order[]
+     */
     protected function getOrders(Parameters $parameters): array
     {
         $action = 'GetOrders';
@@ -549,6 +554,8 @@ class OrderManager
     }
 
     /**
+     * @param mixed[] $orderItemIds
+     *
      * @return OrderItem[]
      */
     public function setStatusToPackedByMarketplace(
@@ -634,6 +641,8 @@ class OrderManager
     }
 
     /**
+     * @param mixed[] $orderItemIds
+     *
      * @return OrderItem[]
      */
     public function setStatusToReadyToShip(

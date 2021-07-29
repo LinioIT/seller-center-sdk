@@ -7,7 +7,7 @@ namespace Linio\SellerCenter\Unit\Product;
 use DateTimeImmutable;
 use Linio\Component\Util\Json;
 use Linio\SellerCenter\Exception\InvalidXmlStructureException;
-use Linio\SellerCenter\Factory\Xml\Product\ProductFactory;
+use Linio\SellerCenter\Factory\Xml\Product\GlobalProductFactory;
 use Linio\SellerCenter\LinioTestCase;
 use Linio\SellerCenter\Model\Brand\Brand;
 use Linio\SellerCenter\Model\Category\Categories;
@@ -183,7 +183,7 @@ class GlobalProductTest extends LinioTestCase
 
         $xml = new SimpleXMLElement($sXml);
 
-        $product = ProductFactory::make($xml);
+        $product = GlobalProductFactory::make($xml);
 
         $this->assertInstanceOf(GlobalProduct::class, $product);
         $this->assertEquals((string) $xml->SellerSku, $product->getSellerSku());
@@ -261,7 +261,7 @@ class GlobalProductTest extends LinioTestCase
 
         $this->expectExceptionMessage(
             sprintf(
-                'The xml structure is not valid for a Product. The property %s should exist',
+                'The xml structure is not valid for a GlobalProduct. The property %s should exist',
                 $property
             )
         );
@@ -273,7 +273,7 @@ class GlobalProductTest extends LinioTestCase
             unset($xml->{$property});
         }
 
-        ProductFactory::make($xml);
+        GlobalProductFactory::make($xml);
     }
 
     public function testItThrowsAExceptionWithoutABusinessUnitInTheXml(): void
@@ -283,14 +283,14 @@ class GlobalProductTest extends LinioTestCase
 
         $this->expectExceptionMessage(
             sprintf(
-                'The xml structure is not valid for a Product. The property %s should exist',
+                'The xml structure is not valid for a GlobalProduct. The property %s should exist',
                 'BusinessUnit'
             )
         );
 
         $xml = new SimpleXMLElement($xmlString);
 
-        ProductFactory::make($xml);
+        GlobalProductFactory::make($xml);
     }
 
     public function invalidXmlStructure(): array

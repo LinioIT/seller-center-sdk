@@ -26,9 +26,6 @@ class Brand implements JsonSerializable
      */
     protected $globalIdentifier;
 
-    /**
-     * @return static
-     */
     public static function build(int $brandId, string $name, ?string $globalIdentifier): self
     {
         if (empty($brandId)) {
@@ -39,7 +36,7 @@ class Brand implements JsonSerializable
             throw new InvalidBrandNameException();
         }
 
-        $brand = new static();
+        $brand = new self();
 
         $brand->name = $name;
         $brand->brandId = $brandId;
@@ -48,12 +45,9 @@ class Brand implements JsonSerializable
         return $brand;
     }
 
-    /**
-     * @return static
-     */
     public static function fromName(string $name): self
     {
-        $brand = new static();
+        $brand = new self();
 
         $brand->name = $name;
 

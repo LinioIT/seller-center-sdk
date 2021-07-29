@@ -14,6 +14,7 @@ use Linio\SellerCenter\Service\BrandManager;
 use Linio\SellerCenter\Service\CategoryManager;
 use Linio\SellerCenter\Service\DocumentManager;
 use Linio\SellerCenter\Service\FeedManager;
+use Linio\SellerCenter\Service\GlobalProductManager;
 use Linio\SellerCenter\Service\OrderManager;
 use Linio\SellerCenter\Service\ProductManager;
 use Linio\SellerCenter\Service\QualityControlManager;
@@ -83,6 +84,11 @@ class SellerCenterSdk
      * @var ProductManager
      */
     protected $products;
+
+    /**
+     * @var GlobalProductManager
+     */
+    protected $globalProducts;
 
     /**
      * @var ShipmentManager
@@ -186,6 +192,20 @@ class SellerCenterSdk
         }
 
         return $this->products;
+    }
+
+    public function globalProducts(): GlobalProductManager
+    {
+        if (empty($this->globalProducts)) {
+            $this->globalProducts = new GlobalProductManager(
+                $this->configuration,
+                $this->client,
+                $this->parameters,
+                $this->logger
+            );
+        }
+
+        return $this->globalProducts;
     }
 
     public function orders(): OrderManager

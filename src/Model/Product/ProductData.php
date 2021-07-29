@@ -56,6 +56,9 @@ class ProductData implements JsonSerializable
         }
     }
 
+    /**
+     * @return mixed[]
+     */
     public function all(): array
     {
         return $this->attributes;
@@ -73,6 +76,9 @@ class ProductData implements JsonSerializable
         return null;
     }
 
+    /**
+     * @phpstan-ignore-next-line
+     */
     public function add(string $name, $value): void
     {
         if (!key_exists($name, $this->attributes)) {

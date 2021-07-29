@@ -4,10 +4,14 @@ declare(strict_types=1);
 
 namespace Linio\SellerCenter\Transformer\Webhook;
 
+use Linio\SellerCenter\Model\Webhook\Event;
 use SimpleXMLElement;
 
 class WebhookTransformer
 {
+    /**
+     * @param Event[] $events
+     */
     public static function createWebhookAsXmlString(string $callbackUrl, array $events): string
     {
         $xml = new SimpleXMLElement('<Request/>');
