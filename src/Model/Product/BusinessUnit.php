@@ -159,6 +159,9 @@ class BusinessUnit implements JsonSerializable, VariationProductInterface
         return $this->isPublished;
     }
 
+    /**
+     * @return mixed[]
+     */
     public function getAllAttributes(): array
     {
         $attributes = [];

@@ -24,6 +24,9 @@ class FeedErrors implements CollectionInterface, JsonSerializable
         $this->collection[] = $error;
     }
 
+    /**
+     * @return FeedError[]
+     */
     public function jsonSerialize(): array
     {
         return $this->collection;

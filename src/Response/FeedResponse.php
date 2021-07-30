@@ -34,6 +34,9 @@ class FeedResponse
      */
     protected $requestParameters;
 
+    /**
+     * @param mixed[] $requestParameters
+     */
     public function __construct(
         ?string $requestId,
         string $requestAction,

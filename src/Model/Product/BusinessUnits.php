@@ -23,6 +23,9 @@ class BusinessUnits implements CollectionInterface, JsonSerializable
         return $this->collection[$operatorCode];
     }
 
+    /**
+     * @return BusinessUnit[]
+     */
     public function searchByBusinessUnit(string $businessUnit): array
     {
         $result = [];
@@ -46,6 +49,9 @@ class BusinessUnits implements CollectionInterface, JsonSerializable
         $this->collection[$businessUnit->getOperatorCode()] = $businessUnit;
     }
 
+    /**
+     * @return mixed[]
+     */
     public function jsonSerialize(): array
     {
         return array_values($this->collection);

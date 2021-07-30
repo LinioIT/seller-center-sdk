@@ -9,5 +9,8 @@ use Psr\Http\Message\ResponseInterface;
 
 interface ClientInterface
 {
+    /**
+     * @param mixed[] $options
+     */
     public function send(RequestInterface $request, array $options = []): ResponseInterface;
 }

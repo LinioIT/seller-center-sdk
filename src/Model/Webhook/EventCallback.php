@@ -12,10 +12,13 @@ class EventCallback
     protected $event;
 
     /**
-     * @var array
+     * @var mixed[]
      */
     protected $payload;
 
+    /**
+     * @param mixed[] $payload
+     */
     public function __construct(Event $event, array $payload)
     {
         $this->event = $event;
@@ -27,6 +30,9 @@ class EventCallback
         return $this->event;
     }
 
+    /**
+     * @return mixed[]
+     */
     public function getPayload(): array
     {
         return $this->payload;

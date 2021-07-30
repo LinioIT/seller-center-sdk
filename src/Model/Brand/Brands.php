@@ -22,6 +22,9 @@ class Brands implements CollectionInterface
         return $this->collection[$brandId];
     }
 
+    /**
+     * @return Brand[]
+     */
     public function searchByName(string $name): array
     {
         $result = [];
@@ -35,6 +38,9 @@ class Brands implements CollectionInterface
         return $result;
     }
 
+    /**
+     * @return Brand[]
+     */
     public function searchByGlobalIdentifier(string $globalIdentifier): array
     {
         $result = [];
@@ -48,6 +54,9 @@ class Brands implements CollectionInterface
         return $result;
     }
 
+    /**
+     * @return Brand[]
+     */
     public function all(): array
     {
         return $this->collection;

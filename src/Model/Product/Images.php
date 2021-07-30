@@ -74,6 +74,9 @@ class Images implements CollectionInterface, JsonSerializable
         $this->collection = array_merge($this->collection, $items);
     }
 
+    /**
+     * @return mixed[]
+     */
     public function jsonSerialize(): array
     {
         return $this->collection;

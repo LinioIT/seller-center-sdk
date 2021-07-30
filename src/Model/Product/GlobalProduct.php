@@ -8,9 +8,10 @@ use JsonSerializable;
 use Linio\SellerCenter\Model\Brand\Brand;
 use Linio\SellerCenter\Model\Category\Categories;
 use Linio\SellerCenter\Model\Category\Category;
+use Linio\SellerCenter\Model\Product\Contract\ProductInterface;
 use stdClass;
 
-class GlobalProduct extends BaseProduct implements JsonSerializable
+class GlobalProduct extends BaseProduct implements JsonSerializable, ProductInterface
 {
     /**
      * @var BusinessUnits
@@ -21,6 +22,12 @@ class GlobalProduct extends BaseProduct implements JsonSerializable
      * @var string|null
      */
     protected $qcStatus;
+
+    public function __construct()
+    {
+        $this->productData = new ProductData();
+        $this->images = new Images();
+    }
 
     /**
      * @return static

@@ -50,6 +50,9 @@ class DocumentManager
         $this->logger = $logger;
     }
 
+    /**
+     * @param mixed[] $orderItemIds
+     */
     public function getDocument(string $documentType, array $orderItemIds): Document
     {
         $action = 'GetDocument';

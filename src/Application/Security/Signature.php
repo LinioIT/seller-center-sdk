@@ -19,9 +19,6 @@ class Signature
         $this->signature = $signature;
     }
 
-    /**
-     * @return static
-     */
     public static function generate(Parameters $parameters, string $apiKey): Signature
     {
         if (empty($apiKey)) {
@@ -39,7 +36,7 @@ class Signature
 
         $signature = rawurlencode(hash_hmac('sha256', $concatenatedParameters, $apiKey, false));
 
-        return new static($signature);
+        return new self($signature);
     }
 
     public function get(): string

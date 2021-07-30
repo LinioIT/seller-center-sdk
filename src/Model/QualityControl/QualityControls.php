@@ -22,6 +22,9 @@ class QualityControls implements CollectionInterface
         return $this->collection[$SellerSku];
     }
 
+    /**
+     * @return QualityControl[]
+     */
     public function searchByStatus(string $status): array
     {
         $result = [];

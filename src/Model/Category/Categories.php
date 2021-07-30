@@ -24,6 +24,9 @@ class Categories implements CollectionInterface, JsonSerializable
         $this->collection[] = $category;
     }
 
+    /**
+     * @return Category[]
+     */
     public function jsonSerialize(): array
     {
         return $this->collection;

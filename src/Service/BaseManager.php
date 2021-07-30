@@ -93,6 +93,9 @@ class BaseManager
         return $builtResponse;
     }
 
+    /**
+     * @return mixed[]
+     */
     public function buildQuery(Parameters $parameters): array
     {
         return $parameters->all() + [

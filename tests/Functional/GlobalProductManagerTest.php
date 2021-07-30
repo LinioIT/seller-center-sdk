@@ -11,20 +11,22 @@ use Linio\SellerCenter\Application\Configuration;
 use Linio\SellerCenter\Model\Brand\Brand;
 use Linio\SellerCenter\Model\Category\Categories;
 use Linio\SellerCenter\Model\Category\Category;
+use Linio\SellerCenter\Model\Product\BusinessUnit;
+use Linio\SellerCenter\Model\Product\BusinessUnits;
+use Linio\SellerCenter\Model\Product\GlobalProduct;
 use Linio\SellerCenter\Model\Product\Image;
-use Linio\SellerCenter\Model\Product\Product;
 use Linio\SellerCenter\Model\Product\ProductData;
 use Linio\SellerCenter\Model\Product\Products;
 use Linio\SellerCenter\Response\FeedResponse;
 
-class ProductManagerTest extends LinioTestCase
+class GlobalProductManagerTest extends LinioTestCase
 {
     use ClientHelper;
 
     /**
      * @var Products
      */
-    protected $products;
+    protected $globalProducts;
 
     /**
      * @var Generator
@@ -42,10 +44,10 @@ class ProductManagerTest extends LinioTestCase
 
         $this->faker = $this->getFaker();
 
-        $this->products = new Products();
+        $this->globalProducts = new Products();
 
-        $this->products->add($this->primaryProduct());
-        $this->products->add($this->secondProduct());
+        $this->globalProducts->add($this->primaryProduct(true));
+        $this->globalProducts->add($this->secondProduct(true));
 
         $env = $this->getParameters();
         $this->configuration = new Configuration($env['key'], $env['username'], $env['endpoint'], $env['version']);
@@ -54,91 +56,91 @@ class ProductManagerTest extends LinioTestCase
     public function testItReturnsACollectionOfProducts(): void
     {
         $client = $this->createClientWithResponse(
-            $this->getSchema('Product/ProductsResponse.xml')
+            $this->getSchema('Product/GlobalProductsResponse.xml')
         );
         $sdkClient = new SellerCenterSdk($this->configuration, $client);
 
-        $result = $sdkClient->products()->getAllProducts();
+        $result = $sdkClient->globalProducts()->getAllProducts();
 
         $this->assertIsArray($result);
-        $this->assertContainsOnlyInstancesOf(Product::class, $result);
+        $this->assertContainsOnlyInstancesOf(GlobalProduct::class, $result);
     }
 
     public function testItReturnsACollectionOfProductsCreatedAfterADateTime(): void
     {
         $client = $this->createClientWithResponse(
-            $this->getSchema('Product/ProductsResponse.xml')
+            $this->getSchema('Product/GlobalProductsResponse.xml')
         );
 
         $sdkClient = new SellerCenterSdk($this->configuration, $client);
 
         $createdAfter = DateTimeImmutable::createFromFormat('Y-m-d H:i:s', '2018-09-01 00:00:00');
 
-        $result = $sdkClient->products()->getProductsCreatedAfter($createdAfter);
+        $result = $sdkClient->globalProducts()->getProductsCreatedAfter($createdAfter);
 
         $this->assertIsArray($result);
-        $this->assertContainsOnlyInstancesOf(Product::class, $result);
+        $this->assertContainsOnlyInstancesOf(GlobalProduct::class, $result);
     }
 
     public function testItReturnsACollectionOfProductsCreatedBeforeADateTime(): void
     {
         $client = $this->createClientWithResponse(
-            $this->getSchema('Product/ProductsResponse.xml')
+            $this->getSchema('Product/GlobalProductsResponse.xml')
         );
 
         $sdkClient = new SellerCenterSdk($this->configuration, $client);
 
         $createdBefore = DateTimeImmutable::createFromFormat('Y-m-d H:i:s', '2019-01-23 00:00:00');
 
-        $result = $sdkClient->products()->getProductsCreatedBefore($createdBefore);
+        $result = $sdkClient->globalProducts()->getProductsCreatedBefore($createdBefore);
 
         $this->assertIsArray($result);
-        $this->assertContainsOnlyInstancesOf(Product::class, $result);
+        $this->assertContainsOnlyInstancesOf(GlobalProduct::class, $result);
     }
 
     public function testItReturnsACollectionOfProductsUpdatedAfterADateTime(): void
     {
         $client = $this->createClientWithResponse(
-            $this->getSchema('Product/ProductsResponse.xml')
+            $this->getSchema('Product/GlobalProductsResponse.xml')
         );
         $sdkClient = new SellerCenterSdk($this->configuration, $client);
 
         $updatedAfter = DateTimeImmutable::createFromFormat('Y-m-d H:i:s', '2019-01-23 00:00:00');
 
-        $result = $sdkClient->products()->getProductsUpdatedAfter($updatedAfter);
+        $result = $sdkClient->globalProducts()->getProductsUpdatedAfter($updatedAfter);
 
         $this->assertIsArray($result);
-        $this->assertContainsOnlyInstancesOf(Product::class, $result);
+        $this->assertContainsOnlyInstancesOf(GlobalProduct::class, $result);
     }
 
     public function testItReturnsACollectionOfProductsUpdatedBeforeADateTime(): void
     {
         $client = $this->createClientWithResponse(
-            $this->getSchema('Product/ProductsResponse.xml')
+            $this->getSchema('Product/GlobalProductsResponse.xml')
         );
         $sdkClient = new SellerCenterSdk($this->configuration, $client);
 
         $updatedBefore = DateTimeImmutable::createFromFormat('Y-m-d H:i:s', '2019-01-23 00:00:00');
 
-        $result = $sdkClient->products()->getProductsUpdatedBefore($updatedBefore);
+        $result = $sdkClient->globalProducts()->getProductsUpdatedBefore($updatedBefore);
 
         $this->assertIsArray($result);
-        $this->assertContainsOnlyInstancesOf(Product::class, $result);
+        $this->assertContainsOnlyInstancesOf(GlobalProduct::class, $result);
     }
 
     public function testItReturnsACollectionOfProductsSearchedByValue(): void
     {
         $client = $this->createClientWithResponse(
-            $this->getSchema('Product/ProductsResponse.xml')
+            $this->getSchema('Product/GlobalProductsResponse.xml')
         );
         $sdkClient = new SellerCenterSdk($this->configuration, $client);
 
         $search = 'pil';
 
-        $result = $sdkClient->products()->searchProducts($search);
+        $result = $sdkClient->globalProducts()->searchProducts($search);
 
         $this->assertIsArray($result);
-        $this->assertContainsOnlyInstancesOf(Product::class, $result);
+        $this->assertContainsOnlyInstancesOf(GlobalProduct::class, $result);
     }
 
     /**
@@ -147,29 +149,29 @@ class ProductManagerTest extends LinioTestCase
     public function testItReturnsACollectionOfProductsFiltered(string $filters): void
     {
         $client = $this->createClientWithResponse(
-            $this->getSchema('Product/ProductsResponse.xml')
+            $this->getSchema('Product/GlobalProductsResponse.xml')
         );
         $sdkClient = new SellerCenterSdk($this->configuration, $client);
 
-        $result = $sdkClient->products()->filterProducts($filters);
+        $result = $sdkClient->globalProducts()->filterProducts($filters);
 
         $this->assertIsArray($result);
-        $this->assertContainsOnlyInstancesOf(Product::class, $result);
+        $this->assertContainsOnlyInstancesOf(GlobalProduct::class, $result);
     }
 
     public function testItReturnsACollectionOfProductsBySkuSellerList(): void
     {
         $client = $this->createClientWithResponse(
-            $this->getSchema('Product/ProductsResponse.xml')
+            $this->getSchema('Product/GlobalProductsResponse.xml')
         );
         $sdkClient = new SellerCenterSdk($this->configuration, $client);
 
         $skuSellerList = ['jasku-10001', 'jasku-10002'];
 
-        $result = $sdkClient->products()->getProductsBySellerSku($skuSellerList);
+        $result = $sdkClient->globalProducts()->getProductsBySellerSku($skuSellerList);
 
         $this->assertIsArray($result);
-        $this->assertContainsOnlyInstancesOf(Product::class, $result);
+        $this->assertContainsOnlyInstancesOf(GlobalProduct::class, $result);
     }
 
     public function testItThrowsExceptionWithANullSkuSellerList(): void
@@ -177,17 +179,17 @@ class ProductManagerTest extends LinioTestCase
         $this->expectException(InvalidArgumentException::class);
 
         $client = $this->createClientWithResponse(
-            $this->getSchema('Product/ProductsResponse.xml')
+            $this->getSchema('Product/GlobalProductsResponse.xml')
         );
         $sdkClient = new SellerCenterSdk($this->configuration, $client);
 
-        $sdkClient->products()->getProductsBySellerSku([]);
+        $sdkClient->globalProducts()->getProductsBySellerSku([]);
     }
 
     public function testItReturnsACollectionOfProductsFromParameters(): void
     {
         $client = $this->createClientWithResponse(
-            $this->getSchema('Product/ProductsResponse.xml')
+            $this->getSchema('Product/GlobalProductsResponse.xml')
         );
         $sdkClient = new SellerCenterSdk($this->configuration, $client);
 
@@ -199,7 +201,7 @@ class ProductManagerTest extends LinioTestCase
         $search = 'pil';
         $skuSellerList = ['jasku-10001', 'jasku-10002'];
 
-        $result = $sdkClient->products()->getProductsFromParameters(
+        $result = $sdkClient->globalProducts()->getProductsFromParameters(
             $createdBefore,
             $createdAfter,
             $search,
@@ -212,7 +214,7 @@ class ProductManagerTest extends LinioTestCase
         );
 
         $this->assertIsArray($result);
-        $this->assertContainsOnlyInstancesOf(Product::class, $result);
+        $this->assertContainsOnlyInstancesOf(GlobalProduct::class, $result);
     }
 
     /**
@@ -228,12 +230,12 @@ class ProductManagerTest extends LinioTestCase
         $client = $this->createClientWithResponse($body);
         $sdkClient = new SellerCenterSdk($this->configuration, $client);
 
-        $result = $sdkClient->products()->{$action}($this->products);
+        $result = $sdkClient->globalProducts()->{$action}($this->globalProducts);
 
-        $this->assertIsArray($this->products->all());
+        $this->assertIsArray($this->globalProducts->all());
         $this->assertContainsOnlyInstancesOf(
-            Product::class,
-            $this->products->all()
+            GlobalProduct::class,
+            $this->globalProducts->all()
         );
         $this->assertInstanceOf(FeedResponse::class, $result);
     }
@@ -251,10 +253,10 @@ class ProductManagerTest extends LinioTestCase
         $client = $this->createClientWithResponse($body);
         $sdkClient = new SellerCenterSdk($this->configuration, $client);
 
-        $result = $sdkClient->products()->addImage($images);
+        $result = $sdkClient->globalProducts()->addImage($images);
 
-        $this->assertIsArray($this->products->all());
-        $this->assertContainsOnlyInstancesOf(Product::class, $this->products->all());
+        $this->assertIsArray($this->globalProducts->all());
+        $this->assertContainsOnlyInstancesOf(GlobalProduct::class, $this->globalProducts->all());
         $this->assertInstanceOf(FeedResponse::class, $result);
     }
 
@@ -277,7 +279,7 @@ class ProductManagerTest extends LinioTestCase
         $client = $this->createClientWithResponse($body, 400);
         $sdkClient = new SellerCenterSdk($this->configuration, $client);
 
-        $sdkClient->products()->productCreate($this->products);
+        $sdkClient->products()->productCreate($this->globalProducts);
     }
 
     public function filters(): array
@@ -305,7 +307,7 @@ class ProductManagerTest extends LinioTestCase
         ];
     }
 
-    public function primaryProduct(): Product
+    public function primaryProduct(): GlobalProduct
     {
         $sellerSku = '2145819109aaeu7';
         $name = 'Magic Product';
@@ -317,14 +319,23 @@ class ProductManagerTest extends LinioTestCase
         $taxClass = 'IVA exento 0%';
         $productData = new ProductData('Nuevo', 0, 4, 5, 4);
 
-        $product = Product::fromBasicData(
+        $businessUnits = new BusinessUnits();
+        $businessUnit = new BusinessUnit(
+            'facl',
+            5999.00,
+            10,
+            'active'
+        );
+        $businessUnits->add($businessUnit);
+
+        $product = GlobalProduct::fromBasicData(
             $sellerSku,
             $name,
             $variation,
             $primaryCategory,
             $description,
             $brand,
-            5999.00,
+            $businessUnits,
             $productId,
             $taxClass,
             $productData
@@ -344,7 +355,7 @@ class ProductManagerTest extends LinioTestCase
         return $product;
     }
 
-    public function secondProduct(): Product
+    public function secondProduct(): GlobalProduct
     {
         $sellerSku = '2145887609aaeu7';
         $name = 'Rare Product';
@@ -356,14 +367,23 @@ class ProductManagerTest extends LinioTestCase
         $taxClass = 'IVA exento 0%';
         $productData = new ProductData('Nuevo', 3, 0, 5, 4);
 
-        $product = Product::fromBasicData(
+        $businessUnits = new BusinessUnits();
+        $businessUnit = new BusinessUnit(
+            'facl',
+            5999.00,
+            10,
+            'active'
+        );
+        $businessUnits->add($businessUnit);
+
+        $product = GlobalProduct::fromBasicData(
             $sellerSku,
             $name,
             $variation,
             $primaryCategory,
             $description,
             $brand,
-            9999.00,
+            $businessUnits,
             $productId,
             $taxClass,
             $productData

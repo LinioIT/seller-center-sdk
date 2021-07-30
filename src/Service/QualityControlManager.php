@@ -54,6 +54,9 @@ class QualityControlManager
         $this->logger = $logger;
     }
 
+    /**
+     * @return QualityControl[]
+     */
     protected function getQcStatus(Parameters $parameters): array
     {
         $action = 'GetQcStatus';
@@ -133,6 +136,8 @@ class QualityControlManager
     }
 
     /**
+     * @param string[] $skuSellerList
+     *
      * @return QualityControl[]
      */
     public function getQcStatusBySkuSellerList(

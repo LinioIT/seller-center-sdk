@@ -50,10 +50,13 @@ class ShipmentProvider implements JsonSerializable
     protected $trackingCodeSetOnStep;
 
     /**
-     * @var array|null
+     * @var mixed[]|null
      */
     protected $enabledDeliveryOptions;
 
+    /**
+     * @param mixed[]|null $enabledDeliveryOptions
+     */
     public function __construct(
         string $name,
         ?bool $default = null,
@@ -116,6 +119,9 @@ class ShipmentProvider implements JsonSerializable
         return $this->trackingCodeSetOnStep;
     }
 
+    /**
+     * @return mixed[]|null
+     */
     public function getEnabledDeliveryOptions(): ?array
     {
         return $this->enabledDeliveryOptions;

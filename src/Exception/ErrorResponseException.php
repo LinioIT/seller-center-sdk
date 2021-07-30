@@ -9,7 +9,14 @@ use SimpleXMLElement;
 
 class ErrorResponseException extends RuntimeException
 {
+    /**
+     * @var string
+     */
     protected $action;
+
+    /**
+     * @var string
+     */
     protected $type;
 
     public function __construct(SimpleXMLElement $error)

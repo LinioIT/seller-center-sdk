@@ -14,6 +14,9 @@ use Linio\SellerCenter\Factory\Xml\Category\AttributesSetFactory;
 use Linio\SellerCenter\Factory\Xml\Category\CategoriesFactory;
 use Linio\SellerCenter\Factory\Xml\Category\CategoryAttributesFactory;
 use Linio\SellerCenter\Formatter\LogMessageFormatter;
+use Linio\SellerCenter\Model\Category\AttributeSet;
+use Linio\SellerCenter\Model\Category\Category;
+use Linio\SellerCenter\Model\Category\CategoryAttribute;
 use Linio\SellerCenter\Response\HandleResponse;
 use Psr\Log\LoggerInterface;
 
@@ -51,6 +54,9 @@ class CategoryManager
         $this->logger = $logger;
     }
 
+    /**
+     * @return Category[]
+     */
     public function getCategoryTree(): array
     {
         $action = 'GetCategoryTree';
@@ -116,6 +122,9 @@ class CategoryManager
         return $categoriesResponse;
     }
 
+    /**
+     * @return CategoryAttribute[]
+     */
     public function getCategoryAttributes(int $categoryId): array
     {
         $action = 'GetCategoryAttributes';
@@ -184,6 +193,11 @@ class CategoryManager
         return $categoryAttributesResponse;
     }
 
+    /**
+     * @param mixed[]|null $attributesSetIds
+     *
+     * @return AttributeSet[]
+     */
     public function getCategoriesByAttributesSet(?array $attributesSetIds): array
     {
         $action = 'GetCategoriesByAttributeSet';
