@@ -331,7 +331,7 @@ class GlobalProductManager extends BaseManager
 
         $requestHeaders = $this->generateRequestHeaders();
         $requestId = $requestHeaders[self::REQUEST_ID_HEADER];
-        
+
         $request = RequestFactory::make(
             'GET',
             $this->configuration->getEndpoint(),

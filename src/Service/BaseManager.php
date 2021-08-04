@@ -70,27 +70,27 @@ class BaseManager
 
     /**
      * @param mixed[] $customHeaders
-     * 
+     *
      * @return mixed[]
      */
-    protected function generateRequestHeaders(array $customHeaders = []): array 
+    protected function generateRequestHeaders(array $customHeaders = []): array
     {
-        $headers =  [
+        $headers = [
             self::REQUEST_ID_HEADER => $this->generateRequestId(),
             self::X_SOURCE_HEADER => $this->configuration->getSource(),
         ];
-        if (empty($customHeaders))
+        if (empty($customHeaders)) {
             return $headers;
-        
-        foreach ($customHeaders as $headerKey => $headerValue){
-            if (key_exists($headerKey, $headers)){
+        }
+
+        foreach ($customHeaders as $headerKey => $headerValue) {
+            if (key_exists($headerKey, $headers)) {
                 $headers[$headerKey] = $headerValue;
                 unset($customHeaders[$headerKey]);
             }
         }
-        
-        return array_merge($customHeaders, $headers);
 
+        return array_merge($customHeaders, $headers);
     }
 
     public function executeAction(
@@ -100,7 +100,6 @@ class BaseManager
         string $httpMethod = 'GET'
     ): SuccessResponse {
         $requestHeaders = $this->generateRequestHeaders([self::REQUEST_ID_HEADER => $requestId]);
-        $requestId = $requestHeaders[self::REQUEST_ID_HEADER];
 
         $request = RequestFactory::make($httpMethod, $this->configuration->getEndpoint(), $requestHeaders);
 

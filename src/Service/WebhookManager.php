@@ -41,7 +41,7 @@ class WebhookManager extends BaseManager
 
         $requestHeaders = $this->generateRequestHeaders(['Content-type' => 'text/xml; charset=UTF8']);
         $requestId = $requestHeaders[self::REQUEST_ID_HEADER];
-        
+
         $request = RequestFactory::make(
             'POST',
             $this->configuration->getEndpoint(),
