@@ -18,6 +18,8 @@ use Psr\Log\LoggerInterface;
 class BaseManager
 {
     protected const DATE_TIME_FORMAT = 'Y-m-d\TH:i:s';
+    protected const X_SOURCE_HEADER = 'X-Source';
+    protected const REQUEST_ID_HEADER = 'Request-ID';
 
     /**
      * @var LoggerInterface
@@ -66,15 +68,41 @@ class BaseManager
         return bin2hex(random_bytes(16));
     }
 
+    /**
+     * @param mixed[] $customHeaders
+     * 
+     * @return mixed[]
+     */
+    protected function generateRequestHeaders(array $customHeaders = []): array 
+    {
+        $headers =  [
+            self::REQUEST_ID_HEADER => $this->generateRequestId(),
+            self::X_SOURCE_HEADER => $this->configuration->getSource(),
+        ];
+        if (empty($customHeaders))
+            return $headers;
+        
+        foreach ($customHeaders as $headerKey => $headerValue){
+            if (key_exists($headerKey, $headers)){
+                $headers[$headerKey] = $headerValue;
+                unset($customHeaders[$headerKey]);
+            }
+        }
+        
+        return array_merge($customHeaders, $headers);
+
+    }
+
     public function executeAction(
         string $action,
         Parameters $parameters,
         string $requestId,
         string $httpMethod = 'GET'
     ): SuccessResponse {
-        $request = RequestFactory::make($httpMethod, $this->configuration->getEndpoint(), [
-            'Request-ID' => $requestId,
-        ]);
+        $requestHeaders = $this->generateRequestHeaders([self::REQUEST_ID_HEADER => $requestId]);
+        $requestId = $requestHeaders[self::REQUEST_ID_HEADER];
+
+        $request = RequestFactory::make($httpMethod, $this->configuration->getEndpoint(), $requestHeaders);
 
         $this->logRequest($action, $requestId, $request, $parameters);
 

@@ -36,11 +36,14 @@ class FeedManager extends BaseManager
             'Signature' => Signature::generate($parameters, $this->configuration->getKey())->get(),
         ]);
 
-        $requestId = uniqid((string) mt_rand());
+        $requestHeaders = $this->generateRequestHeaders();
+        $requestId = $requestHeaders[self::REQUEST_ID_HEADER];
 
-        $request = RequestFactory::make('GET', $this->configuration->getEndpoint(), [
-            'Request-ID' => $requestId,
-        ]);
+        $request = RequestFactory::make(
+            'GET',
+            $this->configuration->getEndpoint(),
+            $requestHeaders
+        );
 
         $this->logger->debug(
             LogMessageFormatter::fromAction($requestId, $action, LogMessageFormatter::TYPE_REQUEST),
@@ -101,11 +104,14 @@ class FeedManager extends BaseManager
             'Signature' => Signature::generate($parameters, $this->configuration->getKey())->get(),
         ]);
 
-        $requestId = uniqid((string) mt_rand());
+        $requestHeaders = $this->generateRequestHeaders();
+        $requestId = $requestHeaders[self::REQUEST_ID_HEADER];
 
-        $request = RequestFactory::make('GET', $this->configuration->getEndpoint(), [
-            'Request-ID' => $requestId,
-        ]);
+        $request = RequestFactory::make(
+            'GET',
+            $this->configuration->getEndpoint(),
+            $requestHeaders
+        );
 
         $this->logger->debug(
             LogMessageFormatter::fromAction($requestId, $action, LogMessageFormatter::TYPE_REQUEST),
@@ -187,7 +193,11 @@ class FeedManager extends BaseManager
         ]);
 
         $requestId = $this->generateRequestId();
-        $response = $this->executeAction($action, $parameters, $requestId);
+        $response = $this->executeAction(
+            $action,
+            $parameters,
+            $requestId
+        );
         $list = FeedsFactory::make($response->getBody());
 
         $this->logger->info(sprintf(
@@ -203,7 +213,7 @@ class FeedManager extends BaseManager
     public function getFeedCount(): FeedCount
     {
         $action = 'FeedCount';
-        $requestId = bin2hex(random_bytes(16));
+        $requestId = $this->generateRequestId();
 
         $response = $this->getResponse($action, $requestId);
 
@@ -228,9 +238,13 @@ class FeedManager extends BaseManager
             'Signature' => Signature::generate($parameters, $this->configuration->getKey())->get(),
         ]);
 
-        $request = RequestFactory::make('GET', $this->configuration->getEndpoint(), [
-            'Request-ID' => $requestId,
-        ]);
+        $requestHeaders = $this->generateRequestHeaders([self::REQUEST_ID_HEADER => $requestId]);
+
+        $request = RequestFactory::make(
+            'GET',
+            $this->configuration->getEndpoint(),
+            $requestHeaders
+        );
 
         $this->logger->debug(
             LogMessageFormatter::fromAction($requestId, $action, LogMessageFormatter::TYPE_REQUEST),
@@ -275,7 +289,13 @@ class FeedManager extends BaseManager
         ]);
 
         $requestId = $this->generateRequestId();
-        $response = $this->executeAction($action, $parameters, $requestId, 'POST');
+
+        $response = $this->executeAction(
+            $action,
+            $parameters,
+            $requestId,
+            'POST'
+        );
 
         $feedResponse = FeedResponseFactory::make($response->getHead());
 

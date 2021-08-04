@@ -6,10 +6,8 @@ namespace Linio\SellerCenter\Service;
 
 use DateTimeInterface;
 use Linio\Component\Util\Json;
-use Linio\SellerCenter\Application\Configuration;
 use Linio\SellerCenter\Application\Parameters;
 use Linio\SellerCenter\Application\Security\Signature;
-use Linio\SellerCenter\Contract\ClientInterface;
 use Linio\SellerCenter\Contract\OrderSortDirections;
 use Linio\SellerCenter\Contract\OrderSortFilters;
 use Linio\SellerCenter\Contract\OrderStatus;
@@ -26,46 +24,13 @@ use Linio\SellerCenter\Model\Order\FailureReason;
 use Linio\SellerCenter\Model\Order\Order;
 use Linio\SellerCenter\Model\Order\OrderItem;
 use Linio\SellerCenter\Response\HandleResponse;
-use Psr\Log\LoggerInterface;
 
-class OrderManager
+class OrderManager extends BaseManager
 {
-    /**
-     * @var LoggerInterface
-     */
-    protected $logger;
-
-    /**
-     * @var Configuration
-     */
-    protected $configuration;
-
-    /**
-     * @var ClientInterface
-     */
-    protected $client;
-
-    /**
-     * @var Parameters
-     */
-    protected $parameters;
-
     public const DEFAULT_LIMIT = 1000;
     public const DEFAULT_OFFSET = 0;
     public const DEFAULT_SORT_BY = 'created_at';
     public const DEFAULT_SORT_DIRECTION = 'ASC';
-
-    public function __construct(
-        Configuration $configuration,
-        ClientInterface $client,
-        Parameters $parameters,
-        LoggerInterface $logger
-    ) {
-        $this->configuration = $configuration;
-        $this->client = $client;
-        $this->parameters = $parameters;
-        $this->logger = $logger;
-    }
 
     public function getOrder(int $orderId): Order
     {
@@ -80,11 +45,14 @@ class OrderManager
             'Signature' => Signature::generate($parameters, $this->configuration->getKey())->get(),
         ]);
 
-        $requestId = uniqid((string) mt_rand());
+        $requestHeaders = $this->generateRequestHeaders();
+        $requestId = $requestHeaders[self::REQUEST_ID_HEADER];
 
-        $request = RequestFactory::make('GET', $this->configuration->getEndpoint(), [
-            'Request-ID' => $requestId,
-        ]);
+        $request = RequestFactory::make(
+            'GET',
+            $this->configuration->getEndpoint(),
+            $requestHeaders
+        );
 
         $this->logger->debug(
             LogMessageFormatter::fromAction($requestId, $action, LogMessageFormatter::TYPE_REQUEST),
@@ -148,11 +116,14 @@ class OrderManager
             'Signature' => Signature::generate($parameters, $this->configuration->getKey())->get(),
         ]);
 
-        $requestId = uniqid((string) mt_rand());
+        $requestHeaders = $this->generateRequestHeaders();
+        $requestId = $requestHeaders[self::REQUEST_ID_HEADER];
 
-        $request = RequestFactory::make('GET', $this->configuration->getEndpoint(), [
-            'Request-ID' => $requestId,
-        ]);
+        $request = RequestFactory::make(
+            'GET',
+            $this->configuration->getEndpoint(),
+            $requestHeaders
+        );
 
         $this->logger->debug(
             LogMessageFormatter::fromAction($requestId, $action, LogMessageFormatter::TYPE_REQUEST),
@@ -227,11 +198,14 @@ class OrderManager
             'Signature' => Signature::generate($parameters, $this->configuration->getKey())->get(),
         ]);
 
-        $requestId = uniqid((string) mt_rand());
+        $requestHeaders = $this->generateRequestHeaders();
+        $requestId = $requestHeaders[self::REQUEST_ID_HEADER];
 
-        $request = RequestFactory::make('GET', $this->configuration->getEndpoint(), [
-            'Request-ID' => $requestId,
-        ]);
+        $request = RequestFactory::make(
+            'GET',
+            $this->configuration->getEndpoint(),
+            $requestHeaders
+        );
 
         $this->logger->debug(
             LogMessageFormatter::fromAction($requestId, $Action, LogMessageFormatter::TYPE_REQUEST),
@@ -294,11 +268,14 @@ class OrderManager
             'Signature' => Signature::generate($parameters, $this->configuration->getKey())->get(),
         ]);
 
-        $requestId = uniqid((string) mt_rand());
+        $requestHeaders = $this->generateRequestHeaders();
+        $requestId = $requestHeaders[self::REQUEST_ID_HEADER];
 
-        $request = RequestFactory::make('GET', $this->configuration->getEndpoint(), [
-            'Request-ID' => $requestId,
-        ]);
+        $request = RequestFactory::make(
+            'GET',
+            $this->configuration->getEndpoint(),
+            $requestHeaders
+        );
 
         $this->logger->debug(
             LogMessageFormatter::fromAction($requestId, $action, LogMessageFormatter::TYPE_REQUEST),
@@ -585,11 +562,14 @@ class OrderManager
             'Signature' => Signature::generate($parameters, $this->configuration->getKey())->get(),
         ]);
 
-        $requestId = uniqid((string) mt_rand());
+        $requestHeaders = $this->generateRequestHeaders();
+        $requestId = $requestHeaders[self::REQUEST_ID_HEADER];
 
-        $request = RequestFactory::make('POST', $this->configuration->getEndpoint(), [
-            'Request-ID' => $requestId,
-        ]);
+        $request = RequestFactory::make(
+            'POST',
+            $this->configuration->getEndpoint(),
+            $requestHeaders
+        );
 
         $this->logger->debug(
             LogMessageFormatter::fromAction($requestId, $action, LogMessageFormatter::TYPE_REQUEST),
@@ -672,13 +652,14 @@ class OrderManager
             'Signature' => Signature::generate($parameters, $this->configuration->getKey())->get(),
         ]);
 
-        $requestId = uniqid((string) mt_rand());
+        $requestHeaders = $this->generateRequestHeaders();
+        $requestId = $requestHeaders[self::REQUEST_ID_HEADER];
 
-        $request = RequestFactory::make('POST', $this->configuration->getEndpoint(), [
-            'Request-ID' => $requestId,
-        ]);
-
-        $requestId = $request->getHeaderLine('Request-ID');
+        $request = RequestFactory::make(
+            'POST',
+            $this->configuration->getEndpoint(),
+            $requestHeaders
+        );
 
         $this->logger->debug(
             LogMessageFormatter::fromAction($requestId, $action, LogMessageFormatter::TYPE_REQUEST),
@@ -748,13 +729,14 @@ class OrderManager
             'Signature' => Signature::generate($parameters, $this->configuration->getKey())->get(),
         ]);
 
-        $requestId = uniqid((string) mt_rand());
+        $requestHeaders = $this->generateRequestHeaders();
+        $requestId = $requestHeaders[self::REQUEST_ID_HEADER];
 
-        $request = RequestFactory::make('POST', $this->configuration->getEndpoint(), [
-            'Request-ID' => $requestId,
-        ]);
-
-        $requestId = $request->getHeaderLine('Request-ID');
+        $request = RequestFactory::make(
+            'POST',
+            $this->configuration->getEndpoint(),
+            $requestHeaders
+        );
 
         $this->logger->debug(
             LogMessageFormatter::fromAction($requestId, $action, LogMessageFormatter::TYPE_REQUEST),
@@ -812,11 +794,14 @@ class OrderManager
             'Signature' => Signature::generate($parameters, $this->configuration->getKey())->get(),
         ]);
 
-        $requestId = uniqid((string) mt_rand());
+        $requestHeaders = $this->generateRequestHeaders();
+        $requestId = $requestHeaders[self::REQUEST_ID_HEADER];
 
-        $request = RequestFactory::make('POST', $this->configuration->getEndpoint(), [
-            'Request-ID' => $requestId,
-        ]);
+        $request = RequestFactory::make(
+            'POST',
+            $this->configuration->getEndpoint(),
+            $requestHeaders
+        );
 
         $this->logger->debug(
             LogMessageFormatter::fromAction($requestId, $action, LogMessageFormatter::TYPE_REQUEST),

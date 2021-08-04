@@ -26,12 +26,18 @@ class Configuration
      */
     private $version;
 
-    public function __construct(string $key, string $username, string $endpoint, string $version = '1.0')
+    /**
+     * @var string|null
+     */
+    private $source;
+
+    public function __construct(string $key, string $username, string $endpoint, string $version = '1.0', ?string $source = 'SDK')
     {
         $this->key = $key;
         $this->username = $username;
         $this->endpoint = $endpoint;
         $this->version = $version ?? '1.0';
+        $this->source = $source ?? 'SDK';
     }
 
     public function getUser(): string
@@ -52,5 +58,10 @@ class Configuration
     public function getVersion(): string
     {
         return $this->version;
+    }
+
+    public function getSource(): ?string
+    {
+        return $this->source;
     }
 }
