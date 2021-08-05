@@ -79,15 +79,9 @@ class BaseManager
             self::REQUEST_ID_HEADER => $this->generateRequestId(),
             self::X_SOURCE_HEADER => $this->configuration->getSource(),
         ];
+
         if (empty($customHeaders)) {
             return $headers;
-        }
-
-        foreach ($customHeaders as $headerKey => $headerValue) {
-            if (key_exists($headerKey, $headers)) {
-                $headers[$headerKey] = $headerValue;
-                unset($customHeaders[$headerKey]);
-            }
         }
 
         return array_merge($customHeaders, $headers);

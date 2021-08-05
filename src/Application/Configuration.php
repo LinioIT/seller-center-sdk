@@ -6,6 +6,10 @@ namespace Linio\SellerCenter\Application;
 
 class Configuration
 {
+    protected const VERSION = '1.0';
+
+    protected const SOURCE = 'SDK';
+
     /**
      * @var string
      */
@@ -31,13 +35,13 @@ class Configuration
      */
     private $source;
 
-    public function __construct(string $key, string $username, string $endpoint, string $version = '1.0', ?string $source = 'SDK')
+    public function __construct(string $key, string $username, string $endpoint, string $version = self::VERSION, ?string $source = self::SOURCE)
     {
         $this->key = $key;
         $this->username = $username;
         $this->endpoint = $endpoint;
-        $this->version = $version ?? '1.0';
-        $this->source = $source ?? 'SDK';
+        $this->version = $version;
+        $this->source = $source ?? self::SOURCE;
     }
 
     public function getUser(): string
