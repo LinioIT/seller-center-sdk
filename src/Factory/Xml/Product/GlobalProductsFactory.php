@@ -22,7 +22,7 @@ class GlobalProductsFactory
             } catch (Exception $e) {
                 if (!empty($logger)) {
                     $logger->warning(
-                        LogMessageFormatter::fromFactory(ProductsFactory::class, LogMessageFormatter::TYPE_FACTORY),
+                        LogMessageFormatter::fromFactory(GlobalProductsFactory::class, LogMessageFormatter::TYPE_FACTORY),
                         [
                             'Exception' => (string) $e->getMessage(),
                         ]
