@@ -5,51 +5,15 @@ declare(strict_types=1);
 namespace Linio\SellerCenter\Service;
 
 use Linio\Component\Util\Json;
-use Linio\SellerCenter\Application\Configuration;
-use Linio\SellerCenter\Application\Parameters;
 use Linio\SellerCenter\Application\Security\Signature;
-use Linio\SellerCenter\Contract\ClientInterface;
 use Linio\SellerCenter\Factory\RequestFactory;
 use Linio\SellerCenter\Factory\Xml\Document\DocumentFactory;
 use Linio\SellerCenter\Formatter\LogMessageFormatter;
 use Linio\SellerCenter\Model\Document\Document;
 use Linio\SellerCenter\Response\HandleResponse;
-use Psr\Log\LoggerInterface;
 
-class DocumentManager
+class DocumentManager extends BaseManager
 {
-    /**
-     * @var LoggerInterface
-     */
-    protected $logger;
-
-    /**
-     * @var Configuration
-     */
-    protected $configuration;
-
-    /**
-     * @var ClientInterface
-     */
-    protected $client;
-
-    /**
-     * @var Parameters
-     */
-    protected $parameters;
-
-    public function __construct(
-        Configuration $configuration,
-        ClientInterface $client,
-        Parameters $parameters,
-        LoggerInterface $logger
-    ) {
-        $this->configuration = $configuration;
-        $this->client = $client;
-        $this->parameters = $parameters;
-        $this->logger = $logger;
-    }
-
     /**
      * @param mixed[] $orderItemIds
      */
@@ -67,11 +31,14 @@ class DocumentManager
             'Signature' => Signature::generate($parameters, $this->configuration->getKey())->get(),
         ]);
 
-        $requestId = uniqid((string) mt_rand());
+        $requestHeaders = $this->generateRequestHeaders();
+        $requestId = $requestHeaders[self::REQUEST_ID_HEADER];
 
-        $request = RequestFactory::make('GET', $this->configuration->getEndpoint(), [
-            'Request-ID' => $requestId,
-        ]);
+        $request = RequestFactory::make(
+            'GET',
+            $this->configuration->getEndpoint(),
+            $requestHeaders
+        );
 
         $this->logger->debug(
             LogMessageFormatter::fromAction($requestId, $action, LogMessageFormatter::TYPE_REQUEST),

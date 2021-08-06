@@ -5,10 +5,8 @@ declare(strict_types=1);
 namespace Linio\SellerCenter\Service;
 
 use Linio\Component\Util\Json;
-use Linio\SellerCenter\Application\Configuration;
 use Linio\SellerCenter\Application\Parameters;
 use Linio\SellerCenter\Application\Security\Signature;
-use Linio\SellerCenter\Contract\ClientInterface;
 use Linio\SellerCenter\Exception\EmptyArgumentException;
 use Linio\SellerCenter\Exception\InvalidUrlException;
 use Linio\SellerCenter\Factory\RequestFactory;
@@ -19,42 +17,9 @@ use Linio\SellerCenter\Model\Webhook\Event;
 use Linio\SellerCenter\Model\Webhook\Webhook;
 use Linio\SellerCenter\Response\HandleResponse;
 use Linio\SellerCenter\Transformer\Webhook\WebhookTransformer;
-use Psr\Log\LoggerInterface;
 
-class WebhookManager
+class WebhookManager extends BaseManager
 {
-    /**
-     * @var LoggerInterface
-     */
-    protected $logger;
-
-    /**
-     * @var Configuration
-     */
-    protected $configuration;
-
-    /**
-     * @var ClientInterface
-     */
-    protected $client;
-
-    /**
-     * @var Parameters
-     */
-    protected $parameters;
-
-    public function __construct(
-        Configuration $configuration,
-        ClientInterface $client,
-        Parameters $parameters,
-        LoggerInterface $logger
-    ) {
-        $this->configuration = $configuration;
-        $this->client = $client;
-        $this->parameters = $parameters;
-        $this->logger = $logger;
-    }
-
     public function createWebhook(string $callbackUrl): string
     {
         $action = 'CreateWebhook';
@@ -74,12 +39,15 @@ class WebhookManager
 
         $xml = WebhookTransformer::createWebhookAsXmlString($callbackUrl, $events);
 
-        $requestId = uniqid((string) mt_rand());
+        $requestHeaders = $this->generateRequestHeaders(['Content-type' => 'text/xml; charset=UTF8']);
+        $requestId = $requestHeaders[self::REQUEST_ID_HEADER];
 
-        $request = RequestFactory::make('POST', $this->configuration->getEndpoint(), [
-            'Content-type' => 'text/xml; charset=UTF8',
-            'Request-ID' => $requestId,
-        ], $xml);
+        $request = RequestFactory::make(
+            'POST',
+            $this->configuration->getEndpoint(),
+            $requestHeaders,
+            $xml
+        );
 
         $this->logger->debug(
             LogMessageFormatter::fromAction($requestId, $action, LogMessageFormatter::TYPE_REQUEST),
@@ -145,12 +113,15 @@ class WebhookManager
 
         $xml = WebhookTransformer::deleteWebhookAsXmlString($webhookId);
 
-        $requestId = uniqid((string) mt_rand());
+        $requestHeaders = $this->generateRequestHeaders(['Content-type' => 'text/xml; charset=UTF8']);
+        $requestId = $requestHeaders[self::REQUEST_ID_HEADER];
 
-        $request = RequestFactory::make('POST', $this->configuration->getEndpoint(), [
-            'Content-type' => 'text/xml; charset=UTF8',
-            'Request-ID' => $requestId,
-        ], $xml);
+        $request = RequestFactory::make(
+            'POST',
+            $this->configuration->getEndpoint(),
+            $requestHeaders,
+            $xml
+        );
 
         $this->logger->debug(
             LogMessageFormatter::fromAction($requestId, $action, LogMessageFormatter::TYPE_REQUEST),
@@ -207,11 +178,14 @@ class WebhookManager
             'Signature' => Signature::generate($parameters, $this->configuration->getKey())->get(),
         ]);
 
-        $requestId = uniqid((string) mt_rand());
+        $requestHeaders = $this->generateRequestHeaders();
+        $requestId = $requestHeaders[self::REQUEST_ID_HEADER];
 
-        $request = RequestFactory::make('GET', $this->configuration->getEndpoint(), [
-            'Request-ID' => $requestId,
-        ]);
+        $request = RequestFactory::make(
+            'GET',
+            $this->configuration->getEndpoint(),
+            $requestHeaders
+        );
 
         $this->logger->debug(
             LogMessageFormatter::fromAction($requestId, $action, LogMessageFormatter::TYPE_REQUEST),
@@ -303,11 +277,14 @@ class WebhookManager
             'Signature' => Signature::generate($parameters, $this->configuration->getKey())->get(),
         ]);
 
-        $requestId = uniqid((string) mt_rand());
+        $requestHeaders = $this->generateRequestHeaders();
+        $requestId = $requestHeaders[self::REQUEST_ID_HEADER];
 
-        $request = RequestFactory::make('GET', $this->configuration->getEndpoint(), [
-            'Request-ID' => $requestId,
-        ]);
+        $request = RequestFactory::make(
+            'GET',
+            $this->configuration->getEndpoint(),
+            $requestHeaders
+        );
 
         $this->logger->debug(
             LogMessageFormatter::fromAction($requestId, $action, LogMessageFormatter::TYPE_REQUEST),

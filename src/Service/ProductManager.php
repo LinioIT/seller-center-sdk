@@ -6,10 +6,8 @@ namespace Linio\SellerCenter\Service;
 
 use DateTimeInterface;
 use Linio\Component\Util\Json;
-use Linio\SellerCenter\Application\Configuration;
 use Linio\SellerCenter\Application\Parameters;
 use Linio\SellerCenter\Application\Security\Signature;
-use Linio\SellerCenter\Contract\ClientInterface;
 use Linio\SellerCenter\Contract\ProductFilters;
 use Linio\SellerCenter\Exception\EmptyArgumentException;
 use Linio\SellerCenter\Factory\RequestFactory;
@@ -22,45 +20,12 @@ use Linio\SellerCenter\Model\Product\Products;
 use Linio\SellerCenter\Response\FeedResponse;
 use Linio\SellerCenter\Response\HandleResponse;
 use Linio\SellerCenter\Transformer\Product\ProductsTransformer;
-use Psr\Log\LoggerInterface;
 
-class ProductManager
+class ProductManager extends BaseManager
 {
-    /**
-     * @var LoggerInterface
-     */
-    protected $logger;
-
-    /**
-     * @var Configuration
-     */
-    protected $configuration;
-
-    /**
-     * @var ClientInterface
-     */
-    protected $client;
-
-    /**
-     * @var Parameters
-     */
-    protected $parameters;
-
     public const DEFAULT_LIMIT = 1000;
     public const DEFAULT_OFFSET = 0;
     public const DEFAULT_FILTER = 'all';
-
-    public function __construct(
-        Configuration $configuration,
-        ClientInterface $client,
-        Parameters $parameters,
-        LoggerInterface $logger
-    ) {
-        $this->configuration = $configuration;
-        $this->client = $client;
-        $this->parameters = $parameters;
-        $this->logger = $logger;
-    }
 
     public function productCreate(Products $products): FeedResponse
     {
@@ -74,12 +39,15 @@ class ProductManager
 
         $xml = ProductsTransformer::asXmlString($products);
 
-        $requestId = uniqid((string) mt_rand());
+        $requestHeaders = $this->generateRequestHeaders(['Content-type' => 'text/xml; charset=UTF8']);
+        $requestId = $requestHeaders[self::REQUEST_ID_HEADER];
 
-        $request = RequestFactory::make('POST', $this->configuration->getEndpoint(), [
-            'Content-type' => 'text/xml; charset=UTF8',
-            'Request-ID' => $requestId,
-        ], $xml);
+        $request = RequestFactory::make(
+            'POST',
+            $this->configuration->getEndpoint(),
+            $requestHeaders,
+            $xml
+        );
 
         $this->logger->debug(
             LogMessageFormatter::fromAction($requestId, $action, LogMessageFormatter::TYPE_REQUEST),
@@ -140,12 +108,15 @@ class ProductManager
 
         $xml = ProductsTransformer::asXmlString($products);
 
-        $requestId = uniqid((string) mt_rand());
+        $requestHeaders = $this->generateRequestHeaders(['Content-type' => 'text/xml; charset=UTF8']);
+        $requestId = $requestHeaders[self::REQUEST_ID_HEADER];
 
-        $request = RequestFactory::make('POST', $this->configuration->getEndpoint(), [
-            'Content-type' => 'text/xml; charset=UTF8',
-            'Request-ID' => $requestId,
-        ], $xml);
+        $request = RequestFactory::make(
+            'POST',
+            $this->configuration->getEndpoint(),
+            $requestHeaders,
+            $xml
+        );
 
         $this->logger->debug(
             LogMessageFormatter::fromAction($requestId, $action, LogMessageFormatter::TYPE_REQUEST),
@@ -206,12 +177,14 @@ class ProductManager
 
         $xml = ProductsTransformer::skusAsXmlString($products);
 
-        $requestId = uniqid((string) mt_rand());
-
-        $request = RequestFactory::make('POST', $this->configuration->getEndpoint(), [
-            'Content-type' => 'text/xml; charset=UTF8',
-            'Request-ID' => $requestId,
-        ], $xml);
+        $requestHeaders = $this->generateRequestHeaders(['Content-type' => 'text/xml; charset=UTF8']);
+        $requestId = $requestHeaders[self::REQUEST_ID_HEADER];
+        $request = RequestFactory::make(
+            'POST',
+            $this->configuration->getEndpoint(),
+            $requestHeaders,
+            $xml
+        );
 
         $this->logger->debug(
             LogMessageFormatter::fromAction($requestId, $action, LogMessageFormatter::TYPE_REQUEST),
@@ -286,12 +259,15 @@ class ProductManager
 
         $xml = ProductsTransformer::imagesAsXmlString($products);
 
-        $requestId = uniqid((string) mt_rand());
+        $requestHeaders = $this->generateRequestHeaders(['Content-type' => 'text/xml; charset=UTF8']);
+        $requestId = $requestHeaders[self::REQUEST_ID_HEADER];
 
-        $request = RequestFactory::make('POST', $this->configuration->getEndpoint(), [
-            'Content-type' => 'text/xml; charset=UTF8',
-            'Request-ID' => $requestId,
-        ], $xml);
+        $request = RequestFactory::make(
+            'POST',
+            $this->configuration->getEndpoint(),
+            $requestHeaders,
+            $xml
+        );
 
         $this->logger->debug(
             LogMessageFormatter::fromAction($requestId, $action, LogMessageFormatter::TYPE_REQUEST),
@@ -352,11 +328,14 @@ class ProductManager
             'Signature' => Signature::generate($parameters, $this->configuration->getKey())->get(),
         ]);
 
-        $requestId = uniqid((string) mt_rand());
+        $requestHeaders = $this->generateRequestHeaders();
+        $requestId = $requestHeaders[self::REQUEST_ID_HEADER];
 
-        $request = RequestFactory::make('GET', $this->configuration->getEndpoint(), [
-            'Request-ID' => $requestId,
-        ]);
+        $request = RequestFactory::make(
+            'GET',
+            $this->configuration->getEndpoint(),
+            $requestHeaders
+        );
 
         $this->logger->debug(
             LogMessageFormatter::fromAction($requestId, $action, LogMessageFormatter::TYPE_REQUEST),
