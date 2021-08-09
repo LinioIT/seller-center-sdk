@@ -349,7 +349,13 @@ class OrdersManagerTest extends LinioTestCase
         $this->expectException(Exception::class);
         $this->expectExceptionMessage('E0125: Test Error');
 
-        $body = $this->getOrdersResponse('Order/ErrorResponse.xml');
+        $body = sprintf(
+            $this->getOrdersResponse('Order/ErrorResponse.xml'),
+            'GetOrder',
+            'Sender',
+            125,
+            'E0125: Test Error'
+        );
 
         $client = $this->createClientWithResponse($body, 400);
 
@@ -384,17 +390,13 @@ class OrdersManagerTest extends LinioTestCase
     {
         $this->expectException(ErrorResponseException::class);
 
-        $body = '<?xml version="1.0" encoding="UTF-8"?>
-                <ErrorResponse>
-                  <Head>
-                    <RequestId></RequestId>
-                    <RequestAction>SetStatusToCanceled</RequestAction>
-                    <ResponseType></ResponseType>
-                    <Timestamp>2013-08-27T14:44:13+0000</Timestamp>
-                  </Head>
-                  <Body />
-                </ErrorResponse>';
-
+        $body = sprintf(
+            $this->getOrdersResponse('Order/ErrorResponse.xml'),
+            'SetStatusToCanceled',
+            '',
+            0,
+            ''
+        );
         $client = $this->createClientWithResponse($body, 400);
 
         $parameters = $this->getParameters();
@@ -406,16 +408,12 @@ class OrdersManagerTest extends LinioTestCase
 
     public function testItLogsWhenSettingStatusToCanceledReturnSuccessResponse(): void
     {
-        $body = '<?xml version="1.0" encoding="UTF-8"?>
-                <SuccessResponse>
-                  <Head>
-                    <RequestId></RequestId>
-                    <RequestAction>SetStatusToCanceled</RequestAction>
-                    <ResponseType></ResponseType>
-                    <Timestamp>2013-08-27T14:44:13+0000</Timestamp>
-                  </Head>
-                  <Body />
-                </SuccessResponse>';
+        $body = sprintf(
+            $this->getOrdersResponse('Order/SetOrderStatusSuccessResponse.xml'),
+            'SetStatusToCanceled',
+            '',
+            1
+        );
 
         $client = $this->createClientWithResponse($body, 400);
 
@@ -436,28 +434,12 @@ class OrdersManagerTest extends LinioTestCase
     public function testItReturnsUpdatedOrderItemsWhenSettingStatusToPackedByMarketplace(): void
     {
         $orderItemId = 1;
-
-        $body = '<?xml version="1.0" encoding="UTF-8"?>
-                <SuccessResponse>
-                  <Head>
-                    <RequestId></RequestId>
-                    <RequestAction>SetStatusToPackedByMarketplace</RequestAction>
-                    <ResponseType>OrderItems</ResponseType>
-                    <Timestamp>2013-08-27T14:44:13+0000</Timestamp>
-                  </Head>
-                  <Body>
-                    <OrderItems>
-                      <OrderItem>
-                        <OrderItemId>%d</OrderItemId>
-                        <PurchaseOrderId>123456</PurchaseOrderId>
-                        <PurchaseOrderNumber>ABC-123456</PurchaseOrderNumber>
-                        <PackageId>MPDS-200131783-9800</PackageId>
-                      </OrderItem>
-                    </OrderItems>
-                  </Body>
-                </SuccessResponse>';
-
-        $body = sprintf($body, $orderItemId);
+        $body = sprintf(
+            $this->getOrdersResponse('Order/SetOrderStatusSuccessResponse.xml'),
+            'SetStatusToPackedByMarketplace',
+            'OrderItems',
+            $orderItemId
+        );
 
         $client = $this->createClientWithResponse($body);
 
@@ -485,23 +467,12 @@ class OrdersManagerTest extends LinioTestCase
 
     public function testItReturnsUpdatedOrderItemsWhenSettingStatusToReadyToShip(): void
     {
-        $body = '<?xml version="1.0" encoding="UTF-8"?>
-                <SuccessResponse>
-                  <Head>
-                    <RequestId></RequestId>
-                    <RequestAction>SetStatusToReadyToShip</RequestAction>
-                    <ResponseType>OrderItems</ResponseType>
-                    <Timestamp>2013-08-27T14:44:13+0000</Timestamp>
-                  </Head>
-                  <Body>
-                    <OrderItems>
-                      <OrderItem>
-                        <PurchaseOrderId>123456</PurchaseOrderId>
-                        <PurchaseOrderNumber>ABC-123456</PurchaseOrderNumber>
-                      </OrderItem>
-                    </OrderItems>
-                  </Body>
-                </SuccessResponse>';
+        $body = sprintf(
+            $this->getOrdersResponse('Order/SetOrderStatusSuccessResponse.xml'),
+            'SetStatusToReadyToShip',
+            'OrderItems',
+            1
+        );
 
         $client = $this->createClientWithResponse($body);
 
@@ -516,39 +487,19 @@ class OrdersManagerTest extends LinioTestCase
             'deliveryType',
             'shippingProvider',
             'nxsqonoqsnoc',
-            '2kn412on3io1b3o'
+            'MPDS-200131783-9800'
         );
 
         $this->assertIsArray($orderItems);
         $this->assertContainsOnlyInstancesOf(OrderItem::class, $orderItems);
+        $this->assertEquals('MPDS-200131783-9800', current($orderItems)->getPackageId());
         $this->assertEquals('123456', current($orderItems)->getPurchaseOrderId());
         $this->assertEquals('ABC-123456', current($orderItems)->getPurchaseOrderNumber());
     }
 
     public function testItReturnFailureReasons(): void
     {
-        $xml = '<?xml version="1.0" encoding="UTF-8"?>
-            <SuccessResponse>
-              <Head>
-                <RequestId></RequestId>
-                <RequestAction>GetFailureReasons</RequestAction>
-                <ResponseType>Reasons</ResponseType>
-                <Timestamp>2013-08-27T14:44:13+0000</Timestamp>
-              </Head>
-              <Body>
-                <Reasons>
-                  <Reason>
-                    <Type>canceled</Type>
-                    <Name>Sourcing team couldn\'t find items</Name>
-                  </Reason>
-                  <Reason>
-                    <Type>canceled</Type>
-                    <Name>Wrong address</Name>
-                  </Reason>
-                </Reasons>
-              </Body>
-            </SuccessResponse>
-         ';
+        $xml = $this->getOrdersResponse('Order/FailureReasonsSuccessResponse.xml');
 
         $client = $this->createClientWithResponse($xml);
         $parameters = $this->getParameters();
