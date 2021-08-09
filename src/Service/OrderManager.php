@@ -675,7 +675,7 @@ class OrderManager extends BaseManager
                 'parameters' => $parameters->all(),
             ]
         );
-        dump($parameters->all());
+
         $response = $this->client->send($request, [
             'query' => $parameters->all(),
         ]);
