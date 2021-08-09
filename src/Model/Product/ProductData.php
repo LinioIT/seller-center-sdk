@@ -30,7 +30,7 @@ class ProductData implements JsonSerializable
         ?float $packageLength = null,
         ?float $packageWeight = null
     ) {
-        if ($conditionType !== null) {
+        if (!empty($conditionType)) {
             $this->validateConditionType($conditionType);
             $this->attributes[self::FEED_CONDITION_TYPE] = $conditionType;
         }

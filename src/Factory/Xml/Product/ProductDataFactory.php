@@ -12,7 +12,6 @@ class ProductDataFactory
 {
     private const XML_MODEL = 'ProductData';
     private const REQUIRED_FIELDS = [
-        'ConditionType',
         'PackageHeight',
         'PackageWidth',
         'PackageLength',

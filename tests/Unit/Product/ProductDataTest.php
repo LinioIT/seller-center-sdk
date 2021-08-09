@@ -81,12 +81,12 @@ class ProductDataTest extends TestCase
         $this->assertNull($productData->getAttribute('SupplierType'));
     }
 
-    public function testItThrowsExceptionWhenConditionTypeIsNull(): void
+    public function testItThrowsExceptionWhenConditionTypeIsNotValid(): void
     {
         $this->expectException(InvalidDomainException::class);
         $this->expectExceptionMessage('The parameter ConditionType is invalid.');
 
-        new ProductData('', $this->packageHeight, $this->packageWidth, $this->packageLength, $this->packageWeight);
+        new ProductData('Refurbished', $this->packageHeight, $this->packageWidth, $this->packageLength, $this->packageWeight);
     }
 
     /**
@@ -132,21 +132,6 @@ class ProductDataTest extends TestCase
         $this->expectExceptionMessage('The parameter PackageWeight is invalid.');
 
         new ProductData($this->conditionType, $this->packageHeight, $this->packageWidth, $this->packageLength, $invalidMeasure);
-    }
-
-    public function testItThrowsAExceptionWithoutAConditionTypeInTheXml(): void
-    {
-        $this->expectException(InvalidXmlStructureException::class);
-        $this->expectExceptionMessage('The xml structure is not valid for a ProductData. The property ConditionType should exist');
-
-        $xml = '<ProductData>
-                  <PackageHeight>10.00</PackageHeight>
-                  <PackageLength>15.00</PackageLength>
-                  <PackageWidth>5.00</PackageWidth>
-                  <PackageWeight>0.70</PackageWeight>
-                </ProductData>';
-
-        ProductDataFactory::make(new SimpleXMLElement($xml));
     }
 
     public function testItThrowsAExceptionWithoutAPackageHeightInTheXml(): void
