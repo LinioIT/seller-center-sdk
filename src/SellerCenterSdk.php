@@ -12,6 +12,7 @@ use Linio\SellerCenter\Application\Parameters;
 use Linio\SellerCenter\Contract\ClientInterface;
 use Linio\SellerCenter\Service\BrandManager;
 use Linio\SellerCenter\Service\CategoryManager;
+use Linio\SellerCenter\Service\Contract\ProductManagerInterface;
 use Linio\SellerCenter\Service\DocumentManager;
 use Linio\SellerCenter\Service\FeedManager;
 use Linio\SellerCenter\Service\GlobalProductManager;
@@ -180,7 +181,7 @@ class SellerCenterSdk
         return $this->categories;
     }
 
-    public function products(): ProductManager
+    public function products(): ProductManagerInterface
     {
         if (empty($this->products)) {
             $this->products = new ProductManager(
@@ -194,7 +195,7 @@ class SellerCenterSdk
         return $this->products;
     }
 
-    public function globalProducts(): GlobalProductManager
+    public function globalProducts(): ProductManagerInterface
     {
         if (empty($this->globalProducts)) {
             $this->globalProducts = new GlobalProductManager(
