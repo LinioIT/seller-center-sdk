@@ -629,7 +629,8 @@ class OrderManager extends BaseManager
         array $orderItemIds,
         string $deliveryType,
         string $shippingProvider = null,
-        string $trackingNumber = null
+        string $trackingNumber = null,
+        ?string $packageId = null
     ): array {
         $action = 'SetStatusToReadyToShip';
 
@@ -646,6 +647,10 @@ class OrderManager extends BaseManager
 
         if (!empty($trackingNumber)) {
             $parameters->set(['TrackingNumber' => $trackingNumber]);
+        }
+
+        if (!empty($packageId)) {
+            $parameters->set(['PackageId' => $packageId]);
         }
 
         $parameters->set([
