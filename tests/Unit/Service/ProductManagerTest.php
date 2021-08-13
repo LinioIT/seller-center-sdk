@@ -14,6 +14,22 @@ use ReflectionClass;
 
 class ProductManagerTest extends TestCase
 {
+    public function testReturnsAGlobalProductInterface(): void
+    {
+        $configuration = $this->prophesize(Configuration::class);
+        $client = $this->prophesize(ClientInterface::class);
+        $parameters = $this->prophesize(Parameters::class);
+        $logger = $this->prophesize(TestLogger::class);
+
+        $productManager = new ProductManager(
+            $configuration->reveal(),
+            $client->reveal(),
+            $parameters->reveal(),
+            $logger->reveal()
+        );
+        $this->assertInstanceOf(ProductManager::class, $productManager);
+    }
+
     public function testReturnsTheTheLoggerWhenIsSetted(): void
     {
         $configuration = $this->prophesize(Configuration::class);

@@ -15,7 +15,7 @@ use Linio\SellerCenter\Model\Product\Contract\ProductInterface;
 use Linio\SellerCenter\Model\Product\Contract\VariationProductInterface;
 use stdClass;
 
-class Product extends BaseProduct implements JsonSerializable, ProductInterface, VariationProductInterface
+class Product extends BaseProduct implements JsonSerializable, ProductInterface, VariationProductInterface, ProductStatus
 {
     /**
      * @var string

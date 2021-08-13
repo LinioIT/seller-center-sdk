@@ -19,14 +19,11 @@ use Linio\SellerCenter\Model\Product\Product;
 use Linio\SellerCenter\Model\Product\Products;
 use Linio\SellerCenter\Response\FeedResponse;
 use Linio\SellerCenter\Response\HandleResponse;
+use Linio\SellerCenter\Service\Contract\ProductManagerInterface;
 use Linio\SellerCenter\Transformer\Product\ProductsTransformer;
 
-class ProductManager extends BaseManager
+class ProductManager extends BaseManager implements ProductManagerInterface
 {
-    public const DEFAULT_LIMIT = 1000;
-    public const DEFAULT_OFFSET = 0;
-    public const DEFAULT_FILTER = 'all';
-
     public function productCreate(Products $products): FeedResponse
     {
         $action = 'ProductCreate';
@@ -319,7 +316,7 @@ class ProductManager extends BaseManager
     /**
      * @return mixed[]
      */
-    protected function getProducts(Parameters $parameters): array
+    public function getProducts(Parameters $parameters): array
     {
         $action = 'GetProducts';
 
@@ -595,7 +592,7 @@ class ProductManager extends BaseManager
         return $this->getProducts($parameters);
     }
 
-    protected function setListDimensions(Parameters &$parameters, int $limit, int $offset): void
+    public function setListDimensions(Parameters &$parameters, int $limit, int $offset): void
     {
         $verifiedLimit = $limit >= 1 ? $limit : self::DEFAULT_LIMIT;
         $verifiedOffset = $offset >= 1 ? $offset : self::DEFAULT_OFFSET;

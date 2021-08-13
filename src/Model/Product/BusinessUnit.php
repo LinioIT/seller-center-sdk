@@ -12,7 +12,7 @@ use Linio\SellerCenter\Exception\InvalidDomainException;
 use Linio\SellerCenter\Model\Product\Contract\VariationProductInterface;
 use stdClass;
 
-class BusinessUnit implements JsonSerializable, VariationProductInterface
+class BusinessUnit implements JsonSerializable, VariationProductInterface, ProductStatus
 {
     public const FEED_BUSINESS_UNIT = 'BusinessUnit';
     public const FEED_OPERATOR_CODE = 'OperatorCode';
