@@ -70,9 +70,11 @@ class OrderFactory
             throw new InvalidDomainException('OperatorCode');
         }
 
+        $orderNumber = is_numeric((string) $element->OrderNumber) ? (int) $element->OrderNumber : (string) $element->OrderNumber;
+
         return Order::fromData(
             (int) $element->OrderId,
-            (int) $element->OrderNumber,
+            $orderNumber,
             (string) $element->CustomerFirstName,
             (string) $element->CustomerLastName,
             (string) $element->PaymentMethod,
