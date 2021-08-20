@@ -21,6 +21,7 @@ class OrderTest extends LinioTestCase
     protected $customerFirstName = 'first_name+4632913';
     protected $customerLastName = 'last_name';
     protected $orderNumber = 204527353;
+    protected $globalOrderNumber = 'd060396b-826f-4ea8-83c0-3c6714a61785';
     protected $paymentMethod = 'CashOnDelivery_Payment';
     protected $remarks = 'someRemark';
     protected $deliveryInfo = 'someDeliveryInfo';
@@ -126,9 +127,13 @@ class OrderTest extends LinioTestCase
         OrderFactory::make($simpleXml);
     }
 
-    public function testItReturnsAJsonRepresentation(): void
+    /**
+     * @dataProvider DataVariations
+     */
+    public function testItReturnsAJsonRepresentation(string $property): void
     {
         $simpleXml = simplexml_load_string($this->createXmlStringForAOrder());
+        $simpleXml->OrderNumber = $this->{$property};
 
         $order = OrderFactory::make($simpleXml);
 
@@ -136,7 +141,7 @@ class OrderTest extends LinioTestCase
         $expectedJson['orderId'] = $this->orderId;
         $expectedJson['customerFirstName'] = $this->customerFirstName;
         $expectedJson['customerLastName'] = $this->customerLastName;
-        $expectedJson['orderNumber'] = $this->orderNumber;
+        $expectedJson['orderNumber'] = $this->{$property};
         $expectedJson['paymentMethod'] = $this->paymentMethod;
         $expectedJson['remarks'] = $this->remarks;
         $expectedJson['deliveryInfo'] = $this->deliveryInfo;
@@ -253,6 +258,14 @@ class OrderTest extends LinioTestCase
             ['PromisedShippingTime'],
             ['ExtraAttributes'],
             ['Statuses'],
+        ];
+    }
+
+    public function dataVariations(): array
+    {
+        return [
+            ['orderNumber'],
+            ['globalOrderNumber'],
         ];
     }
 }
