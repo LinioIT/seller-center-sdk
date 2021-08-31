@@ -169,8 +169,8 @@ class BusinessUnit implements JsonSerializable, VariationProductInterface, Produ
         $attributes[self::FEED_OPERATOR_CODE] = $this->operatorCode;
         $attributes[self::FEED_PRICE] = $this->price;
         $attributes[self::FEED_SPECIAL_PRICE] = $this->specialPrice ?? '';
-        $attributes[self::FEED_SPECIAL_FROM_DATE] = $this->specialFromDate ?? '';
-        $attributes[self::FEED_SPECIAL_TO_DATE] = $this->specialToDate ?? '';
+        $attributes[self::FEED_SPECIAL_FROM_DATE] = $this->getSaleStartDateString() ?? '';
+        $attributes[self::FEED_SPECIAL_TO_DATE] = $this->getSaleEndDateString() ?? '';
         $attributes[self::FEED_STOCK] = $this->stock;
         $attributes[self::FEED_STATUS] = $this->status;
 
@@ -245,8 +245,8 @@ class BusinessUnit implements JsonSerializable, VariationProductInterface, Produ
         $serialized->operatorCode = $this->operatorCode;
         $serialized->price = $this->price;
         $serialized->specialPrice = $this->specialPrice ?? '';
-        $serialized->specialFromDate = $this->specialFromDate ?? '';
-        $serialized->specialToDate = $this->specialToDate ?? '';
+        $serialized->specialFromDate = $this->getSaleStartDateString() ?? '';
+        $serialized->specialToDate = $this->getSaleEndDateString() ?? '';
         $serialized->stock = $this->stock;
         $serialized->status = $this->status;
         $serialized->isPublished = $this->isPublished;
