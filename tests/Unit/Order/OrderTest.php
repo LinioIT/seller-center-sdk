@@ -123,7 +123,7 @@ class OrderTest extends LinioTestCase
         $this->expectExceptionMessage('The parameter OperatorCode is invalid.');
 
         $simpleXml = simplexml_load_string($this->createXmlStringForAOrder());
-        $simpleXml->OperatorCode = 'faco';
+        $simpleXml->OperatorCode = 'sope';
         OrderFactory::make($simpleXml);
     }
 

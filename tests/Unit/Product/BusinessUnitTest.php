@@ -4,14 +4,15 @@ declare(strict_types=1);
 
 namespace Linio\SellerCenter\Unit\Product;
 
+use SimpleXMLElement;
 use DateTimeImmutable;
 use Linio\Component\Util\Json;
-use Linio\SellerCenter\Exception\InvalidDomainException;
-use Linio\SellerCenter\Exception\InvalidXmlStructureException;
-use Linio\SellerCenter\Factory\Xml\Product\BusinessUnitFactory;
 use Linio\SellerCenter\LinioTestCase;
 use Linio\SellerCenter\Model\Product\BusinessUnit;
-use SimpleXMLElement;
+use Linio\SellerCenter\Exception\InvalidDomainException;
+use Linio\SellerCenter\Contract\BusinessUnitOperatorCodes;
+use Linio\SellerCenter\Exception\InvalidXmlStructureException;
+use Linio\SellerCenter\Factory\Xml\Product\BusinessUnitFactory;
 
 class BusinessUnitTest extends LinioTestCase
 {
@@ -19,6 +20,12 @@ class BusinessUnitTest extends LinioTestCase
      * @var string|null
      */
     protected $businessUnit = 'Falabella';
+
+    /**
+     * @var string
+     */
+    protected $countryCode = 'cl';
+
 
     /**
      * @var string
@@ -63,7 +70,7 @@ class BusinessUnitTest extends LinioTestCase
     public function testItCreatesABusinessUnitWithMandatoryParameters(): void
     {
         $businessUnit = new BusinessUnit(
-            $this->operatorCode,
+            BusinessUnitOperatorCodes::COUNTRY_OPERATOR[$this->countryCode],
             $this->price,
             $this->stock,
             $this->status,
@@ -86,7 +93,7 @@ class BusinessUnitTest extends LinioTestCase
         $this->specialToDate = DateTimeImmutable::createFromFormat(DATE_ATOM, '2021-5-20T14:54:23+00:00');
 
         $businessUnit = new BusinessUnit(
-            $this->operatorCode,
+            BusinessUnitOperatorCodes::COUNTRY_OPERATOR[$this->countryCode],
             $this->price,
             $this->stock,
             $this->status,
@@ -247,7 +254,7 @@ class BusinessUnitTest extends LinioTestCase
             ['Status', $this->operatorCode, $this->price, $this->stock, 'Unavailable', $this->isPublished, $this->businessUnit, $this->specialPrice],
             ['Stock', $this->operatorCode, $this->price, -1, $this->status, $this->isPublished, $this->businessUnit, $this->specialPrice],
             ['Price', $this->operatorCode, -1, $this->stock, $this->status, $this->isPublished, $this->businessUnit, $this->specialPrice],
-            ['OperatorCode', 'faco', $this->price, $this->stock, $this->status, $this->isPublished, $this->businessUnit, $this->specialPrice],
+            ['OperatorCode', 'sope', $this->price, $this->stock, $this->status, $this->isPublished, $this->businessUnit, $this->specialPrice],
         ];
     }
 }
