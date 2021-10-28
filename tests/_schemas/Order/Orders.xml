@@ -22,6 +22,10 @@
         <Phone/>
         <Phone2/>
         <Address1>Johannisstr. 20</Address1>
+        <Address2>address2</Address2>
+        <Address3>address3</Address3>
+        <Address4>address4</Address4>
+        <Address5>address5</Address5>
         <CustomerEmail/>
         <City>Berlin</City>
         <Ward/>
@@ -35,6 +39,10 @@
         <Phone/>
         <Phone2/>
         <Address1>Charlottenstraße 4</Address1>
+        <Address2>address2</Address2>
+        <Address3>address3</Address3>
+        <Address4>address4</Address4>
+        <Address5>address5</Address5>
         <CustomerEmail/>
         <City>Berlin</City>
         <Ward/>
@@ -71,10 +79,10 @@
         <Phone/>
         <Phone2/>
         <Address1>Johannisstr. 20</Address1>
-        <Address2/>
-        <Address3/>
-        <Address4/>
-        <Address5/>
+        <Address2>address2</Address2>
+        <Address3>address3</Address3>
+        <Address4>address4</Address4>
+        <Address5>address5</Address5>
         <CustomerEmail/>
         <City>Berlin</City>
         <Ward/>
@@ -88,10 +96,10 @@
         <Phone/>
         <Phone2/>
         <Address1>Charlottenstraße 4</Address1>
-        <Address2/>
-        <Address3/>
-        <Address4/>
-        <Address5/>
+        <Address2>address2</Address2>
+        <Address3>address3</Address3>
+        <Address4>address4</Address4>
+        <Address5>address5</Address5>
         <CustomerEmail/>
         <City>Berlin</City>
         <Ward/>
