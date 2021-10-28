@@ -24,16 +24,16 @@ interface BusinessUnitOperatorCodes
     ];
 
     public const COUNTRY_CODES = [
-      self::CODE_CHILE,
-      self::CODE_PERU,
-      self::CODE_MEXICO,
-      self::CODE_COLOMBIA,
+        self::CODE_CHILE,
+        self::CODE_PERU,
+        self::CODE_MEXICO,
+        self::CODE_COLOMBIA,
     ];
 
     public const COUNTRY_OPERATOR = [
-      self::CODE_CHILE => self::FALA_CHILE,
-      self::CODE_PERU => self::FALA_PERU,
-      self::CODE_MEXICO => self::FALA_MEXICO,
-      self::CODE_COLOMBIA => self::FALA_COLOMBIA,
+        self::CODE_CHILE => self::FALA_CHILE,
+        self::CODE_PERU => self::FALA_PERU,
+        self::CODE_MEXICO => self::FALA_MEXICO,
+        self::CODE_COLOMBIA => self::FALA_COLOMBIA,
     ];
 }

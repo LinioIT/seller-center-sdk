@@ -17,6 +17,10 @@ class AddressFactory
         'Phone',
         'Phone2',
         'Address1',
+        'Address2',
+        'Address3',
+        'Address4',
+        'Address5',
         'CustomerEmail',
         'City',
         'Ward',
@@ -40,7 +44,11 @@ class AddressFactory
             (string) $element->Ward,
             (string) $element->Region,
             (string) $element->PostCode,
-            (string) $element->Country
+            (string) $element->Country,
+            (string) $element->Address2,
+            (string) $element->Address3,
+            (string) $element->Address4,
+            (string) $element->Address5
         );
     }
 }

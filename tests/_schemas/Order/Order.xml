@@ -20,6 +20,10 @@
     <Phone/>
     <Phone2/>
     <Address1>%s</Address1>
+    <Address2>address2</Address2>
+    <Address3>address3</Address3>
+    <Address4>address4</Address4>
+    <Address5>address5</Address5>
     <CustomerEmail/>
     <City>%s</City>
     <Ward/>
@@ -33,6 +37,10 @@
     <Phone/>
     <Phone2/>
     <Address1>%s</Address1>
+    <Address2>address2</Address2>
+    <Address3>address3</Address3>
+    <Address4>address4</Address4>
+    <Address5>address5</Address5>
     <CustomerEmail/>
     <City>%s</City>
     <Ward/>

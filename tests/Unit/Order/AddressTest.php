@@ -15,7 +15,11 @@ class AddressTest extends LinioTestCase
     protected $firstName = 'John';
     protected $lastName = 'Doe';
     protected $phone = 123456789;
-    protected $address1 = 'address';
+    protected $address1 = 'address1';
+    protected $address2 = 'address2';
+    protected $address3 = 'address3';
+    protected $address4 = 'address4';
+    protected $address5 = 'address5';
     protected $customerEmail = 'hello@sellercenter.net';
     protected $city = 'City';
     protected $ward = 'test';
@@ -35,6 +39,10 @@ class AddressTest extends LinioTestCase
         $this->assertEquals((int) $simpleXml->Phone, $address->getPhone());
         $this->assertEquals((int) $simpleXml->Phone2, $address->getPhone2());
         $this->assertEquals($simpleXml->Address1, $address->getAddress());
+        $this->assertEquals($simpleXml->Address2, $address->getAddress2());
+        $this->assertEquals($simpleXml->Address3, $address->getAddress3());
+        $this->assertEquals($simpleXml->Address4, $address->getAddress4());
+        $this->assertEquals($simpleXml->Address5, $address->getAddress5());
         $this->assertEquals($simpleXml->CustomerEmail, $address->getCustomerEmail());
         $this->assertEquals($simpleXml->City, $address->getCity());
         $this->assertEquals($simpleXml->Ward, $address->getWard());
@@ -76,6 +84,10 @@ class AddressTest extends LinioTestCase
         $expectedJson['lastName'] = $this->lastName;
         $expectedJson['phone'] = $this->phone;
         $expectedJson['address'] = $this->address1;
+        $expectedJson['address2'] = $this->address2;
+        $expectedJson['address3'] = $this->address3;
+        $expectedJson['address4'] = $this->address4;
+        $expectedJson['address5'] = $this->address5;
         $expectedJson['customerEmail'] = $this->customerEmail;
         $expectedJson['city'] = $this->city;
         $expectedJson['ward'] = $this->ward;
@@ -94,6 +106,10 @@ class AddressTest extends LinioTestCase
             $this->lastName,
             $this->phone,
             $this->address1,
+            $this->address2,
+            $this->address3,
+            $this->address4,
+            $this->address5,
             $this->customerEmail,
             $this->city,
             $this->ward,
