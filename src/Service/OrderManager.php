@@ -737,7 +737,8 @@ class OrderManager extends BaseManager
         $response = $this->executeAction(
             $action,
             $parameters,
-            $requestId
+            $requestId,
+            'POST'
         );
 
         $this->logger->info(
