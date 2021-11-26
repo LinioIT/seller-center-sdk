@@ -24,6 +24,7 @@ use Linio\SellerCenter\Model\Order\FailureReason;
 use Linio\SellerCenter\Model\Order\Order;
 use Linio\SellerCenter\Model\Order\OrderItem;
 use Linio\SellerCenter\Response\HandleResponse;
+use Linio\SellerCenter\Response\SuccessResponse;
 
 class OrderManager extends BaseManager
 {
@@ -713,6 +714,42 @@ class OrderManager extends BaseManager
         );
 
         return $orderItemsResponse;
+    }
+
+    public function setInvoiceNumber(
+        int $orderItemId,
+        string $invoiceNumber,
+        ?string $invoiceDocumentLink
+    ): SuccessResponse {
+        $action = 'SetInvoiceNumber';
+        $parameters = $this->makeParametersForAction($action);
+
+        $parameters->set([
+            'OrderItemId' => $orderItemId,
+            'InvoiceNumber' => $invoiceNumber,
+        ]);
+
+        if (!empty($invoiceDocumentLink)) {
+            $parameters->set(['InvoiceDocumentLink' => $invoiceDocumentLink]);
+        }
+
+        $requestId = $this->generateRequestId();
+        $response = $this->executeAction(
+            $action,
+            $parameters,
+            $requestId,
+            'POST'
+        );
+
+        $this->logger->info(
+            sprintf(
+              '%d::%s::APIResponse::SellerCenterSdk: Invoice Number Set',
+              $requestId,
+              $action
+          )
+        );
+
+        return $response;
     }
 
     public function setStatusToCanceled(int $orderItemId, string $reason, string $reasonDetail = null): void

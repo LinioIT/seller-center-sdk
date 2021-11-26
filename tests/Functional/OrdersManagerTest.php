@@ -14,6 +14,7 @@ use Linio\SellerCenter\Model\Order\FailureReason;
 use Linio\SellerCenter\Model\Order\Order;
 use Linio\SellerCenter\Model\Order\OrderItem;
 use Linio\SellerCenter\Model\Order\OrderItems;
+use Linio\SellerCenter\Response\SuccessResponse;
 use Linio\SellerCenter\Service\OrderManager;
 use Prophecy\Argument;
 use Psr\Log\LoggerInterface;
@@ -463,6 +464,36 @@ class OrdersManagerTest extends LinioTestCase
         $this->assertEquals(123456, current($orderItems)->getPurchaseOrderId());
         $this->assertEquals('ABC-123456', current($orderItems)->getPurchaseOrderNumber());
         $this->assertEquals('MPDS-200131783-9800', current($orderItems)->getPackageId());
+    }
+
+    public function testItReturnsSuccessResponseWhenSetInvoiceNumber(): void
+    {
+        $orderItemId = 1;
+        $invoiceNumber = '123132465465465465456';
+        $documentLink = 'https://fakeInvoice.pdf';
+
+        $body = sprintf(
+            $this->getOrdersResponse('Order/SetInvoiceNumberSuccessResponse.xml'),
+            'SetInvoiceNumber',
+            $orderItemId,
+            $invoiceNumber
+        );
+
+        $client = $this->createClientWithResponse($body);
+
+        $parameters = $this->getParameters();
+
+        $configuration = new Configuration($parameters['key'], $parameters['username'], $parameters['endpoint'], $parameters['version']);
+
+        $sdkClient = new SellerCenterSdk($configuration, $client);
+
+        $response = $sdkClient->orders()->setInvoiceNumber(
+            $orderItemId,
+            $invoiceNumber,
+            $documentLink
+        );
+
+        $this->assertInstanceOf(SuccessResponse::class, $response);
     }
 
     public function testItReturnsUpdatedOrderItemsWhenSettingStatusToReadyToShip(): void
