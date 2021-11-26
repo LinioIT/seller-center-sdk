@@ -466,9 +466,6 @@ class OrdersManagerTest extends LinioTestCase
         $this->assertEquals('MPDS-200131783-9800', current($orderItems)->getPackageId());
     }
 
-
-
-
     public function testItReturnsSuccessResponseWhenSetInvoiceNumber(): void
     {
         $orderItemId = 1;
@@ -498,10 +495,6 @@ class OrdersManagerTest extends LinioTestCase
 
         $this->assertInstanceOf(SuccessResponse::class, $response);
     }
-
-
-
-
 
     public function testItReturnsUpdatedOrderItemsWhenSettingStatusToReadyToShip(): void
     {
