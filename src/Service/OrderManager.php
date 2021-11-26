@@ -6,24 +6,25 @@ namespace Linio\SellerCenter\Service;
 
 use DateTimeInterface;
 use Linio\Component\Util\Json;
-use Linio\SellerCenter\Application\Parameters;
-use Linio\SellerCenter\Application\Security\Signature;
-use Linio\SellerCenter\Contract\OrderSortDirections;
-use Linio\SellerCenter\Contract\OrderSortFilters;
+use Linio\SellerCenter\Model\Order\Order;
 use Linio\SellerCenter\Contract\OrderStatus;
+use Linio\SellerCenter\Model\Order\OrderItem;
+use Linio\SellerCenter\Application\Parameters;
+use Linio\SellerCenter\Factory\RequestFactory;
+use Linio\SellerCenter\Response\HandleResponse;
+use Linio\SellerCenter\Response\SuccessResponse;
+use Linio\SellerCenter\Contract\OrderSortFilters;
+use Linio\SellerCenter\Model\Order\FailureReason;
+use Linio\SellerCenter\Contract\OrderSortDirections;
+use Linio\SellerCenter\Formatter\LogMessageFormatter;
+use Linio\SellerCenter\Application\Security\Signature;
+use Linio\SellerCenter\Factory\Xml\Order\OrderFactory;
+use Linio\SellerCenter\Factory\Xml\Order\OrdersFactory;
 use Linio\SellerCenter\Exception\EmptyArgumentException;
 use Linio\SellerCenter\Exception\InvalidDomainException;
-use Linio\SellerCenter\Factory\RequestFactory;
-use Linio\SellerCenter\Factory\Xml\Order\FailureReasonsFactory;
-use Linio\SellerCenter\Factory\Xml\Order\OrderFactory;
 use Linio\SellerCenter\Factory\Xml\Order\OrderItemsFactory;
-use Linio\SellerCenter\Factory\Xml\Order\OrdersFactory;
 use Linio\SellerCenter\Factory\Xml\Order\OrdersItemsFactory;
-use Linio\SellerCenter\Formatter\LogMessageFormatter;
-use Linio\SellerCenter\Model\Order\FailureReason;
-use Linio\SellerCenter\Model\Order\Order;
-use Linio\SellerCenter\Model\Order\OrderItem;
-use Linio\SellerCenter\Response\HandleResponse;
+use Linio\SellerCenter\Factory\Xml\Order\FailureReasonsFactory;
 
 class OrderManager extends BaseManager
 {
@@ -713,6 +714,41 @@ class OrderManager extends BaseManager
         );
 
         return $orderItemsResponse;
+    }
+
+    public function setInvoiceNumber(
+      int $orderItemId,
+      string $invoiceNumber,
+      ?string $invoiceDocumentLink
+    ): SuccessResponse {
+        $action = 'SetInvoiceNumber';
+        $parameters = $this->makeParametersForAction($action);
+
+        $parameters->set([
+            'OrderItemId' => $orderItemId,
+            'InvoiceNumber' => $invoiceNumber
+        ]);
+        
+        if (!empty($invoiceDocumentLink)) {
+            $parameters->set(['InvoiceDocumentLink' => $invoiceDocumentLink]);
+        }
+
+        $requestId = $this->generateRequestId();
+        $response = $this->executeAction(
+            $action,
+            $parameters,
+            $requestId
+        );
+
+        $this->logger->info(
+          sprintf(
+            '%d::%s::APIResponse::SellerCenterSdk: Invoice Number Set',
+            $requestId,
+            $action
+          )
+        );
+
+        return $response;
     }
 
     public function setStatusToCanceled(int $orderItemId, string $reason, string $reasonDetail = null): void
