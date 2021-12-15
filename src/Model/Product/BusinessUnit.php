@@ -174,7 +174,7 @@ class BusinessUnit implements JsonSerializable, VariationProductInterface, Produ
         $attributes[self::FEED_STOCK] = $this->stock;
         $attributes[self::FEED_STATUS] = $this->status;
 
-        return $attributes;
+        return array_filter($attributes);
     }
 
     public function setBusinessUnit(?string $businessUnit): void
