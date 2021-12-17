@@ -743,10 +743,10 @@ class OrderManager extends BaseManager
 
         $this->logger->info(
             sprintf(
-              '%d::%s::APIResponse::SellerCenterSdk: Invoice Number Set',
-              $requestId,
-              $action
-          )
+                '%d::%s::APIResponse::SellerCenterSdk: Invoice Number Set',
+                $requestId,
+                $action
+            )
         );
 
         return $response;

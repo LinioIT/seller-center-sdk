@@ -21,6 +21,21 @@ class ProductTransformer
 
         $productDataAttributes = $product->getProductData()->all();
 
+        if ($product instanceof GlobalProduct) {
+            $businessUnits = $product->getBusinessUnits();
+
+            if (!empty($businessUnits)) {
+                $businessUnitsElement = $body->addChild('BusinessUnits');
+                foreach ($businessUnits->all() as $aBusinessUnit) {
+                    $businessUnitElement = $businessUnitsElement->addChild('BusinessUnit');
+                    $businessUnitAttributes = $aBusinessUnit->getAllAttributes();
+                    foreach ($businessUnitAttributes as $attributeKey => $attributeValue) {
+                        $businessUnitElement->addChild((string) $attributeKey, htmlspecialchars((string) $attributeValue));
+                    }
+                }
+            }
+        }
+
         if (empty($productDataAttributes)) {
             return;
         }
@@ -33,21 +48,6 @@ class ProductTransformer
             }
 
             $productData->addChild((string) $attributeKey, htmlspecialchars((string) $attributeValue));
-        }
-
-        if ($product instanceof GlobalProduct) {
-            $businessUnits = $product->getBusinessUnits()->all();
-
-            if (!empty($businessUnits)) {
-                $businessUnitsElement = $body->addChild('BusinessUnits');
-                foreach ($businessUnits as $aBusinessUnit) {
-                    $businessUnitElement = $businessUnitsElement->addChild('BusinessUnit');
-                    $businessUnitAttributes = $aBusinessUnit->getAllAttributes();
-                    foreach ($businessUnitAttributes as $attributeKey => $attributeValue) {
-                        $businessUnitElement->addChild((string) $attributeKey, htmlspecialchars((string) $attributeValue));
-                    }
-                }
-            }
         }
     }
 

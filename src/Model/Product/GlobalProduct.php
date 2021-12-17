@@ -80,7 +80,7 @@ class GlobalProduct extends BaseProduct implements JsonSerializable, ProductInte
         return $this->qcStatus;
     }
 
-    public function getBusinessUnits(): BusinessUnits
+    public function getBusinessUnits(): ?BusinessUnits
     {
         return $this->businessUnits;
     }

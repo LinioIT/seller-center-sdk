@@ -125,8 +125,7 @@ class GlobalProductsTest extends LinioTestCase
         $xml = ProductsTransformer::asXml($this->products);
 
         $product = $this->products->findBySellerSku('2145819109aaeu7');
-        // dd($product);
-        // dd($product->getStatus(), $xml->Product->Status);
+
         $this->assertInstanceOf(Products::class, $this->products);
         $this->assertInstanceOf(GlobalProduct::class, $product);
         $this->assertEquals($product->getSellerSku(), $xml->Product->SellerSku);
