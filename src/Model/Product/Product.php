@@ -23,7 +23,7 @@ class Product extends BaseProduct implements JsonSerializable, ProductInterface,
     protected $status;
 
     /**
-     * @var float
+     * @var float|null
      */
     protected $price;
 
@@ -48,7 +48,7 @@ class Product extends BaseProduct implements JsonSerializable, ProductInterface,
     protected $quantity;
 
     /**
-     * @var int
+     * @var int|null
      */
     protected $available;
 
@@ -68,7 +68,7 @@ class Product extends BaseProduct implements JsonSerializable, ProductInterface,
         Category $primaryCategory,
         string $description,
         Brand $brand,
-        float $price,
+        ?float $price,
         string $productId,
         ?string $taxClass,
         ProductData $productData,
@@ -106,7 +106,7 @@ class Product extends BaseProduct implements JsonSerializable, ProductInterface,
         return $product;
     }
 
-    public function getPrice(): float
+    public function getPrice(): ?float
     {
         return $this->price;
     }
@@ -149,7 +149,7 @@ class Product extends BaseProduct implements JsonSerializable, ProductInterface,
         return $this->quantity;
     }
 
-    public function getAvailable(): int
+    public function getAvailable(): ?int
     {
         return $this->available;
     }
@@ -166,7 +166,7 @@ class Product extends BaseProduct implements JsonSerializable, ProductInterface,
         }
     }
 
-    public function setPrice(float $price): void
+    public function setPrice(?float $price): void
     {
         if ($price > 0) {
             $this->price = $price;
@@ -197,7 +197,7 @@ class Product extends BaseProduct implements JsonSerializable, ProductInterface,
         }
     }
 
-    public function setAvailable(int $available): void
+    public function setAvailable(?int $available): void
     {
         if ($available <= $this->quantity && $available >= 0) {
             $this->available = $available;
