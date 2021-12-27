@@ -8,9 +8,9 @@ use DateTimeInterface;
 
 interface VariationProductInterface
 {
-    public function getAvailable(): int;
+    public function getAvailable(): ?int;
 
-    public function getPrice(): float;
+    public function getPrice(): ?float;
 
     public function getSalePrice(): ?float;
 
@@ -22,7 +22,7 @@ interface VariationProductInterface
 
     public function getSaleEndDateString(): ?string;
 
-    public function setPrice(float $price): void;
+    public function setPrice(?float $price): void;
 
     public function setSalePrice(?float $specialPrice): void;
 

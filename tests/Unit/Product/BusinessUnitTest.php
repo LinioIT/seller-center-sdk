@@ -86,6 +86,63 @@ class BusinessUnitTest extends LinioTestCase
         $this->assertEquals($businessUnit->getSaleEndDateString(), null);
     }
 
+    public function testItCreatesABusinessUnitWithPriceParameters(): void
+    {
+        $businessUnit = new BusinessUnit(
+            BusinessUnitOperatorCodes::COUNTRY_OPERATOR[$this->countryCode],
+            $this->price,
+            null,
+            $this->status
+        );
+
+        $this->assertInstanceOf(BusinessUnit::class, $businessUnit);
+        $this->assertEquals($businessUnit->getOperatorCode(), $this->operatorCode);
+        $this->assertEquals($businessUnit->getPrice(), $this->price);
+        $this->assertNull($businessUnit->getStock());
+        $this->assertEquals($businessUnit->getStatus(), $this->status);
+        $this->assertNull($businessUnit->getIsPublished());
+        $this->assertNull($businessUnit->getSaleStartDateString());
+        $this->assertNull($businessUnit->getSaleEndDateString());
+    }
+
+    public function testItCreatesABusinessUnitWithStockParameters(): void
+    {
+        $businessUnit = new BusinessUnit(
+            BusinessUnitOperatorCodes::COUNTRY_OPERATOR[$this->countryCode],
+            null,
+            $this->stock,
+            $this->status
+        );
+
+        $this->assertInstanceOf(BusinessUnit::class, $businessUnit);
+        $this->assertEquals($businessUnit->getOperatorCode(), $this->operatorCode);
+        $this->assertNull($businessUnit->getPrice());
+        $this->assertEquals($businessUnit->getStock(), $this->stock);
+        $this->assertEquals($businessUnit->getStatus(), $this->status);
+        $this->assertNull($businessUnit->getIsPublished());
+        $this->assertNull($businessUnit->getSaleStartDateString());
+        $this->assertNull($businessUnit->getSaleEndDateString());
+    }
+
+    public function testItCreatesABusinessUnitWithZeroStockParameters(): void
+    {
+        $businessUnit = new BusinessUnit(
+            BusinessUnitOperatorCodes::COUNTRY_OPERATOR[$this->countryCode],
+            null,
+            0,
+            $this->status
+        );
+
+        $this->assertInstanceOf(BusinessUnit::class, $businessUnit);
+        $this->assertEquals($businessUnit->getOperatorCode(), $this->operatorCode);
+        $this->assertNull($businessUnit->getPrice());
+        $this->assertEquals($businessUnit->getStock(), 0);
+        $this->assertEquals($businessUnit->getStatus(), $this->status);
+        $this->assertNull($businessUnit->getIsPublished());
+        $this->assertNull($businessUnit->getSaleStartDateString());
+        $this->assertNull($businessUnit->getSaleEndDateString());
+    }
+
     public function testItCreatesABusinessUnitWithMandatoryAndOptionalParameters(): void
     {
         $this->specialFromDate = DateTimeImmutable::createFromFormat(DATE_ATOM, '2021-5-10T14:54:23+00:00');

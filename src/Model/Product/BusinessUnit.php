@@ -35,7 +35,7 @@ class BusinessUnit implements JsonSerializable, VariationProductInterface, Produ
     protected $operatorCode;
 
     /**
-     * @var float
+     * @var float|null
      */
     protected $price;
 
@@ -55,7 +55,7 @@ class BusinessUnit implements JsonSerializable, VariationProductInterface, Produ
     protected $specialToDate;
 
     /**
-     * @var int
+     * @var int|null
      */
     protected $stock;
 
@@ -71,8 +71,8 @@ class BusinessUnit implements JsonSerializable, VariationProductInterface, Produ
 
     public function __construct(
         string $operatorCode,
-        float $price,
-        int $stock,
+        ?float $price,
+        ?int $stock,
         string $status,
         ?int $isPublished = null,
         ?string $businessUnit = null,
@@ -101,7 +101,7 @@ class BusinessUnit implements JsonSerializable, VariationProductInterface, Produ
         return $this->operatorCode;
     }
 
-    public function getPrice(): float
+    public function getPrice(): ?float
     {
         return $this->price;
     }
@@ -139,12 +139,12 @@ class BusinessUnit implements JsonSerializable, VariationProductInterface, Produ
         return $this->specialToDate->format('Y-m-d H:i:s');
     }
 
-    public function getStock(): int
+    public function getStock(): ?int
     {
         return $this->stock;
     }
 
-    public function getAvailable(): int
+    public function getAvailable(): ?int
     {
         return $this->stock;
     }
@@ -174,7 +174,12 @@ class BusinessUnit implements JsonSerializable, VariationProductInterface, Produ
         $attributes[self::FEED_STOCK] = $this->stock;
         $attributes[self::FEED_STATUS] = $this->status;
 
-        return array_filter($attributes);
+        return array_filter(
+            $attributes,
+            function ($value) {
+            return !($value === null || $value === '');
+        }
+        );
     }
 
     public function setBusinessUnit(?string $businessUnit): void
@@ -190,9 +195,9 @@ class BusinessUnit implements JsonSerializable, VariationProductInterface, Produ
         $this->operatorCode = $operatorCode;
     }
 
-    public function setPrice(float $price): void
+    public function setPrice(?float $price): void
     {
-        if ($price < 0) {
+        if ($price !== null && $price <= 0) {
             throw new InvalidDomainException('Price');
         }
         $this->price = $price;
@@ -216,9 +221,9 @@ class BusinessUnit implements JsonSerializable, VariationProductInterface, Produ
         $this->specialToDate = $specialToDate;
     }
 
-    public function setStock(int $stock): void
+    public function setStock(?int $stock): void
     {
-        if ($stock < 0) {
+        if ($stock !== null && $stock < 0) {
             throw new InvalidDomainException('Stock');
         }
         $this->stock = $stock;
