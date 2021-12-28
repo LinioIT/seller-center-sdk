@@ -39,6 +39,8 @@ interface ProductInterface
 
     public function getTaxClass(): ?string;
 
+    public function getUrl(): ?string;
+
     public function getProductData(): ProductData;
 
     public function getMainImage(): Image;
@@ -70,6 +72,8 @@ interface ProductInterface
     public function setProductId(string $productId): void;
 
     public function setTaxClass(?string $taxClass): void;
+
+    public function setUrl(string $url): void;
 
     public function setProductData(ProductData $productData): void;
 

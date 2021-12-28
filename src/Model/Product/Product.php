@@ -204,6 +204,20 @@ class Product extends BaseProduct implements JsonSerializable, ProductInterface,
         }
     }
 
+    public function setUrl(string $url): void
+    {
+        $this->url = $url;
+    }
+
+    public function getUrl(): ?string
+    {
+        if (empty($this->url)) {
+            return null;
+        }
+
+        return $this->url;
+    }
+
     /**
      * @return mixed[]
      */
