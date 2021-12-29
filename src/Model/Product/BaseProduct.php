@@ -191,6 +191,15 @@ abstract class BaseProduct implements JsonSerializable
         return $this->images;
     }
 
+    public function getUrl(): ?string
+    {
+        if (empty($this->url)) {
+            return null;
+        }
+
+        return $this->url;
+    }
+
     public function setSellerSku(string $sellerSku): void
     {
         $this->sellerSku = $sellerSku;
@@ -264,6 +273,11 @@ abstract class BaseProduct implements JsonSerializable
     public function setMainImage(Image $mainImage): void
     {
         $this->mainImage = $mainImage;
+    }
+
+    public function setUrl(string $url): void
+    {
+        $this->url = $url;
     }
 
     public function attachImages(Images $images): void

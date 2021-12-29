@@ -95,20 +95,6 @@ class GlobalProduct extends BaseProduct implements JsonSerializable, ProductInte
         $this->businessUnits = $businessUnits;
     }
 
-    public function setUrl(string $url): void
-    {
-        $this->url = $url;
-    }
-
-    public function getUrl(): ?string
-    {
-        if (empty($this->url)) {
-            return null;
-        }
-
-        return $this->url;
-    }
-
     /**
      * @return mixed[]
      */
