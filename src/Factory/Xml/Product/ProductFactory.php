@@ -111,6 +111,10 @@ class ProductFactory
             $product->setMainImage($image);
         }
 
+        if (!empty($element->Url)) {
+            $product->setUrl((string) $element->Url);
+        }
+
         return $product;
     }
 }

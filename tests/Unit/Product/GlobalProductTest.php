@@ -41,6 +41,7 @@ class GlobalProductTest extends LinioTestCase
     protected $parentSku = '2145819188aaeu3';
     protected $status = 'inactive';
     protected $qcStatus = 'approved';
+    protected $url = 'https://staging.falabella.com/falabella-cl/product/100283906/Kids-Drawing-pencils/100283907';
     protected $stock = 100;
     protected $isPublished = 0;
     protected $categories;
@@ -156,6 +157,7 @@ class GlobalProductTest extends LinioTestCase
         $product->setCategories($this->categories);
         $product->setMainImage($this->mainImage);
         $product->setQcStatus($this->qcStatus);
+        $product->setUrl($this->url);
         $product->attachImages($this->images);
 
         $this->assertInstanceOf(GlobalProduct::class, $product);
@@ -175,6 +177,7 @@ class GlobalProductTest extends LinioTestCase
         $this->assertEquals($product->getMainImage(), $this->mainImage);
         $this->assertEquals($product->getImages(), $this->images);
         $this->assertEquals($product->getQcStatus(), $this->qcStatus);
+        $this->assertEquals($product->getUrl(), $this->url);
     }
 
     public function testItMakesAProductFromXml(): void
