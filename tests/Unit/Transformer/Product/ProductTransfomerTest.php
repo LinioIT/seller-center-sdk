@@ -9,6 +9,10 @@ use Linio\SellerCenter\LinioTestCase;
 use Linio\SellerCenter\Model\Brand\Brand;
 use Linio\SellerCenter\Model\Category\Categories;
 use Linio\SellerCenter\Model\Category\Category;
+use Linio\SellerCenter\Model\Product\BusinessUnit;
+use Linio\SellerCenter\Model\Product\BusinessUnits;
+use Linio\SellerCenter\Model\Product\ClothesData;
+use Linio\SellerCenter\Model\Product\GlobalProduct;
 use Linio\SellerCenter\Model\Product\Image;
 use Linio\SellerCenter\Model\Product\Images;
 use Linio\SellerCenter\Model\Product\Product;
@@ -94,6 +98,17 @@ class ProductTransfomerTest extends LinioTestCase
         $this->assertXmlStringEqualsXmlString($expectedXml, $xml->asXML());
     }
 
+    /**
+     * @dataProvider productXMLForClothesAttrProvider
+     */
+    public function testItCreatesProductXMLClothesAttributes(GlobalProduct $product, string $expectedXml): void
+    {
+        $xml = new SimpleXMLElement('<Request/>');
+        ProductTransformer::asXml($xml, $product);
+
+        $this->assertXmlStringEqualsXmlString($expectedXml, $xml->asXML());
+    }
+
     public function testItAddsAttributesIgnoringTheNullValues(): void
     {
         $xml = new SimpleXMLElement('<Root />');
@@ -157,5 +172,88 @@ class ProductTransfomerTest extends LinioTestCase
             [Brand::fromName('Linio'), 'Linio'],
             [new stdClass(), null],
         ];
+    }
+
+    /**
+     * @return mixed[]
+     */
+    public function productXMLForClothesAttrProvider(): array
+    {
+        return [
+            'With clothes attributes' => [
+                'product' => $this->getGlobalProduct(true),
+                'xmlExpected' => $this->getXmlExpected(true),
+            ],
+            'Without clothes attributes' => [
+                'product' => $this->getGlobalProduct(false),
+                'xmlExpected' => $this->getXmlExpected(false),
+            ],
+        ];
+    }
+
+    public function getGlobalProduct(bool $hasClothesData): GlobalProduct
+    {
+        $businessUnits = new BusinessUnits();
+        $businessUnit = new BusinessUnit(
+            'facl',
+            1299.00,
+            100,
+            'active'
+        );
+        $businessUnits->add($businessUnit);
+
+        return GlobalProduct::fromBasicData(
+            '2145819109aaeu7',
+            'Magic Global Product',
+            'XL',
+            Category::fromId(123),
+            'This is a bold product.',
+            Brand::fromName('Samsung'),
+            $businessUnits,
+            '123326998',
+            null,
+            new ProductData('Nuevo', 1, 1, 1, 1),
+            null,
+            null,
+            $hasClothesData ? new ClothesData('Beige', 'Beige', 'L') : null
+        );
+    }
+
+    public function getXmlExpected(bool $hasClothesData): string
+    {
+        $baseXml = '<?xml version="1.0"?>
+        <Request>
+            <Product>
+                <SellerSku>2145819109aaeu7</SellerSku>
+                <Name>Magic Global Product</Name>
+                <Variation>XL</Variation>
+                <PrimaryCategory>123</PrimaryCategory>
+                <Description>This is a bold product.</Description>
+                <Brand>Samsung</Brand>
+                <ProductId>123326998</ProductId>
+                %s
+                <BusinessUnits>
+                    <BusinessUnit>
+                    <OperatorCode>facl</OperatorCode>
+                    <Price>1299</Price>
+                    <Stock>100</Stock>
+                    <Status>active</Status>
+                    </BusinessUnit>
+                </BusinessUnits>
+                <ProductData>
+                    <ConditionType>Nuevo</ConditionType>
+                    <PackageHeight>1</PackageHeight>
+                    <PackageWidth>1</PackageWidth>
+                    <PackageLength>1</PackageLength>
+                    <PackageWeight>1</PackageWeight>
+                </ProductData>   
+            </Product>
+        </Request>';
+
+        $xmlClothes = '<Color>Beige</Color>
+        <ColorBasico>Beige</ColorBasico>
+        <Size>L</Size>';
+
+        return sprintf($baseXml, $hasClothesData ? $xmlClothes : '');
     }
 }

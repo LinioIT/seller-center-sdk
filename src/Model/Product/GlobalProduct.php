@@ -23,6 +23,11 @@ class GlobalProduct extends BaseProduct implements JsonSerializable, ProductInte
      */
     protected $qcStatus;
 
+    /**
+     * @var ClothesData|null
+     */
+    protected $clothesData;
+
     public function __construct()
     {
         $this->productData = new ProductData();
@@ -44,7 +49,8 @@ class GlobalProduct extends BaseProduct implements JsonSerializable, ProductInte
         ?string $taxClass,
         ProductData $productData,
         ?Images $images = null,
-        ?string $qcStatus = null
+        ?string $qcStatus = null,
+        ?ClothesData $clothesData = null
     ): self {
         self::ValidateArguments($sellerSku, $name, $description, $productId);
 
@@ -68,6 +74,14 @@ class GlobalProduct extends BaseProduct implements JsonSerializable, ProductInte
             $product->attachImages($images);
         }
 
+        if ($qcStatus) {
+            $product->setQcStatus($qcStatus);
+        }
+
+        if ($clothesData) {
+            $product->setClothesData($clothesData);
+        }
+
         return $product;
     }
 
@@ -85,6 +99,11 @@ class GlobalProduct extends BaseProduct implements JsonSerializable, ProductInte
         return $this->businessUnits;
     }
 
+    public function getClothesData(): ?ClothesData
+    {
+        return $this->clothesData;
+    }
+
     public function setQcStatus(string $qcStatus): void
     {
         $this->qcStatus = $qcStatus;
@@ -93,6 +112,11 @@ class GlobalProduct extends BaseProduct implements JsonSerializable, ProductInte
     public function setBusinessUnits(BusinessUnits $businessUnits): void
     {
         $this->businessUnits = $businessUnits;
+    }
+
+    public function setClothesData(ClothesData $clothesData): void
+    {
+        $this->clothesData = $clothesData;
     }
 
     /**

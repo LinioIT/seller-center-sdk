@@ -82,7 +82,7 @@ abstract class BaseProduct implements JsonSerializable
      * @var ProductData
      */
     protected $productData;
-    
+
     /**
      * @var string
      */

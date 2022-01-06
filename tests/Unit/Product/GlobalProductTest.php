@@ -14,6 +14,7 @@ use Linio\SellerCenter\Model\Category\Categories;
 use Linio\SellerCenter\Model\Category\Category;
 use Linio\SellerCenter\Model\Product\BusinessUnit;
 use Linio\SellerCenter\Model\Product\BusinessUnits;
+use Linio\SellerCenter\Model\Product\ClothesData;
 use Linio\SellerCenter\Model\Product\GlobalProduct;
 use Linio\SellerCenter\Model\Product\Image;
 use Linio\SellerCenter\Model\Product\Images;
@@ -34,6 +35,10 @@ class GlobalProductTest extends LinioTestCase
     protected $productId = '123326998';
     protected $operatorCode = 'facl';
     protected $productData;
+    protected $color = 'Beige';
+    protected $basicColor = 'Beige';
+    protected $size = 'L';
+    protected $clothesData;
     protected $businessUnits;
 
     protected $shopSku = 'HA997TB1EVQQ2LCO-9273602';
@@ -76,6 +81,12 @@ class GlobalProductTest extends LinioTestCase
             $this->packageWidth,
             $this->packageLength,
             $this->packageWeight
+        );
+
+        $this->clothesData = new ClothesData(
+            $this->color,
+            $this->basicColor,
+            $this->size
         );
 
         $this->businessUnits = new BusinessUnits();
@@ -148,7 +159,10 @@ class GlobalProductTest extends LinioTestCase
             $this->businessUnits,
             $this->productId,
             $this->taxClass,
-            $this->productData
+            $this->productData,
+            null,
+            null,
+            $this->clothesData
         );
 
         $product->setShopSku($this->shopSku);
@@ -170,6 +184,7 @@ class GlobalProductTest extends LinioTestCase
         $this->assertEquals($product->getProductId(), $this->productId);
         $this->assertEquals($product->getTaxClass(), $this->taxClass);
         $this->assertEquals($product->getProductData(), $this->productData);
+        $this->assertEquals($product->getClothesData(), $this->clothesData);
         $this->assertEquals($product->getShopSku(), $this->shopSku);
         $this->assertEquals($product->getProductSin(), $this->productSin);
         $this->assertEquals($product->getParentSku(), $this->parentSku);
@@ -204,7 +219,9 @@ class GlobalProductTest extends LinioTestCase
         $this->assertEquals($product->getProductData()->getAttribute('PackageLength'), (float) $xml->ProductData->PackageLength);
         $this->assertEquals($product->getProductData()->getAttribute('PackageWidth'), (float) $xml->ProductData->PackageWidth);
         $this->assertEquals($product->getProductData()->getAttribute('PackageWeight'), (float) $xml->ProductData->PackageWeight);
-
+        $this->assertEquals((string) $xml->Color, $product->getClothesData()->all()[ClothesData::COLOR]);
+        $this->assertEquals((string) $xml->ColorBasico, $product->getClothesData()->all()[ClothesData::BASIC_COLOR]);
+        $this->assertEquals((string) $xml->Size, $product->getClothesData()->all()[ClothesData::SIZE]);
         $this->assertEquals((string) $xml->ShopSku, $product->getShopSku());
         $this->assertEquals((string) $xml->ProductSin, $product->getProductSin());
         $this->assertEquals((int) $xml->BusinessUnits->BusinessUnit[0]->Stock, $product->getBusinessUnits()->findByOperatorCode($this->operatorCode)->getStock());
@@ -328,6 +345,7 @@ class GlobalProductTest extends LinioTestCase
             $this->variation,
             $this->productId,
             $this->primaryCategory->getName(),
+            $this->url,
             $this->qcStatus,
             $this->conditionType,
             $this->packageHeight,

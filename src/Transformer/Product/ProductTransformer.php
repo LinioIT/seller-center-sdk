@@ -22,15 +22,25 @@ class ProductTransformer
         $productDataAttributes = $product->getProductData()->all();
 
         if ($product instanceof GlobalProduct) {
+            if ($product->getClothesData()) {
+                $clothesData = $product->getClothesData();
+                self::addAttributes($body, $clothesData->all());
+            }
+
             $businessUnits = $product->getBusinessUnits();
 
             if (!empty($businessUnits)) {
                 $businessUnitsElement = $body->addChild('BusinessUnits');
+
                 foreach ($businessUnits->all() as $aBusinessUnit) {
                     $businessUnitElement = $businessUnitsElement->addChild('BusinessUnit');
                     $businessUnitAttributes = $aBusinessUnit->getAllAttributes();
+
                     foreach ($businessUnitAttributes as $attributeKey => $attributeValue) {
-                        $businessUnitElement->addChild((string) $attributeKey, htmlspecialchars((string) $attributeValue));
+                        $businessUnitElement->addChild(
+                            (string) $attributeKey,
+                            htmlspecialchars((string) $attributeValue)
+                        );
                     }
                 }
             }

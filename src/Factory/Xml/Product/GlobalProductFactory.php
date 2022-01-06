@@ -44,6 +44,12 @@ class GlobalProductFactory
 
         $productData = ProductDataFactory::make($element->ProductData);
 
+        $clothesData = ClothesDataFactory::make($element);
+
+        if (!empty($element->Images)) {
+            $images = ImagesFactory::make($element->Images);
+        }
+
         $product = GlobalProduct::fromBasicData(
             (string) $element->SellerSku,
             (string) $element->Name,
@@ -54,12 +60,11 @@ class GlobalProductFactory
             $businessUnits,
             (string) $element->ProductId,
             (string) $element->TaxClass,
-            $productData
+            $productData,
+            $images ?? null,
+            (string) $element->QCStatus ?? null,
+            $clothesData
         );
-
-        if (!empty($element->QCStatus)) {
-            $product->setQcStatus((string) $element->QCStatus);
-        }
 
         if (!empty($element->ShopSku)) {
             $product->setShopSku((string) $element->ShopSku);
@@ -76,11 +81,6 @@ class GlobalProductFactory
         if (!empty($element->Categories)) {
             $categories = CategoriesFactory::makeFromXmlString($element->Categories);
             $product->setCategories($categories);
-        }
-
-        if (!empty($element->Images)) {
-            $images = ImagesFactory::make($element->Images);
-            $product->attachImages($images);
         }
 
         if (!empty($element->MainImage)) {
