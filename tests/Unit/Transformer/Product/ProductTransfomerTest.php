@@ -11,7 +11,7 @@ use Linio\SellerCenter\Model\Category\Categories;
 use Linio\SellerCenter\Model\Category\Category;
 use Linio\SellerCenter\Model\Product\BusinessUnit;
 use Linio\SellerCenter\Model\Product\BusinessUnits;
-use Linio\SellerCenter\Model\Product\ClothesData;
+use Linio\SellerCenter\Model\Product\FashionData;
 use Linio\SellerCenter\Model\Product\GlobalProduct;
 use Linio\SellerCenter\Model\Product\Image;
 use Linio\SellerCenter\Model\Product\Images;
@@ -99,9 +99,9 @@ class ProductTransfomerTest extends LinioTestCase
     }
 
     /**
-     * @dataProvider productXMLForClothesAttrProvider
+     * @dataProvider productXMLForFashionAttrProvider
      */
-    public function testItCreatesProductXMLClothesAttributes(GlobalProduct $product, string $expectedXml): void
+    public function testItCreatesProductXMLFashionAttributes(GlobalProduct $product, string $expectedXml): void
     {
         $xml = new SimpleXMLElement('<Request/>');
         ProductTransformer::asXml($xml, $product);
@@ -177,21 +177,21 @@ class ProductTransfomerTest extends LinioTestCase
     /**
      * @return mixed[]
      */
-    public function productXMLForClothesAttrProvider(): array
+    public function productXMLForFashionAttrProvider(): array
     {
         return [
-            'With clothes attributes' => [
+            'With Fashion attributes' => [
                 'product' => $this->getGlobalProduct(true),
                 'xmlExpected' => $this->getXmlExpected(true),
             ],
-            'Without clothes attributes' => [
+            'Without Fashion attributes' => [
                 'product' => $this->getGlobalProduct(false),
                 'xmlExpected' => $this->getXmlExpected(false),
             ],
         ];
     }
 
-    public function getGlobalProduct(bool $hasClothesData): GlobalProduct
+    public function getGlobalProduct(bool $hasFashionData): GlobalProduct
     {
         $businessUnits = new BusinessUnits();
         $businessUnit = new BusinessUnit(
@@ -205,7 +205,7 @@ class ProductTransfomerTest extends LinioTestCase
         return GlobalProduct::fromBasicData(
             '2145819109aaeu7',
             'Magic Global Product',
-            'XL',
+            $hasFashionData ? null : 'XL',
             Category::fromId(123),
             'This is a bold product.',
             Brand::fromName('Samsung'),
@@ -215,45 +215,20 @@ class ProductTransfomerTest extends LinioTestCase
             new ProductData('Nuevo', 1, 1, 1, 1),
             null,
             null,
-            $hasClothesData ? new ClothesData('Beige', 'Beige', 'L') : null
+            $hasFashionData ? new FashionData('Beige', 'Beige', 'L') : null
         );
     }
 
-    public function getXmlExpected(bool $hasClothesData): string
+    public function getXmlExpected(bool $hasFashionData): string
     {
-        $baseXml = '<?xml version="1.0"?>
-        <Request>
-            <Product>
-                <SellerSku>2145819109aaeu7</SellerSku>
-                <Name>Magic Global Product</Name>
-                <Variation>XL</Variation>
-                <PrimaryCategory>123</PrimaryCategory>
-                <Description>This is a bold product.</Description>
-                <Brand>Samsung</Brand>
-                <ProductId>123326998</ProductId>
-                %s
-                <BusinessUnits>
-                    <BusinessUnit>
-                    <OperatorCode>facl</OperatorCode>
-                    <Price>1299</Price>
-                    <Stock>100</Stock>
-                    <Status>active</Status>
-                    </BusinessUnit>
-                </BusinessUnits>
-                <ProductData>
-                    <ConditionType>Nuevo</ConditionType>
-                    <PackageHeight>1</PackageHeight>
-                    <PackageWidth>1</PackageWidth>
-                    <PackageLength>1</PackageLength>
-                    <PackageWeight>1</PackageWeight>
-                </ProductData>   
-            </Product>
-        </Request>';
+        $schema = 'Product/GlobalProductFashionAttributes.xml';
 
-        $xmlClothes = '<Color>Beige</Color>
+        $xmlVariation = '<Variation>XL</Variation>';
+
+        $xmlFashion = '<Color>Beige</Color>
         <ColorBasico>Beige</ColorBasico>
         <Size>L</Size>';
 
-        return sprintf($baseXml, $hasClothesData ? $xmlClothes : '');
+        return sprintf($this->getSchema($schema), $hasFashionData ? $xmlFashion : $xmlVariation);
     }
 }

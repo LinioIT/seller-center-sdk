@@ -146,7 +146,7 @@ abstract class BaseProduct implements JsonSerializable
         return $this->name;
     }
 
-    public function getVariation(): string
+    public function getVariation(): ?string
     {
         return $this->variation;
     }

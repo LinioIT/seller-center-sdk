@@ -22,9 +22,11 @@ class ProductTransformer
         $productDataAttributes = $product->getProductData()->all();
 
         if ($product instanceof GlobalProduct) {
-            if ($product->getClothesData()) {
-                $clothesData = $product->getClothesData();
-                self::addAttributes($body, $clothesData->all());
+            if ($product->getFashionData()) {
+                self::addAttributes(
+                    $body,
+                    $product->getFashionData()->all()
+                );
             }
 
             $businessUnits = $product->getBusinessUnits();

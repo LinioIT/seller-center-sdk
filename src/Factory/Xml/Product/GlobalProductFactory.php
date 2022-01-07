@@ -19,7 +19,6 @@ class GlobalProductFactory
     private const REQUIRED_FIELDS = [
         'SellerSku',
         'Name',
-        'Variation',
         'PrimaryCategory',
         'Description',
         'Brand',
@@ -44,7 +43,7 @@ class GlobalProductFactory
 
         $productData = ProductDataFactory::make($element->ProductData);
 
-        $clothesData = ClothesDataFactory::make($element);
+        $fashionData = FashionDataFactory::make($element);
 
         if (!empty($element->Images)) {
             $images = ImagesFactory::make($element->Images);
@@ -53,7 +52,7 @@ class GlobalProductFactory
         $product = GlobalProduct::fromBasicData(
             (string) $element->SellerSku,
             (string) $element->Name,
-            (string) $element->Variation,
+            (string) $element->Variation ?? null,
             $primaryCategory,
             (string) $element->Description,
             $brand,
@@ -63,7 +62,7 @@ class GlobalProductFactory
             $productData,
             $images ?? null,
             (string) $element->QCStatus ?? null,
-            $clothesData
+            $fashionData
         );
 
         if (!empty($element->ShopSku)) {

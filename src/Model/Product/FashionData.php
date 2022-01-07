@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace Linio\SellerCenter\Model\Product;
 
-class ClothesData
+class FashionData
 {
     public const COLOR = 'Color';
     public const BASIC_COLOR = 'ColorBasico';

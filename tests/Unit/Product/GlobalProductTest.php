@@ -14,7 +14,7 @@ use Linio\SellerCenter\Model\Category\Categories;
 use Linio\SellerCenter\Model\Category\Category;
 use Linio\SellerCenter\Model\Product\BusinessUnit;
 use Linio\SellerCenter\Model\Product\BusinessUnits;
-use Linio\SellerCenter\Model\Product\ClothesData;
+use Linio\SellerCenter\Model\Product\FashionData;
 use Linio\SellerCenter\Model\Product\GlobalProduct;
 use Linio\SellerCenter\Model\Product\Image;
 use Linio\SellerCenter\Model\Product\Images;
@@ -28,8 +28,10 @@ class GlobalProductTest extends LinioTestCase
     protected $name = 'Magic Product';
     protected $variation = 'XL';
     protected $primaryCategory;
+    protected $primaryCategoryName = 'Celulares';
     protected $description = 'This is a bold product.';
     protected $brand;
+    protected $brandName = 'Samsung';
     protected $price = 5999.00;
     protected $taxClass = 'IVA exento 0%';
     protected $productId = '123326998';
@@ -38,7 +40,7 @@ class GlobalProductTest extends LinioTestCase
     protected $color = 'Beige';
     protected $basicColor = 'Beige';
     protected $size = 'L';
-    protected $clothesData;
+    protected $fashionData;
     protected $businessUnits;
 
     protected $shopSku = 'HA997TB1EVQQ2LCO-9273602';
@@ -71,9 +73,9 @@ class GlobalProductTest extends LinioTestCase
 
         $this->faker = $this->getFaker();
 
-        $this->brand = Brand::fromName('Samsung');
+        $this->brand = Brand::fromName($this->brandName);
 
-        $this->primaryCategory = Category::fromName('Celulares');
+        $this->primaryCategory = Category::fromName($this->primaryCategoryName);
 
         $this->productData = new ProductData(
             $this->conditionType,
@@ -83,7 +85,7 @@ class GlobalProductTest extends LinioTestCase
             $this->packageWeight
         );
 
-        $this->clothesData = new ClothesData(
+        $this->fashionData = new FashionData(
             $this->color,
             $this->basicColor,
             $this->size
@@ -162,7 +164,7 @@ class GlobalProductTest extends LinioTestCase
             $this->productData,
             null,
             null,
-            $this->clothesData
+            $this->fashionData
         );
 
         $product->setShopSku($this->shopSku);
@@ -184,7 +186,7 @@ class GlobalProductTest extends LinioTestCase
         $this->assertEquals($product->getProductId(), $this->productId);
         $this->assertEquals($product->getTaxClass(), $this->taxClass);
         $this->assertEquals($product->getProductData(), $this->productData);
-        $this->assertEquals($product->getClothesData(), $this->clothesData);
+        $this->assertEquals($product->getFashionData(), $this->fashionData);
         $this->assertEquals($product->getShopSku(), $this->shopSku);
         $this->assertEquals($product->getProductSin(), $this->productSin);
         $this->assertEquals($product->getParentSku(), $this->parentSku);
@@ -195,9 +197,12 @@ class GlobalProductTest extends LinioTestCase
         $this->assertEquals($product->getUrl(), $this->url);
     }
 
-    public function testItMakesAProductFromXml(): void
+    /**
+     * @dataProvider xmlGlobalProductProvider
+     */
+    public function testItMakesAProductFromXml(string $xmlGlobalProduct, bool $hasVariation): void
     {
-        $sXml = $this->createXmlStringForAGlobalProduct();
+        $sXml = $xmlGlobalProduct;
 
         $xml = new SimpleXMLElement($sXml);
 
@@ -206,7 +211,6 @@ class GlobalProductTest extends LinioTestCase
         $this->assertInstanceOf(GlobalProduct::class, $product);
         $this->assertEquals((string) $xml->SellerSku, $product->getSellerSku());
         $this->assertEquals((string) $xml->Name, $product->getName());
-        $this->assertEquals((string) $xml->Variation, $product->getVariation());
         $this->assertEquals((string) $xml->ProductId, $product->getProductId());
         $this->assertEquals((string) $xml->Description, $product->getDescription());
         $this->assertEquals((string) $xml->TaxClass, $product->getTaxClass());
@@ -219,9 +223,9 @@ class GlobalProductTest extends LinioTestCase
         $this->assertEquals($product->getProductData()->getAttribute('PackageLength'), (float) $xml->ProductData->PackageLength);
         $this->assertEquals($product->getProductData()->getAttribute('PackageWidth'), (float) $xml->ProductData->PackageWidth);
         $this->assertEquals($product->getProductData()->getAttribute('PackageWeight'), (float) $xml->ProductData->PackageWeight);
-        $this->assertEquals((string) $xml->Color, $product->getClothesData()->all()[ClothesData::COLOR]);
-        $this->assertEquals((string) $xml->ColorBasico, $product->getClothesData()->all()[ClothesData::BASIC_COLOR]);
-        $this->assertEquals((string) $xml->Size, $product->getClothesData()->all()[ClothesData::SIZE]);
+        $this->assertEquals((string) $xml->Color, $product->getFashionData()->all()[FashionData::COLOR]);
+        $this->assertEquals((string) $xml->ColorBasico, $product->getFashionData()->all()[FashionData::BASIC_COLOR]);
+        $this->assertEquals((string) $xml->Size, $product->getFashionData()->all()[FashionData::SIZE]);
         $this->assertEquals((string) $xml->ShopSku, $product->getShopSku());
         $this->assertEquals((string) $xml->ProductSin, $product->getProductSin());
         $this->assertEquals((int) $xml->BusinessUnits->BusinessUnit[0]->Stock, $product->getBusinessUnits()->findByOperatorCode($this->operatorCode)->getStock());
@@ -234,6 +238,13 @@ class GlobalProductTest extends LinioTestCase
         $this->assertInstanceOf(Images::class, $product->getImages());
         $this->assertContainsOnlyInstancesOf(Image::class, $product->getImages()->all());
         $this->assertCount(2, $product->getImages()->all());
+        $this->assertEquals((string) $xml->QCStatus, $this->qcStatus);
+
+        if (!$hasVariation) {
+            $this->assertNull($product->getVariation());
+        } else {
+            $this->assertEquals((string) $xml->Variation, $product->getVariation());
+        }
     }
 
     public function testItReturnsAJsonRepresentation(): void
@@ -275,7 +286,7 @@ class GlobalProductTest extends LinioTestCase
      */
     public function testItThrowsAExceptionWithoutAPropertyInTheXml($property): void
     {
-        $xmlString = $this->createXmlStringForAGlobalProduct();
+        $xmlString = $this->createXmlStringForAGlobalProduct(true);
 
         $this->expectException(InvalidXmlStructureException::class);
 
@@ -298,7 +309,7 @@ class GlobalProductTest extends LinioTestCase
 
     public function testItThrowsAExceptionWithoutABusinessUnitInTheXml(): void
     {
-        $xmlString = $this->createXmlStringForAGlobalProduct('Product/GlobalProductWithoutBusinessUnit.xml');
+        $xmlString = $this->createXmlStringForAGlobalProduct(true, 'Product/GlobalProductWithoutBusinessUnit.xml');
         $this->expectException(InvalidXmlStructureException::class);
 
         $this->expectExceptionMessage(
@@ -321,7 +332,6 @@ class GlobalProductTest extends LinioTestCase
             ['Brand'],
             ['Description'],
             ['TaxClass'],
-            ['Variation'],
             ['ProductId'],
             ['PrimaryCategory'],
             ['ProductData'],
@@ -329,7 +339,7 @@ class GlobalProductTest extends LinioTestCase
         ];
     }
 
-    public function createXmlStringForAGlobalProduct(string $schema = 'Product/GlobalProduct.xml'): string
+    public function createXmlStringForAGlobalProduct(bool $hasVariation, string $schema = 'Product/GlobalProduct.xml'): string
     {
         return sprintf(
             $this->getSchema($schema),
@@ -339,12 +349,12 @@ class GlobalProductTest extends LinioTestCase
             $this->name,
             $this->shopSku,
             $this->productSin,
-            $this->brand->getName(),
+            $this->brandName,
             $this->description,
             $this->taxClass,
-            $this->variation,
+            $hasVariation ? $this->variation : '',
             $this->productId,
-            $this->primaryCategory->getName(),
+            $this->primaryCategoryName,
             $this->url,
             $this->qcStatus,
             $this->conditionType,
@@ -358,5 +368,22 @@ class GlobalProductTest extends LinioTestCase
             $this->status,
             $this->isPublished
         );
+    }
+
+    /**
+     * @return mixed[]
+     */
+    public function xmlGlobalProductProvider(): array
+    {
+        return [
+            'with variation' => [
+                $this->createXmlStringForAGlobalProduct(true),
+                true,
+            ],
+            'without variation' => [
+                $this->createXmlStringForAGlobalProduct(false),
+                false,
+            ],
+        ];
     }
 }

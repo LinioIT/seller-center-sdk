@@ -1,0 +1,27 @@
+<?xml version="1.0"?>
+<Request>
+    <Product>
+        <SellerSku>2145819109aaeu7</SellerSku>
+        <Name>Magic Global Product</Name>
+        <PrimaryCategory>123</PrimaryCategory>
+        <Description>This is a bold product.</Description>
+        <Brand>Samsung</Brand>
+        <ProductId>123326998</ProductId>
+        %s
+        <BusinessUnits>
+            <BusinessUnit>
+            <OperatorCode>facl</OperatorCode>
+            <Price>1299</Price>
+            <Stock>100</Stock>
+            <Status>active</Status>
+            </BusinessUnit>
+        </BusinessUnits>
+        <ProductData>
+            <ConditionType>Nuevo</ConditionType>
+            <PackageHeight>1</PackageHeight>
+            <PackageWidth>1</PackageWidth>
+            <PackageLength>1</PackageLength>
+            <PackageWeight>1</PackageWeight>
+        </ProductData>   
+    </Product>
+</Request>

@@ -24,9 +24,9 @@ class GlobalProduct extends BaseProduct implements JsonSerializable, ProductInte
     protected $qcStatus;
 
     /**
-     * @var ClothesData|null
+     * @var FashionData|null
      */
-    protected $clothesData;
+    protected $fashionData;
 
     public function __construct()
     {
@@ -40,7 +40,7 @@ class GlobalProduct extends BaseProduct implements JsonSerializable, ProductInte
     public static function fromBasicData(
         string $sellerSku,
         string $name,
-        string $variation,
+        ?string $variation,
         Category $primaryCategory,
         string $description,
         Brand $brand,
@@ -50,7 +50,7 @@ class GlobalProduct extends BaseProduct implements JsonSerializable, ProductInte
         ProductData $productData,
         ?Images $images = null,
         ?string $qcStatus = null,
-        ?ClothesData $clothesData = null
+        ?FashionData $fashionData = null
     ): self {
         self::ValidateArguments($sellerSku, $name, $description, $productId);
 
@@ -58,7 +58,6 @@ class GlobalProduct extends BaseProduct implements JsonSerializable, ProductInte
 
         $product->setSellerSku($sellerSku);
         $product->setName($name);
-        $product->setVariation($variation);
         $product->setPrimaryCategory($primaryCategory);
         $product->setDescription($description);
         $product->setBrand($brand);
@@ -70,6 +69,10 @@ class GlobalProduct extends BaseProduct implements JsonSerializable, ProductInte
         $categories = new Categories();
         $product->setCategories($categories);
 
+        if ($variation) {
+            $product->setVariation($variation);
+        }
+
         if ($images) {
             $product->attachImages($images);
         }
@@ -78,8 +81,8 @@ class GlobalProduct extends BaseProduct implements JsonSerializable, ProductInte
             $product->setQcStatus($qcStatus);
         }
 
-        if ($clothesData) {
-            $product->setClothesData($clothesData);
+        if ($fashionData) {
+            $product->setFashionData($fashionData);
         }
 
         return $product;
@@ -99,9 +102,9 @@ class GlobalProduct extends BaseProduct implements JsonSerializable, ProductInte
         return $this->businessUnits;
     }
 
-    public function getClothesData(): ?ClothesData
+    public function getFashionData(): ?FashionData
     {
-        return $this->clothesData;
+        return $this->fashionData;
     }
 
     public function setQcStatus(string $qcStatus): void
@@ -114,9 +117,9 @@ class GlobalProduct extends BaseProduct implements JsonSerializable, ProductInte
         $this->businessUnits = $businessUnits;
     }
 
-    public function setClothesData(ClothesData $clothesData): void
+    public function setFashionData(FashionData $fashionData): void
     {
-        $this->clothesData = $clothesData;
+        $this->fashionData = $fashionData;
     }
 
     /**
@@ -124,11 +127,10 @@ class GlobalProduct extends BaseProduct implements JsonSerializable, ProductInte
      */
     public function all(): array
     {
-        return [
+        $attributes = [
             Attribute::FEED_SELLER_SKU => $this->sellerSku,
             Attribute::FEED_NEW_SELLER_SKU => $this->newSellerSku,
             Attribute::FEED_NAME => $this->name,
-            Attribute::FEED_VARIATION => $this->variation,
             Attribute::FEED_PRIMARY_CATEGORY => $this->primaryCategory,
             Attribute::FEED_CATEGORIES => $this->categories,
             Attribute::FEED_DESCRIPTION => $this->description,
@@ -137,6 +139,12 @@ class GlobalProduct extends BaseProduct implements JsonSerializable, ProductInte
             Attribute::FEED_TAX_CLASS => $this->taxClass,
             Attribute::FEED_PARENT_SKU => $this->parentSku,
         ];
+
+        if (isset($this->variation)) {
+            $attributes[Attribute::FEED_VARIATION] = $this->variation;
+        }
+
+        return $attributes;
     }
 
     public function jsonSerialize(): stdClass
