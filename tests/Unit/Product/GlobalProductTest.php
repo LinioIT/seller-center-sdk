@@ -226,6 +226,7 @@ class GlobalProductTest extends LinioTestCase
         $this->assertEquals((string) $xml->Color, $product->getFashionData()->all()[FashionData::COLOR]);
         $this->assertEquals((string) $xml->ColorBasico, $product->getFashionData()->all()[FashionData::BASIC_COLOR]);
         $this->assertEquals((string) $xml->Size, $product->getFashionData()->all()[FashionData::SIZE]);
+        $this->assertEquals((string) $xml->Talla, $product->getFashionData()->all()[FashionData::TALLA]);
         $this->assertEquals((string) $xml->ShopSku, $product->getShopSku());
         $this->assertEquals((string) $xml->ProductSin, $product->getProductSin());
         $this->assertEquals((int) $xml->BusinessUnits->BusinessUnit[0]->Stock, $product->getBusinessUnits()->findByOperatorCode($this->operatorCode)->getStock());

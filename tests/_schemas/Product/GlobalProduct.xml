@@ -23,6 +23,7 @@
   <Color>Beige</Color>
   <ColorBasico>Beige</ColorBasico>
   <Size>L</Size>
+  <Talla>XL</Talla>
   <ProductData>
       <ConditionType>%s</ConditionType>
       <PackageHeight>%s</PackageHeight>

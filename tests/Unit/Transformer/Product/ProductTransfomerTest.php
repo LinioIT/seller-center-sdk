@@ -215,7 +215,7 @@ class ProductTransfomerTest extends LinioTestCase
             new ProductData('Nuevo', 1, 1, 1, 1),
             null,
             null,
-            $hasFashionData ? new FashionData('Beige', 'Beige', 'L') : null
+            $hasFashionData ? new FashionData('Beige', 'Beige', 'L', 'XL') : null
         );
     }
 
@@ -227,7 +227,8 @@ class ProductTransfomerTest extends LinioTestCase
 
         $xmlFashion = '<Color>Beige</Color>
         <ColorBasico>Beige</ColorBasico>
-        <Size>L</Size>';
+        <Size>L</Size>
+        <Talla>XL</Talla>';
 
         return sprintf($this->getSchema($schema), $hasFashionData ? $xmlFashion : $xmlVariation);
     }

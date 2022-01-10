@@ -11,11 +11,15 @@ class FashionDataFactory
 {
     public static function make(SimpleXMLElement $element): ?FashionData
     {
-        if (isset($element->Color) || isset($element->ColorBasico) || isset($element->Size)) {
+        if (isset($element->Color)
+            || isset($element->ColorBasico)
+            || isset($element->Size)
+            || isset($element->Talla)) {
             return new FashionData(
                 (string) $element->Color ?? null,
                 (string) $element->ColorBasico ?? null,
-                (string) $element->Size ?? null
+                (string) $element->Size ?? null,
+                (string) $element->Talla ?? null
             );
         }
 
