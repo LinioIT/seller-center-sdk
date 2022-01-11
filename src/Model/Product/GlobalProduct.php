@@ -8,10 +8,11 @@ use JsonSerializable;
 use Linio\SellerCenter\Model\Brand\Brand;
 use Linio\SellerCenter\Model\Category\Categories;
 use Linio\SellerCenter\Model\Category\Category;
+use Linio\SellerCenter\Model\Product\Contract\FashionInterface;
 use Linio\SellerCenter\Model\Product\Contract\ProductInterface;
 use stdClass;
 
-class GlobalProduct extends BaseProduct implements JsonSerializable, ProductInterface
+class GlobalProduct extends BaseProduct implements JsonSerializable, ProductInterface, FashionInterface
 {
     /**
      * @var BusinessUnits
@@ -22,6 +23,26 @@ class GlobalProduct extends BaseProduct implements JsonSerializable, ProductInte
      * @var string|null
      */
     protected $qcStatus;
+
+    /**
+     * @var string|null
+     */
+    protected $color;
+
+    /**
+     * @var string|null
+     */
+    protected $basicColor;
+
+    /**
+     * @var string|null
+     */
+    protected $size;
+
+    /**
+     * @var string|null
+     */
+    protected $talla;
 
     public function __construct()
     {
@@ -35,7 +56,7 @@ class GlobalProduct extends BaseProduct implements JsonSerializable, ProductInte
     public static function fromBasicData(
         string $sellerSku,
         string $name,
-        string $variation,
+        ?string $variation,
         Category $primaryCategory,
         string $description,
         Brand $brand,
@@ -52,7 +73,6 @@ class GlobalProduct extends BaseProduct implements JsonSerializable, ProductInte
 
         $product->setSellerSku($sellerSku);
         $product->setName($name);
-        $product->setVariation($variation);
         $product->setPrimaryCategory($primaryCategory);
         $product->setDescription($description);
         $product->setBrand($brand);
@@ -64,8 +84,16 @@ class GlobalProduct extends BaseProduct implements JsonSerializable, ProductInte
         $categories = new Categories();
         $product->setCategories($categories);
 
-        if ($images) {
+        if (!empty($variation)) {
+            $product->setVariation($variation);
+        }
+
+        if (!empty($images)) {
             $product->attachImages($images);
+        }
+
+        if (!empty($qcStatus)) {
+            $product->setQcStatus($qcStatus);
         }
 
         return $product;
@@ -85,6 +113,26 @@ class GlobalProduct extends BaseProduct implements JsonSerializable, ProductInte
         return $this->businessUnits;
     }
 
+    public function getColor(): ?string
+    {
+        return $this->color;
+    }
+
+    public function getBasicColor(): ?string
+    {
+        return $this->basicColor;
+    }
+
+    public function getSize(): ?string
+    {
+        return $this->size;
+    }
+
+    public function getTalla(): ?string
+    {
+        return $this->talla;
+    }
+
     public function setQcStatus(string $qcStatus): void
     {
         $this->qcStatus = $qcStatus;
@@ -93,6 +141,26 @@ class GlobalProduct extends BaseProduct implements JsonSerializable, ProductInte
     public function setBusinessUnits(BusinessUnits $businessUnits): void
     {
         $this->businessUnits = $businessUnits;
+    }
+
+    public function setColor(string $color): void
+    {
+        $this->color = $color;
+    }
+
+    public function setBasicColor(string $basicColor): void
+    {
+        $this->basicColor = $basicColor;
+    }
+
+    public function setSize(string $size): void
+    {
+        $this->size = $size;
+    }
+
+    public function setTalla(string $talla): void
+    {
+        $this->talla = $talla;
     }
 
     /**
@@ -104,7 +172,6 @@ class GlobalProduct extends BaseProduct implements JsonSerializable, ProductInte
             Attribute::FEED_SELLER_SKU => $this->sellerSku,
             Attribute::FEED_NEW_SELLER_SKU => $this->newSellerSku,
             Attribute::FEED_NAME => $this->name,
-            Attribute::FEED_VARIATION => $this->variation,
             Attribute::FEED_PRIMARY_CATEGORY => $this->primaryCategory,
             Attribute::FEED_CATEGORIES => $this->categories,
             Attribute::FEED_DESCRIPTION => $this->description,
@@ -112,6 +179,11 @@ class GlobalProduct extends BaseProduct implements JsonSerializable, ProductInte
             Attribute::FEED_PRODUCT_ID => $this->productId,
             Attribute::FEED_TAX_CLASS => $this->taxClass,
             Attribute::FEED_PARENT_SKU => $this->parentSku,
+            Attribute::FEED_VARIATION => $this->variation,
+            Attribute::FEED_COLOR => $this->color,
+            Attribute::FEED_BASIC_COLOR => $this->basicColor,
+            Attribute::FEED_SIZE => $this->size,
+            Attribute::FEED_TALLA => $this->talla,
         ];
     }
 
@@ -121,6 +193,10 @@ class GlobalProduct extends BaseProduct implements JsonSerializable, ProductInte
 
         $serialized->businessUnits = $this->businessUnits;
         $serialized->qcStatus = $this->qcStatus;
+        $serialized->color = $this->color;
+        $serialized->colorBasico = $this->basicColor;
+        $serialized->size = $this->size;
+        $serialized->talla = $this->talla;
 
         return $serialized;
     }

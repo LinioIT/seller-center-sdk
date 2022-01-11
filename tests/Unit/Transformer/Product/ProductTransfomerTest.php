@@ -9,6 +9,9 @@ use Linio\SellerCenter\LinioTestCase;
 use Linio\SellerCenter\Model\Brand\Brand;
 use Linio\SellerCenter\Model\Category\Categories;
 use Linio\SellerCenter\Model\Category\Category;
+use Linio\SellerCenter\Model\Product\BusinessUnit;
+use Linio\SellerCenter\Model\Product\BusinessUnits;
+use Linio\SellerCenter\Model\Product\GlobalProduct;
 use Linio\SellerCenter\Model\Product\Image;
 use Linio\SellerCenter\Model\Product\Images;
 use Linio\SellerCenter\Model\Product\Product;
@@ -94,6 +97,17 @@ class ProductTransfomerTest extends LinioTestCase
         $this->assertXmlStringEqualsXmlString($expectedXml, $xml->asXML());
     }
 
+    /**
+     * @dataProvider productXMLForFashionAttrProvider
+     */
+    public function testItCreatesProductXMLFashionAttributes(GlobalProduct $product, string $expectedXml): void
+    {
+        $xml = new SimpleXMLElement('<Request/>');
+        ProductTransformer::asXml($xml, $product);
+
+        $this->assertXmlStringEqualsXmlString($expectedXml, $xml->asXML());
+    }
+
     public function testItAddsAttributesIgnoringTheNullValues(): void
     {
         $xml = new SimpleXMLElement('<Root />');
@@ -157,5 +171,70 @@ class ProductTransfomerTest extends LinioTestCase
             [Brand::fromName('Linio'), 'Linio'],
             [new stdClass(), null],
         ];
+    }
+
+    /**
+     * @return mixed[]
+     */
+    public function productXMLForFashionAttrProvider(): array
+    {
+        return [
+            'With Fashion attributes' => [
+                'product' => $this->getGlobalProduct(true),
+                'xmlExpected' => $this->getXmlExpected(true),
+            ],
+            'Without Fashion attributes' => [
+                'product' => $this->getGlobalProduct(false),
+                'xmlExpected' => $this->getXmlExpected(false),
+            ],
+        ];
+    }
+
+    public function getGlobalProduct(bool $hasFashionData): GlobalProduct
+    {
+        $businessUnits = new BusinessUnits();
+        $businessUnit = new BusinessUnit(
+            'facl',
+            1299.00,
+            100,
+            'active'
+        );
+        $businessUnits->add($businessUnit);
+
+        $product = GlobalProduct::fromBasicData(
+            '21458191097',
+            'Magic Global Product',
+            $hasFashionData ? null : 'XL',
+            Category::fromId(123),
+            'This is a bold product.',
+            Brand::fromName('Samsung'),
+            $businessUnits,
+            '123326998',
+            null,
+            new ProductData('Nuevo', 1, 1, 1, 1)
+        );
+
+        if ($hasFashionData) {
+            $product->setColor('Beige');
+            $product->setBasicColor('Beige');
+            $product->setSize('L');
+            $product->setTalla('XL');
+        }
+
+        return $product;
+    }
+
+    public function getXmlExpected(bool $hasFashionData): string
+    {
+        $schema = 'Product/GlobalProductFashionAttributes.xml';
+
+        $xmlVariation = '<Variation>XL</Variation>';
+
+        $xmlFashion = '<Color>Beige</Color>
+        <ColorBasico>Beige</ColorBasico>
+        <Size>L</Size>
+        <Talla>XL</Talla>';
+
+        return sprintf($this->getSchema($schema), $hasFashionData ? $xmlFashion : $xmlVariation);
     }
 }

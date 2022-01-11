@@ -24,4 +24,8 @@ class Attribute
     public const FEED_PARENT_SKU = 'ParentSku';
     public const FEED_QUANTITY = 'Quantity';
     public const FEED_QCSTATUS = 'QCStatus';
+    public const FEED_COLOR = 'Color';
+    public const FEED_BASIC_COLOR = 'ColorBasico';
+    public const FEED_SIZE = 'Size';
+    public const FEED_TALLA = 'Talla';
 }
