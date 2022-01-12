@@ -216,7 +216,7 @@ class ProductTransfomerTest extends LinioTestCase
 
         if ($hasFashionData) {
             $product->setColor('Beige');
-            $product->setBasicColor('Beige');
+            $product->setColorBasico('Beige');
             $product->setSize('L');
             $product->setTalla('XL');
         }

@@ -8,7 +8,7 @@ interface FashionInterface
 {
     public function getColor(): ?string;
 
-    public function getBasicColor(): ?string;
+    public function getColorBasico(): ?string;
 
     public function getSize(): ?string;
 
@@ -16,7 +16,7 @@ interface FashionInterface
 
     public function setColor(string $color): void;
 
-    public function setBasicColor(string $basicColor): void;
+    public function setColorBasico(string $colorBasico): void;
 
     public function setSize(string $size): void;
 
