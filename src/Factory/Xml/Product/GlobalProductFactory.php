@@ -93,7 +93,7 @@ class GlobalProductFactory
         }
 
         if (!empty($element->ColorBasico)) {
-            $product->setBasicColor((string) $element->ColorBasico);
+            $product->setColorBasico((string) $element->ColorBasico);
         }
 
         if (!empty($element->Size)) {

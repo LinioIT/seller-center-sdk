@@ -32,7 +32,7 @@ class GlobalProduct extends BaseProduct implements JsonSerializable, ProductInte
     /**
      * @var string|null
      */
-    protected $basicColor;
+    protected $colorBasico;
 
     /**
      * @var string|null
@@ -118,9 +118,9 @@ class GlobalProduct extends BaseProduct implements JsonSerializable, ProductInte
         return $this->color;
     }
 
-    public function getBasicColor(): ?string
+    public function getColorBasico(): ?string
     {
-        return $this->basicColor;
+        return $this->colorBasico;
     }
 
     public function getSize(): ?string
@@ -148,9 +148,9 @@ class GlobalProduct extends BaseProduct implements JsonSerializable, ProductInte
         $this->color = $color;
     }
 
-    public function setBasicColor(string $basicColor): void
+    public function setColorBasico(string $colorBasico): void
     {
-        $this->basicColor = $basicColor;
+        $this->colorBasico = $colorBasico;
     }
 
     public function setSize(string $size): void
@@ -181,7 +181,7 @@ class GlobalProduct extends BaseProduct implements JsonSerializable, ProductInte
             Attribute::FEED_PARENT_SKU => $this->parentSku,
             Attribute::FEED_VARIATION => $this->variation,
             Attribute::FEED_COLOR => $this->color,
-            Attribute::FEED_BASIC_COLOR => $this->basicColor,
+            Attribute::FEED_BASIC_COLOR => $this->colorBasico,
             Attribute::FEED_SIZE => $this->size,
             Attribute::FEED_TALLA => $this->talla,
         ];
@@ -194,7 +194,7 @@ class GlobalProduct extends BaseProduct implements JsonSerializable, ProductInte
         $serialized->businessUnits = $this->businessUnits;
         $serialized->qcStatus = $this->qcStatus;
         $serialized->color = $this->color;
-        $serialized->colorBasico = $this->basicColor;
+        $serialized->colorBasico = $this->colorBasico;
         $serialized->size = $this->size;
         $serialized->talla = $this->talla;
 

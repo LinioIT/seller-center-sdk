@@ -37,7 +37,7 @@ class GlobalProductTest extends LinioTestCase
     protected $operatorCode = 'facl';
     protected $productData;
     protected $color = 'Beige';
-    protected $basicColor = 'Beige';
+    protected $colorBasico = 'Beige';
     protected $size = 'L';
     protected $talla = 'XL';
     protected $businessUnits;
@@ -166,7 +166,7 @@ class GlobalProductTest extends LinioTestCase
         $product->setUrl($this->url);
         $product->attachImages($this->images);
         $product->setColor($this->color);
-        $product->setBasicColor($this->basicColor);
+        $product->setColorBasico($this->colorBasico);
         $product->setSize($this->size);
         $product->setTalla($this->talla);
 
@@ -189,7 +189,7 @@ class GlobalProductTest extends LinioTestCase
         $this->assertEquals($product->getQcStatus(), $this->qcStatus);
         $this->assertEquals($product->getUrl(), $this->url);
         $this->assertEquals($product->getColor(), $this->color);
-        $this->assertEquals($product->getBasicColor(), $this->basicColor);
+        $this->assertEquals($product->getColorBasico(), $this->colorBasico);
         $this->assertEquals($product->getSize(), $this->size);
         $this->assertEquals($product->getTalla(), $this->talla);
     }
@@ -235,13 +235,13 @@ class GlobalProductTest extends LinioTestCase
         if ($hasFashionAttr) {
             $this->assertEmpty($product->getVariation());
             $this->assertEquals($xml->Color, $product->getColor());
-            $this->assertEquals($xml->ColorBasico, $product->getBasicColor());
+            $this->assertEquals($xml->ColorBasico, $product->getColorBasico());
             $this->assertEquals($xml->Size, $product->getSize());
             $this->assertEquals($xml->Talla, $product->getTalla());
         } else {
             $this->assertEquals((string) $xml->Variation, $product->getVariation());
             $this->assertEmpty($product->getColor());
-            $this->assertEmpty($product->getBasicColor());
+            $this->assertEmpty($product->getColorBasico());
             $this->assertEmpty($product->getSize());
             $this->assertEmpty($product->getTalla());
         }
@@ -269,7 +269,7 @@ class GlobalProductTest extends LinioTestCase
         $product->setMainImage($this->mainImage);
         $product->setQcStatus($this->qcStatus);
         $product->setColor($this->color);
-        $product->setBasicColor($this->basicColor);
+        $product->setColorBasico($this->colorBasico);
         $product->setSize($this->size);
         $product->setTalla($this->talla);
         $product->attachImages($this->images);
