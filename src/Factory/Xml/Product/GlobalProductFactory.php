@@ -19,7 +19,6 @@ class GlobalProductFactory
     private const REQUIRED_FIELDS = [
         'SellerSku',
         'Name',
-        'Variation',
         'PrimaryCategory',
         'Description',
         'Brand',
@@ -44,22 +43,24 @@ class GlobalProductFactory
 
         $productData = ProductDataFactory::make($element->ProductData);
 
+        if (!empty($element->Images)) {
+            $images = ImagesFactory::make($element->Images);
+        }
+
         $product = GlobalProduct::fromBasicData(
             (string) $element->SellerSku,
             (string) $element->Name,
-            (string) $element->Variation,
+            (string) $element->Variation ?? null,
             $primaryCategory,
             (string) $element->Description,
             $brand,
             $businessUnits,
             (string) $element->ProductId,
             (string) $element->TaxClass,
-            $productData
+            $productData,
+            $images ?? null,
+            (string) $element->QCStatus ?? null
         );
-
-        if (!empty($element->QCStatus)) {
-            $product->setQcStatus((string) $element->QCStatus);
-        }
 
         if (!empty($element->ShopSku)) {
             $product->setShopSku((string) $element->ShopSku);
@@ -78,11 +79,6 @@ class GlobalProductFactory
             $product->setCategories($categories);
         }
 
-        if (!empty($element->Images)) {
-            $images = ImagesFactory::make($element->Images);
-            $product->attachImages($images);
-        }
-
         if (!empty($element->MainImage)) {
             $image = new Image((string) $element->MainImage);
             $product->setMainImage($image);
@@ -90,6 +86,22 @@ class GlobalProductFactory
 
         if (!empty($element->Url)) {
             $product->setUrl((string) $element->Url);
+        }
+
+        if (!empty($element->Color)) {
+            $product->setColor((string) $element->Color);
+        }
+
+        if (!empty($element->ColorBasico)) {
+            $product->setBasicColor((string) $element->ColorBasico);
+        }
+
+        if (!empty($element->Size)) {
+            $product->setSize((string) $element->Size);
+        }
+
+        if (!empty($element->Talla)) {
+            $product->setTalla((string) $element->Talla);
         }
 
         return $product;

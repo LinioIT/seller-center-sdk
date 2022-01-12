@@ -177,8 +177,8 @@ class BusinessUnit implements JsonSerializable, VariationProductInterface, Produ
         return array_filter(
             $attributes,
             function ($value) {
-            return !($value === null || $value === '');
-        }
+                return !($value === null || $value === '');
+            }
         );
     }
 
