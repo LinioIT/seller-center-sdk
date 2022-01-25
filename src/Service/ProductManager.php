@@ -320,6 +320,7 @@ class ProductManager extends BaseManager implements ProductManagerInterface
     {
         $action = 'GetProducts';
 
+        $parameters->set($this->parameters->all());
         $parameters->set(['Action' => $action]);
         $parameters->set([
             'Signature' => Signature::generate($parameters, $this->configuration->getKey())->get(),
