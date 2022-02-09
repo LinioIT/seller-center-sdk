@@ -19,10 +19,12 @@ use Linio\SellerCenter\Factory\Xml\Order\OrderFactory;
 use Linio\SellerCenter\Factory\Xml\Order\OrderItemsFactory;
 use Linio\SellerCenter\Factory\Xml\Order\OrdersFactory;
 use Linio\SellerCenter\Factory\Xml\Order\OrdersItemsFactory;
+use Linio\SellerCenter\Factory\Xml\Order\TrackingCodeFactory;
 use Linio\SellerCenter\Formatter\LogMessageFormatter;
 use Linio\SellerCenter\Model\Order\FailureReason;
 use Linio\SellerCenter\Model\Order\Order;
 use Linio\SellerCenter\Model\Order\OrderItem;
+use Linio\SellerCenter\Model\Order\TrackingCode;
 use Linio\SellerCenter\Response\HandleResponse;
 use Linio\SellerCenter\Response\SuccessResponse;
 
@@ -750,6 +752,37 @@ class OrderManager extends BaseManager
         );
 
         return $response;
+    }
+
+    public function getTrackingCode(
+        string $packageId,
+        string $shippingProvider
+    ): TrackingCode {
+        $action = 'GetTrackingCode';
+        $parameters = $this->makeParametersForAction($action);
+
+        $parameters->set([
+            'packageId' => $packageId,
+            'shipping_provider_name' => $shippingProvider,
+        ]);
+
+        $requestId = $this->generateRequestId();
+        $response = $this->executeAction(
+            $action,
+            $parameters,
+            $requestId,
+            'GET'
+        );
+
+        $this->logger->info(
+            sprintf(
+                '%d::%s::APIResponse::SellerCenterSdk: Get Tracking Code',
+                $requestId,
+                $action
+            )
+        );
+
+        return TrackingCodeFactory::make($response->getBody());
     }
 
     public function setStatusToCanceled(int $orderItemId, string $reason, string $reasonDetail = null): void

@@ -14,6 +14,7 @@ use Linio\SellerCenter\Model\Order\FailureReason;
 use Linio\SellerCenter\Model\Order\Order;
 use Linio\SellerCenter\Model\Order\OrderItem;
 use Linio\SellerCenter\Model\Order\OrderItems;
+use Linio\SellerCenter\Model\Order\TrackingCode;
 use Linio\SellerCenter\Response\SuccessResponse;
 use Linio\SellerCenter\Service\OrderManager;
 use Prophecy\Argument;
@@ -542,6 +543,24 @@ class OrdersManagerTest extends LinioTestCase
         $failureReasons = $sdkClient->orders()->getFailureReasons();
 
         $this->assertContainsOnlyInstancesOf(FailureReason::class, $failureReasons);
+    }
+
+    public function testItGetTrackingCode(): void
+    {
+        $xml = $this->getOrdersResponse('Order/TrackingCodeSucessResponse.xml');
+        $client = $this->createClientWithResponse($xml);
+        $parameters = $this->getParameters();
+
+        $configuration = new Configuration($parameters['key'], $parameters['username'], $parameters['endpoint'], $parameters['version']);
+
+        $sdkClient = new SellerCenterSdk($configuration, $client);
+
+        $response = $sdkClient->orders()->getTrackingCode(
+            '1e8382f4-70b6-4ffd-b479-f7373408d232',
+            'chilexpress'
+        );
+
+        $this->assertInstanceOf(TrackingCode::class, $response);
     }
 
     public function dateTimesAndFilters(): array
