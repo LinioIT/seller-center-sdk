@@ -146,7 +146,7 @@ class Order implements JsonSerializable
         ?DateTimeInterface $addressUpdatedAt,
         Address $addressBilling,
         Address $addressShipping,
-        string $nationalRegistrationNumber,
+        ?string $nationalRegistrationNumber,
         int $itemsCount,
         ?DateTimeInterface $promisedShippingTime,
         ?string $extraAttributes,
