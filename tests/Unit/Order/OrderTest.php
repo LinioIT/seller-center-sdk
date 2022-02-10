@@ -265,7 +265,6 @@ class OrderTest extends LinioTestCase
             ['AddressUpdatedAt'],
             ['AddressBilling'],
             ['AddressShipping'],
-            ['NationalRegistrationNumber'],
             ['ItemsCount'],
             ['PromisedShippingTime'],
             ['ExtraAttributes'],
