@@ -7,7 +7,7 @@ namespace Linio\SellerCenter\Model\Product;
 use JsonSerializable;
 use Linio\SellerCenter\Contract\CollectionInterface;
 use Linio\SellerCenter\Exception\MaxImagesExceededException;
-
+use Monolog\Logger;
 class Images implements CollectionInterface, JsonSerializable
 {
     public const MAX_IMAGES_ALLOWED = 8;
@@ -27,10 +27,6 @@ class Images implements CollectionInterface, JsonSerializable
 
     public function add(Image $image): void
     {
-        if (count($this->collection) >= self::MAX_IMAGES_ALLOWED) {
-            throw new MaxImagesExceededException(self::MAX_IMAGES_ALLOWED);
-        }
-
         $this->collection[] = $image;
     }
 

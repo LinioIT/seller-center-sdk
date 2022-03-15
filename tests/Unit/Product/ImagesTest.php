@@ -79,22 +79,6 @@ class ImagesTest extends LinioTestCase
     /**
      * @dataProvider generatedImages
      */
-    public function testItThrowsAnExceptionByOverflow(array $imageStack): void
-    {
-        $this->expectException(MaxImagesExceededException::class);
-        $this->expectExceptionMessage(sprintf('Only %s are supported into the collection.', Images::MAX_IMAGES_ALLOWED));
-
-        $availableImages = array_slice($imageStack, 0, Images::MAX_IMAGES_ALLOWED);
-        $image = array_slice($imageStack, 8, 1)[0];
-
-        $images = new Images();
-        $images->addMany($availableImages);
-        $images->add($image);
-    }
-
-    /**
-     * @dataProvider generatedImages
-     */
     public function testItSkipsAddingManyWithAFullyStackOfImages(array $imageStack): void
     {
         $availableImages = array_slice($imageStack, 0, Images::MAX_IMAGES_ALLOWED);
