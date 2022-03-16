@@ -52,6 +52,11 @@ class Product extends BaseProduct implements JsonSerializable, ProductInterface,
      */
     protected $available;
 
+    /**
+     * @var string[]
+     */
+    protected $overrideAttributes;
+
     public function __construct()
     {
         $this->productData = new ProductData();
@@ -72,7 +77,8 @@ class Product extends BaseProduct implements JsonSerializable, ProductInterface,
         string $productId,
         ?string $taxClass,
         ProductData $productData,
-        ?Images $images = null
+        ?Images $images = null,
+        array $overrideAttributes = []
     ): self {
         self::ValidateArguments($sellerSku, $name, $description, $productId);
 
@@ -102,6 +108,8 @@ class Product extends BaseProduct implements JsonSerializable, ProductInterface,
         if ($images) {
             $product->attachImages($images);
         }
+
+        $product->setOverrideAttributes($overrideAttributes);
 
         return $product;
     }
@@ -202,6 +210,19 @@ class Product extends BaseProduct implements JsonSerializable, ProductInterface,
         if ($available <= $this->quantity && $available >= 0) {
             $this->available = $available;
         }
+    }
+
+    public function setOverrideAttributes(array $overrideAttributes): void
+    {
+        $this->overrideAttributes = $overrideAttributes;
+    }
+
+    /**
+     * @return string[]
+     */
+    public function getOverrideAttributes(): array
+    {
+        return $this->overrideAttributes;
     }
 
     /**

@@ -4,20 +4,24 @@ declare(strict_types=1);
 
 namespace Linio\SellerCenter\Transformer\Product;
 
-use Linio\SellerCenter\Exception\InvalidDomainException;
-use Linio\SellerCenter\Model\Brand\Brand;
-use Linio\SellerCenter\Model\Category\Categories;
-use Linio\SellerCenter\Model\Category\Category;
-use Linio\SellerCenter\Model\Product\Contract\ProductInterface;
-use Linio\SellerCenter\Model\Product\GlobalProduct;
 use SimpleXMLElement;
+use Linio\SellerCenter\Model\Brand\Brand;
+use Linio\SellerCenter\Model\Product\Product;
+use Linio\SellerCenter\Model\Category\Category;
+use Linio\SellerCenter\Model\Category\Categories;
+use Linio\SellerCenter\Model\Product\GlobalProduct;
+use Linio\SellerCenter\Exception\InvalidDomainException;
+use Linio\SellerCenter\Model\Product\Contract\ProductInterface;
 
 class ProductTransformer
 {
+    public const OVERRIDE_ALLOWED_ATTRIBUTES = ['SalePrice', 'SaleStartDate', 'SaleEndDate'];
     public static function asXml(SimpleXMLElement &$xml, ProductInterface $product): void
     {
         $body = $xml->addChild('Product');
-        self::addAttributes($body, $product->all());
+
+        $overrideStatus = self::getOverrideStatus($product);
+        self::addAttributes($body, $product->all(), $overrideStatus);
 
         $productDataAttributes = $product->getProductData()->all();
 
@@ -54,9 +58,17 @@ class ProductTransformer
     /**
      * @param mixed[] $attributes
      */
-    public static function addAttributes(SimpleXMLElement $xml, array $attributes): void
+    public static function addAttributes(SimpleXMLElement $xml, array $attributes, array $overrideAttributes): void
     {
         foreach ($attributes as $attributeName => $attributeValue) {
+            if(in_array($attributeName, $overrideAttributes)) {
+                $xml->addChild(
+                    $attributeName, 
+                    $attributeValue ? htmlspecialchars((string) $attributeValue) : $attributeValue
+                );
+                continue;
+            }
+
             if ($attributeValue === null) {
                 continue;
             }
@@ -70,6 +82,18 @@ class ProductTransformer
             $encodedValue = htmlspecialchars($adaptedValue);
             $xml->addChild($attributeName, $encodedValue);
         }
+    }
+
+    /**
+     * @return string[]
+     */
+    public static function getOverrideStatus(ProductInterface $product): array
+    {
+        if($product instanceof Product) {
+            return $product->getOverrideAttributes();
+        }
+
+        return [];
     }
 
     /**
