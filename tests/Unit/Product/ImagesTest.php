@@ -4,7 +4,6 @@ declare(strict_types=1);
 
 namespace Linio\SellerCenter\Product;
 
-use Linio\SellerCenter\Exception\MaxImagesExceededException;
 use Linio\SellerCenter\Factory\Xml\Product\ImagesFactory;
 use Linio\SellerCenter\LinioTestCase;
 use Linio\SellerCenter\Model\Product\Image;

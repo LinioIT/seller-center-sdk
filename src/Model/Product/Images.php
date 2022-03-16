@@ -6,8 +6,7 @@ namespace Linio\SellerCenter\Model\Product;
 
 use JsonSerializable;
 use Linio\SellerCenter\Contract\CollectionInterface;
-use Linio\SellerCenter\Exception\MaxImagesExceededException;
-use Monolog\Logger;
+
 class Images implements CollectionInterface, JsonSerializable
 {
     public const MAX_IMAGES_ALLOWED = 8;
