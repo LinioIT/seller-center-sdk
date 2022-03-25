@@ -28,7 +28,7 @@ class SuccessResponse
         return new self($xml->Head, $xml->Body, $xml);
     }
 
-    public function __construct(SimpleXMLElement $head, SimpleXMLElement $body, ?SimpleXMLElement $xml = null)
+    final public function __construct(SimpleXMLElement $head, SimpleXMLElement $body, ?SimpleXMLElement $xml = null)
     {
         $this->head = $head;
         $this->body = $body;
