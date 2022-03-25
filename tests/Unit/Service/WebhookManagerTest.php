@@ -9,11 +9,14 @@ use Linio\SellerCenter\Application\Parameters;
 use Linio\SellerCenter\Contract\ClientInterface;
 use Linio\SellerCenter\LinioTestCase;
 use Linio\SellerCenter\Service\WebhookManager;
+use Prophecy\PhpUnit\ProphecyTrait;
 use Psr\Log\Test\TestLogger;
 use ReflectionClass;
 
 class WebhookManagerTest extends LinioTestCase
 {
+    use ProphecyTrait;
+
     public function testItReturnsTheTheLoggerWhenIsSet(): void
     {
         $configuration = $this->prophesize(Configuration::class);

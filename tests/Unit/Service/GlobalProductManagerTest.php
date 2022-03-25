@@ -10,11 +10,14 @@ use Linio\SellerCenter\Contract\ClientInterface;
 use Linio\SellerCenter\Service\Contract\ProductManagerInterface;
 use Linio\SellerCenter\Service\GlobalProductManager;
 use PHPUnit\Framework\TestCase;
+use Prophecy\PhpUnit\ProphecyTrait;
 use Psr\Log\Test\TestLogger;
 use ReflectionClass;
 
 class GlobalProductManagerTest extends TestCase
 {
+    use ProphecyTrait;
+
     public function testReturnsTheTheLoggerWhenIsSetted(): void
     {
         $configuration = $this->prophesize(Configuration::class);

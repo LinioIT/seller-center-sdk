@@ -7,11 +7,14 @@ namespace Linio\SellerCenter\Unit\Factory;
 use Linio\SellerCenter\Factory\Xml\Product\ProductsFactory;
 use Linio\SellerCenter\LinioTestCase;
 use Prophecy\Argument;
+use Prophecy\PhpUnit\ProphecyTrait;
 use Psr\Log\LoggerInterface;
 use SimpleXMLElement;
 
 class ProductsFactoryTest extends LinioTestCase
 {
+    use ProphecyTrait;
+
     public function testItLogsTheErrorsInTheXmlStructure(): void
     {
         $xmlString = $this->getSchema('Product/ProductsResponse.xml');

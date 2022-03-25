@@ -9,11 +9,14 @@ use Linio\SellerCenter\Application\Parameters;
 use Linio\SellerCenter\Contract\ClientInterface;
 use Linio\SellerCenter\Service\ProductManager;
 use PHPUnit\Framework\TestCase;
+use Prophecy\PhpUnit\ProphecyTrait;
 use Psr\Log\Test\TestLogger;
 use ReflectionClass;
 
 class ProductManagerTest extends TestCase
 {
+    use ProphecyTrait;
+
     public function testReturnsAGlobalProductInterface(): void
     {
         $configuration = $this->prophesize(Configuration::class);
@@ -29,7 +32,7 @@ class ProductManagerTest extends TestCase
         );
         $this->assertInstanceOf(ProductManager::class, $productManager);
     }
-
+    
     public function testReturnsTheTheLoggerWhenIsSetted(): void
     {
         $configuration = $this->prophesize(Configuration::class);

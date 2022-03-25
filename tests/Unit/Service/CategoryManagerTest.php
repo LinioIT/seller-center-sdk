@@ -9,11 +9,14 @@ use Linio\SellerCenter\Application\Parameters;
 use Linio\SellerCenter\Contract\ClientInterface;
 use Linio\SellerCenter\LinioTestCase;
 use Linio\SellerCenter\Service\CategoryManager;
+use Prophecy\PhpUnit\ProphecyTrait;
 use Psr\Log\Test\TestLogger;
 use ReflectionClass;
 
 class CategoryManagerTest extends LinioTestCase
 {
+    use ProphecyTrait;
+
     public function testItReturnsTheTheLoggerWhenIsSet(): void
     {
         $configuration = $this->prophesize(Configuration::class);

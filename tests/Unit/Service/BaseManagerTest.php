@@ -11,6 +11,7 @@ use Linio\SellerCenter\LinioTestCase;
 use Linio\SellerCenter\Service\BaseManager;
 use PHPUnit\Framework\MockObject\MockObject;
 use Prophecy\Argument;
+use Prophecy\PhpUnit\ProphecyTrait;
 use Prophecy\Prophecy\ObjectProphecy;
 use Psr\Http\Message\RequestInterface;
 use Psr\Http\Message\ResponseInterface;
@@ -18,6 +19,8 @@ use Psr\Log\LoggerInterface;
 
 class BaseManagerTest extends LinioTestCase
 {
+    use ProphecyTrait;
+
     /**
      * @var ObjectProphecy
      */

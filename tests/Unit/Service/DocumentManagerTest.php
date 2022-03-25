@@ -8,11 +8,14 @@ use Linio\SellerCenter\Application\Configuration;
 use Linio\SellerCenter\Application\Parameters;
 use Linio\SellerCenter\Contract\ClientInterface;
 use PHPUnit\Framework\TestCase;
+use Prophecy\PhpUnit\ProphecyTrait;
 use Psr\Log\Test\TestLogger;
 use ReflectionClass;
 
 class DocumentManagerTest extends TestCase
 {
+    use ProphecyTrait;
+
     public function testItReturnsTheTheLoggerWhenIsSet(): void
     {
         $configuration = $this->prophesize(Configuration::class);
