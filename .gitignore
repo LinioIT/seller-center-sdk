@@ -11,3 +11,4 @@ reports/
 .idea/
 .idea/workspace.xml
 .docker
+.phpunit.result.cache
