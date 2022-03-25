@@ -129,7 +129,7 @@ class ProductsTest extends LinioTestCase
             $categoriesIds[] = $secondaryCategory->getId();
         }
 
-        $this->assertContains(implode(',', $categoriesIds), $xml->Product->Categories);
+        $this->assertStringContainsString(implode(',', $categoriesIds), (string) $xml->Product->Categories);
         $this->assertEquals($product->getDescription(), $xml->Product->Description);
         $this->assertEquals($product->getBrand()->getName(), $xml->Product->Brand);
         $this->assertEquals($product->getPrice(), (float) $xml->Product->Price);
@@ -174,7 +174,7 @@ class ProductsTest extends LinioTestCase
         $this->assertCount(3, $images);
 
         foreach ($images as $key => $image) {
-            $this->assertContains($image->getUrl(), (string) $xml->ProductImage->Images->Image[$key]);
+            $this->assertStringContainsString($image->getUrl(), (string) $xml->ProductImage->Images->Image[$key]);
         }
     }
 
