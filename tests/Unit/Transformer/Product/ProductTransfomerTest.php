@@ -108,6 +108,64 @@ class ProductTransfomerTest extends LinioTestCase
         $this->assertXmlStringEqualsXmlString($expectedXml, $xml->asXML());
     }
 
+    public function testItCreatesProductXMLWithOverridAttributes(): void
+    {    
+        $businessUnits = new BusinessUnits();
+        $businessUnit = new BusinessUnit(
+            'facl',
+            1299.00,
+            100,
+            'active'
+        );
+        $businessUnit->setOverrideAttributes(['SpecialPrice']);
+        $businessUnits->add($businessUnit);
+
+        $product = GlobalProduct::fromBasicData(
+            '21458191097',
+            'Magic Global Product',
+            'XL',
+            Category::fromId(123),
+            'This is a bold product.',
+            Brand::fromName('Samsung'),
+            $businessUnits,
+            '123326998',
+            null,
+            new ProductData('Nuevo', 1, 1, 1, 1)
+        );
+
+        $xml = new SimpleXMLElement('<Request/>');
+        ProductTransformer::asXml($xml, $product);
+        $expectedXml = '
+            <Request>
+                <Product>
+                    <SellerSku>21458191097</SellerSku>
+                    <Name>Magic Global Product</Name>
+                    <PrimaryCategory>123</PrimaryCategory>
+                    <Description>This is a bold product.</Description>
+                    <Brand>Samsung</Brand>
+                    <ProductId>123326998</ProductId>
+                    <Variation>XL</Variation>
+                    <BusinessUnits>
+                        <BusinessUnit>
+                            <OperatorCode>facl</OperatorCode>
+                            <Price>1299</Price>
+                            <SpecialPrice/>
+                            <Stock>100</Stock>
+                            <Status>active</Status>
+                        </BusinessUnit>
+                    </BusinessUnits>
+                    <ProductData>
+                    <ConditionType>Nuevo</ConditionType>
+                    <PackageHeight>1</PackageHeight>
+                    <PackageWidth>1</PackageWidth>
+                    <PackageLength>1</PackageLength>
+                    <PackageWeight>1</PackageWeight>
+                    </ProductData>
+                </Product>
+            </Request>';
+        $this->assertXmlStringEqualsXmlString($expectedXml, $xml->asXML());
+    }
+
     public function testItAddsAttributesIgnoringTheNullValues(): void
     {
         $xml = new SimpleXMLElement('<Root />');
@@ -118,12 +176,32 @@ class ProductTransfomerTest extends LinioTestCase
             'Foo' => 'Bar',
         ];
 
-        ProductTransformer::addAttributes($xml, $attributes);
+        ProductTransformer::addAttributes($xml, $attributes, []);
         $children = $xml->children();
 
         $this->assertCount(1, $children);
         $this->assertEquals('Foo', $children[0]->getName());
         $this->assertEquals('Bar', (string) $children[0]);
+    }
+
+    public function testItAddsNullValuesIfExistInOverrideAttributesForCommonProducts(): void
+    {
+        $xml = new SimpleXMLElement('<Root />');
+
+        $attributes = [
+            'Main' => null,
+            'EmptyCategories' => new Categories(),
+            'Foo' => 'Bar',
+        ];
+
+        ProductTransformer::addAttributes($xml, $attributes, ['Main']);
+        $children = $xml->children();
+
+        $this->assertCount(2, $children);
+        $this->assertEquals('Main', $children[0]->getName());
+        $this->assertEquals(null, (string) $children[0]);
+        $this->assertEquals('Foo', $children[1]->getName());
+        $this->assertEquals('Bar', (string) $children[1]);
     }
 
     /**

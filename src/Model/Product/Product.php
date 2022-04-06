@@ -61,6 +61,7 @@ class Product extends BaseProduct implements JsonSerializable, ProductInterface,
     {
         $this->productData = new ProductData();
         $this->images = new Images();
+        $this->overrideAttributes = [];
     }
 
     /**
@@ -78,7 +79,7 @@ class Product extends BaseProduct implements JsonSerializable, ProductInterface,
         ?string $taxClass,
         ProductData $productData,
         ?Images $images = null,
-        array $overrideAttributes = []
+        ?array $overrideAttributes = []
     ): self {
         self::ValidateArguments($sellerSku, $name, $description, $productId);
 

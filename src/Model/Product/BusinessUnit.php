@@ -84,7 +84,7 @@ class BusinessUnit implements JsonSerializable, VariationProductInterface, Produ
         ?float $specialPrice = null,
         ?DateTimeInterface $specialFromDate = null,
         ?DateTimeInterface $specialToDate = null,
-        array $overrideAttributes = []
+        ?array $overrideAttributes = []
     ) {
         $this->setOperatorCode($operatorCode);
         $this->setPrice($price);
@@ -184,7 +184,7 @@ class BusinessUnit implements JsonSerializable, VariationProductInterface, Produ
         $attributes = array_filter(
             $attributes,
             function ($value, $key) {
-                if(in_array($key, $this->overrideAttributes)) {
+                if(in_array($key, $this->getOverrideAttributes())) {
                     return true;
                 }
 
