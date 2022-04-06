@@ -193,12 +193,6 @@ class BusinessUnit implements JsonSerializable, VariationProductInterface, Produ
         );
 
         return $attributes;
-        // return array_filter(
-        //     $attributes,
-        //     function ($value) {
-        //         return !($value === null || $value === '');
-        //     }
-        // );
     }
 
     public function setBusinessUnit(?string $businessUnit): void
