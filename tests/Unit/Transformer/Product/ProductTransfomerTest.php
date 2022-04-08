@@ -43,31 +43,7 @@ class ProductTransfomerTest extends LinioTestCase
         $xml = new SimpleXMLElement('<Products/>');
         ProductTransformer::asXml($xml, $product);
 
-        $expectedXml = '
-            <Products>
-                <Product>
-                    <SellerSku>BLACK_BAG_TEST</SellerSku>
-                    <Name>Black Leather bagskasd</Name>
-                    <Variation>M</Variation>
-                    <Status>active</Status>
-                    <PrimaryCategory>7080</PrimaryCategory>
-                    <Description>&lt;p&gt;Womens black &lt;b&gt;leather &amp; bag&lt;/b&gt;, with ample space. Can be worn over the shoulder, or remove straps to carry in your hand.asdasd&lt;/p&gt;</Description>
-                    <Brand>Apple</Brand>
-                    <Price>30000</Price>
-                    <ProductId>123456783</ProductId>
-                    <TaxClass>IVA 19%</TaxClass>
-                    <Quantity>0</Quantity>
-                    <ProductData>
-                        <ConditionType>Nuevo</ConditionType>
-                        <PackageHeight>1</PackageHeight>
-                        <PackageWidth>1</PackageWidth>
-                        <PackageLength>1</PackageLength>
-                        <PackageWeight>1</PackageWeight>
-                        <ShortDescription>Short description &amp; ampersand</ShortDescription>
-                        <MultiOption>Option one,Option two</MultiOption>
-                        </ProductData>
-                    </Product>
-                </Products>';
+        $expectedXml = $this->getSchema('Product/GlobalProductEmptySalePrice.xml');
 
         $this->assertXmlStringEqualsXmlString($expectedXml, $xml->asXML());
     }
@@ -109,7 +85,7 @@ class ProductTransfomerTest extends LinioTestCase
     }
 
     public function testItCreatesProductXMLWithOverridAttributes(): void
-    {    
+    {
         $businessUnits = new BusinessUnits();
         $businessUnit = new BusinessUnit(
             'facl',
@@ -199,7 +175,7 @@ class ProductTransfomerTest extends LinioTestCase
 
         $this->assertCount(2, $children);
         $this->assertEquals('Main', $children[0]->getName());
-        $this->assertEquals(null, (string) $children[0]);
+        $this->assertEmpty((string) $children[0]);
         $this->assertEquals('Foo', $children[1]->getName());
         $this->assertEquals('Bar', (string) $children[1]);
     }

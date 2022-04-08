@@ -4,14 +4,14 @@ declare(strict_types=1);
 
 namespace Linio\SellerCenter\Transformer\Product;
 
-use SimpleXMLElement;
-use Linio\SellerCenter\Model\Brand\Brand;
-use Linio\SellerCenter\Model\Product\Product;
-use Linio\SellerCenter\Model\Category\Category;
-use Linio\SellerCenter\Model\Category\Categories;
-use Linio\SellerCenter\Model\Product\GlobalProduct;
 use Linio\SellerCenter\Exception\InvalidDomainException;
+use Linio\SellerCenter\Model\Brand\Brand;
+use Linio\SellerCenter\Model\Category\Categories;
+use Linio\SellerCenter\Model\Category\Category;
 use Linio\SellerCenter\Model\Product\Contract\ProductInterface;
+use Linio\SellerCenter\Model\Product\GlobalProduct;
+use Linio\SellerCenter\Model\Product\Product;
+use SimpleXMLElement;
 
 class ProductTransformer
 {
@@ -56,14 +56,15 @@ class ProductTransformer
 
     /**
      * @param mixed[] $attributes
+     * @param string[] $overrideAttributes
      */
     public static function addAttributes(SimpleXMLElement $xml, array $attributes, array $overrideAttributes): void
     {
         foreach ($attributes as $attributeName => $attributeValue) {
-            if(in_array($attributeName, $overrideAttributes)) {
+            if (in_array($attributeName, $overrideAttributes)) {
                 $xml->addChild(
-                    $attributeName, 
-                    $attributeValue ? htmlspecialchars((string) $attributeValue) : $attributeValue
+                    $attributeName,
+                    $attributeValue ? htmlspecialchars((string) $attributeValue) : ''
                 );
                 continue;
             }
@@ -88,7 +89,7 @@ class ProductTransformer
      */
     public static function getOverrideStatus(ProductInterface $product): array
     {
-        if($product instanceof Product) {
+        if ($product instanceof Product) {
             return $product->getOverrideAttributes();
         }
 

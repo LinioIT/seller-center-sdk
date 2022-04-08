@@ -74,6 +74,9 @@ class BusinessUnit implements JsonSerializable, VariationProductInterface, Produ
      */
     protected $overrideAttributes;
 
+    /**
+     * @param string[] $overrideAttributes
+     */
     public function __construct(
         string $operatorCode,
         ?float $price,
@@ -181,18 +184,17 @@ class BusinessUnit implements JsonSerializable, VariationProductInterface, Produ
         $attributes[self::FEED_STOCK] = $this->stock;
         $attributes[self::FEED_STATUS] = $this->status;
 
-        $attributes = array_filter(
+        return array_filter(
             $attributes,
             function ($value, $key) {
-                if(in_array($key, $this->getOverrideAttributes())) {
+                if (in_array($key, $this->getOverrideAttributes())) {
                     return true;
                 }
 
                 return !($value === null || $value === '');
-            }, ARRAY_FILTER_USE_BOTH
+            },
+            ARRAY_FILTER_USE_BOTH
         );
-
-        return $attributes;
     }
 
     public function setBusinessUnit(?string $businessUnit): void
@@ -251,6 +253,9 @@ class BusinessUnit implements JsonSerializable, VariationProductInterface, Produ
         }
     }
 
+    /**
+     * @param string[] $overrideAttributes
+     */
     public function setOverrideAttributes(array $overrideAttributes): void
     {
         $this->overrideAttributes = $overrideAttributes;

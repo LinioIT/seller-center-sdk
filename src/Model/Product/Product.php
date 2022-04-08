@@ -65,6 +65,8 @@ class Product extends BaseProduct implements JsonSerializable, ProductInterface,
     }
 
     /**
+     * @param string[] $overrideAttributes
+     *
      * @return static
      */
     public static function fromBasicData(
@@ -213,6 +215,9 @@ class Product extends BaseProduct implements JsonSerializable, ProductInterface,
         }
     }
 
+    /**
+     * @param string[] $overrideAttributes
+     */
     public function setOverrideAttributes(array $overrideAttributes): void
     {
         $this->overrideAttributes = $overrideAttributes;
