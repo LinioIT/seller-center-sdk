@@ -43,7 +43,7 @@ class ProductTransfomerTest extends LinioTestCase
         $xml = new SimpleXMLElement('<Products/>');
         ProductTransformer::asXml($xml, $product);
 
-        $expectedXml = $this->getSchema('Product/GlobalProductEmptySalePrice.xml');
+        $expectedXml = $this->getSchema('Product/ProductSpecialChars.xml');
 
         $this->assertXmlStringEqualsXmlString($expectedXml, $xml->asXML());
     }
@@ -111,34 +111,7 @@ class ProductTransfomerTest extends LinioTestCase
 
         $xml = new SimpleXMLElement('<Request/>');
         ProductTransformer::asXml($xml, $product);
-        $expectedXml = '
-            <Request>
-                <Product>
-                    <SellerSku>21458191097</SellerSku>
-                    <Name>Magic Global Product</Name>
-                    <PrimaryCategory>123</PrimaryCategory>
-                    <Description>This is a bold product.</Description>
-                    <Brand>Samsung</Brand>
-                    <ProductId>123326998</ProductId>
-                    <Variation>XL</Variation>
-                    <BusinessUnits>
-                        <BusinessUnit>
-                            <OperatorCode>facl</OperatorCode>
-                            <Price>1299</Price>
-                            <SpecialPrice/>
-                            <Stock>100</Stock>
-                            <Status>active</Status>
-                        </BusinessUnit>
-                    </BusinessUnits>
-                    <ProductData>
-                    <ConditionType>Nuevo</ConditionType>
-                    <PackageHeight>1</PackageHeight>
-                    <PackageWidth>1</PackageWidth>
-                    <PackageLength>1</PackageLength>
-                    <PackageWeight>1</PackageWeight>
-                    </ProductData>
-                </Product>
-            </Request>';
+        $expectedXml = $this->getSchema('Product/GlobalProductEmptySpecialPrice.xml');
         $this->assertXmlStringEqualsXmlString($expectedXml, $xml->asXML());
     }
 
