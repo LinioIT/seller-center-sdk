@@ -43,31 +43,7 @@ class ProductTransfomerTest extends LinioTestCase
         $xml = new SimpleXMLElement('<Products/>');
         ProductTransformer::asXml($xml, $product);
 
-        $expectedXml = '
-            <Products>
-                <Product>
-                    <SellerSku>BLACK_BAG_TEST</SellerSku>
-                    <Name>Black Leather bagskasd</Name>
-                    <Variation>M</Variation>
-                    <Status>active</Status>
-                    <PrimaryCategory>7080</PrimaryCategory>
-                    <Description>&lt;p&gt;Womens black &lt;b&gt;leather &amp; bag&lt;/b&gt;, with ample space. Can be worn over the shoulder, or remove straps to carry in your hand.asdasd&lt;/p&gt;</Description>
-                    <Brand>Apple</Brand>
-                    <Price>30000</Price>
-                    <ProductId>123456783</ProductId>
-                    <TaxClass>IVA 19%</TaxClass>
-                    <Quantity>0</Quantity>
-                    <ProductData>
-                        <ConditionType>Nuevo</ConditionType>
-                        <PackageHeight>1</PackageHeight>
-                        <PackageWidth>1</PackageWidth>
-                        <PackageLength>1</PackageLength>
-                        <PackageWeight>1</PackageWeight>
-                        <ShortDescription>Short description &amp; ampersand</ShortDescription>
-                        <MultiOption>Option one,Option two</MultiOption>
-                        </ProductData>
-                    </Product>
-                </Products>';
+        $expectedXml = $this->getSchema('Product/ProductSpecialChars.xml');
 
         $this->assertXmlStringEqualsXmlString($expectedXml, $xml->asXML());
     }
@@ -108,6 +84,37 @@ class ProductTransfomerTest extends LinioTestCase
         $this->assertXmlStringEqualsXmlString($expectedXml, $xml->asXML());
     }
 
+    public function testItCreatesProductXMLWithOverridAttributes(): void
+    {
+        $businessUnits = new BusinessUnits();
+        $businessUnit = new BusinessUnit(
+            'facl',
+            1299.00,
+            100,
+            'active'
+        );
+        $businessUnit->setOverrideAttributes(['SpecialPrice']);
+        $businessUnits->add($businessUnit);
+
+        $product = GlobalProduct::fromBasicData(
+            '21458191097',
+            'Magic Global Product',
+            'XL',
+            Category::fromId(123),
+            'This is a bold product.',
+            Brand::fromName('Samsung'),
+            $businessUnits,
+            '123326998',
+            null,
+            new ProductData('Nuevo', 1, 1, 1, 1)
+        );
+
+        $xml = new SimpleXMLElement('<Request/>');
+        ProductTransformer::asXml($xml, $product);
+        $expectedXml = $this->getSchema('Product/GlobalProductEmptySpecialPrice.xml');
+        $this->assertXmlStringEqualsXmlString($expectedXml, $xml->asXML());
+    }
+
     public function testItAddsAttributesIgnoringTheNullValues(): void
     {
         $xml = new SimpleXMLElement('<Root />');
@@ -118,12 +125,32 @@ class ProductTransfomerTest extends LinioTestCase
             'Foo' => 'Bar',
         ];
 
-        ProductTransformer::addAttributes($xml, $attributes);
+        ProductTransformer::addAttributes($xml, $attributes, []);
         $children = $xml->children();
 
         $this->assertCount(1, $children);
         $this->assertEquals('Foo', $children[0]->getName());
         $this->assertEquals('Bar', (string) $children[0]);
+    }
+
+    public function testItAddsNullValuesIfExistInOverrideAttributesForCommonProducts(): void
+    {
+        $xml = new SimpleXMLElement('<Root />');
+
+        $attributes = [
+            'Main' => null,
+            'EmptyCategories' => new Categories(),
+            'Foo' => 'Bar',
+        ];
+
+        ProductTransformer::addAttributes($xml, $attributes, ['Main']);
+        $children = $xml->children();
+
+        $this->assertCount(2, $children);
+        $this->assertEquals('Main', $children[0]->getName());
+        $this->assertEmpty((string) $children[0]);
+        $this->assertEquals('Foo', $children[1]->getName());
+        $this->assertEquals('Bar', (string) $children[1]);
     }
 
     /**
