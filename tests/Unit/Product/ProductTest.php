@@ -33,6 +33,7 @@ class ProductTest extends LinioTestCase
     protected $taxClass = 'IVA exento 0%';
     protected $productId = '123326998';
     protected $productData;
+    protected $overrideAttributes = [];
 
     protected $shopSku = 'HA997TB1EVQQ2LCO-9273602';
     protected $productSin = '4K173432N2D5';
