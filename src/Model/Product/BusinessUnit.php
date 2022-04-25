@@ -69,6 +69,14 @@ class BusinessUnit implements JsonSerializable, VariationProductInterface, Produ
      */
     protected $isPublished;
 
+    /**
+     * @var string[]
+     */
+    protected $overrideAttributes;
+
+    /**
+     * @param string[] $overrideAttributes
+     */
     public function __construct(
         string $operatorCode,
         ?float $price,
@@ -78,7 +86,8 @@ class BusinessUnit implements JsonSerializable, VariationProductInterface, Produ
         ?string $businessUnit = null,
         ?float $specialPrice = null,
         ?DateTimeInterface $specialFromDate = null,
-        ?DateTimeInterface $specialToDate = null
+        ?DateTimeInterface $specialToDate = null,
+        ?array $overrideAttributes = []
     ) {
         $this->setOperatorCode($operatorCode);
         $this->setPrice($price);
@@ -89,6 +98,7 @@ class BusinessUnit implements JsonSerializable, VariationProductInterface, Produ
         $this->setSaleStartDate($specialFromDate);
         $this->setSaleEndDate($specialToDate);
         $this->setIsPublished($isPublished);
+        $this->setOverrideAttributes($overrideAttributes);
     }
 
     public function getBusinessUnit(): ?string
@@ -168,17 +178,22 @@ class BusinessUnit implements JsonSerializable, VariationProductInterface, Produ
 
         $attributes[self::FEED_OPERATOR_CODE] = $this->operatorCode;
         $attributes[self::FEED_PRICE] = $this->price;
-        $attributes[self::FEED_SPECIAL_PRICE] = $this->specialPrice ?? '';
-        $attributes[self::FEED_SPECIAL_FROM_DATE] = $this->getSaleStartDateString() ?? '';
-        $attributes[self::FEED_SPECIAL_TO_DATE] = $this->getSaleEndDateString() ?? '';
+        $attributes[self::FEED_SPECIAL_PRICE] = $this->specialPrice;
+        $attributes[self::FEED_SPECIAL_FROM_DATE] = $this->getSaleStartDateString();
+        $attributes[self::FEED_SPECIAL_TO_DATE] = $this->getSaleEndDateString();
         $attributes[self::FEED_STOCK] = $this->stock;
         $attributes[self::FEED_STATUS] = $this->status;
 
         return array_filter(
             $attributes,
-            function ($value) {
+            function ($value, $key) {
+                if (in_array($key, $this->getOverrideAttributes())) {
+                    return true;
+                }
+
                 return !($value === null || $value === '');
-            }
+            },
+            ARRAY_FILTER_USE_BOTH
         );
     }
 
@@ -236,6 +251,22 @@ class BusinessUnit implements JsonSerializable, VariationProductInterface, Produ
         } else {
             throw new InvalidDomainException('Status');
         }
+    }
+
+    /**
+     * @param string[] $overrideAttributes
+     */
+    public function setOverrideAttributes(array $overrideAttributes): void
+    {
+        $this->overrideAttributes = $overrideAttributes;
+    }
+
+    /**
+     * @return string[]
+     */
+    public function getOverrideAttributes(): array
+    {
+        return $this->overrideAttributes;
     }
 
     public function setIsPublished(?int $isPublished): void

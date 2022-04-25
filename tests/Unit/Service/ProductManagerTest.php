@@ -32,7 +32,7 @@ class ProductManagerTest extends TestCase
         );
         $this->assertInstanceOf(ProductManager::class, $productManager);
     }
-    
+
     public function testReturnsTheTheLoggerWhenIsSetted(): void
     {
         $configuration = $this->prophesize(Configuration::class);
