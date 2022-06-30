@@ -37,6 +37,11 @@ class Address implements JsonSerializable
     /**
      * @var string|null
      */
+    protected $address2;
+
+    /**
+     * @var string|null
+     */
     protected $customerEmail;
 
     /**
@@ -70,6 +75,7 @@ class Address implements JsonSerializable
         int $phone,
         int $phone2,
         string $address,
+        string $address2,
         string $customerEmail,
         string $city,
         string $ward,
@@ -82,6 +88,7 @@ class Address implements JsonSerializable
         $this->phone = !empty($phone) ? $phone : null;
         $this->phone2 = !empty($phone2) ? $phone2 : null;
         $this->address = !empty($address) ? $address : null;
+        $this->address2 = !empty($address2) ? $address2 : null;
         $this->customerEmail = !empty($customerEmail) ? $customerEmail : null;
         $this->city = !empty($city) ? $city : null;
         $this->ward = !empty($ward) ? $ward : null;
@@ -113,6 +120,11 @@ class Address implements JsonSerializable
     public function getAddress(): ?string
     {
         return $this->address;
+    }
+
+    public function getAddress2(): ?string
+    {
+        return $this->address2;
     }
 
     public function getCustomerEmail(): ?string
@@ -153,6 +165,7 @@ class Address implements JsonSerializable
         $serialized->phone = $this->phone;
         $serialized->phone2 = $this->phone2;
         $serialized->address = $this->address;
+        $serialized->address2 = $this->address2;
         $serialized->customerEmail = $this->customerEmail;
         $serialized->city = $this->city;
         $serialized->ward = $this->ward;

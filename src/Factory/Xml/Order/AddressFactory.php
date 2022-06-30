@@ -29,7 +29,11 @@ class AddressFactory
         }
 
         if (!property_exists($element, 'Address1')) {
-            throw new InvalidXmlStructureException('Address', 'Address');
+            throw new InvalidXmlStructureException('Address', 'Address1');
+        }
+
+        if (!property_exists($element, 'Address2')) {
+            throw new InvalidXmlStructureException('Address', 'Address2');
         }
 
         if (!property_exists($element, 'CustomerEmail')) {
@@ -62,6 +66,7 @@ class AddressFactory
             (int) $element->Phone,
             (int) $element->Phone2,
             (string) $element->Address1,
+            (string) $element->Address2,
             (string) $element->CustomerEmail,
             (string) $element->City,
             (string) $element->Ward,
