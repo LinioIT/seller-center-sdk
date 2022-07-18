@@ -10,7 +10,7 @@ use Linio\SellerCenter\Transformer\Order\OrderItemsTransformer;
 
 class OrderManager extends BaseOrderManager
 {
-    public function setImei(
+    public function setOrderItemsImei(
         OrderItems $orderItems
     ): SuccessResponse {
         $action = 'SetImei';
