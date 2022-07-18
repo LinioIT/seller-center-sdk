@@ -91,11 +91,17 @@ class BaseManager
         string $action,
         Parameters $parameters,
         string $requestId,
-        string $httpMethod = 'GET'
+        string $httpMethod = 'GET',
+        ?string $body = null
     ): SuccessResponse {
         $requestHeaders = $this->generateRequestHeaders([self::REQUEST_ID_HEADER => $requestId]);
 
-        $request = RequestFactory::make($httpMethod, $this->configuration->getEndpoint(), $requestHeaders);
+        $request = RequestFactory::make(
+            $httpMethod,
+            $this->configuration->getEndpoint(),
+            $requestHeaders,
+            $body
+        );
 
         $this->logRequest($action, $requestId, $request, $parameters);
 

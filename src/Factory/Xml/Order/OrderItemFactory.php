@@ -111,7 +111,8 @@ class OrderItemFactory
             $createdAt,
             $updatedAt,
             (string) $element->ReturnStatus,
-            (string) $element->SalesType ?? null
+            (string) $element->SalesType ?? null,
+            (string) $element->Imei ?? null
         );
     }
 
