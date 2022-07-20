@@ -201,6 +201,11 @@ class OrderItem implements JsonSerializable
     protected $imei;
 
     /**
+     * @var string|null
+     */
+    protected $message;
+
+    /**
      * @param mixed[]|null $extraAttributes
      */
     final public static function fromOrderItem(
@@ -299,6 +304,22 @@ class OrderItem implements JsonSerializable
         $orderItem->purchaseOrderNumber = $purchaseOrderNumber;
         $orderItem->orderItemId = $orderItemId;
         $orderItem->packageId = $packageId;
+
+        return $orderItem;
+    }
+
+    public static function fromImeiStatus(
+        int $orderItemId,
+        ?string $imei,
+        string $status,
+        ?string $message = null
+    ): OrderItem {
+        $orderItem = new self();
+
+        $orderItem->orderItemId = $orderItemId;
+        $orderItem->imei = $imei;
+        $orderItem->status = $status;
+        $orderItem->message = $message;
 
         return $orderItem;
     }
@@ -489,6 +510,11 @@ class OrderItem implements JsonSerializable
     public function getSalesType(): ?string
     {
         return !empty($this->salesType) ? $this->salesType : null;
+    }
+
+    public function getMessage(): ?string
+    {
+        return $this->message;
     }
 
     public function getImei(): ?string

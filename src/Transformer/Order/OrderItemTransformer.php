@@ -34,10 +34,6 @@ class OrderItemTransformer
 
             $adaptedValue = (string) $attributeValue;
 
-            if ($adaptedValue === null) {
-                continue;
-            }
-
             $encodedValue = htmlspecialchars($adaptedValue);
             $xml->addChild($attributeName, $encodedValue);
         }

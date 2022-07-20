@@ -18,12 +18,30 @@ class OrderItemTransfomerTest extends LinioTestCase
 
         $orderItem = OrderItemFactory::make($simpleXml);
 
-        $orderItem->setImei('qweqweasd-qw213123');
+        $orderItem->setImei('weqweqwe-123123');
 
         $xml = new SimpleXMLElement('<Request/>');
         OrderItemTransformer::orderItemImeiAsXml($xml, $orderItem);
 
         $expectedXml = $this->getSchema('Order/SetImeiRequest.xml');
+        $this->assertXmlStringEqualsXmlString($expectedXml, $xml->asXML());
+    }
+
+    public function testItCreatesOrderItemImeiAsXMLWithoutNullProperties(): void
+    {
+        $orderItemTest = new OrderItemTest();
+        $simpleXml = simplexml_load_string($orderItemTest->createXmlStringForOrderItems());
+
+        $orderItem = OrderItemFactory::make($simpleXml);
+
+        $orderItem->setImei(null);
+
+        $xml = new SimpleXMLElement('<Request/>');
+        OrderItemTransformer::orderItemImeiAsXml($xml, $orderItem);
+
+        $expectedXml = $this->getSchema('Order/SetImeiRequest.xml');
+        $expectedXml = str_replace('<Imei>weqweqwe-123123</Imei>', '', $expectedXml);
+
         $this->assertXmlStringEqualsXmlString($expectedXml, $xml->asXML());
     }
 }

@@ -2,12 +2,15 @@
 
 declare(strict_types=1);
 
-namespace Linio\SellerCenter\Transformer\Order;
+namespace Linio\SellerCenter\Order;
 
 use Linio\SellerCenter\Factory\Xml\Order\OrderItemsFactory;
 use Linio\SellerCenter\LinioTestCase;
+use Linio\SellerCenter\Model\Order\OrderItem;
+use Linio\SellerCenter\Model\Order\OrderItems;
+use Linio\SellerCenter\Transformer\Order\OrderItemsTransformer;
 
-class OrderItemsTransfomerTest extends LinioTestCase
+class OrderItemsFactoryTest extends LinioTestCase
 {
     public function testTransformsAOrderItemsArrayIntoAnXmlRepresentation(): void
     {
@@ -24,16 +27,22 @@ class OrderItemsTransfomerTest extends LinioTestCase
         $this->assertEquals($orderItem->getImei(), $orderItemsXml->OrderItem->Imei);
     }
 
-    public function testTransformsAOrderItemsArrayIntoAnXmlStringRepresentation(): void
+    public function testItReturnsACollectionOfOrderItemsBySetStatus(): void
     {
         $simpleXml = simplexml_load_string($this->getSchema('Order/OrderItemsResponse.xml'));
 
-        $orderItems = OrderItemsFactory::make($simpleXml->Body);
+        $orderItems = OrderItemsFactory::makeFromStatus($simpleXml->Body);
 
-        $orderItemsStringXml = OrderItemsTransformer::orderItemsImeiAsXmlString($orderItems->all());
+        $this->assertInstanceOf(OrderItems::class, $orderItems);
+        $this->assertContainsOnlyInstancesOf(OrderItem::class, $orderItems->all());
+    }
 
-        $stringXml = $this->getSchema('Order/SetImeiRequest.xml');
+    public function testItReturnsACollectionOfOrderItemsFromImeiStatus(): void
+    {
+        $simpleXml = simplexml_load_string($this->getSchema('Order/SetImeiResponse.xml'));
 
-        $this->assertXmlStringEqualsXmlString($orderItemsStringXml, (string) $stringXml);
+        $orderItems = OrderItemsFactory::makeFromImeiStatus($simpleXml->Body);
+
+        $this->assertContainsOnlyInstancesOf(OrderItem::class, $orderItems);
     }
 }

@@ -4,26 +4,33 @@ declare(strict_types=1);
 
 namespace Linio\SellerCenter\Service;
 
-use Linio\SellerCenter\Model\Order\OrderItems;
-use Linio\SellerCenter\Response\SuccessResponse;
+use Linio\SellerCenter\Factory\Xml\Order\OrderItemsFactory;
+use Linio\SellerCenter\Model\Order\OrderItem;
 use Linio\SellerCenter\Transformer\Order\OrderItemsTransformer;
 
 class OrderManager extends BaseOrderManager
 {
+    /**
+     * @param OrderItem[] $orderItems
+     *
+     * @return OrderItem[]
+     */
     public function setOrderItemsImei(
-        OrderItems $orderItems
-    ): SuccessResponse {
+        array $orderItems
+    ): array {
         $action = 'SetImei';
         $parameters = $this->makeParametersForAction($action);
         $requestId = $this->generateRequestId();
 
-        $response = $this->executeAction(
+        $builtResponse = $this->executeAction(
             $action,
             $parameters,
             $requestId,
             'POST',
             OrderItemsTransformer::orderItemsImeiAsXmlString($orderItems)
         );
+
+        $orderItems = OrderItemsFactory::makeFromImeiStatus($builtResponse->getBody());
 
         $this->logger->info(
             sprintf(
@@ -33,6 +40,6 @@ class OrderManager extends BaseOrderManager
             )
         );
 
-        return $response;
+        return $orderItems;
     }
 }

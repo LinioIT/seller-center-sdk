@@ -135,6 +135,26 @@ class OrderItemTest extends LinioTestCase
         $this->assertEquals((string) $simpleXml->PackageId, $orderItem->getPackageId());
     }
 
+    public function testItReturnsAOrderItemFromImeiStatus(): void
+    {
+        $imei = '123123123';
+        $status = 'fail';
+        $message = 'Denied. The order has already a package assigned.';
+
+        $orderItem = OrderItem::fromImeiStatus(
+            $this->orderItemId,
+            $imei,
+            $status,
+            $message
+        );
+
+        $this->assertInstanceOf(OrderItem::class, $orderItem);
+        $this->assertEquals($this->orderItemId, $orderItem->getOrderItemId());
+        $this->assertEquals($imei, $orderItem->getImei());
+        $this->assertEquals($status, $orderItem->getStatus());
+        $this->assertEquals($message, $orderItem->getMessage());
+    }
+
     /**
      * @dataProvider simpleXmlElementsWithoutAParameter
      */
