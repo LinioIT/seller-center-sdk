@@ -10,17 +10,17 @@ use Linio\SellerCenter\Application\Configuration;
 use Linio\SellerCenter\Exception\EmptyArgumentException;
 use Linio\SellerCenter\Exception\ErrorResponseException;
 use Linio\SellerCenter\Exception\InvalidDomainException;
+use Linio\SellerCenter\Factory\Xml\Order\OrderItemsFactory;
 use Linio\SellerCenter\Model\Order\FailureReason;
 use Linio\SellerCenter\Model\Order\Order;
 use Linio\SellerCenter\Model\Order\OrderItem;
 use Linio\SellerCenter\Model\Order\OrderItems;
 use Linio\SellerCenter\Model\Order\TrackingCode;
-use Linio\SellerCenter\Response\SuccessResponse;
 use Linio\SellerCenter\Service\OrderManager;
 use Prophecy\Argument;
 use Psr\Log\LoggerInterface;
 
-class OrdersManagerTest extends LinioTestCase
+class OrderManagerTest extends LinioTestCase
 {
     use ClientHelper;
 
@@ -467,36 +467,6 @@ class OrdersManagerTest extends LinioTestCase
         $this->assertEquals('MPDS-200131783-9800', current($orderItems)->getPackageId());
     }
 
-    public function testItReturnsSuccessResponseWhenSetInvoiceNumber(): void
-    {
-        $orderItemId = 1;
-        $invoiceNumber = '123132465465465465456';
-        $documentLink = 'https://fakeInvoice.pdf';
-
-        $body = sprintf(
-            $this->getOrdersResponse('Order/SetInvoiceNumberSuccessResponse.xml'),
-            'SetInvoiceNumber',
-            $orderItemId,
-            $invoiceNumber
-        );
-
-        $client = $this->createClientWithResponse($body);
-
-        $parameters = $this->getParameters();
-
-        $configuration = new Configuration($parameters['key'], $parameters['username'], $parameters['endpoint'], $parameters['version']);
-
-        $sdkClient = new SellerCenterSdk($configuration, $client);
-
-        $response = $sdkClient->orders()->setInvoiceNumber(
-            $orderItemId,
-            $invoiceNumber,
-            $documentLink
-        );
-
-        $this->assertInstanceOf(SuccessResponse::class, $response);
-    }
-
     public function testItReturnsUpdatedOrderItemsWhenSettingStatusToReadyToShip(): void
     {
         $body = sprintf(
@@ -561,6 +531,26 @@ class OrdersManagerTest extends LinioTestCase
         );
 
         $this->assertInstanceOf(TrackingCode::class, $response);
+    }
+
+    public function testItSetOrderItemsImei(): void
+    {
+        $client = $this->createClientWithResponse($this->getSchema('Order/SetImeiResponse.xml'));
+        $parameters = $this->getParameters();
+
+        $configuration = new Configuration($parameters['key'], $parameters['username'], $parameters['endpoint'], $parameters['version']);
+        $sdkClient = new SellerCenterSdk($configuration, $client);
+        $simpleXml = simplexml_load_string($this->getSchema('Order/OrderItemsResponse.xml'));
+
+        $orderItems = OrderItemsFactory::make($simpleXml->Body);
+
+        $result = $sdkClient->orders()->setOrderItemsImei(
+            $orderItems->all()
+        );
+
+        $this->assertIsArray($result);
+
+        $this->assertContainsOnlyInstancesOf(OrderItem::class, $result);
     }
 
     public function dateTimesAndFilters(): array

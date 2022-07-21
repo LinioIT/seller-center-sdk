@@ -196,6 +196,16 @@ class OrderItem implements JsonSerializable
     protected $salesType;
 
     /**
+     * @var string|null
+     */
+    protected $imei;
+
+    /**
+     * @var string|null
+     */
+    protected $message;
+
+    /**
      * @param mixed[]|null $extraAttributes
      */
     final public static function fromOrderItem(
@@ -235,7 +245,8 @@ class OrderItem implements JsonSerializable
         ?DateTimeImmutable $createdAt,
         ?DateTimeImmutable $updatedAt,
         ?string $returnStatus,
-        ?string $salesType = null
+        ?string $salesType = null,
+        ?string $imei = null
     ): OrderItem {
         $orderItem = new self();
 
@@ -276,6 +287,7 @@ class OrderItem implements JsonSerializable
         $orderItem->updatedAt = $updatedAt;
         $orderItem->returnStatus = $returnStatus;
         $orderItem->salesType = $salesType;
+        $orderItem->imei = $imei;
 
         return $orderItem;
     }
@@ -292,6 +304,22 @@ class OrderItem implements JsonSerializable
         $orderItem->purchaseOrderNumber = $purchaseOrderNumber;
         $orderItem->orderItemId = $orderItemId;
         $orderItem->packageId = $packageId;
+
+        return $orderItem;
+    }
+
+    public static function fromImeiStatus(
+        int $orderItemId,
+        ?string $imei,
+        string $status,
+        ?string $message = null
+    ): OrderItem {
+        $orderItem = new self();
+
+        $orderItem->orderItemId = $orderItemId;
+        $orderItem->imei = $imei;
+        $orderItem->status = $status;
+        $orderItem->message = $message;
 
         return $orderItem;
     }
@@ -484,6 +512,21 @@ class OrderItem implements JsonSerializable
         return !empty($this->salesType) ? $this->salesType : null;
     }
 
+    public function getMessage(): ?string
+    {
+        return $this->message;
+    }
+
+    public function getImei(): ?string
+    {
+        return !empty($this->imei) ? $this->imei : null;
+    }
+
+    public function setImei(?string $imei): void
+    {
+        $this->imei = $imei;
+    }
+
     public function jsonSerialize(): stdClass
     {
         $serialized = new stdClass();
@@ -524,6 +567,7 @@ class OrderItem implements JsonSerializable
         $serialized->updatedAt = $this->updatedAt;
         $serialized->returnStatus = $this->returnStatus;
         $serialized->salesType = $this->salesType;
+        $serialized->imei = $this->imei;
 
         return $serialized;
     }

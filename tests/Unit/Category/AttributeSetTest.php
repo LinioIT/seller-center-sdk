@@ -95,6 +95,45 @@ class AttributeSetTest extends LinioTestCase
         $this->assertEquals('', $children[0]->getGlobalIdentifier());
     }
 
+    public function testItReturnsAnAttributeSetsObjectWithEmptyCategories(): void
+    {
+        $success = '<?xml version="1.0" encoding="UTF-8"?>
+                    <SuccessResponse>
+                      <Head>
+                        <RequestId/>
+                        <RequestAction>GetCategoriesByAttributeSet</RequestAction>
+                        <ResponseType>AttributeSets</ResponseType>
+                        <Timestamp>2015-07-16T05:19:15+0200</Timestamp>
+                      </Head>
+                      <Body>
+                        <AttributeSets>
+                          <AttributeSet>
+                            <AttributeSetId>3</AttributeSetId>
+                            <Name>home_living</Name>
+                            <GlobalIdentifier>HL</GlobalIdentifier>
+                            <Categories/>
+                          </AttributeSet>
+                        </AttributeSets>
+                      </Body>
+                    </SuccessResponse>';
+
+        $xml = simplexml_load_string($success);
+        $attributeSets = AttributesSetFactory::make($xml->Body);
+
+        $result = $attributeSets->all();
+        $this->assertNotEmpty($result);
+        $this->assertContainsOnlyInstancesOf(AttributeSet::class, $result);
+
+        $attributeSet = $result[0];
+        $this->assertEquals(3, $attributeSet->getAttributeSetId());
+        $this->assertEquals('home_living', $attributeSet->getName());
+        $this->assertEquals('HL', $attributeSet->getGlobalIdentifier());
+
+        $categories = $attributeSet->getCategories();
+        $this->assertInstanceOf(Categories::class, $categories);
+        $this->assertCount(0, $categories->all());
+    }
+
     public function testItThrowsAnExceptionWithAnNonExistentAttributeSetId(): void
     {
         $this->expectException(InvalidXmlStructureException::class);

@@ -15,6 +15,7 @@ use Linio\SellerCenter\Service\CategoryManager;
 use Linio\SellerCenter\Service\Contract\ProductManagerInterface;
 use Linio\SellerCenter\Service\DocumentManager;
 use Linio\SellerCenter\Service\FeedManager;
+use Linio\SellerCenter\Service\GlobalOrderManager;
 use Linio\SellerCenter\Service\GlobalProductManager;
 use Linio\SellerCenter\Service\OrderManager;
 use Linio\SellerCenter\Service\ProductManager;
@@ -55,6 +56,11 @@ class SellerCenterSdk
      * @var OrderManager
      */
     protected $orders;
+
+    /**
+     * @var GlobalOrderManager
+     */
+    protected $globalOrders;
 
     /**
      * @var WebhookManager
@@ -221,6 +227,20 @@ class SellerCenterSdk
         }
 
         return $this->orders;
+    }
+
+    public function globalOrders(): GlobalOrderManager
+    {
+        if (empty($this->orders)) {
+            $this->globalOrders = new GlobalOrderManager(
+                $this->configuration,
+                $this->client,
+                $this->parameters,
+                $this->logger
+            );
+        }
+
+        return $this->globalOrders;
     }
 
     public function qualityControl(): QualityControlManager
