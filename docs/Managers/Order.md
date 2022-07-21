@@ -2,24 +2,43 @@
 
 ## Index
 
-- [Getting an order](#getting-an-order)
+- [Orders](#orders)
+  - [Index](#index)
+  - [Getting an order](#getting-an-order)
     - [getOrder](#getorder)
-- [Getting multiple orders](#getting-multiple-orders)
+      - [Example](#example)
+  - [Getting multiple orders](#getting-multiple-orders)
     - [getOrdersFromParameters](#getordersfromparameters)
+      - [Example](#example-1)
     - [getOrdersCreatedBetween](#getorderscreatedbetween)
+      - [Example](#example-2)
     - [getOrdersUpdatedBetween](#getordersupdatedbetween)
+      - [Example](#example-3)
     - [getOrdersCreatedAfter](#getorderscreatedafter)
+      - [Example](#example-4)
     - [getOrdersCreatedBefore](#getorderscreatedbefore)
+      - [Example](#example-5)
     - [getOrdersUpdatedAfter](#getordersupdatedafter)
+      - [Example](#example-6)
     - [getOrdersUpdatedBefore](#getordersupdatedbefore)
+      - [Example](#example-7)
     - [getOrdersWithStatus](#getorderswithstatus)
-- [Getting order items](#getting-order-items)
+      - [Example](#example-8)
+  - [Getting order items](#getting-order-items)
     - [getOrderItems](#getorderitems)
+      - [Example](#example-9)
     - [getMultipleOrderItems](#getmultipleorderitems)
-- [Setting order status](#setting-order-status)
+      - [Example](#example-10)
+  - [Setting order items imei](#setting-order-items-imei)
+    - [setOrderItemsImei](#setorderitemsimei)
+      - [Example](#example-11)
+  - [Setting order status](#setting-order-status)
     - [setStatusToPackedByMarketplace](#setstatustopackedbymarketplace)
+      - [Example](#example-12)
     - [setStatusToReadyToShip](#setstatustoreadytoship)
+      - [Example](#example-13)
     - [setStatusToCanceled](#setstatustocanceled)
+      - [Example](#example-14)
 
 ## Getting an order
 
@@ -266,6 +285,29 @@ $orderIdList = [1234, 5678, 8901];
 $orderItems = $sdk->orders()->getMultipleOrderItems($orderIdList);
 ```
 
+## Setting order items imei
+
+### setOrderItemsImei
+
+This method sets the Imei for the order items in the parameters and return the same order items with the status and in case it fails a message on the order item
+
+| Parameter | Type | Description | Required | Default |
+| --------- | :----: | ----------- | :--------: | :-------: |
+| `$orderItems` | array | Array of order item to set the imei | Yes | - |
+
+#### Example
+
+```php
+$orderItems = $this->sdk->orders()->getOrderItems(1234);
+
+foreach($orderItems as $orderItem){
+  $orderItem->setImei("1234567890");
+}
+
+$orderItems = $this->sdk->orders()->setOrderItemsImei(
+    $orderItems,
+);
+```
 ## Setting order status
 
 ### setStatusToPackedByMarketplace
