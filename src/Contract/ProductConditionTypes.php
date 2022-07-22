@@ -12,7 +12,6 @@ interface ProductConditionTypes
     public const CONDITION_RECONDITIONED = 'Reacondicionado';
     public const CONDITION_RECONDITIONED_EXCELLENT = 'Reacondicionado excelente (A)';
     public const CONDITION_RECONDITIONED_WITH_DETAIL = 'Reacondicionado detalle estético (B)';
-    public const CONDITION_RECONDITIONED_WITH_DETAIL_2 = 'Reacondicionado detalle est√©tico (B)';
     public const CONDITION_SECOND_HAND_NEW = 'Segunda mano nuevo con etiqueta';
     public const CONDITION_SECOND_HAND_AS_NEW = 'Segunda mano como nuevo';
     public const CONDITION_SECOND_HAND_WITH_DETAIL = 'Segunda mano con detalles';
@@ -24,7 +23,6 @@ interface ProductConditionTypes
         self::CONDITION_RECONDITIONED,
         self::CONDITION_RECONDITIONED_EXCELLENT,
         self::CONDITION_RECONDITIONED_WITH_DETAIL,
-        self::CONDITION_RECONDITIONED_WITH_DETAIL_2,
         self::CONDITION_SECOND_HAND_NEW,
         self::CONDITION_SECOND_HAND_AS_NEW,
         self::CONDITION_SECOND_HAND_WITH_DETAIL,
