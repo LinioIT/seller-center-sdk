@@ -8,6 +8,7 @@ use Linio\SellerCenter\Factory\Xml\Order\OrderItemsFactory;
 use Linio\SellerCenter\Model\Order\OrderItem;
 use Linio\SellerCenter\Transformer\Order\OrderItemsTransformer;
 use Linio\SellerCenter\Response\SuccessResponse;
+use Linio\Component\Util\Json;
 
 class OrderManager extends BaseOrderManager
 {
@@ -73,5 +74,101 @@ class OrderManager extends BaseOrderManager
         );
 
         return $response;
+    }
+
+           /**
+     * @param mixed[] $orderItemIds
+     *
+     * @return OrderItem[]
+     */
+    public function setStatusToReadyToShip(
+        array $orderItemIds,
+        string $deliveryType,
+        string $shippingProvider = null,
+        string $trackingNumber = null
+    ): array {
+        $action = 'SetStatusToReadyToShip';
+
+        $parameters = $this->makeParametersForAction($action);
+        $parameters->set([
+            'OrderItemIds' => Json::encode($orderItemIds),
+            'DeliveryType' => $deliveryType,
+        ]);
+
+        if (!empty($shippingProvider)) {
+            $parameters->set(['ShippingProvider' => $shippingProvider]);
+        }
+
+        if (!empty($trackingNumber)) {
+            $parameters->set(['TrackingNumber' => $trackingNumber]);
+        }
+
+        $requestId = $this->generateRequestId();
+
+        $builtResponse = $this->executeAction(
+            $action,
+            $parameters,
+            $requestId,
+            'POST'
+        );
+
+        $orderItems = OrderItemsFactory::makeFromStatus($builtResponse->getBody());
+
+        $orderItemsResponse = array_values($orderItems->all());
+
+        $this->logger->info(
+            sprintf(
+                '%d::%s::APIResponse::SellerCenterSdk: the items status was changed',
+                $requestId,
+                $action
+            )
+        );
+
+        return $orderItemsResponse;
+    }
+
+    /**
+     * @param mixed[] $orderItemIds
+     *
+     * @return OrderItem[]
+     */
+    public function setStatusToPackedByMarketplace(
+        array $orderItemIds,
+        string $deliveryType,
+        string $shippingProvider,
+        string $trackingNumber
+    ): array {
+        $action = 'SetStatusToPackedByMarketplace';
+
+        $parameters = $this->makeParametersForAction($action);
+        $parameters->set([
+            'OrderItemIds' => Json::encode($orderItemIds),
+            'DeliveryType' => $deliveryType,
+            'ShippingProvider' => $shippingProvider,
+            'TrackingNumber' => $trackingNumber
+        ]);
+
+        $requestId = $this->generateRequestId();
+
+        $builtResponse = $this->executeAction(
+            $action,
+            $parameters,
+            $requestId,
+            'POST'
+        );
+
+        $orderItems = OrderItemsFactory::makeFromStatus($builtResponse->getBody());
+
+        $orderItemsResponse = array_values($orderItems->all());
+
+        $this->logger->info(
+            sprintf(
+                '%d::%s::APIResponse::SellerCenterSdk: the items status was changed',
+                $requestId,
+                $action
+            )
+        );
+
+        return $orderItemsResponse;
     }
 }
