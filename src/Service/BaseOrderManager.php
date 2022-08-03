@@ -110,55 +110,18 @@ class BaseOrderManager extends BaseManager
     {
         $action = 'GetOrderItems';
 
-        $parameters = clone $this->parameters;
+        $parameters = $this->makeParametersForAction($action);
         $parameters->set([
-            'Action' => $action,
             'OrderId' => $orderId,
         ]);
-        $parameters->set([
-            'Signature' => Signature::generate($parameters, $this->configuration->getKey())->get(),
-        ]);
 
-        $requestHeaders = $this->generateRequestHeaders();
-        $requestId = $requestHeaders[self::REQUEST_ID_HEADER];
+        $requestId = $this->generateRequestId();
 
-        $request = RequestFactory::make(
-            'GET',
-            $this->configuration->getEndpoint(),
-            $requestHeaders
-        );
-
-        $this->logger->debug(
-            LogMessageFormatter::fromAction($requestId, $action, LogMessageFormatter::TYPE_REQUEST),
-            [
-                'url' => (string) $request->getUri(),
-                'method' => $request->getMethod(),
-                'body' => (string) $request->getBody(),
-                'parameters' => $parameters->all(),
-            ]
-        );
-
-        $response = $this->client->send($request, [
-            'query' => $parameters->all(),
-        ]);
-
-        $body = (string) $response->getBody();
-
-        $this->logger->debug(
-            LogMessageFormatter::fromAction($requestId, $action, LogMessageFormatter::TYPE_RESPONSE),
-            [
-                'body' => $body,
-            ]
-        );
-
-        $builtResponse = HandleResponse::parse($body);
-
-        $this->logger->debug(
-            LogMessageFormatter::fromAction($requestId, $action, LogMessageFormatter::TYPE_BUILT_RESPONSE),
-            [
-                'head' => $builtResponse->getHead()->asXML(),
-                'body' => $builtResponse->getBody()->asXML(),
-            ]
+        $builtResponse = $this->executeAction(
+            $action,
+            $parameters,
+            $requestId,
+            'GET'
         );
 
         $orderItems = OrderItemsFactory::make($builtResponse->getBody());
@@ -168,7 +131,7 @@ class BaseOrderManager extends BaseManager
         $this->logger->info(
             sprintf(
                 '%d::%s::APIResponse::SellerCenterSdk: %d order items was recovered',
-                $request->getHeaderLine('Request-ID'),
+                $requestId,
                 $action,
                 count($orderItems->all())
             )
@@ -184,12 +147,9 @@ class BaseOrderManager extends BaseManager
      */
     public function getMultipleOrderItems(array $orderIdList): array
     {
-        $Action = 'GetMultipleOrderItems';
+        $action = 'GetMultipleOrderItems';
 
-        $parameters = clone $this->parameters;
-        $parameters->set([
-            'Action' => $Action,
-        ]);
+        $parameters = $this->makeParametersForAction($action);
 
         if (empty($orderIdList)) {
             throw new EmptyArgumentException('OrderIdList');
@@ -197,50 +157,14 @@ class BaseOrderManager extends BaseManager
         $parameters->set([
             'OrderIdList' => Json::encode($orderIdList),
         ]);
-        $parameters->set([
-            'Signature' => Signature::generate($parameters, $this->configuration->getKey())->get(),
-        ]);
 
-        $requestHeaders = $this->generateRequestHeaders();
-        $requestId = $requestHeaders[self::REQUEST_ID_HEADER];
+        $requestId = $this->generateRequestId();
 
-        $request = RequestFactory::make(
-            'GET',
-            $this->configuration->getEndpoint(),
-            $requestHeaders
-        );
-
-        $this->logger->debug(
-            LogMessageFormatter::fromAction($requestId, $Action, LogMessageFormatter::TYPE_REQUEST),
-            [
-                'url' => (string) $request->getUri(),
-                'method' => $request->getMethod(),
-                'body' => (string) $request->getBody(),
-                'parameters' => $parameters->all(),
-            ]
-        );
-
-        $response = $this->client->send($request, [
-            'query' => $parameters->all(),
-        ]);
-
-        $body = (string) $response->getBody();
-
-        $this->logger->debug(
-            LogMessageFormatter::fromAction($requestId, $Action, LogMessageFormatter::TYPE_RESPONSE),
-            [
-                'body' => $body,
-            ]
-        );
-
-        $builtResponse = HandleResponse::parse($body);
-
-        $this->logger->debug(
-            LogMessageFormatter::fromAction($requestId, $Action, LogMessageFormatter::TYPE_BUILT_RESPONSE),
-            [
-                'head' => $builtResponse->getHead()->asXML(),
-                'body' => $builtResponse->getBody()->asXML(),
-            ]
+        $builtResponse = $this->executeAction(
+            $action,
+            $parameters,
+            $requestId,
+            'GET'
         );
 
         $orderItems = OrdersItemsFactory::make($builtResponse->getBody());
@@ -250,8 +174,8 @@ class BaseOrderManager extends BaseManager
         $this->logger->info(
             sprintf(
                 '%d::%s::APIResponse::SellerCenterSdk: %d orders items was recovered',
-                $request->getHeaderLine('Request-ID'),
-                $Action,
+                $requestId,
+                $action,
                 count($orderItems->all())
             )
         );
@@ -265,52 +189,15 @@ class BaseOrderManager extends BaseManager
     protected function getOrders(Parameters $parameters): array
     {
         $action = 'GetOrders';
+        $parameters = $this->makeParametersForAction($action);
 
-        $parameters->set(['Action' => $action]);
-        $parameters->set([
-            'Signature' => Signature::generate($parameters, $this->configuration->getKey())->get(),
-        ]);
+        $requestId = $this->generateRequestId();
 
-        $requestHeaders = $this->generateRequestHeaders();
-        $requestId = $requestHeaders[self::REQUEST_ID_HEADER];
-
-        $request = RequestFactory::make(
-            'GET',
-            $this->configuration->getEndpoint(),
-            $requestHeaders
-        );
-
-        $this->logger->debug(
-            LogMessageFormatter::fromAction($requestId, $action, LogMessageFormatter::TYPE_REQUEST),
-            [
-                'url' => (string) $request->getUri(),
-                'method' => $request->getMethod(),
-                'body' => (string) $request->getBody(),
-                'parameters' => $parameters->all(),
-            ]
-        );
-
-        $response = $this->client->send($request, [
-            'query' => $parameters->all(),
-        ]);
-
-        $body = (string) $response->getBody();
-
-        $this->logger->debug(
-            LogMessageFormatter::fromAction($requestId, $action, LogMessageFormatter::TYPE_RESPONSE),
-            [
-                'body' => $body,
-            ]
-        );
-
-        $builtResponse = HandleResponse::parse($body);
-
-        $this->logger->debug(
-            LogMessageFormatter::fromAction($requestId, $action, LogMessageFormatter::TYPE_BUILT_RESPONSE),
-            [
-                'head' => $builtResponse->getHead()->asXML(),
-                'body' => $builtResponse->getBody()->asXML(),
-            ]
+        $builtResponse = $this->executeAction(
+            $action,
+            $parameters,
+            $requestId,
+            'GET'
         );
 
         $orders = OrdersFactory::make($builtResponse->getBody());
@@ -320,7 +207,7 @@ class BaseOrderManager extends BaseManager
         $this->logger->info(
             sprintf(
                 '%d::%s::APIResponse::SellerCenterSdk: %d orders was recovered',
-                $request->getHeaderLine('Request-ID'),
+                $requestId,
                 $action,
                 count($orders->all())
             )
@@ -546,9 +433,8 @@ class BaseOrderManager extends BaseManager
     ): array {
         $action = 'SetStatusToPackedByMarketplace';
 
-        $parameters = clone $this->parameters;
+        $parameters = $this->makeParametersForAction($action);
         $parameters->set([
-            'Action' => $action,
             'OrderItemIds' => Json::encode($orderItemIds),
             'DeliveryType' => $deliveryType,
         ]);
@@ -561,51 +447,13 @@ class BaseOrderManager extends BaseManager
             $parameters->set(['TrackingNumber' => $trackingNumber]);
         }
 
-        $parameters->set([
-            'Signature' => Signature::generate($parameters, $this->configuration->getKey())->get(),
-        ]);
+        $requestId = $this->generateRequestId();
 
-        $requestHeaders = $this->generateRequestHeaders();
-        $requestId = $requestHeaders[self::REQUEST_ID_HEADER];
-
-        $request = RequestFactory::make(
-            'POST',
-            $this->configuration->getEndpoint(),
-            $requestHeaders
-        );
-
-        $this->logger->debug(
-            LogMessageFormatter::fromAction($requestId, $action, LogMessageFormatter::TYPE_REQUEST),
-            [
-                'url' => (string) $request->getUri(),
-                'method' => $request->getMethod(),
-                'body' => (string) $request->getBody(),
-                'parameters' => $parameters->all(),
-            ]
-        );
-
-        $response = $this->client->send($request, [
-            'query' => $parameters->all(),
-        ]);
-
-        $body = (string) $response->getBody();
-
-        $this->logger->debug(
-            LogMessageFormatter::fromAction($requestId, $action, LogMessageFormatter::TYPE_RESPONSE),
-            [
-                'statusCode' => $response->getStatusCode(),
-                'body' => $body,
-            ]
-        );
-
-        $builtResponse = HandleResponse::parse($body);
-
-        $this->logger->debug(
-            LogMessageFormatter::fromAction($requestId, $action, LogMessageFormatter::TYPE_BUILT_RESPONSE),
-            [
-                'head' => $builtResponse->getHead()->asXML(),
-                'body' => $builtResponse->getBody()->asXML(),
-            ]
+        $builtResponse = $this->executeAction(
+            $action,
+            $parameters,
+            $requestId,
+            'POST'
         );
 
         $orderItems = OrderItemsFactory::makeFromStatus($builtResponse->getBody());
@@ -615,7 +463,7 @@ class BaseOrderManager extends BaseManager
         $this->logger->info(
             sprintf(
                 '%d::%s::APIResponse::SellerCenterSdk: the items status was changed',
-                $request->getHeaderLine('Request-ID'),
+                $requestId,
                 $action
             )
         );
@@ -637,9 +485,8 @@ class BaseOrderManager extends BaseManager
     ): array {
         $action = 'SetStatusToReadyToShip';
 
-        $parameters = clone $this->parameters;
+        $parameters = $this->makeParametersForAction($action);
         $parameters->set([
-            'Action' => $action,
             'OrderItemIds' => Json::encode($orderItemIds),
             'DeliveryType' => $deliveryType,
         ]);
@@ -656,51 +503,13 @@ class BaseOrderManager extends BaseManager
             $parameters->set(['PackageId' => $packageId]);
         }
 
-        $parameters->set([
-            'Signature' => Signature::generate($parameters, $this->configuration->getKey())->get(),
-        ]);
+        $requestId = $this->generateRequestId();
 
-        $requestHeaders = $this->generateRequestHeaders();
-        $requestId = $requestHeaders[self::REQUEST_ID_HEADER];
-
-        $request = RequestFactory::make(
-            'POST',
-            $this->configuration->getEndpoint(),
-            $requestHeaders
-        );
-
-        $this->logger->debug(
-            LogMessageFormatter::fromAction($requestId, $action, LogMessageFormatter::TYPE_REQUEST),
-            [
-                'url' => (string) $request->getUri(),
-                'method' => $request->getMethod(),
-                'body' => (string) $request->getBody(),
-                'parameters' => $parameters->all(),
-            ]
-        );
-
-        $response = $this->client->send($request, [
-            'query' => $parameters->all(),
-        ]);
-
-        $body = (string) $response->getBody();
-
-        $this->logger->debug(
-            LogMessageFormatter::fromAction($requestId, $action, LogMessageFormatter::TYPE_RESPONSE),
-            [
-                'statusCode' => $response->getStatusCode(),
-                'body' => $body,
-            ]
-        );
-
-        $builtResponse = HandleResponse::parse($body);
-
-        $this->logger->debug(
-            LogMessageFormatter::fromAction($requestId, $action, LogMessageFormatter::TYPE_BUILT_RESPONSE),
-            [
-                'head' => $builtResponse->getHead()->asXML(),
-                'body' => $builtResponse->getBody()->asXML(),
-            ]
+        $builtResponse = $this->executeAction(
+            $action,
+            $parameters,
+            $requestId,
+            'POST'
         );
 
         $orderItems = OrderItemsFactory::makeFromStatus($builtResponse->getBody());
@@ -710,7 +519,7 @@ class BaseOrderManager extends BaseManager
         $this->logger->info(
             sprintf(
                 '%d::%s::APIResponse::SellerCenterSdk: the items status was changed',
-                $request->getHeaderLine('Request-ID'),
+                $requestId,
                 $action
             )
         );
@@ -785,13 +594,15 @@ class BaseOrderManager extends BaseManager
         return TrackingCodeFactory::make($response->getBody());
     }
 
-    public function setStatusToCanceled(int $orderItemId, string $reason, string $reasonDetail = null): void
-    {
+    public function setStatusToCanceled(
+        int $orderItemId, 
+        string $reason, 
+        string $reasonDetail = null
+        ): SuccessResponse {
         $action = 'SetStatusToCanceled';
 
-        $parameters = clone $this->parameters;
+        $parameters = $this->makeParametersForAction($action);
         $parameters->set([
-            'Action' => $action,
             'OrderItemId' => $orderItemId,
             'Reason' => $reason,
         ]);
@@ -800,60 +611,24 @@ class BaseOrderManager extends BaseManager
             $parameters->set(['ReasonDetail' => $reasonDetail]);
         }
 
-        $parameters->set([
-            'Signature' => Signature::generate($parameters, $this->configuration->getKey())->get(),
-        ]);
+        $requestId = $this->generateRequestId();
 
-        $requestHeaders = $this->generateRequestHeaders();
-        $requestId = $requestHeaders[self::REQUEST_ID_HEADER];
-
-        $request = RequestFactory::make(
-            'POST',
-            $this->configuration->getEndpoint(),
-            $requestHeaders
+        $response = $this->executeAction(
+            $action,
+            $parameters,
+            $requestId,
+            'POST'
         );
 
-        $this->logger->debug(
-            LogMessageFormatter::fromAction($requestId, $action, LogMessageFormatter::TYPE_REQUEST),
-            [
-                'url' => (string) $request->getUri(),
-                'method' => $request->getMethod(),
-                'body' => (string) $request->getBody(),
-                'parameters' => $parameters->all(),
-            ]
-        );
-
-        $response = $this->client->send($request, [
-            'query' => $parameters->all(),
-        ]);
-
-        $body = (string) $response->getBody();
-
-        $this->logger->debug(
-            LogMessageFormatter::fromAction($requestId, $action, LogMessageFormatter::TYPE_RESPONSE),
-            [
-                'statusCode' => $response->getStatusCode(),
-                'body' => $body,
-            ]
-        );
-
-        $builtResponse = HandleResponse::parse($body);
-
-        $this->logger->debug(
-            LogMessageFormatter::fromAction($requestId, $action, LogMessageFormatter::TYPE_BUILT_RESPONSE),
-            [
-                'head' => $builtResponse->getHead()->asXML(),
-                'body' => $builtResponse->getBody()->asXML(),
-            ]
-        );
-
-        $this->logger->info(
+            $this->logger->info(
             sprintf(
                 '%d::%s::APIResponse::SellerCenterSdk: the items status was changed',
-                $request->getHeaderLine('Request-ID'),
+                $requestId,
                 $action
             )
         );
+
+        return $response;
     }
 
     /**
@@ -863,52 +638,15 @@ class BaseOrderManager extends BaseManager
     {
         $action = 'GetFailureReasons';
 
-        $parameters = clone $this->parameters;
-        $parameters->set(['Action' => $action]);
-        $parameters->set([
-            'Signature' => Signature::generate($parameters, $this->configuration->getKey())->get(),
-        ]);
+        $parameters = $this->makeParametersForAction($action);
 
-        $requestHeaders = $this->generateRequestHeaders();
-        $requestId = $requestHeaders[self::REQUEST_ID_HEADER];
+        $requestId = $this->generateRequestId();
 
-        $request = RequestFactory::make(
-            'POST',
-            $this->configuration->getEndpoint(),
-            $requestHeaders
-        );
-
-        $this->logger->debug(
-            LogMessageFormatter::fromAction($requestId, $action, LogMessageFormatter::TYPE_REQUEST),
-            [
-                'url' => (string) $request->getUri(),
-                'method' => $request->getMethod(),
-                'body' => (string) $request->getBody(),
-                'parameters' => $parameters->all(),
-            ]
-        );
-
-        $response = $this->client->send($request, [
-            'query' => $parameters->all(),
-        ]);
-
-        $body = (string) $response->getBody();
-
-        $this->logger->debug(
-            LogMessageFormatter::fromAction($requestId, $action, LogMessageFormatter::TYPE_RESPONSE),
-            [
-                'body' => $body,
-            ]
-        );
-
-        $builtResponse = HandleResponse::parse($body);
-
-        $this->logger->debug(
-            LogMessageFormatter::fromAction($requestId, $action, LogMessageFormatter::TYPE_BUILT_RESPONSE),
-            [
-                'head' => $builtResponse->getHead()->asXML(),
-                'body' => $builtResponse->getBody()->asXML(),
-            ]
+        $builtResponse = $this->executeAction(
+            $action,
+            $parameters,
+            $requestId,
+            'POST'
         );
 
         $reasons = FailureReasonsFactory::make($builtResponse->getBody());
@@ -918,7 +656,7 @@ class BaseOrderManager extends BaseManager
         $this->logger->info(
             sprintf(
                 '%d::%s::APIResponse::SellerCenterSdk: %d failure reasons was recovered',
-                $request->getHeaderLine('Request-ID'),
+                $requestId,
                 $action,
                 count($reasons->all())
             )
