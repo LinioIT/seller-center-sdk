@@ -527,42 +527,6 @@ class BaseOrderManager extends BaseManager
         return $orderItemsResponse;
     }
 
-    public function setInvoiceNumber(
-        int $orderItemId,
-        string $invoiceNumber,
-        ?string $invoiceDocumentLink
-    ): SuccessResponse {
-        $action = 'SetInvoiceNumber';
-        $parameters = $this->makeParametersForAction($action);
-
-        $parameters->set([
-            'OrderItemId' => $orderItemId,
-            'InvoiceNumber' => $invoiceNumber,
-        ]);
-
-        if (!empty($invoiceDocumentLink)) {
-            $parameters->set(['InvoiceDocumentLink' => $invoiceDocumentLink]);
-        }
-
-        $requestId = $this->generateRequestId();
-        $response = $this->executeAction(
-            $action,
-            $parameters,
-            $requestId,
-            'POST'
-        );
-
-        $this->logger->info(
-            sprintf(
-                '%d::%s::APIResponse::SellerCenterSdk: Invoice Number Set',
-                $requestId,
-                $action
-            )
-        );
-
-        return $response;
-    }
-
     public function getTrackingCode(
         string $packageId,
         string $shippingProvider
