@@ -48,7 +48,7 @@ class GlobalOrderManager extends BaseOrderManager
         return $response;
     }
 
-       /**
+    /**
      * @param mixed[] $orderItemIds
      *
      * @return OrderItem[]
@@ -136,5 +136,4 @@ class GlobalOrderManager extends BaseOrderManager
 
         return $orderItemsResponse;
     }
-
 }

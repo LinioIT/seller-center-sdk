@@ -44,7 +44,6 @@ class GlobalOrderManagerTest extends LinioTestCase
 
     public function testItReturnsUpdatedOrderItemsWhenSettingStatusToReadyToShipInGlobal(): void
     {
-
         $body = sprintf(
             $this->getOrdersResponse('Order/SetOrderStatusSuccessResponse.xml'),
             'SetStatusToReadyToShip',
