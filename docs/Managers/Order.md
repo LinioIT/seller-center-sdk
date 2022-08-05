@@ -342,6 +342,7 @@ This method sets an order item as ready to ship and returns the order items as t
 | `$deliveryType` | string | One of the following: 'dropship' (The seller will send out the package on his own), 'pickup' (Shop should pick up the item from the seller) or 'send_to_warehouse' (The seller will send the item to the warehouse) | Yes | - |
 | `$shippingProvider` | string |Valid shipment provider as looked up via [GetShipmentProviders](https://sellerapi.sellercenter.net/docs/getshipmentproviders) | No | - |
 | `$trackingNumber` | string | The actual tracking number. A custom one or provided by GetOrderItems call | No | - |
+| `$packageId` | string | The actual package Id. A custom one or provided by GetOrderItems call | No | - |
 
 #### Example
 
@@ -380,4 +381,24 @@ $reasonDetail = 'Valid Reason Detail';
 foreach ($orderItems as $orderItem) {
     $sdk->orders()->setStatusToCanceled($orderItem->getOrderItemId(), $reason, $reasonDetail);
 }
+```
+### setInvoiceNumber
+
+This method sets the invoice number.
+
+| Parameter | Type | Description | Required | Default |
+| --------- | :----: | ----------- | :--------: | :-------: |
+| `$orderItemId` | int | Identifier of the order item should be updated | Yes | - |
+| `$invoiceNumber` | string | The invoice number | Yes | - |
+| `$invoiceDocumentLink` | string | Document URL | No | - |
+
+#### Example
+
+```php
+// Get items collection from order #1234
+$orderItems = $sdk->orders()->getOrderItemId(1234);
+$invoiceNumber = '123132465465465465456';
+$invoiceDocumentLink = 'https://fakeInvoice.pdf';
+
+$orderItems = $sdk->orders()->setInvoiceNumber($orderItems, $invoiceNumber, $invoiceDocumentLink);
 ```

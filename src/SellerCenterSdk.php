@@ -231,7 +231,7 @@ class SellerCenterSdk
 
     public function globalOrders(): GlobalOrderManager
     {
-        if (empty($this->orders)) {
+        if (empty($this->globalOrders)) {
             $this->globalOrders = new GlobalOrderManager(
                 $this->configuration,
                 $this->client,

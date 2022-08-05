@@ -31,9 +31,8 @@ class BaseOrderManager extends BaseManager
     public const DEFAULT_SORT_BY = 'created_at';
     public const DEFAULT_SORT_DIRECTION = 'ASC';
 
-    public function getOrder(
-        int $orderId
-        ): Order {
+    public function getOrder(int $orderId): Order 
+    {
         $action = 'GetOrder';
 
         $parameters = $this->makeParametersForAction($action);
@@ -67,9 +66,8 @@ class BaseOrderManager extends BaseManager
     /**
      * @return OrderItem[]
      */
-    public function getOrderItems(
-        int $orderId
-        ): array {
+    public function getOrderItems(int $orderId): array 
+    {
         $action = 'GetOrderItems';
 
         $parameters = $this->makeParametersForAction($action);
@@ -108,9 +106,8 @@ class BaseOrderManager extends BaseManager
      *
      * @return Order[]
      */
-    public function getMultipleOrderItems(
-        array $orderIdList
-        ): array {
+    public function getMultipleOrderItems(array $orderIdList): array 
+    {
         $action = 'GetMultipleOrderItems';
 
         $parameters = $this->makeParametersForAction($action);
@@ -151,9 +148,8 @@ class BaseOrderManager extends BaseManager
     /**
      * @return Order[]
      */
-    protected function getOrders(
-        Parameters $parameters
-        ): array {
+    protected function getOrders(Parameters $parameters): array 
+    {
         $action = 'GetOrders';
 
         $parameters = $this->makeParametersForAction($action);
@@ -492,8 +488,11 @@ class BaseOrderManager extends BaseManager
         return $reasonsResponse;
     }
 
-    protected function setListDimensions(Parameters &$parameters, int $limit, int $offset): void
-    {
+    protected function setListDimensions(
+        Parameters &$parameters,
+        int $limit,
+        int $offset
+        ): void {
         $verifiedLimit = $limit >= 1 ? $limit : self::DEFAULT_LIMIT;
         $verifiedOffset = $offset < 0 ? self::DEFAULT_OFFSET : $offset;
 
@@ -505,8 +504,11 @@ class BaseOrderManager extends BaseManager
         );
     }
 
-    protected function setSortParametersList(Parameters &$parameters, string $sortBy, string $sortDirection): void
-    {
+    protected function setSortParametersList(
+        Parameters &$parameters,
+        string $sortBy,
+        string $sortDirection
+        ): void {
         if (!in_array($sortBy, OrderSortFilters::SORT_FILTERS)) {
             $sortBy = self::DEFAULT_SORT_BY;
         }
