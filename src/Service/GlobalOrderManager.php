@@ -4,9 +4,10 @@ declare(strict_types=1);
 
 namespace Linio\SellerCenter\Service;
 
-use Linio\SellerCenter\Response\SuccessResponse;
 use Linio\Component\Util\Json;
 use Linio\SellerCenter\Factory\Xml\Order\OrderItemsFactory;
+use Linio\SellerCenter\Response\SuccessResponse;
+
 class GlobalOrderManager extends BaseOrderManager
 {
     public function setInvoiceNumber(
@@ -15,6 +16,7 @@ class GlobalOrderManager extends BaseOrderManager
         ?string $invoiceDocumentLink
     ): SuccessResponse {
         $action = 'SetInvoiceNumber';
+
         $parameters = $this->makeParametersForAction($action);
 
         $parameters->set([
@@ -27,6 +29,7 @@ class GlobalOrderManager extends BaseOrderManager
         }
 
         $requestId = $this->generateRequestId();
+
         $response = $this->executeAction(
             $action,
             $parameters,
@@ -58,6 +61,7 @@ class GlobalOrderManager extends BaseOrderManager
         $action = 'SetStatusToReadyToShip';
 
         $parameters = $this->makeParametersForAction($action);
+
         $parameters->set([
             'OrderItemIds' => Json::encode($orderItemIds),
             'DeliveryType' => $deliveryType,
@@ -103,6 +107,7 @@ class GlobalOrderManager extends BaseOrderManager
         $action = 'SetStatusToPackedByMarketplace';
 
         $parameters = $this->makeParametersForAction($action);
+
         $parameters->set([
             'OrderItemIds' => Json::encode($orderItemIds),
             'DeliveryType' => $deliveryType,

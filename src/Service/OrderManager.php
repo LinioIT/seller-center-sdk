@@ -4,11 +4,11 @@ declare(strict_types=1);
 
 namespace Linio\SellerCenter\Service;
 
+use Linio\Component\Util\Json;
 use Linio\SellerCenter\Factory\Xml\Order\OrderItemsFactory;
 use Linio\SellerCenter\Model\Order\OrderItem;
-use Linio\SellerCenter\Transformer\Order\OrderItemsTransformer;
 use Linio\SellerCenter\Response\SuccessResponse;
-use Linio\Component\Util\Json;
+use Linio\SellerCenter\Transformer\Order\OrderItemsTransformer;
 
 class OrderManager extends BaseOrderManager
 {
@@ -145,7 +145,7 @@ class OrderManager extends BaseOrderManager
             'OrderItemIds' => Json::encode($orderItemIds),
             'DeliveryType' => $deliveryType,
             'ShippingProvider' => $shippingProvider,
-            'TrackingNumber' => $trackingNumber
+            'TrackingNumber' => $trackingNumber,
         ]);
 
         $requestId = $this->generateRequestId();
