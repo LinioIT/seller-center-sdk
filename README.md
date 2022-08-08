@@ -89,6 +89,8 @@ Here is a list of the actual managers in the SDK:
 - [DocumentManager](docs/Managers/Document.md)
 - [FeedManager](docs/Managers/Feed.md)
 - [OrderManager](docs/Managers/Order.md)
+  - [Global Order Manager](docs/Managers/GlobalOrderManager.md)
+  - [Linio Order Manager](docs/Managers/OrderManager.md)
 - [ProductManager](docs/Managers/Product.md)
 - [QualityControlManager](docs/Managers/QcStatus.md)
 - [WebookManager](docs/Managers/Webook.md)

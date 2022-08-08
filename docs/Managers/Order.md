@@ -29,16 +29,9 @@
       - [Example](#example-9)
     - [getMultipleOrderItems](#getmultipleorderitems)
       - [Example](#example-10)
-  - [Setting order items imei](#setting-order-items-imei)
-    - [setOrderItemsImei](#setorderitemsimei)
-      - [Example](#example-11)
   - [Setting order status](#setting-order-status)
-    - [setStatusToPackedByMarketplace](#setstatustopackedbymarketplace)
-      - [Example](#example-12)
-    - [setStatusToReadyToShip](#setstatustoreadytoship)
-      - [Example](#example-13)
     - [setStatusToCanceled](#setstatustocanceled)
-      - [Example](#example-14)
+      - [Example](#example-11)
 
 ## Getting an order
 
@@ -285,75 +278,7 @@ $orderIdList = [1234, 5678, 8901];
 $orderItems = $sdk->orders()->getMultipleOrderItems($orderIdList);
 ```
 
-## Setting order items imei
-
-### setOrderItemsImei
-
-This method sets the Imei for the order items in the parameters and return the same order items with the status and in case it fails a message on the order item
-
-| Parameter | Type | Description | Required | Default |
-| --------- | :----: | ----------- | :--------: | :-------: |
-| `$orderItems` | array | Array of order item to set the imei | Yes | - |
-
-#### Example
-
-```php
-$orderItems = $this->sdk->orders()->getOrderItems(1234);
-
-foreach($orderItems as $orderItem){
-  $orderItem->setImei("1234567890");
-}
-
-$orderItems = $this->sdk->orders()->setOrderItemsImei(
-    $orderItems,
-);
-```
 ## Setting order status
-
-### setStatusToPackedByMarketplace
-
-This method sets an order item as packed and returns order items as the response.
-
-| Parameter | Type | Description | Required | Default |
-| --------- | :----: | ----------- | :--------: | :-------: |
-| `$orderItemIds` | array | Array of order item IDs to be set as packed | Yes | - |
-| `$deliveryType` | string | One of the following: 'dropship' (The seller will send out the package on his own), 'pickup' (Shop should pick up the item from the seller) or 'send_to_warehouse' (The seller will send the item to the warehouse) | Yes | - |
-| `$shippingProvider` | string |Valid shipment provider as looked up via [GetShipmentProviders](https://sellerapi.sellercenter.net/docs/getshipmentproviders) | No | - |
-| `$trackingNumber` | string | The actual tracking number. A custom one or provided by GetOrderItems call | No | - |
-
-#### Example
-
-```php
-// Define order items ids to be set status.
-$orderItemIds = [1234, 5678];
-
-// Set their status to packed by marketplace with dropshipping modal
-$orderItems = $sdk->orders()->setStatusToPackedByMarketplace($orderItems, 'dropship', 'ShippingProvider');
-```
---------------
-
-### setStatusToReadyToShip
-
-This method sets an order item as ready to ship and returns the order items as the response.
-
-| Parameter | Type | Description | Required | Default |
-| --------- | :----: | ----------- | :--------: | :-------: |
-| `$orderItemIds` | array | Array of order item IDs to be set as ready to ship | Yes | - |
-| `$deliveryType` | string | One of the following: 'dropship' (The seller will send out the package on his own), 'pickup' (Shop should pick up the item from the seller) or 'send_to_warehouse' (The seller will send the item to the warehouse) | Yes | - |
-| `$shippingProvider` | string |Valid shipment provider as looked up via [GetShipmentProviders](https://sellerapi.sellercenter.net/docs/getshipmentproviders) | No | - |
-| `$trackingNumber` | string | The actual tracking number. A custom one or provided by GetOrderItems call | No | - |
-| `$packageId` | string | The actual package Id. A custom one or provided by GetOrderItems call | No | - |
-
-#### Example
-
-```php
-// Define order items IDs to set their status.
-$orderItemIds = [1234, 5678];
-
-// Set their status to ready to ship with dropshipping method
-$orderItems = $sdk->orders()->setStatusToReadyToShip($orderItemIds, 'dropship', 'ShippingProvider');
-```
---------------
 
 ### setStatusToCanceled
 
@@ -381,24 +306,4 @@ $reasonDetail = 'Valid Reason Detail';
 foreach ($orderItems as $orderItem) {
     $sdk->orders()->setStatusToCanceled($orderItem->getOrderItemId(), $reason, $reasonDetail);
 }
-```
-### setInvoiceNumber
-
-This method sets the invoice number.
-
-| Parameter | Type | Description | Required | Default |
-| --------- | :----: | ----------- | :--------: | :-------: |
-| `$orderItemId` | int | Identifier of the order item should be updated | Yes | - |
-| `$invoiceNumber` | string | The invoice number | Yes | - |
-| `$invoiceDocumentLink` | string | Document URL | No | - |
-
-#### Example
-
-```php
-// Get items collection from order #1234
-$orderItems = $sdk->orders()->getOrderItemId(1234);
-$invoiceNumber = '123132465465465465456';
-$invoiceDocumentLink = 'https://fakeInvoice.pdf';
-
-$orderItems = $sdk->orders()->setInvoiceNumber($orderItems, $invoiceNumber, $invoiceDocumentLink);
 ```

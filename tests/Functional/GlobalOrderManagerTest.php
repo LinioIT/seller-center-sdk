@@ -44,11 +44,12 @@ class GlobalOrderManagerTest extends LinioTestCase
 
     public function testItReturnsUpdatedOrderItemsWhenSettingStatusToReadyToShipInGlobal(): void
     {
+        $orderItemId = 1;
         $body = sprintf(
             $this->getOrdersResponse('Order/SetOrderStatusSuccessResponse.xml'),
             'SetStatusToReadyToShip',
             'OrderItems',
-            1
+            $orderItemId
         );
 
         $client = $this->createClientWithResponse($body);
@@ -60,7 +61,7 @@ class GlobalOrderManagerTest extends LinioTestCase
         $sdkClient = new SellerCenterSdk($configuration, $client);
 
         $orderItems = $sdkClient->globalOrders()->setStatusToReadyToShip(
-            [1],
+            [$orderItemId],
             'deliveryType',
             'MPDS-200131783-9800'
         );
