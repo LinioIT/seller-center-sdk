@@ -135,8 +135,8 @@ class OrderManager extends BaseOrderManager
     public function setStatusToPackedByMarketplace(
         array $orderItemIds,
         string $deliveryType,
-        string $shippingProvider,
-        string $trackingNumber
+        string $shippingProvider = null,
+        string $trackingNumber = null
     ): array {
         $action = 'SetStatusToPackedByMarketplace';
 
@@ -144,9 +144,15 @@ class OrderManager extends BaseOrderManager
         $parameters->set([
             'OrderItemIds' => Json::encode($orderItemIds),
             'DeliveryType' => $deliveryType,
-            'ShippingProvider' => $shippingProvider,
-            'TrackingNumber' => $trackingNumber,
         ]);
+
+        if (!empty($shippingProvider)) {
+            $parameters->set(['ShippingProvider' => $shippingProvider]);
+        }
+
+        if (!empty($trackingNumber)) {
+            $parameters->set(['TrackingNumber' => $trackingNumber]);
+        }
 
         $requestId = $this->generateRequestId();
 
