@@ -1,8 +1,7 @@
-# Orders
+# Linio Order Manager
 
 ## Index
-
-- [Orders](#orders)
+- [Orders](#linio-order-manager)
   - [Index](#index)
   - [Getting an order](#getting-an-order)
     - [getOrder](#getorder)
@@ -37,8 +36,11 @@
       - [Example](#example-12)
     - [setStatusToReadyToShip](#setstatustoreadytoship)
       - [Example](#example-13)
-    - [setStatusToCanceled](#setstatustocanceled)
+     - [setStatusToCanceled](#setstatustocanceled)
       - [Example](#example-14)
+  - [Setting order invoice number](#setting-order-invoice-number)
+    - [setInvoiceNumber](#setinvoicenumber)
+      - [Example](#example-15)
 
 ## Getting an order
 
@@ -318,8 +320,8 @@ This method sets an order item as packed and returns order items as the response
 | --------- | :----: | ----------- | :--------: | :-------: |
 | `$orderItemIds` | array | Array of order item IDs to be set as packed | Yes | - |
 | `$deliveryType` | string | One of the following: 'dropship' (The seller will send out the package on his own), 'pickup' (Shop should pick up the item from the seller) or 'send_to_warehouse' (The seller will send the item to the warehouse) | Yes | - |
-| `$shippingProvider` | string |Valid shipment provider as looked up via [GetShipmentProviders](https://sellerapi.sellercenter.net/docs/getshipmentproviders) | No | - |
-| `$trackingNumber` | string | The actual tracking number. A custom one or provided by GetOrderItems call | No | - |
+| `$shippingProvider` | string |Valid shipment provider as looked up via [GetShipmentProviders](https://sellerapi.sellercenter.net/docs/getshipmentproviders) | Yes | - |
+| `$trackingNumber` | string | The actual tracking number. A custom one or provided by GetOrderItems call | Yes | - |
 
 #### Example
 
@@ -340,8 +342,8 @@ This method sets an order item as ready to ship and returns the order items as t
 | --------- | :----: | ----------- | :--------: | :-------: |
 | `$orderItemIds` | array | Array of order item IDs to be set as ready to ship | Yes | - |
 | `$deliveryType` | string | One of the following: 'dropship' (The seller will send out the package on his own), 'pickup' (Shop should pick up the item from the seller) or 'send_to_warehouse' (The seller will send the item to the warehouse) | Yes | - |
-| `$shippingProvider` | string |Valid shipment provider as looked up via [GetShipmentProviders](https://sellerapi.sellercenter.net/docs/getshipmentproviders) | No | - |
-| `$trackingNumber` | string | The actual tracking number. A custom one or provided by GetOrderItems call | No | - |
+| `$shippingProvider` | string |Valid shipment provider as looked up via [GetShipmentProviders](https://sellerapi.sellercenter.net/docs/getshipmentproviders) | Yes | - |
+| `$trackingNumber` | string | The actual tracking number. A custom one or provided by GetOrderItems call | Yes | - |
 
 #### Example
 
@@ -381,3 +383,25 @@ foreach ($orderItems as $orderItem) {
     $sdk->orders()->setStatusToCanceled($orderItem->getOrderItemId(), $reason, $reasonDetail);
 }
 ```
+
+## Setting order invoice number
+
+### setInvoiceNumber
+
+This method sets the invoice number.
+
+| Parameter | Type | Description | Required | Default |
+| --------- | :----: | ----------- | :--------: | :-------: |
+| `$orderItemId` | int | Identifier of the order item should be updated | Yes | - |
+| `$invoiceNumber` | string | The invoice number | Yes | - |
+
+#### Example
+
+```php
+// Get items collection from order #1234
+$orderItems = $sdk->orders()->getOrderItemId(1234);
+$invoiceNumber = '123132465465465465456';
+
+$orderItems = $sdk->orders()->setInvoiceNumber($orderItems, $invoiceNumber);
+```
+--------------
