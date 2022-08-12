@@ -152,7 +152,7 @@ class BaseOrderManager extends BaseManager
     {
         $action = 'GetOrders';
 
-        $parameters = $this->makeParametersForAction($action);
+        $parameters->set(['Action' => $action]);
 
         $requestId = $this->generateRequestId();
 
