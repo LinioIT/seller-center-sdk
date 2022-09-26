@@ -6,11 +6,39 @@ namespace Linio\SellerCenter;
 
 use Linio\SellerCenter\Application\Configuration;
 use Linio\SellerCenter\Model\Order\OrderItem;
+use Linio\SellerCenter\Response\FeedResponse;
 use Linio\SellerCenter\Response\SuccessResponse;
 
 class GlobalOrderManagerTest extends LinioTestCase
 {
     use ClientHelper;
+
+    public function testItReturnsSuccessResponseWhenSetInvoiceDocument(): void
+    {
+        $feedId = 'abdcd887-5c53-4636-8799-9b6f4b0176d7';
+
+        $body = sprintf(
+            $this->getSchema('Order/SetInvoiceDocumentSuccessResponse.xml'),
+            $feedId
+        );
+
+        $client = $this->createClientWithResponse($body);
+
+        $parameters = $this->getParameters();
+
+        $configuration = new Configuration($parameters['key'], $parameters['username'], $parameters['endpoint'], $parameters['version']);
+
+        $sdkClient = new SellerCenterSdk($configuration, $client);
+
+        $response = $sdkClient->globalOrders()->setInvoiceDocument(
+            1,
+            'test123',
+            $this->getSchema('Order/InvoiceDocument.xml')
+        );
+
+        $this->assertInstanceOf(FeedResponse::class, $response);
+        $this->assertEquals($response->getRequestId(), $feedId);
+    }
 
     public function testItReturnsSuccessResponseWhenSetInvoiceNumberInGlobal(): void
     {

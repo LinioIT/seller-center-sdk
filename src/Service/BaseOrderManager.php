@@ -420,7 +420,7 @@ class BaseOrderManager extends BaseManager
         int $orderItemId,
         string $reason,
         string $reasonDetail = null
-        ): SuccessResponse {
+    ): SuccessResponse {
         $action = 'SetStatusToCanceled';
 
         $parameters = $this->makeParametersForAction($action);

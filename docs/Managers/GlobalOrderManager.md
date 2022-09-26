@@ -1,7 +1,7 @@
 # Global Order Manager
 
 ## Index
-- [Orders](#global-order-manager)
+- [Global Order Manager](#global-order-manager)
   - [Index](#index)
   - [Getting an order](#getting-an-order)
     - [getOrder](#getorder)
@@ -38,6 +38,9 @@
   - [Setting order invoice number](#setting-order-invoice-number)
     - [setInvoiceNumber](#setinvoicenumber)
       - [Example](#example-14)
+  - [Setting order invoice document](#setting-order-invoice-document)
+    - [setInvoiceDocument](#setinvoicedocument)
+      - [Example](#example-15)
   
 ## Getting an order
 
@@ -375,5 +378,32 @@ $invoiceNumber = '123132465465465465456';
 $invoiceDocumentLink = 'https://fakeInvoice.pdf';
 
 $orderItems = $sdk->globalOrders()->setInvoiceNumber($orderItems, $invoiceNumber, $invoiceDocumentLink);
+```
+
+## Setting order invoice document
+
+### setInvoiceDocument
+
+This method sets the invoice document.
+
+| Parameter | Type | Description | Required | Default |
+| --------- | :----: | ----------- | :--------: | :-------: |
+| `$orderItemId` | int | Identifier of the order item | Yes | - |
+| `$invoiceNumber` | string | The invoice number | Yes | - |
+| `$invoiceDocument` | string | Document XML format | Yes | - |
+
+NOTE: Invoice will be changed for all order items in the package.
+
+#### Example
+
+```php
+// Get items collection from order #1234
+$orderItems = $sdk->globalOrders()->getOrderItemId(1234);
+
+$firstOrderItem = reset($orderItems);
+$invoiceNumber = '123132465465465465456';
+$invoiceDocument = '<?xml version="1.0" encoding="UTF-8"?><Node><Item>[Invoice data]]</Item></Node>';
+
+$orderItems = $sdk->globalOrders()->setInvoiceDocument($firstOrderItem, $invoiceNumber, $invoiceDocument);
 ```
 --------------
