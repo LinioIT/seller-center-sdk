@@ -5,7 +5,10 @@ declare(strict_types=1);
 namespace Linio\SellerCenter\Service;
 
 use Linio\Component\Util\Json;
+use Linio\SellerCenter\Factory\Xml\FeedResponseFactory;
 use Linio\SellerCenter\Factory\Xml\Order\OrderItemsFactory;
+use Linio\SellerCenter\Model\Order\OrderItem;
+use Linio\SellerCenter\Response\FeedResponse;
 use Linio\SellerCenter\Response\SuccessResponse;
 
 class GlobalOrderManager extends BaseOrderManager
@@ -46,6 +49,43 @@ class GlobalOrderManager extends BaseOrderManager
         );
 
         return $response;
+    }
+
+    public function setInvoiceDocument(
+        int $orderItemId,
+        string $invoiceNumber,
+        string $invoiceDocument
+    ): FeedResponse {
+        $action = 'SetInvoiceDocument';
+
+        $parameters = $this->makeParametersForAction($action);
+
+        $parameters->set([
+            'OrderItemId' => $orderItemId,
+            'InvoiceNumber' => $invoiceNumber,
+        ]);
+
+        $requestId = $this->generateRequestId();
+
+        $response = $this->executeAction(
+            $action,
+            $parameters,
+            $requestId,
+            'POST',
+            $invoiceDocument
+        );
+
+        $feedResponse = FeedResponseFactory::make($response->getHead());
+
+        $this->logger->info(
+            sprintf(
+                '%d::%s::APIResponse::SellerCenterSdk: Invoice Document Set',
+                $requestId,
+                $action
+            )
+        );
+
+        return $feedResponse;
     }
 
     /**
