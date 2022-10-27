@@ -172,7 +172,7 @@ class SellerManagerTest extends LinioTestCase
         $body = '<?xml version="1.0" encoding="UTF-8"?>
         <ErrorResponse>
             <Head>
-                <RequestAction>GetOrder</RequestAction>
+                <RequestAction>GetStatistics</RequestAction>
                 <ErrorType>Sender</ErrorType>
                 <ErrorCode>125</ErrorCode>
                 <ErrorMessage>E0125: Test Error</ErrorMessage>
