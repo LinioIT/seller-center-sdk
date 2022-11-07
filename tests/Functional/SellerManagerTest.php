@@ -11,7 +11,7 @@ class SellerManagerTest extends LinioTestCase
 {
     use ClientHelper;
 
-    public function testItReturnsACollectionOfBrands(): void
+    public function testItReturnsStatistics(): void
     {
         $body = '<?xml version="1.0" encoding="UTF-8"?>
         <SuccessResponse>
