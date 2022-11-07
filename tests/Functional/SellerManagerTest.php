@@ -132,7 +132,7 @@ class SellerManagerTest extends LinioTestCase
         $sdkClient = new SellerCenterSdk($configuration, $client);
 
         $result = $sdkClient->seller()->getStatistics();
-
+        
         $this->assertIsArray($result);
         $this->assertEquals($result['Products']['Total'], 6053);
         $this->assertEquals($result['Products']['Active'], 5036);
