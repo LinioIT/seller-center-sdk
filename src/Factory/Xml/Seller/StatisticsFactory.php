@@ -18,12 +18,12 @@ class StatisticsFactory
         $statistics['Products'] = [];
         $statistics['Orders'] = [];
 
-        foreach ($xml->Products->Status->Children as $element) {
+        foreach ($xml->Products->Status->children() as $element) {
             $statistics['Products'][$element->getName()] = (string) $element;
         }
         $statistics['Products']['Total'] = (string) $xml->Products->Total;
 
-        foreach ($xml->Orders->Status->Children as $element) {
+        foreach ($xml->Orders->Status->children() as $element) {
             $statistics['Orders'][$element->getName()] = (string) $element;
         }
         $statistics['Orders']['Total'] = (string) $xml->Orders->Total;
