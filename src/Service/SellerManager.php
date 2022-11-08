@@ -14,7 +14,7 @@ use Linio\SellerCenter\Formatter\LogMessageFormatter;
 use Linio\SellerCenter\Response\HandleResponse;
 use Psr\Log\LoggerInterface;
 
-class SellerManager
+class SellerManager extends BaseManager
 {
     /**
      * @var LoggerInterface

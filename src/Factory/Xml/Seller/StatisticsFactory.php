@@ -4,14 +4,10 @@ declare(strict_types=1);
 
 namespace Linio\SellerCenter\Factory\Xml\Seller;
 
-use Exception;
 use SimpleXMLElement;
 
 class StatisticsFactory
 {
-    /**
-     * @throws Exception
-     */
     public static function make(SimpleXMLElement $xml): array
     {
         $statistics = [];
