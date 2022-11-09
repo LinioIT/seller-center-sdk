@@ -4,25 +4,24 @@ declare(strict_types=1);
 
 namespace Linio\SellerCenter\Factory\Xml\Seller;
 
+use Linio\SellerCenter\Model\Seller\Statistic;
 use SimpleXMLElement;
 
 class StatisticsFactory
 {
-    public static function make(SimpleXMLElement $xml): array
+    public static function make(SimpleXMLElement $xml): Statistic
     {
-        $statistics = [];
-        $statistics['Products'] = [];
-        $statistics['Orders'] = [];
+        $statistics = Statistic::build();
 
         foreach ($xml->Products->Status->children() as $element) {
-            $statistics['Products'][$element->getName()] = (string) $element;
+            $statistics->addProductStatistic($element->getName(), (int) $element);
         }
-        $statistics['Products']['Total'] = (string) $xml->Products->Total;
+        $statistics->addProductStatistic('Total', (int) $xml->Products->Total);
 
         foreach ($xml->Orders->Status->children() as $element) {
-            $statistics['Orders'][$element->getName()] = (string) $element;
+            $statistics->addOrderStatistic($element->getName(), (int) $element);
         }
-        $statistics['Orders']['Total'] = (string) $xml->Orders->Total;
+        $statistics->addOrderStatistic('Total', (int) $xml->Orders->Total);
 
         return $statistics;
     }

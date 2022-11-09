@@ -69,9 +69,9 @@ class BaseManagerTest extends LinioTestCase
     {
         $this->parametersStub->set(['foo' => true]);
         $queryParameters = $this->baseManager->buildQuery($this->parametersStub);
-        $this->assertCount(2, $queryParameters);
-        $this->assertArrayHasKey('foo', $queryParameters);
-        $this->assertArrayHasKey('Signature', $queryParameters);
+        $this->assertCount(2, $queryParameters->all());
+        $this->assertArrayHasKey('foo', $queryParameters->all());
+        $this->assertArrayHasKey('Signature', $queryParameters->all());
     }
 
     public function testItExecutesAction(): void
