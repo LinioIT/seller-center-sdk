@@ -120,13 +120,17 @@ class BaseManager
         return $builtResponse;
     }
 
-    public function buildQuery(Parameters $parameters): Parameters
+    /**
+     * @return mixed[]
+     */
+    public function buildQuery(Parameters $parameters): array
     {
-        $parameters->set([
-            'Signature' => Signature::generate($parameters, $this->configuration->getKey())->get(),
-        ]);
-
-        return $parameters;
+        return $parameters->all() + [
+            'Signature' => Signature::generate(
+                $parameters,
+                $this->configuration->getKey()
+            )->get(),
+        ];
     }
 
     private function logRequest(

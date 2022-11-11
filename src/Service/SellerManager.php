@@ -14,7 +14,6 @@ class SellerManager extends BaseManager
         $action = 'GetStatistics';
 
         $parameters = $this->makeParametersForAction($action);
-        $parameters = $this->buildQuery($parameters);
 
         $requestId = uniqid((string) mt_rand());
 
