@@ -15,7 +15,7 @@ class SellerManager extends BaseManager
 
         $parameters = $this->makeParametersForAction($action);
 
-        $requestId = uniqid((string) mt_rand());
+        $requestId = $this->generateRequestId();
 
         $builtResponse = $this->executeAction($action, $parameters, $requestId, 'GET');
 
