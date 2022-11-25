@@ -120,7 +120,7 @@ class SellerCenterSdk
         $this->setClient($client);
         $this->configuration = $configuration;
         $this->logger = $logger ?? new NullLogger();
-        $this->parameters = Parameters::fromBasics($configuration->getUser(), $configuration->getVersion());
+        $this->parameters = Parameters::fromConfiguration($configuration);
     }
 
     /**

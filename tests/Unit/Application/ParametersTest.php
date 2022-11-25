@@ -70,4 +70,40 @@ class ParametersTest extends LinioTestCase
         $this->assertEquals('version', $basics['Version']);
         $this->assertEquals('json', $basics['Format']);
     }
+
+    /**
+     * @dataProvider configurationProvider
+     */
+    public function testItCreatesParameterFromConfiguration(Configuration $configuration, string $userAgent): void
+    {
+        $parameters = Parameters::fromConfiguration($configuration);
+
+        $basics = $parameters->all();
+        $this->assertEquals('API_USERNAME', $basics['UserID']);
+        $this->assertEquals('API_VERSION', $basics['Version']);
+        $this->assertEquals('XML', $basics['Format']);
+        $this->assertEquals($userAgent, $basics['User-Agent']);
+    }
+
+    public function configurationProvider(): array
+    {
+        return [
+            'default case' => [
+                'configuration' => new Configuration('API_KEY', 'API_USERNAME', 'API_ENDPOINT', 'API_VERSION'),
+                'userAgent' => sprintf('/PHP/%s', phpversion()),
+            ],
+            'full case' => [
+                'configuration' => new Configuration('API_KEY', 'API_USERNAME', 'API_ENDPOINT', 'API_VERSION', 'SOURCE','USER_ID','NOT_PHP', '5.5', 'INTEGRATOR', 'CL'),
+                'userAgent' => 'USER_ID/NOT_PHP/5.5/INTEGRATOR/CL',
+            ],
+            'missing country' => [
+                'configuration' => new Configuration('API_KEY', 'API_USERNAME', 'API_ENDPOINT', 'API_VERSION', 'SOURCE','USER_ID','NOT_PHP', '5.5', 'INTEGRATOR'),
+                'userAgent' => 'USER_ID/NOT_PHP/5.5/INTEGRATOR',
+            ],
+            'missing integrator' => [
+                'configuration' => new Configuration('API_KEY', 'API_USERNAME', 'API_ENDPOINT', 'API_VERSION', 'SOURCE','USER_ID','NOT_PHP', '5.5', null, 'CL'),
+                'userAgent' => 'USER_ID/NOT_PHP/5.5/CL',
+            ],
+        ];
+    }
 }
