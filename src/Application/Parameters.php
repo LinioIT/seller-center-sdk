@@ -54,35 +54,11 @@ class Parameters
     {
         $parameters = new Parameters();
 
-        $userAgent = sprintf(
-            '%s/%s/%s',
-            $configuration->getUserId(),
-            $configuration->getLanguage(),
-            $configuration->getLanguageVersion()
-        );
-
-        if (!empty($configuration->getIntegrator())) {
-            $userAgent = sprintf(
-                '%s/%s',
-                $userAgent,
-                $configuration->getIntegrator()
-            );
-        }
-
-        if (!empty($configuration->getCountry())) {
-            $userAgent = sprintf(
-                '%s/%s',
-                $userAgent,
-                $configuration->getCountry()
-            );
-        }
-
         $parameters->set([
             'Timestamp' => (new DateTimeImmutable())->format(DATE_ATOM),
             'UserID' => $configuration->getUser(),
             'Version' => $configuration->getVersion(),
             'Format' => 'XML',
-            'User-Agent' => $userAgent,
         ]);
 
         return $parameters;
