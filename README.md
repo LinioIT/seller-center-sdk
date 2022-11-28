@@ -50,7 +50,27 @@ All the interaction with the platform will be guided through the SDK class **Sel
 ```php
 $client = new Client(); // Guzzle >= v6 only or a PSR7 HTTP Client
 
-$configuration = new \Linio\SellerCenter\Application\Configuration('api-key-provided', 'api-username-provided', 'https://enviroment-seller-center-api.com', '1.0');
+$configuration = new \Linio\SellerCenter\Application\Configuration(
+    'api-key-provided',
+    'api-username-provided',
+    'https://enviroment-seller-center-api.com',
+    '1.0',
+    );
+
+// Or you may provide additional arguments
+
+$configuration = new \Linio\SellerCenter\Application\Configuration(
+    'api-key-provided',
+    'api-username-provided',
+    'https://enviroment-seller-center-api.com',
+    '1.0',
+    'SDK', // Source
+    'user-id',
+    'PHP', //Language
+    '7.5', //Language version
+    'integrator-name',
+    'cl' //Country
+    );
 
 $sdk = new \Linio\SellerCenter\SellerCenterSdk($configuration, $client);
 ```
