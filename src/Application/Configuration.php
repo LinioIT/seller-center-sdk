@@ -62,8 +62,18 @@ class Configuration
      */
     private $country;
 
-    public function __construct(string $key, string $username, string $endpoint, string $version = self::VERSION, ?string $source = self::SOURCE, ?string $userId = null, ?string $language = self::LANGUAGE, ?string $languageVersion = null, ?string $integrator = null, ?string $country = null)
-    {
+    public function __construct(
+        string $key,
+        string $username,
+        string $endpoint,
+        string $version = self::VERSION,
+        ?string $source = self::SOURCE,
+        ?string $userId = null,
+        ?string $language = self::LANGUAGE,
+        ?string $languageVersion = null,
+        ?string $integrator = null,
+        ?string $country = null
+    ) {
         $this->key = $key;
         $this->username = $username;
         $this->endpoint = $endpoint;
