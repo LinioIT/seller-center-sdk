@@ -61,7 +61,7 @@ class Parameters
             $configuration->getLanguageVersion()
         );
 
-        if(!empty($configuration->getIntegrator())){
+        if (!empty($configuration->getIntegrator())) {
             $userAgent = sprintf(
                 '%s/%s',
                 $userAgent,
@@ -69,7 +69,7 @@ class Parameters
             );
         }
 
-        if(!empty($configuration->getCountry())){
+        if (!empty($configuration->getCountry())) {
             $userAgent = sprintf(
                 '%s/%s',
                 $userAgent,

@@ -38,7 +38,7 @@ class Configuration
     private $source;
 
     /**
-     * @var string
+     * @var string|null
      */
     private $userId;
 
@@ -62,7 +62,7 @@ class Configuration
      */
     private $country;
 
-    public function __construct(string $key, string $username, string $endpoint, string $version = self::VERSION, ?string $source = self::SOURCE, ?string $userId = null,?string $language = self::LANGUAGE, ?string $languageVersion = null, ?string $integrator = null, ?string $country = null)
+    public function __construct(string $key, string $username, string $endpoint, string $version = self::VERSION, ?string $source = self::SOURCE, ?string $userId = null, ?string $language = self::LANGUAGE, ?string $languageVersion = null, ?string $integrator = null, ?string $country = null)
     {
         $this->key = $key;
         $this->username = $username;
@@ -71,7 +71,7 @@ class Configuration
         $this->source = $source ?? self::SOURCE;
         $this->userId = $userId;
         $this->language = $language ?? self::LANGUAGE;
-        $this->languageVersion = $languageVersion ?? phpversion();
+        $this->languageVersion = $languageVersion ?? (string) phpversion();
         $this->integrator = $integrator;
         $this->country = $country;
     }
