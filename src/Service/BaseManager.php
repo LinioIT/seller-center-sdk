@@ -19,6 +19,7 @@ class BaseManager
 {
     protected const DATE_TIME_FORMAT = 'Y-m-d\TH:i:s';
     protected const X_SOURCE_HEADER = 'X-Source';
+    protected const USER_AGENT_HEADER = 'User-Agent';
     protected const REQUEST_ID_HEADER = 'Request-ID';
 
     /**
@@ -78,6 +79,7 @@ class BaseManager
         $headers = [
             self::REQUEST_ID_HEADER => $this->generateRequestId(),
             self::X_SOURCE_HEADER => $this->configuration->getSource(),
+            self::USER_AGENT_HEADER => $this->configuration->getUserAgent(),
         ];
 
         if (empty($customHeaders)) {
@@ -91,11 +93,17 @@ class BaseManager
         string $action,
         Parameters $parameters,
         string $requestId,
-        string $httpMethod = 'GET'
+        string $httpMethod = 'GET',
+        ?string $body = null
     ): SuccessResponse {
         $requestHeaders = $this->generateRequestHeaders([self::REQUEST_ID_HEADER => $requestId]);
 
-        $request = RequestFactory::make($httpMethod, $this->configuration->getEndpoint(), $requestHeaders);
+        $request = RequestFactory::make(
+            $httpMethod,
+            $this->configuration->getEndpoint(),
+            $requestHeaders,
+            $body
+        );
 
         $this->logRequest($action, $requestId, $request, $parameters);
 

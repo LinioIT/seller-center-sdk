@@ -203,6 +203,8 @@ class ProductTest extends LinioTestCase
         $this->assertEquals($product->getMainImage(), $this->mainImage);
         $this->assertEquals($product->getImages(), $this->images);
         $this->assertEquals($product->getUrl(), $this->url);
+        $product->setUrl('');
+        $this->assertEquals($product->getUrl(), null);
     }
 
     public function testItChangesAllMandatoryParameters(): void

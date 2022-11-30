@@ -15,10 +15,12 @@ use Linio\SellerCenter\Service\CategoryManager;
 use Linio\SellerCenter\Service\Contract\ProductManagerInterface;
 use Linio\SellerCenter\Service\DocumentManager;
 use Linio\SellerCenter\Service\FeedManager;
+use Linio\SellerCenter\Service\GlobalOrderManager;
 use Linio\SellerCenter\Service\GlobalProductManager;
 use Linio\SellerCenter\Service\OrderManager;
 use Linio\SellerCenter\Service\ProductManager;
 use Linio\SellerCenter\Service\QualityControlManager;
+use Linio\SellerCenter\Service\SellerManager;
 use Linio\SellerCenter\Service\ShipmentManager;
 use Linio\SellerCenter\Service\WebhookManager;
 use Psr\Log\LoggerInterface;
@@ -55,6 +57,11 @@ class SellerCenterSdk
      * @var OrderManager
      */
     protected $orders;
+
+    /**
+     * @var GlobalOrderManager
+     */
+    protected $globalOrders;
 
     /**
      * @var WebhookManager
@@ -97,6 +104,11 @@ class SellerCenterSdk
     protected $shipment;
 
     /**
+     * @var SellerManager
+     */
+    protected $seller;
+
+    /**
      * @param \GuzzleHttp\ClientInterface|\Psr\Http\Client\ClientInterface|null $client
      */
     public function __construct(
@@ -108,7 +120,7 @@ class SellerCenterSdk
         $this->setClient($client);
         $this->configuration = $configuration;
         $this->logger = $logger ?? new NullLogger();
-        $this->parameters = Parameters::fromBasics($configuration->getUser(), $configuration->getVersion());
+        $this->parameters = Parameters::fromConfiguration($configuration);
     }
 
     /**
@@ -223,6 +235,20 @@ class SellerCenterSdk
         return $this->orders;
     }
 
+    public function globalOrders(): GlobalOrderManager
+    {
+        if (empty($this->globalOrders)) {
+            $this->globalOrders = new GlobalOrderManager(
+                $this->configuration,
+                $this->client,
+                $this->parameters,
+                $this->logger
+            );
+        }
+
+        return $this->globalOrders;
+    }
+
     public function qualityControl(): QualityControlManager
     {
         if (!$this->qualityControl instanceof QualityControlManager) {
@@ -263,5 +289,19 @@ class SellerCenterSdk
         }
 
         return $this->shipment;
+    }
+
+    public function seller(): SellerManager
+    {
+        if (empty($this->seller)) {
+            $this->seller = new SellerManager(
+                $this->configuration,
+                $this->client,
+                $this->parameters,
+                $this->logger
+            );
+        }
+
+        return $this->seller;
     }
 }

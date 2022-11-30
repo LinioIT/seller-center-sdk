@@ -35,5 +35,6 @@
   "createdAt": "%s",
   "updatedAt": "%s",
   "returnStatus": "%s",
-  "salesType": "PURE_MARKETPLACE"
+  "salesType": "PURE_MARKETPLACE",
+  "imei": "qwe12eqw165qw4-qw7e89q654"
 }

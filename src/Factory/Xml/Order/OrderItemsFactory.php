@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace Linio\SellerCenter\Factory\Xml\Order;
 
+use Linio\SellerCenter\Model\Order\OrderItem;
 use Linio\SellerCenter\Model\Order\OrderItems;
 use SimpleXMLElement;
 
@@ -30,5 +31,19 @@ class OrderItemsFactory
         }
 
         return $orderItems;
+    }
+
+    /**
+     * @return OrderItem[]
+     */
+    public static function makeFromImeiStatus(SimpleXMLElement $element): array
+    {
+        $orderItems = new OrderItems();
+        foreach ($element->OrderItem as $item) {
+            $orderItem = OrderItemFactory::makeFromImeiStatus($item);
+            $orderItems->add($orderItem);
+        }
+
+        return $orderItems->all();
     }
 }

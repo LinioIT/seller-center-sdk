@@ -5,51 +5,21 @@ declare(strict_types=1);
 namespace Linio\SellerCenter\Service;
 
 use Linio\Component\Util\Json;
+use Linio\SellerCenter\Factory\Xml\FeedResponseFactory;
 use Linio\SellerCenter\Factory\Xml\Order\OrderItemsFactory;
 use Linio\SellerCenter\Model\Order\OrderItem;
+use Linio\SellerCenter\Response\FeedResponse;
 use Linio\SellerCenter\Response\SuccessResponse;
-use Linio\SellerCenter\Transformer\Order\OrderItemsTransformer;
 
-class OrderManager extends BaseOrderManager
+class GlobalOrderManager extends BaseOrderManager
 {
-    /**
-     * @param OrderItem[] $orderItems
-     *
-     * @return OrderItem[]
-     */
-    public function setOrderItemsImei(
-        array $orderItems
-    ): array {
-        $action = 'SetImei';
-        $parameters = $this->makeParametersForAction($action);
-        $requestId = $this->generateRequestId();
-
-        $builtResponse = $this->executeAction(
-            $action,
-            $parameters,
-            $requestId,
-            'POST',
-            OrderItemsTransformer::orderItemsImeiAsXmlString($orderItems)
-        );
-
-        $orderItems = OrderItemsFactory::makeFromImeiStatus($builtResponse->getBody());
-
-        $this->logger->info(
-            sprintf(
-                '%d::%s::APIResponse::SellerCenterSdk: Imei Set',
-                $requestId,
-                $action
-            )
-        );
-
-        return $orderItems;
-    }
-
     public function setInvoiceNumber(
         int $orderItemId,
-        string $invoiceNumber
+        string $invoiceNumber,
+        ?string $invoiceDocumentLink
     ): SuccessResponse {
         $action = 'SetInvoiceNumber';
+
         $parameters = $this->makeParametersForAction($action);
 
         $parameters->set([
@@ -57,7 +27,12 @@ class OrderManager extends BaseOrderManager
             'InvoiceNumber' => $invoiceNumber,
         ]);
 
+        if (!empty($invoiceDocumentLink)) {
+            $parameters->set(['InvoiceDocumentLink' => $invoiceDocumentLink]);
+        }
+
         $requestId = $this->generateRequestId();
+
         $response = $this->executeAction(
             $action,
             $parameters,
@@ -76,6 +51,43 @@ class OrderManager extends BaseOrderManager
         return $response;
     }
 
+    public function setInvoiceDocument(
+        int $orderItemId,
+        string $invoiceNumber,
+        string $invoiceDocument
+    ): FeedResponse {
+        $action = 'SetInvoiceDocument';
+
+        $parameters = $this->makeParametersForAction($action);
+
+        $parameters->set([
+            'OrderItemId' => $orderItemId,
+            'InvoiceNumber' => $invoiceNumber,
+        ]);
+
+        $requestId = $this->generateRequestId();
+
+        $response = $this->executeAction(
+            $action,
+            $parameters,
+            $requestId,
+            'POST',
+            $invoiceDocument
+        );
+
+        $feedResponse = FeedResponseFactory::make($response->getHead());
+
+        $this->logger->info(
+            sprintf(
+                '%d::%s::APIResponse::SellerCenterSdk: Invoice Document Set',
+                $requestId,
+                $action
+            )
+        );
+
+        return $feedResponse;
+    }
+
     /**
      * @param mixed[] $orderItemIds
      *
@@ -84,23 +96,19 @@ class OrderManager extends BaseOrderManager
     public function setStatusToReadyToShip(
         array $orderItemIds,
         string $deliveryType,
-        string $shippingProvider = null,
-        string $trackingNumber = null
+        ?string $packageId = null
     ): array {
         $action = 'SetStatusToReadyToShip';
 
         $parameters = $this->makeParametersForAction($action);
+
         $parameters->set([
             'OrderItemIds' => Json::encode($orderItemIds),
             'DeliveryType' => $deliveryType,
         ]);
 
-        if (!empty($shippingProvider)) {
-            $parameters->set(['ShippingProvider' => $shippingProvider]);
-        }
-
-        if (!empty($trackingNumber)) {
-            $parameters->set(['TrackingNumber' => $trackingNumber]);
+        if (!empty($packageId)) {
+            $parameters->set(['PackageId' => $packageId]);
         }
 
         $requestId = $this->generateRequestId();
@@ -134,25 +142,16 @@ class OrderManager extends BaseOrderManager
      */
     public function setStatusToPackedByMarketplace(
         array $orderItemIds,
-        string $deliveryType,
-        string $shippingProvider = null,
-        string $trackingNumber = null
+        string $deliveryType
     ): array {
         $action = 'SetStatusToPackedByMarketplace';
 
         $parameters = $this->makeParametersForAction($action);
+
         $parameters->set([
             'OrderItemIds' => Json::encode($orderItemIds),
             'DeliveryType' => $deliveryType,
         ]);
-
-        if (!empty($shippingProvider)) {
-            $parameters->set(['ShippingProvider' => $shippingProvider]);
-        }
-
-        if (!empty($trackingNumber)) {
-            $parameters->set(['TrackingNumber' => $trackingNumber]);
-        }
 
         $requestId = $this->generateRequestId();
 
