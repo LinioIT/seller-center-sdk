@@ -60,16 +60,16 @@ class ConfigurationTest extends LinioTestCase
                 'userAgent' => sprintf('/PHP/%s', phpversion()),
             ],
             'full case' => [
-                'configuration' => new Configuration('API_KEY', 'API_USERNAME', 'API_ENDPOINT', 'API_VERSION', 'SOURCE', 'USER_ID', 'NOT_PHP', '5.5', 'INTEGRATOR', 'CL'),
-                'userAgent' => 'USER_ID/NOT_PHP/5.5/INTEGRATOR/CL',
+                'configuration' => new Configuration('API_KEY', 'API_USERNAME', 'API_ENDPOINT', 'API_VERSION', 'SOURCE', 'SELLER_ID', 'NOT_PHP', '5.5', 'INTEGRATOR', 'CL'),
+                'userAgent' => 'SELLER_ID/NOT_PHP/5.5/INTEGRATOR/CL',
             ],
             'missing country' => [
-                'configuration' => new Configuration('API_KEY', 'API_USERNAME', 'API_ENDPOINT', 'API_VERSION', 'SOURCE', 'USER_ID', 'NOT_PHP', '5.5', 'INTEGRATOR'),
-                'userAgent' => 'USER_ID/NOT_PHP/5.5/INTEGRATOR',
+                'configuration' => new Configuration('API_KEY', 'API_USERNAME', 'API_ENDPOINT', 'API_VERSION', 'SOURCE', 'SELLER_ID', 'NOT_PHP', '5.5', 'INTEGRATOR'),
+                'userAgent' => 'SELLER_ID/NOT_PHP/5.5/INTEGRATOR',
             ],
             'missing integrator' => [
-                'configuration' => new Configuration('API_KEY', 'API_USERNAME', 'API_ENDPOINT', 'API_VERSION', 'SOURCE', 'USER_ID', 'NOT_PHP', '5.5', null, 'CL'),
-                'userAgent' => 'USER_ID/NOT_PHP/5.5/CL',
+                'configuration' => new Configuration('API_KEY', 'API_USERNAME', 'API_ENDPOINT', 'API_VERSION', 'SOURCE', 'SELLER_ID', 'NOT_PHP', '5.5', null, 'CL'),
+                'userAgent' => 'SELLER_ID/NOT_PHP/5.5/CL',
             ],
         ];
     }

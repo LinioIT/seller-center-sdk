@@ -40,7 +40,7 @@ class Configuration
     /**
      * @var string|null
      */
-    private $userId;
+    private $sellerId;
 
     /**
      * @var string|null
@@ -68,7 +68,7 @@ class Configuration
         string $endpoint,
         string $version = self::VERSION,
         ?string $source = self::SOURCE,
-        ?string $userId = null,
+        ?string $sellerId = null,
         ?string $language = self::LANGUAGE,
         ?string $languageVersion = null,
         ?string $integrator = null,
@@ -79,7 +79,7 @@ class Configuration
         $this->endpoint = $endpoint;
         $this->version = $version;
         $this->source = $source ?? self::SOURCE;
-        $this->userId = $userId;
+        $this->sellerId = $sellerId;
         $this->language = $language ?? self::LANGUAGE;
         $this->languageVersion = $languageVersion ?? (string) phpversion();
         $this->integrator = $integrator;
@@ -111,9 +111,9 @@ class Configuration
         return $this->source;
     }
 
-    public function getUserId(): ?string
+    public function getSellerId(): ?string
     {
-        return $this->userId;
+        return $this->sellerId;
     }
 
     public function getLanguage(): ?string
@@ -140,7 +140,7 @@ class Configuration
     {
         $userAgent = sprintf(
             '%s/%s/%s',
-            $this->getUserId(),
+            $this->getSellerId(),
             $this->getLanguage(),
             $this->getLanguageVersion()
         );
