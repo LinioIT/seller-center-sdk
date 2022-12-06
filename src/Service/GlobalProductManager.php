@@ -46,51 +46,32 @@ class GlobalProductManager extends BaseManager implements ProductManagerInterfac
             $xml
         );
 
-        $this->logger->debug(
-            LogMessageFormatter::fromAction($requestId, $action, LogMessageFormatter::TYPE_REQUEST),
-            [
-                'url' => (string) $request->getUri(),
-                'method' => $request->getMethod(),
-                'body' => (string) $request->getBody(),
-                'parameters' => $parameters->all(),
-            ]
-        );
-
         $response = $this->client->send($request, [
             'query' => $parameters->all(),
         ]);
 
         $body = (string) $response->getBody();
 
-        $this->logger->debug(
-            LogMessageFormatter::fromAction($requestId, $action, LogMessageFormatter::TYPE_RESPONSE),
-            [
-                'statusCode' => $response->getStatusCode(),
-                'body' => $body,
-            ]
-        );
-
         $builtResponse = HandleResponse::parse($body);
 
         $this->logger->debug(
-            LogMessageFormatter::fromAction($requestId, $action, LogMessageFormatter::TYPE_BUILT_RESPONSE),
+            LogMessageFormatter::fromAction($requestId, $action, LogMessageFormatter::TYPE_REQUEST),
             [
-                'head' => $builtResponse->getHead()->asXML(),
-                'body' => $builtResponse->getBody()->asXML(),
+                'request' => [
+                    'url' => (string) $request->getUri(),
+                    'method' => $request->getMethod(),
+                    'body' => (string) $request->getBody(),
+                    'parameters' => $parameters->all(),
+                ],
+                'response' => [
+                    'head' => $builtResponse->getHead()->asXML(),
+                    'body' => $builtResponse->getBody()->asXML(),
+                    'statusCode' => $response->getStatusCode(),
+                ],
             ]
         );
 
-        $feedResponse = FeedResponseFactory::make($builtResponse->getHead());
-
-        $this->logger->info(
-            sprintf(
-                '%d::%s::APIResponse::SellerCenterSdk: the product was created',
-                $request->getHeaderLine('Request-ID'),
-                $action
-            )
-        );
-
-        return $feedResponse;
+        return FeedResponseFactory::make($builtResponse->getHead());
     }
 
     public function productUpdate(Products $products): FeedResponse
@@ -115,51 +96,32 @@ class GlobalProductManager extends BaseManager implements ProductManagerInterfac
             $xml
         );
 
-        $this->logger->debug(
-            LogMessageFormatter::fromAction($requestId, $action, LogMessageFormatter::TYPE_REQUEST),
-            [
-                'url' => (string) $request->getUri(),
-                'method' => $request->getMethod(),
-                'body' => (string) $request->getBody(),
-                'parameters' => $parameters->all(),
-            ]
-        );
-
         $response = $this->client->send($request, [
             'query' => $parameters->all(),
         ]);
 
         $body = (string) $response->getBody();
 
-        $this->logger->debug(
-            LogMessageFormatter::fromAction($requestId, $action, LogMessageFormatter::TYPE_RESPONSE),
-            [
-                'statusCode' => $response->getStatusCode(),
-                'body' => $body,
-            ]
-        );
-
         $builtResponse = HandleResponse::parse($body);
 
         $this->logger->debug(
-            LogMessageFormatter::fromAction($requestId, $action, LogMessageFormatter::TYPE_BUILT_RESPONSE),
+            LogMessageFormatter::fromAction($requestId, $action, LogMessageFormatter::TYPE_REQUEST),
             [
-                'head' => $builtResponse->getHead()->asXML(),
-                'body' => $builtResponse->getBody()->asXML(),
+                'request' => [
+                    'url' => (string) $request->getUri(),
+                    'method' => $request->getMethod(),
+                    'body' => (string) $request->getBody(),
+                    'parameters' => $parameters->all(),
+                ],
+                'response' => [
+                    'head' => $builtResponse->getHead()->asXML(),
+                    'body' => $builtResponse->getBody()->asXML(),
+                    'statusCode' => $response->getStatusCode(),
+                ],
             ]
         );
 
-        $feedResponse = FeedResponseFactory::make($builtResponse->getHead());
-
-        $this->logger->info(
-            sprintf(
-                '%d::%s::APIResponse::SellerCenterSdk: the product was updated',
-                $request->getHeaderLine('Request-ID'),
-                $action
-            )
-        );
-
-        return $feedResponse;
+        return FeedResponseFactory::make($builtResponse->getHead());
     }
 
     public function productRemove(Products $products): FeedResponse
@@ -184,51 +146,32 @@ class GlobalProductManager extends BaseManager implements ProductManagerInterfac
             $xml
         );
 
-        $this->logger->debug(
-            LogMessageFormatter::fromAction($requestId, $action, LogMessageFormatter::TYPE_REQUEST),
-            [
-                'url' => (string) $request->getUri(),
-                'method' => $request->getMethod(),
-                'body' => (string) $request->getBody(),
-                'parameters' => $parameters->all(),
-            ]
-        );
-
         $response = $this->client->send($request, [
             'query' => $parameters->all(),
         ]);
 
         $body = (string) $response->getBody();
 
-        $this->logger->debug(
-            LogMessageFormatter::fromAction($requestId, $action, LogMessageFormatter::TYPE_RESPONSE),
-            [
-                'statusCode' => $response->getStatusCode(),
-                'body' => $body,
-            ]
-        );
-
         $builtResponse = HandleResponse::parse($body);
 
         $this->logger->debug(
-            LogMessageFormatter::fromAction($requestId, $action, LogMessageFormatter::TYPE_BUILT_RESPONSE),
+            LogMessageFormatter::fromAction($requestId, $action, LogMessageFormatter::TYPE_REQUEST),
             [
-                'head' => $builtResponse->getHead()->asXML(),
-                'body' => $builtResponse->getBody()->asXML(),
+                'request' => [
+                    'url' => (string) $request->getUri(),
+                    'method' => $request->getMethod(),
+                    'body' => (string) $request->getBody(),
+                    'parameters' => $parameters->all(),
+                ],
+                'response' => [
+                    'head' => $builtResponse->getHead()->asXML(),
+                    'body' => $builtResponse->getBody()->asXML(),
+                    'statusCode' => $response->getStatusCode(),
+                ],
             ]
         );
 
-        $feedResponse = FeedResponseFactory::make($builtResponse->getHead());
-
-        $this->logger->info(
-            sprintf(
-                '%d::%s::APIResponse::SellerCenterSdk: the product was removed',
-                $request->getHeaderLine('Request-ID'),
-                $action
-            )
-        );
-
-        return $feedResponse;
+        return FeedResponseFactory::make($builtResponse->getHead());
     }
 
     /**
@@ -267,51 +210,32 @@ class GlobalProductManager extends BaseManager implements ProductManagerInterfac
             $xml
         );
 
-        $this->logger->debug(
-            LogMessageFormatter::fromAction($requestId, $action, LogMessageFormatter::TYPE_REQUEST),
-            [
-                'url' => (string) $request->getUri(),
-                'method' => $request->getMethod(),
-                'body' => (string) $request->getBody(),
-                'parameters' => $parameters->all(),
-            ]
-        );
-
         $response = $this->client->send($request, [
             'query' => $parameters->all(),
         ]);
 
         $body = (string) $response->getBody();
 
-        $this->logger->debug(
-            LogMessageFormatter::fromAction($requestId, $action, LogMessageFormatter::TYPE_RESPONSE),
-            [
-                'statusCode' => $response->getStatusCode(),
-                'body' => $body,
-            ]
-        );
-
         $builtResponse = HandleResponse::parse($body);
 
         $this->logger->debug(
-            LogMessageFormatter::fromAction($requestId, $action, LogMessageFormatter::TYPE_BUILT_RESPONSE),
+            LogMessageFormatter::fromAction($requestId, $action, LogMessageFormatter::TYPE_REQUEST),
             [
-                'head' => $builtResponse->getHead()->asXML(),
-                'body' => $builtResponse->getBody()->asXML(),
+                'request' => [
+                    'url' => (string) $request->getUri(),
+                    'method' => $request->getMethod(),
+                    'body' => (string) $request->getBody(),
+                    'parameters' => $parameters->all(),
+                ],
+                'response' => [
+                    'head' => $builtResponse->getHead()->asXML(),
+                    'body' => $builtResponse->getBody()->asXML(),
+                    'statusCode' => $response->getStatusCode(),
+                ],
             ]
         );
 
-        $feedResponse = FeedResponseFactory::make($builtResponse->getHead());
-
-        $this->logger->info(
-            sprintf(
-                '%d::%s::APIResponse::SellerCenterSdk: the images was added',
-                $request->getHeaderLine('Request-ID'),
-                $action
-            )
-        );
-
-        return $feedResponse;
+        return FeedResponseFactory::make($builtResponse->getHead());
     }
 
     /**
@@ -335,53 +259,33 @@ class GlobalProductManager extends BaseManager implements ProductManagerInterfac
             $requestHeaders
         );
 
-        $this->logger->debug(
-            LogMessageFormatter::fromAction($requestId, $action, LogMessageFormatter::TYPE_REQUEST),
-            [
-                'url' => (string) $request->getUri(),
-                'method' => $request->getMethod(),
-                'body' => (string) $request->getBody(),
-                'parameters' => $parameters->all(),
-            ]
-        );
-
         $response = $this->client->send($request, [
             'query' => $parameters->all(),
         ]);
 
         $body = (string) $response->getBody();
 
-        $this->logger->debug(
-            LogMessageFormatter::fromAction($requestId, $action, LogMessageFormatter::TYPE_RESPONSE),
-            [
-                'body' => $body,
-            ]
-        );
-
         $builtResponse = HandleResponse::parse($body);
 
         $this->logger->debug(
-            LogMessageFormatter::fromAction($requestId, $action, LogMessageFormatter::TYPE_BUILT_RESPONSE),
+            LogMessageFormatter::fromAction($requestId, $action, LogMessageFormatter::TYPE_REQUEST),
             [
-                'head' => $builtResponse->getHead()->asXML(),
-                'body' => $builtResponse->getBody()->asXML(),
+                'request' => [
+                    'url' => (string) $request->getUri(),
+                    'method' => $request->getMethod(),
+                    'body' => (string) $request->getBody(),
+                    'parameters' => $parameters->all(),
+                ],
+                'response' => [
+                    'head' => $builtResponse->getHead()->asXML(),
+                    'body' => $builtResponse->getBody()->asXML(),
+                ],
             ]
         );
 
         $products = GlobalProductsFactory::make($builtResponse->getBody(), $this->logger);
 
-        $productsResponse = array_values($products->all());
-
-        $this->logger->info(
-            sprintf(
-                '%d::%s::APIResponse::SellerCenterSdk: %d products was recovered',
-                $request->getHeaderLine('Request-ID'),
-                $action,
-                count($products->all())
-            )
-        );
-
-        return $productsResponse;
+        return array_values($products->all());
     }
 
     /**

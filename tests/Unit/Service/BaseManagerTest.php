@@ -81,7 +81,7 @@ class BaseManagerTest extends LinioTestCase
 
         $this->loggerStub
             ->debug(Argument::type('string'), Argument::type('array'))
-            ->shouldBeCalledTimes(3);
+            ->shouldBeCalledTimes(1);
 
         $this->clientStub
             ->send(

@@ -35,52 +35,31 @@ class ShipmentManager extends BaseManager
             $requestHeaders
         );
 
-        $this->logger->debug(
-            LogMessageFormatter::fromAction($requestId, $action, LogMessageFormatter::TYPE_REQUEST),
-            [
-                'url' => (string) $request->getUri(),
-                'method' => $request->getMethod(),
-                'body' => (string) $request->getBody(),
-                'parameters' => $parameters->all(),
-            ]
-        );
-
         $response = $this->client->send($request, [
             'query' => $parameters->all(),
         ]);
 
         $body = (string) $response->getBody();
-
-        $this->logger->debug(
-            LogMessageFormatter::fromAction($requestId, $action, LogMessageFormatter::TYPE_RESPONSE),
-            [
-                'body' => $body,
-            ]
-        );
-
         $builtResponse = HandleResponse::parse($body);
 
         $this->logger->debug(
-            LogMessageFormatter::fromAction($requestId, $action, LogMessageFormatter::TYPE_BUILT_RESPONSE),
+            LogMessageFormatter::fromAction($requestId, $action, LogMessageFormatter::TYPE_REQUEST),
             [
-                'head' => $builtResponse->getHead()->asXML(),
-                'body' => $builtResponse->getBody()->asXML(),
+                'request' => [
+                    'url' => (string) $request->getUri(),
+                    'method' => $request->getMethod(),
+                    'body' => (string) $request->getBody(),
+                    'parameters' => $parameters->all(),
+                ],
+                'response' => [
+                    'head' => $builtResponse->getHead()->asXML(),
+                    'body' => $builtResponse->getBody()->asXML(),
+                ],
             ]
         );
 
         $shipmentProviders = ShipmentProvidersFactory::make($builtResponse->getBody());
 
-        $shipmentProvidersResponse = $shipmentProviders->all();
-
-        $this->logger->info(
-            sprintf(
-                '%d::%s::APIResponse::SellerCenterSdk: %d shipment providers was recovered',
-                $request->getHeaderLine('Request-ID'),
-                $action,
-                count($shipmentProviders->all())
-            )
-        );
-
-        return $shipmentProvidersResponse;
+        return $shipmentProviders->all();
     }
 }
