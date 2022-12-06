@@ -7,7 +7,6 @@ namespace Linio\SellerCenter\Formatter;
 final class LogMessageFormatter
 {
     const TYPE_REQUEST = 'RequestResponse';
-    const TYPE_RESPONSE = 'RequestResponse';
     const TYPE_BUILT_RESPONSE = 'BuiltResponse';
     const TYPE_FACTORY = 'XmlFactoryStructureValidation';
 
