@@ -33,22 +33,12 @@ class GlobalOrderManager extends BaseOrderManager
 
         $requestId = $this->generateRequestId();
 
-        $response = $this->executeAction(
+        return $this->executeAction(
             $action,
             $parameters,
             $requestId,
             'POST'
         );
-
-        $this->logger->info(
-            sprintf(
-                '%d::%s::APIResponse::SellerCenterSdk: Invoice Number Set',
-                $requestId,
-                $action
-            )
-        );
-
-        return $response;
     }
 
     public function setInvoiceDocument(
@@ -75,17 +65,7 @@ class GlobalOrderManager extends BaseOrderManager
             $invoiceDocument
         );
 
-        $feedResponse = FeedResponseFactory::make($response->getHead());
-
-        $this->logger->info(
-            sprintf(
-                '%d::%s::APIResponse::SellerCenterSdk: Invoice Document Set',
-                $requestId,
-                $action
-            )
-        );
-
-        return $feedResponse;
+        return FeedResponseFactory::make($response->getHead());
     }
 
     /**
@@ -122,17 +102,7 @@ class GlobalOrderManager extends BaseOrderManager
 
         $orderItems = OrderItemsFactory::makeFromStatus($builtResponse->getBody());
 
-        $orderItemsResponse = array_values($orderItems->all());
-
-        $this->logger->info(
-            sprintf(
-                '%d::%s::APIResponse::SellerCenterSdk: the items status was changed',
-                $requestId,
-                $action
-            )
-        );
-
-        return $orderItemsResponse;
+        return array_values($orderItems->all());
     }
 
     /**
@@ -164,16 +134,6 @@ class GlobalOrderManager extends BaseOrderManager
 
         $orderItems = OrderItemsFactory::makeFromStatus($builtResponse->getBody());
 
-        $orderItemsResponse = array_values($orderItems->all());
-
-        $this->logger->info(
-            sprintf(
-                '%d::%s::APIResponse::SellerCenterSdk: the items status was changed',
-                $requestId,
-                $action
-            )
-        );
-
-        return $orderItemsResponse;
+        return array_values($orderItems->all());
     }
 }

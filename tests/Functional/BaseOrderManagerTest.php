@@ -425,9 +425,6 @@ class BaseOrderManagerTest extends LinioTestCase
             Argument::type('string'),
             Argument::type('array')
         )->shouldBeCalled();
-        $logger->info(
-            Argument::type('string')
-        )->shouldBeCalled();
         $sdkClient = new SellerCenterSdk($configuration, $client, $logger->reveal());
         $sdkClient->orders()->setStatusToCanceled(1, 'someReason', 'someReasonDetail');
     }
