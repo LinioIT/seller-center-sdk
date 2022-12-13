@@ -49,51 +49,32 @@ class WebhookManager extends BaseManager
             $xml
         );
 
-        $this->logger->debug(
-            LogMessageFormatter::fromAction($requestId, $action, LogMessageFormatter::TYPE_REQUEST),
-            [
-                'url' => (string) $request->getUri(),
-                'method' => $request->getMethod(),
-                'body' => (string) $request->getBody(),
-                'parameters' => $parameters->all(),
-            ]
-        );
-
         $response = $this->client->send($request, [
             'query' => $parameters->all(),
         ]);
 
         $body = (string) $response->getBody();
 
-        $this->logger->debug(
-            LogMessageFormatter::fromAction($requestId, $action, LogMessageFormatter::TYPE_RESPONSE),
-            [
-                'statusCode' => $response->getStatusCode(),
-                'body' => $body,
-            ]
-        );
-
         $builtResponse = HandleResponse::parse($body);
 
         $this->logger->debug(
-            LogMessageFormatter::fromAction($requestId, $action, LogMessageFormatter::TYPE_BUILT_RESPONSE),
+            LogMessageFormatter::fromAction($requestId, $action, LogMessageFormatter::TYPE_REQUEST),
             [
-                'head' => $builtResponse->getHead()->asXML(),
-                'body' => $builtResponse->getBody()->asXML(),
+                'request' => [
+                    'url' => (string) $request->getUri(),
+                    'method' => $request->getMethod(),
+                    'body' => (string) $request->getBody(),
+                    'parameters' => $parameters->all(),
+                ],
+                'response' => [
+                    'head' => $builtResponse->getHead()->asXML(),
+                    'body' => $builtResponse->getBody()->asXML(),
+                    'statusCode' => $response->getStatusCode(),
+                ],
             ]
         );
 
-        $webhookResponse = (string) $builtResponse->getBody()->Webhook->WebhookId;
-
-        $this->logger->info(
-            sprintf(
-                '%d::%s::APIResponse::SellerCenterSdk: the webhook was created',
-                $request->getHeaderLine('Request-ID'),
-                $action
-            )
-        );
-
-        return $webhookResponse;
+        return (string) $builtResponse->getBody()->Webhook->WebhookId;
     }
 
     public function deleteWebhook(string $webhookId): void
@@ -123,37 +104,27 @@ class WebhookManager extends BaseManager
             $xml
         );
 
-        $this->logger->debug(
-            LogMessageFormatter::fromAction($requestId, $action, LogMessageFormatter::TYPE_REQUEST),
-            [
-                'url' => (string) $request->getUri(),
-                'method' => $request->getMethod(),
-                'body' => (string) $request->getBody(),
-                'parameters' => $parameters->all(),
-            ]
-        );
-
         $response = $this->client->send($request, [
             'query' => $parameters->all(),
         ]);
 
         $body = (string) $response->getBody();
-
-        $this->logger->debug(
-            LogMessageFormatter::fromAction($requestId, $action, LogMessageFormatter::TYPE_RESPONSE),
-            [
-                'statusCode' => $response->getStatusCode(),
-                'body' => $body,
-            ]
-        );
-
         $builtResponse = HandleResponse::parse($body);
 
         $this->logger->debug(
-            LogMessageFormatter::fromAction($requestId, $action, LogMessageFormatter::TYPE_BUILT_RESPONSE),
+            LogMessageFormatter::fromAction($requestId, $action, LogMessageFormatter::TYPE_REQUEST),
             [
-                'head' => $builtResponse->getHead()->asXML(),
-                'body' => $builtResponse->getBody()->asXML(),
+                'request' => [
+                    'url' => (string) $request->getUri(),
+                    'method' => $request->getMethod(),
+                    'body' => (string) $request->getBody(),
+                    'parameters' => $parameters->all(),
+                ],
+                'response' => [
+                    'head' => $builtResponse->getHead()->asXML(),
+                    'body' => $builtResponse->getBody()->asXML(),
+                    'statusCode' => $response->getStatusCode(),
+                ],
             ]
         );
 
@@ -187,53 +158,33 @@ class WebhookManager extends BaseManager
             $requestHeaders
         );
 
-        $this->logger->debug(
-            LogMessageFormatter::fromAction($requestId, $action, LogMessageFormatter::TYPE_REQUEST),
-            [
-                'url' => (string) $request->getUri(),
-                'method' => $request->getMethod(),
-                'body' => (string) $request->getBody(),
-                'parameters' => $parameters->all(),
-            ]
-        );
-
         $response = $this->client->send($request, [
             'query' => $parameters->all(),
         ]);
 
         $body = (string) $response->getBody();
 
-        $this->logger->debug(
-            LogMessageFormatter::fromAction($requestId, $action, LogMessageFormatter::TYPE_RESPONSE),
-            [
-                'body' => $body,
-            ]
-        );
-
         $builtResponse = HandleResponse::parse($body);
 
         $this->logger->debug(
-            LogMessageFormatter::fromAction($requestId, $action, LogMessageFormatter::TYPE_BUILT_RESPONSE),
+            LogMessageFormatter::fromAction($requestId, $action, LogMessageFormatter::TYPE_REQUEST),
             [
-                'head' => $builtResponse->getHead()->asXML(),
-                'body' => $builtResponse->getBody()->asXML(),
+                'request' => [
+                    'url' => (string) $request->getUri(),
+                    'method' => $request->getMethod(),
+                    'body' => (string) $request->getBody(),
+                    'parameters' => $parameters->all(),
+                ],
+                'response' => [
+                    'head' => $builtResponse->getHead()->asXML(),
+                    'body' => $builtResponse->getBody()->asXML(),
+                ],
             ]
         );
 
         $webhooks = WebhooksFactory::make($builtResponse->getBody());
 
-        $webhooksResponse = $webhooks->all();
-
-        $this->logger->info(
-            sprintf(
-                '%d::%s::APIResponse::SellerCenterSdk: %d webhooks was recovered',
-                $request->getHeaderLine('Request-ID'),
-                $action,
-                count($webhooks->all())
-            )
-        );
-
-        return $webhooksResponse;
+        return $webhooks->all();
     }
 
     /**
@@ -286,52 +237,32 @@ class WebhookManager extends BaseManager
             $requestHeaders
         );
 
-        $this->logger->debug(
-            LogMessageFormatter::fromAction($requestId, $action, LogMessageFormatter::TYPE_REQUEST),
-            [
-                'url' => (string) $request->getUri(),
-                'method' => $request->getMethod(),
-                'body' => (string) $request->getBody(),
-                'parameters' => $parameters->all(),
-            ]
-        );
-
         $response = $this->client->send($request, [
             'query' => $parameters->all(),
         ]);
 
         $body = (string) $response->getBody();
 
-        $this->logger->debug(
-            LogMessageFormatter::fromAction($requestId, $action, LogMessageFormatter::TYPE_RESPONSE),
-            [
-                'body' => $body,
-            ]
-        );
-
         $builtResponse = HandleResponse::parse($body);
 
         $this->logger->debug(
-            LogMessageFormatter::fromAction($requestId, $action, LogMessageFormatter::TYPE_BUILT_RESPONSE),
+            LogMessageFormatter::fromAction($requestId, $action, LogMessageFormatter::TYPE_REQUEST),
             [
-                'head' => $builtResponse->getHead()->asXML(),
-                'body' => $builtResponse->getBody()->asXML(),
+                'request' => [
+                    'url' => (string) $request->getUri(),
+                    'method' => $request->getMethod(),
+                    'body' => (string) $request->getBody(),
+                    'parameters' => $parameters->all(),
+                ],
+                'response' => [
+                    'head' => $builtResponse->getHead()->asXML(),
+                    'body' => $builtResponse->getBody()->asXML(),
+                ],
             ]
         );
 
         $events = EventsFactory::make($builtResponse->getBody());
 
-        $eventsResponse = array_values($events->all());
-
-        $this->logger->info(
-            sprintf(
-                '%d::%s::APIResponse::SellerCenterSdk: %d events was recovered',
-                $request->getHeaderLine('Request-ID'),
-                $action,
-                count($events->all())
-            )
-        );
-
-        return $eventsResponse;
+        return array_values($events->all());
     }
 }

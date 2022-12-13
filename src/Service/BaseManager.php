@@ -104,20 +104,13 @@ class BaseManager
             $requestHeaders,
             $body
         );
-
-        $this->logRequest($action, $requestId, $request, $parameters);
-
         $response = $this->client->send($request, [
             'query' => $this->buildQuery($parameters),
         ]);
 
         $body = (string) $response->getBody();
-
-        $this->logRawResponse($action, $requestId, $body);
-
         $builtResponse = HandleResponse::parse($body);
-
-        $this->logHandledResponse($action, $requestId, $builtResponse);
+        $this->logRequest($action, $requestId, $request, $parameters, $builtResponse);
 
         return $builtResponse;
     }
@@ -139,36 +132,22 @@ class BaseManager
         string $action,
         string $requestId,
         RequestInterface $request,
-        Parameters $parameters
+        Parameters $parameters,
+        SuccessResponse $handledResponse
     ): void {
         $this->logger->debug(
             LogMessageFormatter::fromAction($requestId, $action, LogMessageFormatter::TYPE_REQUEST),
             [
-                'url' => (string) $request->getUri(),
-                'method' => $request->getMethod(),
-                'body' => (string) $request->getBody(),
-                'parameters' => $parameters->all(),
-            ]
-        );
-    }
-
-    private function logRawResponse(string $action, string $requestId, string $body): void
-    {
-        $this->logger->debug(
-            LogMessageFormatter::fromAction($requestId, $action, LogMessageFormatter::TYPE_RESPONSE),
-            [
-                'body' => $body,
-            ]
-        );
-    }
-
-    private function logHandledResponse(string $action, string $requestId, SuccessResponse $handledResponse): void
-    {
-        $this->logger->debug(
-            LogMessageFormatter::fromAction($requestId, $action, LogMessageFormatter::TYPE_BUILT_RESPONSE),
-            [
-                'head' => $handledResponse->getHead()->asXML(),
-                'body' => $handledResponse->getBody()->asXML(),
+                'request' => [
+                    'url' => (string) $request->getUri(),
+                    'method' => $request->getMethod(),
+                    'body' => (string) $request->getBody(),
+                    'parameters' => $parameters->all(),
+                ],
+                'response' => [
+                    'head' => $handledResponse->getHead()->asXML(),
+                    'body' => $handledResponse->getBody()->asXML(),
+                ],
             ]
         );
     }

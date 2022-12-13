@@ -40,53 +40,33 @@ class CategoryManager extends BaseManager
             $requestHeaders
         );
 
-        $this->logger->debug(
-            LogMessageFormatter::fromAction($requestId, $action, LogMessageFormatter::TYPE_REQUEST),
-            [
-                'url' => (string) $request->getUri(),
-                'method' => $request->getMethod(),
-                'body' => (string) $request->getBody(),
-                'parameters' => $parameters->all(),
-            ]
-        );
-
         $response = $this->client->send($request, [
             'query' => $parameters->all(),
         ]);
 
         $body = (string) $response->getBody();
 
-        $this->logger->debug(
-            LogMessageFormatter::fromAction($requestId, $action, LogMessageFormatter::TYPE_RESPONSE),
-            [
-                'body' => $body,
-            ]
-        );
-
         $builtResponse = HandleResponse::parse($body);
 
         $this->logger->debug(
-            LogMessageFormatter::fromAction($requestId, $action, LogMessageFormatter::TYPE_BUILT_RESPONSE),
+            LogMessageFormatter::fromAction($requestId, $action, LogMessageFormatter::TYPE_REQUEST),
             [
-                'head' => $builtResponse->getHead()->asXML(),
-                'body' => $builtResponse->getBody()->asXML(),
+                'request' => [
+                    'url' => (string) $request->getUri(),
+                    'method' => $request->getMethod(),
+                    'body' => (string) $request->getBody(),
+                    'parameters' => $parameters->all(),
+                ],
+                'response' => [
+                    'head' => $builtResponse->getHead()->asXML(),
+                    'body' => $builtResponse->getBody()->asXML(),
+                ],
             ]
         );
 
         $categories = CategoriesFactory::make($builtResponse->getBody());
 
-        $categoriesResponse = $categories->all();
-
-        $this->logger->info(
-            sprintf(
-                '%d::%s::APIResponse::SellerCenterSdk: %d categories was recovered',
-                $request->getHeaderLine('Request-ID'),
-                $action,
-                count($categories->all())
-            )
-        );
-
-        return $categoriesResponse;
+        return $categories->all();
     }
 
     /**
@@ -114,53 +94,33 @@ class CategoryManager extends BaseManager
             $requestHeaders
         );
 
-        $this->logger->debug(
-            LogMessageFormatter::fromAction($requestId, $action, LogMessageFormatter::TYPE_REQUEST),
-            [
-                'url' => (string) $request->getUri(),
-                'method' => $request->getMethod(),
-                'body' => (string) $request->getBody(),
-                'parameters' => $parameters->all(),
-            ]
-        );
-
         $response = $this->client->send($request, [
             'query' => $parameters->all(),
         ]);
 
         $body = (string) $response->getBody();
 
-        $this->logger->debug(
-            LogMessageFormatter::fromAction($requestId, $action, LogMessageFormatter::TYPE_RESPONSE),
-            [
-                'body' => $body,
-            ]
-        );
-
         $builtResponse = HandleResponse::parse($body);
 
         $this->logger->debug(
-            LogMessageFormatter::fromAction($requestId, $action, LogMessageFormatter::TYPE_BUILT_RESPONSE),
+            LogMessageFormatter::fromAction($requestId, $action, LogMessageFormatter::TYPE_REQUEST),
             [
-                'head' => $builtResponse->getHead()->asXML(),
-                'body' => $builtResponse->getBody()->asXML(),
+                'request' => [
+                    'url' => (string) $request->getUri(),
+                    'method' => $request->getMethod(),
+                    'body' => (string) $request->getBody(),
+                    'parameters' => $parameters->all(),
+                ],
+                'response' => [
+                    'head' => $builtResponse->getHead()->asXML(),
+                    'body' => $builtResponse->getBody()->asXML(),
+                ],
             ]
         );
 
         $categoryAttributes = CategoryAttributesFactory::make($builtResponse->getBody());
 
-        $categoryAttributesResponse = $categoryAttributes->all();
-
-        $this->logger->info(
-            sprintf(
-                '%d::%s::APIResponse::SellerCenterSdk: %d category attributes was recovered',
-                $request->getHeaderLine('Request-ID'),
-                $action,
-                count($categoryAttributes->all())
-            )
-        );
-
-        return $categoryAttributesResponse;
+        return $categoryAttributes->all();
     }
 
     /**
@@ -195,51 +155,32 @@ class CategoryManager extends BaseManager
             $requestHeaders
         );
 
-        $this->logger->debug(
-            LogMessageFormatter::fromAction($requestId, $action, LogMessageFormatter::TYPE_REQUEST),
-            [
-                'url' => (string) $request->getUri(),
-                'method' => $request->getMethod(),
-                'body' => (string) $request->getBody(),
-                'parameters' => $parameters->all(),
-            ]
-        );
-
         $response = $this->client->send($request, [
             'query' => $parameters->all(),
         ]);
 
         $body = (string) $response->getBody();
 
-        $this->logger->debug(
-            LogMessageFormatter::fromAction($requestId, $action, LogMessageFormatter::TYPE_RESPONSE),
-            [
-                'body' => $body,
-            ]
-        );
         $builtResponse = HandleResponse::parse($body);
 
         $this->logger->debug(
-            LogMessageFormatter::fromAction($requestId, $action, LogMessageFormatter::TYPE_BUILT_RESPONSE),
+            LogMessageFormatter::fromAction($requestId, $action, LogMessageFormatter::TYPE_REQUEST),
             [
-                'head' => $builtResponse->getHead()->asXML(),
-                'body' => $builtResponse->getBody()->asXML(),
+                'request' => [
+                    'url' => (string) $request->getUri(),
+                    'method' => $request->getMethod(),
+                    'body' => (string) $request->getBody(),
+                    'parameters' => $parameters->all(),
+                ],
+                'response' => [
+                    'head' => $builtResponse->getHead()->asXML(),
+                    'body' => $builtResponse->getBody()->asXML(),
+                ],
             ]
         );
 
         $attributesSet = AttributesSetFactory::make($builtResponse->getBody());
 
-        $attributesSetResponse = $attributesSet->all();
-
-        $this->logger->info(
-            sprintf(
-                '%d::%s::APIResponse::SellerCenterSdk: %d attributes set was recovered',
-                $request->getHeaderLine('Request-ID'),
-                $action,
-                count($attributesSet->all())
-            )
-        );
-
-        return $attributesSetResponse;
+        return $attributesSet->all();
     }
 }

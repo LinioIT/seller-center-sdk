@@ -44,49 +44,29 @@ class FeedManager extends BaseManager
             $this->configuration->getEndpoint(),
             $requestHeaders
         );
-
-        $this->logger->debug(
-            LogMessageFormatter::fromAction($requestId, $action, LogMessageFormatter::TYPE_REQUEST),
-            [
-                'url' => (string) $request->getUri(),
-                'method' => $request->getMethod(),
-                'body' => (string) $request->getBody(),
-                'parameters' => $parameters->all(),
-            ]
-        );
-
         $response = $this->client->send($request, ['query' => $parameters->all()]);
 
         $body = (string) $response->getBody();
 
-        $this->logger->debug(
-            LogMessageFormatter::fromAction($requestId, $action, LogMessageFormatter::TYPE_RESPONSE),
-            [
-                'body' => $body,
-            ]
-        );
-
         $builtResponse = HandleResponse::parse($body);
 
         $this->logger->debug(
-            LogMessageFormatter::fromAction($requestId, $action, LogMessageFormatter::TYPE_BUILT_RESPONSE),
+            LogMessageFormatter::fromAction($requestId, $action, LogMessageFormatter::TYPE_REQUEST),
             [
-                'head' => $builtResponse->getHead()->asXML(),
-                'body' => $builtResponse->getBody()->asXML(),
+                'request' => [
+                    'url' => (string) $request->getUri(),
+                    'method' => $request->getMethod(),
+                    'body' => (string) $request->getBody(),
+                    'parameters' => $parameters->all(),
+                ],
+                'response' => [
+                    'head' => $builtResponse->getHead()->asXML(),
+                    'body' => $builtResponse->getBody()->asXML(),
+                ],
             ]
         );
 
-        $feedResponse = FeedFactory::make($builtResponse->getBody()->FeedDetail);
-
-        $this->logger->info(
-            sprintf(
-                '%d::%s::APIResponse::SellerCenterSdk: the feed was recovered',
-                $request->getHeaderLine('Request-ID'),
-                $action
-            )
-        );
-
-        return $feedResponse;
+        return FeedFactory::make($builtResponse->getBody()->FeedDetail);
     }
 
     /**
@@ -112,52 +92,30 @@ class FeedManager extends BaseManager
             $this->configuration->getEndpoint(),
             $requestHeaders
         );
+        $response = $this->client->send($request, ['query' => $parameters->all()]);
+
+        $body = (string) $response->getBody();
+        $builtResponse = HandleResponse::parse($body);
 
         $this->logger->debug(
             LogMessageFormatter::fromAction($requestId, $action, LogMessageFormatter::TYPE_REQUEST),
             [
-                'url' => (string) $request->getUri(),
-                'method' => $request->getMethod(),
-                'body' => (string) $request->getBody(),
-                'parameters' => $parameters->all(),
-            ]
-        );
-
-        $response = $this->client->send($request, ['query' => $parameters->all()]);
-
-        $body = (string) $response->getBody();
-
-        $this->logger->debug(
-            LogMessageFormatter::fromAction($requestId, $action, LogMessageFormatter::TYPE_RESPONSE),
-            [
-                'body' => $body,
-            ]
-        );
-
-        $builtResponse = HandleResponse::parse($body);
-
-        $this->logger->debug(
-            LogMessageFormatter::fromAction($requestId, $action, LogMessageFormatter::TYPE_BUILT_RESPONSE),
-            [
-                'head' => $builtResponse->getHead()->asXML(),
-                'body' => $builtResponse->getBody()->asXML(),
+                'request' => [
+                    'url' => (string) $request->getUri(),
+                    'method' => $request->getMethod(),
+                    'body' => (string) $request->getBody(),
+                    'parameters' => $parameters->all(),
+                ],
+                'response' => [
+                    'head' => $builtResponse->getHead()->asXML(),
+                    'body' => $builtResponse->getBody()->asXML(),
+                ],
             ]
         );
 
         $list = FeedsFactory::make($builtResponse->getBody());
 
-        $feedsResponse = array_values($list->all());
-
-        $this->logger->info(
-            sprintf(
-                '%d::%s::APIResponse::SellerCenterSdk: %d feeds was recovered',
-                $request->getHeaderLine('Request-ID'),
-                $action,
-                count($list->all())
-            )
-        );
-
-        return $feedsResponse;
+        return array_values($list->all());
     }
 
     /**
@@ -246,34 +204,25 @@ class FeedManager extends BaseManager
             $requestHeaders
         );
 
-        $this->logger->debug(
-            LogMessageFormatter::fromAction($requestId, $action, LogMessageFormatter::TYPE_REQUEST),
-            [
-                'url' => (string) $request->getUri(),
-                'method' => $request->getMethod(),
-                'body' => (string) $request->getBody(),
-                'parameters' => $parameters->all(),
-            ]
-        );
-
         $response = $this->client->send($request, ['query' => $parameters->all()]);
 
         $body = (string) $response->getBody();
 
-        $this->logger->debug(
-            LogMessageFormatter::fromAction($requestId, $action, LogMessageFormatter::TYPE_RESPONSE),
-            [
-                'body' => $body,
-            ]
-        );
-
         $builtResponse = HandleResponse::parse($body);
 
         $this->logger->debug(
-            LogMessageFormatter::fromAction($requestId, $action, LogMessageFormatter::TYPE_BUILT_RESPONSE),
+            LogMessageFormatter::fromAction($requestId, $action, LogMessageFormatter::TYPE_REQUEST),
             [
-                'head' => $builtResponse->getHead()->asXML(),
-                'body' => $builtResponse->getBody()->asXML(),
+                'request' => [
+                    'url' => (string) $request->getUri(),
+                    'method' => $request->getMethod(),
+                    'body' => (string) $request->getBody(),
+                    'parameters' => $parameters->all(),
+                ],
+                'response' => [
+                    'head' => $builtResponse->getHead()->asXML(),
+                    'body' => $builtResponse->getBody()->asXML(),
+                ],
             ]
         );
 

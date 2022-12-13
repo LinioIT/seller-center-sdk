@@ -50,17 +50,7 @@ class BaseOrderManager extends BaseManager
             'GET'
         );
 
-        $orderResponse = OrderFactory::make($builtResponse->getBody()->Orders->Order);
-
-        $this->logger->info(
-            sprintf(
-                '%d::%s::APIResponse::SellerCenterSdk: the order was recovered',
-                $requestId,
-                $action
-            )
-        );
-
-        return $orderResponse;
+        return OrderFactory::make($builtResponse->getBody()->Orders->Order);
     }
 
     /**
@@ -405,14 +395,6 @@ class BaseOrderManager extends BaseManager
             'GET'
         );
 
-        $this->logger->info(
-            sprintf(
-                '%d::%s::APIResponse::SellerCenterSdk: Get Tracking Code',
-                $requestId,
-                $action
-            )
-        );
-
         return TrackingCodeFactory::make($response->getBody());
     }
 
@@ -436,22 +418,12 @@ class BaseOrderManager extends BaseManager
 
         $requestId = $this->generateRequestId();
 
-        $response = $this->executeAction(
+        return $this->executeAction(
             $action,
             $parameters,
             $requestId,
             'POST'
         );
-
-        $this->logger->info(
-            sprintf(
-                '%d::%s::APIResponse::SellerCenterSdk: the items status was changed',
-                $requestId,
-                $action
-            )
-        );
-
-        return $response;
     }
 
     /**
