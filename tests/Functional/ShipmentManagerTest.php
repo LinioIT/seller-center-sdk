@@ -4,53 +4,66 @@ declare(strict_types=1);
 
 namespace Linio\SellerCenter;
 
-use Linio\SellerCenter\Application\Configuration;
 use Linio\SellerCenter\Model\Shipment\ShipmentProvider;
+use Prophecy\Argument;
+use Prophecy\Prophecy\ObjectProphecy;
+use Psr\Log\LoggerInterface;
 
 class ShipmentManagerTest extends LinioTestCase
 {
     use ClientHelper;
 
+    /**
+     * @var ObjectProphecy
+     */
+    protected $logger;
+
+    public function prepareLogTest(bool $debug): void
+    {
+        $this->logger = $this->prophesize(LoggerInterface::class);
+
+        $this->logger->debug(
+            Argument::type('string'),
+            Argument::type('array')
+        )->shouldBeCalled();
+
+        if (!$debug) {
+            $this->logger->debug(
+                Argument::type('string'),
+                Argument::type('array')
+            )->shouldNotBeCalled();
+        }
+    }
+
     public function testItReturnsArrayOfShipmentProvider(): void
     {
-        $xml = '<?xml version="1.0" encoding="UTF-8"?>
-                <SuccessResponse>
-                  <Head>
-                    <RequestId></RequestId>
-                    <RequestAction>GetShipmentProviders</RequestAction>
-                    <ResponseType>ShipmentProvider</ResponseType>
-                    <Timestamp>2013-08-27T14:44:13+0000</Timestamp>
-                  </Head>
-                  <Body>
-                    <ShipmentProviders>
-                      <ShipmentProvider>
-                        <Name>GDEX</Name>
-                        <Default>0</Default>
-                        <ApiIntegration>0</ApiIntegration>
-                        <Cod>0</Cod>
-                        <TrackingCodeValidationRegex>/^[0-9]{20}$/</TrackingCodeValidationRegex>
-                        <TrackingCodeExample>12345678901234567890</TrackingCodeExample>
-                        <TrackingUrl>http://intranet.gdexpress.com/official/etracking.php?capture={{{TRACKING_NR}}}</TrackingUrl>
-                        <EnabledDeliveryOptions>
-                          <DeliveryOption>express</DeliveryOption>
-                          <DeliveryOption>standard</DeliveryOption>
-                          <DeliveryOption>economy</DeliveryOption>
-                        </EnabledDeliveryOptions>
-                      </ShipmentProvider>
-                    </ShipmentProviders>
-                  </Body>
-                </SuccessResponse>';
+        $sdkClient = $this->getSdkClient($this->getSchema('Order/GetShipmentProvidersSuccessResponse.xml'));
 
-        $client = $this->createClientWithResponse($xml);
-
-        $parameters = $this->getParameters();
-        $configuration = new Configuration($parameters['key'], $parameters['username'], $parameters['endpoint'], $parameters['version']);
-
-        $sdk = new SellerCenterSdk($configuration, $client);
-
-        $shipmentProviders = $sdk->shipment()->getShipmentProviders();
+        $shipmentProviders = $sdkClient->shipment()->getShipmentProviders();
 
         $this->assertCount(1, $shipmentProviders);
         $this->assertContainsOnlyInstancesOf(ShipmentProvider::class, $shipmentProviders);
+    }
+
+    /**
+     * @dataProvider debugParameter
+     */
+    public function testItLogsDependingOnDebugParamWhenGetShipmentProvidersSuccessResponse(bool $debug): void
+    {
+        $this->prepareLogTest($debug);
+        $sdkClient = $this->getSdkClient(
+            $this->getSchema('Order/GetShipmentProvidersSuccessResponse.xml'),
+            $this->logger
+        );
+
+        $sdkClient->shipment()->getShipmentProviders($debug);
+    }
+
+    public function debugParameter()
+    {
+        return [
+            [false],
+            [true],
+        ];
     }
 }

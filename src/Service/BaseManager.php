@@ -94,6 +94,7 @@ class BaseManager
         Parameters $parameters,
         string $requestId,
         string $httpMethod = 'GET',
+        bool $debug = true,
         ?string $body = null
     ): SuccessResponse {
         $requestHeaders = $this->generateRequestHeaders([self::REQUEST_ID_HEADER => $requestId]);
@@ -110,7 +111,10 @@ class BaseManager
 
         $body = (string) $response->getBody();
         $builtResponse = HandleResponse::parse($body);
-        $this->logRequest($action, $requestId, $request, $parameters, $builtResponse);
+
+        if ($debug) {
+            $this->logRequest($action, $requestId, $request, $parameters, $builtResponse);
+        }
 
         return $builtResponse;
     }

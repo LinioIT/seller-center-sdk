@@ -25,8 +25,10 @@ use Linio\SellerCenter\Transformer\Product\ProductsTransformer;
 
 class GlobalProductManager extends BaseManager implements ProductManagerInterface
 {
-    public function productCreate(Products $products): FeedResponse
-    {
+    public function productCreate(
+        Products $products,
+        bool $debug = true
+    ): FeedResponse {
         $action = 'ProductCreate';
 
         $parameters = clone $this->parameters;
@@ -54,28 +56,32 @@ class GlobalProductManager extends BaseManager implements ProductManagerInterfac
 
         $builtResponse = HandleResponse::parse($body);
 
-        $this->logger->debug(
-            LogMessageFormatter::fromAction($requestId, $action, LogMessageFormatter::TYPE_REQUEST),
-            [
-                'request' => [
-                    'url' => (string) $request->getUri(),
-                    'method' => $request->getMethod(),
-                    'body' => (string) $request->getBody(),
-                    'parameters' => $parameters->all(),
-                ],
-                'response' => [
-                    'head' => $builtResponse->getHead()->asXML(),
-                    'body' => $builtResponse->getBody()->asXML(),
-                    'statusCode' => $response->getStatusCode(),
-                ],
-            ]
-        );
+        if ($debug) {
+            $this->logger->debug(
+                LogMessageFormatter::fromAction($requestId, $action, LogMessageFormatter::TYPE_REQUEST),
+                [
+                    'request' => [
+                        'url' => (string) $request->getUri(),
+                        'method' => $request->getMethod(),
+                        'body' => (string) $request->getBody(),
+                        'parameters' => $parameters->all(),
+                    ],
+                    'response' => [
+                        'head' => $builtResponse->getHead()->asXML(),
+                        'body' => $builtResponse->getBody()->asXML(),
+                        'statusCode' => $response->getStatusCode(),
+                    ],
+                ]
+            );
+        }
 
         return FeedResponseFactory::make($builtResponse->getHead());
     }
 
-    public function productUpdate(Products $products): FeedResponse
-    {
+    public function productUpdate(
+        Products $products,
+        bool $debug = true
+    ): FeedResponse {
         $action = 'ProductUpdate';
 
         $parameters = clone $this->parameters;
@@ -104,28 +110,32 @@ class GlobalProductManager extends BaseManager implements ProductManagerInterfac
 
         $builtResponse = HandleResponse::parse($body);
 
-        $this->logger->debug(
-            LogMessageFormatter::fromAction($requestId, $action, LogMessageFormatter::TYPE_REQUEST),
-            [
-                'request' => [
-                    'url' => (string) $request->getUri(),
-                    'method' => $request->getMethod(),
-                    'body' => (string) $request->getBody(),
-                    'parameters' => $parameters->all(),
-                ],
-                'response' => [
-                    'head' => $builtResponse->getHead()->asXML(),
-                    'body' => $builtResponse->getBody()->asXML(),
-                    'statusCode' => $response->getStatusCode(),
-                ],
-            ]
-        );
+        if ($debug) {
+            $this->logger->debug(
+                LogMessageFormatter::fromAction($requestId, $action, LogMessageFormatter::TYPE_REQUEST),
+                [
+                    'request' => [
+                        'url' => (string) $request->getUri(),
+                        'method' => $request->getMethod(),
+                        'body' => (string) $request->getBody(),
+                        'parameters' => $parameters->all(),
+                    ],
+                    'response' => [
+                        'head' => $builtResponse->getHead()->asXML(),
+                        'body' => $builtResponse->getBody()->asXML(),
+                        'statusCode' => $response->getStatusCode(),
+                    ],
+                ]
+            );
+        }
 
         return FeedResponseFactory::make($builtResponse->getHead());
     }
 
-    public function productRemove(Products $products): FeedResponse
-    {
+    public function productRemove(
+        Products $products,
+        bool $debug = true
+    ): FeedResponse {
         $action = 'ProductRemove';
 
         $parameters = clone $this->parameters;
@@ -154,22 +164,24 @@ class GlobalProductManager extends BaseManager implements ProductManagerInterfac
 
         $builtResponse = HandleResponse::parse($body);
 
-        $this->logger->debug(
-            LogMessageFormatter::fromAction($requestId, $action, LogMessageFormatter::TYPE_REQUEST),
-            [
-                'request' => [
-                    'url' => (string) $request->getUri(),
-                    'method' => $request->getMethod(),
-                    'body' => (string) $request->getBody(),
-                    'parameters' => $parameters->all(),
-                ],
-                'response' => [
-                    'head' => $builtResponse->getHead()->asXML(),
-                    'body' => $builtResponse->getBody()->asXML(),
-                    'statusCode' => $response->getStatusCode(),
-                ],
-            ]
-        );
+        if ($debug) {
+            $this->logger->debug(
+                LogMessageFormatter::fromAction($requestId, $action, LogMessageFormatter::TYPE_REQUEST),
+                [
+                    'request' => [
+                        'url' => (string) $request->getUri(),
+                        'method' => $request->getMethod(),
+                        'body' => (string) $request->getBody(),
+                        'parameters' => $parameters->all(),
+                    ],
+                    'response' => [
+                        'head' => $builtResponse->getHead()->asXML(),
+                        'body' => $builtResponse->getBody()->asXML(),
+                        'statusCode' => $response->getStatusCode(),
+                    ],
+                ]
+            );
+        }
 
         return FeedResponseFactory::make($builtResponse->getHead());
     }
@@ -177,8 +189,10 @@ class GlobalProductManager extends BaseManager implements ProductManagerInterfac
     /**
      * @param mixed[] $productImages
      */
-    public function addImage(array $productImages): FeedResponse
-    {
+    public function addImage(
+        array $productImages,
+        bool $debug = true
+    ): FeedResponse {
         $action = 'Image';
 
         $parameters = clone $this->parameters;
@@ -218,22 +232,24 @@ class GlobalProductManager extends BaseManager implements ProductManagerInterfac
 
         $builtResponse = HandleResponse::parse($body);
 
-        $this->logger->debug(
-            LogMessageFormatter::fromAction($requestId, $action, LogMessageFormatter::TYPE_REQUEST),
-            [
-                'request' => [
-                    'url' => (string) $request->getUri(),
-                    'method' => $request->getMethod(),
-                    'body' => (string) $request->getBody(),
-                    'parameters' => $parameters->all(),
-                ],
-                'response' => [
-                    'head' => $builtResponse->getHead()->asXML(),
-                    'body' => $builtResponse->getBody()->asXML(),
-                    'statusCode' => $response->getStatusCode(),
-                ],
-            ]
-        );
+        if ($debug) {
+            $this->logger->debug(
+                LogMessageFormatter::fromAction($requestId, $action, LogMessageFormatter::TYPE_REQUEST),
+                [
+                    'request' => [
+                        'url' => (string) $request->getUri(),
+                        'method' => $request->getMethod(),
+                        'body' => (string) $request->getBody(),
+                        'parameters' => $parameters->all(),
+                    ],
+                    'response' => [
+                        'head' => $builtResponse->getHead()->asXML(),
+                        'body' => $builtResponse->getBody()->asXML(),
+                        'statusCode' => $response->getStatusCode(),
+                    ],
+                ]
+            );
+        }
 
         return FeedResponseFactory::make($builtResponse->getHead());
     }
@@ -241,8 +257,10 @@ class GlobalProductManager extends BaseManager implements ProductManagerInterfac
     /**
      * @return mixed[]
      */
-    public function getProducts(Parameters $parameters): array
-    {
+    public function getProducts(
+        Parameters $parameters,
+        bool $debug = true
+    ): array {
         $action = 'GetProducts';
 
         $parameters->set(['Action' => $action]);
@@ -267,21 +285,23 @@ class GlobalProductManager extends BaseManager implements ProductManagerInterfac
 
         $builtResponse = HandleResponse::parse($body);
 
-        $this->logger->debug(
-            LogMessageFormatter::fromAction($requestId, $action, LogMessageFormatter::TYPE_REQUEST),
-            [
-                'request' => [
-                    'url' => (string) $request->getUri(),
-                    'method' => $request->getMethod(),
-                    'body' => (string) $request->getBody(),
-                    'parameters' => $parameters->all(),
-                ],
-                'response' => [
-                    'head' => $builtResponse->getHead()->asXML(),
-                    'body' => $builtResponse->getBody()->asXML(),
-                ],
-            ]
-        );
+        if ($debug) {
+            $this->logger->debug(
+                LogMessageFormatter::fromAction($requestId, $action, LogMessageFormatter::TYPE_REQUEST),
+                [
+                    'request' => [
+                        'url' => (string) $request->getUri(),
+                        'method' => $request->getMethod(),
+                        'body' => (string) $request->getBody(),
+                        'parameters' => $parameters->all(),
+                    ],
+                    'response' => [
+                        'head' => $builtResponse->getHead()->asXML(),
+                        'body' => $builtResponse->getBody()->asXML(),
+                    ],
+                ]
+            );
+        }
 
         $products = GlobalProductsFactory::make($builtResponse->getBody(), $this->logger);
 
@@ -291,13 +311,16 @@ class GlobalProductManager extends BaseManager implements ProductManagerInterfac
     /**
      * @return GlobalProduct[]
      */
-    public function getAllProducts(int $limit = self::DEFAULT_LIMIT, int $offset = self::DEFAULT_OFFSET): array
-    {
+    public function getAllProducts(
+        int $limit = self::DEFAULT_LIMIT,
+        int $offset = self::DEFAULT_OFFSET,
+        bool $debug = true
+    ): array {
         $parameters = clone $this->parameters;
 
         $this->setListDimensions($parameters, $limit, $offset);
 
-        return $this->getProducts($parameters);
+        return $this->getProducts($parameters, $debug);
     }
 
     /**
@@ -306,7 +329,8 @@ class GlobalProductManager extends BaseManager implements ProductManagerInterfac
     public function getProductsCreatedAfter(
         DateTimeInterface $createdAfter,
         int $limit = self::DEFAULT_LIMIT,
-        int $offset = self::DEFAULT_OFFSET
+        int $offset = self::DEFAULT_OFFSET,
+        bool $debug = true
     ): array {
         $parameters = clone $this->parameters;
 
@@ -316,7 +340,7 @@ class GlobalProductManager extends BaseManager implements ProductManagerInterfac
             ['CreatedAfter' => $createdAfter->format(DATE_ATOM)]
         );
 
-        return $this->getProducts($parameters);
+        return $this->getProducts($parameters, $debug);
     }
 
     /**
@@ -325,7 +349,8 @@ class GlobalProductManager extends BaseManager implements ProductManagerInterfac
     public function getProductsCreatedBefore(
         DateTimeInterface $createdBefore,
         int $limit = self::DEFAULT_LIMIT,
-        int $offset = self::DEFAULT_OFFSET
+        int $offset = self::DEFAULT_OFFSET,
+        bool $debug = true
     ): array {
         $parameters = clone $this->parameters;
 
@@ -335,7 +360,7 @@ class GlobalProductManager extends BaseManager implements ProductManagerInterfac
             ['CreatedBefore' => $createdBefore->format(DATE_ATOM)]
         );
 
-        return $this->getProducts($parameters);
+        return $this->getProducts($parameters, $debug);
     }
 
     /**
@@ -344,7 +369,8 @@ class GlobalProductManager extends BaseManager implements ProductManagerInterfac
     public function getProductsUpdatedAfter(
         DateTimeInterface $updatedAfter,
         int $limit = self::DEFAULT_LIMIT,
-        int $offset = self::DEFAULT_LIMIT
+        int $offset = self::DEFAULT_LIMIT,
+        bool $debug = true
     ): array {
         $parameters = clone $this->parameters;
 
@@ -354,7 +380,7 @@ class GlobalProductManager extends BaseManager implements ProductManagerInterfac
             ['UpdatedAfter' => $updatedAfter->format(DATE_ATOM)]
         );
 
-        return $this->getProducts($parameters);
+        return $this->getProducts($parameters, $debug);
     }
 
     /**
@@ -363,7 +389,8 @@ class GlobalProductManager extends BaseManager implements ProductManagerInterfac
     public function getProductsUpdatedBefore(
         DateTimeInterface $updatedBefore,
         int $limit = self::DEFAULT_LIMIT,
-        int $offset = self::DEFAULT_OFFSET
+        int $offset = self::DEFAULT_OFFSET,
+        bool $debug = true
     ): array {
         $parameters = clone $this->parameters;
 
@@ -373,7 +400,7 @@ class GlobalProductManager extends BaseManager implements ProductManagerInterfac
             ['UpdatedBefore' => $updatedBefore->format(DATE_ATOM)]
         );
 
-        return $this->getProducts($parameters);
+        return $this->getProducts($parameters, $debug);
     }
 
     /**
@@ -382,7 +409,8 @@ class GlobalProductManager extends BaseManager implements ProductManagerInterfac
     public function searchProducts(
         string $searchValue,
         int $limit = self::DEFAULT_LIMIT,
-        int $offset = self::DEFAULT_OFFSET
+        int $offset = self::DEFAULT_OFFSET,
+        bool $debug = true
     ): array {
         $parameters = clone $this->parameters;
 
@@ -392,7 +420,7 @@ class GlobalProductManager extends BaseManager implements ProductManagerInterfac
             ['Search' => $searchValue]
         );
 
-        return $this->getProducts($parameters);
+        return $this->getProducts($parameters, $debug);
     }
 
     /**
@@ -401,7 +429,8 @@ class GlobalProductManager extends BaseManager implements ProductManagerInterfac
     public function filterProducts(
         string $filter,
         int $limit = self::DEFAULT_LIMIT,
-        int $offset = self::DEFAULT_OFFSET
+        int $offset = self::DEFAULT_OFFSET,
+        bool $debug = true
     ): array {
         $parameters = clone $this->parameters;
 
@@ -415,7 +444,7 @@ class GlobalProductManager extends BaseManager implements ProductManagerInterfac
             ['Filter' => $filter]
         );
 
-        return $this->getProducts($parameters);
+        return $this->getProducts($parameters, $debug);
     }
 
     /**
@@ -426,7 +455,8 @@ class GlobalProductManager extends BaseManager implements ProductManagerInterfac
     public function getProductsBySellerSku(
         array $skuSellerList,
         int $limit = self::DEFAULT_LIMIT,
-        int $offset = self::DEFAULT_OFFSET
+        int $offset = self::DEFAULT_OFFSET,
+        bool $debug = true
     ): array {
         $parameters = clone $this->parameters;
 
@@ -440,7 +470,7 @@ class GlobalProductManager extends BaseManager implements ProductManagerInterfac
             ['SkuSellerList' => Json::encode($skuSellerList)]
         );
 
-        return $this->getProducts($parameters);
+        return $this->getProducts($parameters, $debug);
     }
 
     /**
@@ -457,7 +487,8 @@ class GlobalProductManager extends BaseManager implements ProductManagerInterfac
         int $offset = self::DEFAULT_OFFSET,
         ?array $skuSellerList = null,
         ?DateTimeInterface $updateAfter = null,
-        ?DateTimeInterface $updateBefore = null
+        ?DateTimeInterface $updateBefore = null,
+        bool $debug = true
     ): array {
         $parameters = clone $this->parameters;
 
@@ -494,7 +525,7 @@ class GlobalProductManager extends BaseManager implements ProductManagerInterfac
             $parameters->set(['UpdateBefore' => $updateBefore->format(DATE_ATOM)]);
         }
 
-        return $this->getProducts($parameters);
+        return $this->getProducts($parameters, $debug);
     }
 
     public function setListDimensions(Parameters &$parameters, int $limit, int $offset): void

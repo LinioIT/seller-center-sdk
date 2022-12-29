@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<SuccessResponse>
+  <Head>
+    <RequestId/>
+    <RequestAction>GetWebhooks</RequestAction>
+    <ResponseType>Webhooks</ResponseType>
+    <Timestamp>2016-06-07T18:35:09+0200</Timestamp>
+  </Head>
+  <Body>
+    <Webhooks>
+      <Webhook>
+        <WebhookId>7dffaa4e-1713-42c2-84ba-1d2fbd4537ab</WebhookId>
+        <CallbackUrl>http://localhost/callbacks/1</CallbackUrl>
+        <WebhookSource>web</WebhookSource>
+        <Events>
+          <Event>onProductCreated</Event>
+        </Events>
+      </Webhook>
+      <Webhook>
+        <WebhookId>fbfe60be-b282-4bc1-9e4d-2147c686d1a8</WebhookId>
+        <CallbackUrl>http://localhost/callbacks/2k</CallbackUrl>
+        <WebhookSource>api</WebhookSource>
+        <Events>
+          <Event>onOrderCreated</Event>
+        </Events>
+      </Webhook>
+    </Webhooks>
+  </Body>
+</SuccessResponse>

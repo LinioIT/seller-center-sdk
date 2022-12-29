@@ -18,7 +18,8 @@ class OrderManager extends BaseOrderManager
      * @return OrderItem[]
      */
     public function setOrderItemsImei(
-        array $orderItems
+        array $orderItems,
+        bool $debug = true
     ): array {
         $action = 'SetImei';
         $parameters = $this->makeParametersForAction($action);
@@ -29,6 +30,7 @@ class OrderManager extends BaseOrderManager
             $parameters,
             $requestId,
             'POST',
+            $debug,
             OrderItemsTransformer::orderItemsImeiAsXmlString($orderItems)
         );
 
@@ -37,7 +39,8 @@ class OrderManager extends BaseOrderManager
 
     public function setInvoiceNumber(
         int $orderItemId,
-        string $invoiceNumber
+        string $invoiceNumber,
+        bool $debug = true
     ): SuccessResponse {
         $action = 'SetInvoiceNumber';
         $parameters = $this->makeParametersForAction($action);
@@ -53,7 +56,8 @@ class OrderManager extends BaseOrderManager
             $action,
             $parameters,
             $requestId,
-            'POST'
+            'POST',
+            $debug
         );
     }
 
@@ -66,7 +70,8 @@ class OrderManager extends BaseOrderManager
         array $orderItemIds,
         string $deliveryType,
         string $shippingProvider = null,
-        string $trackingNumber = null
+        string $trackingNumber = null,
+        bool $debug = true
     ): array {
         $action = 'SetStatusToReadyToShip';
 
@@ -90,7 +95,8 @@ class OrderManager extends BaseOrderManager
             $action,
             $parameters,
             $requestId,
-            'POST'
+            'POST',
+            $debug
         );
 
         $orderItems = OrderItemsFactory::makeFromStatus($builtResponse->getBody());
@@ -107,7 +113,8 @@ class OrderManager extends BaseOrderManager
         array $orderItemIds,
         string $deliveryType,
         string $shippingProvider = null,
-        string $trackingNumber = null
+        string $trackingNumber = null,
+        bool $debug = true
     ): array {
         $action = 'SetStatusToPackedByMarketplace';
 
@@ -131,7 +138,8 @@ class OrderManager extends BaseOrderManager
             $action,
             $parameters,
             $requestId,
-            'POST'
+            'POST',
+            $debug
         );
 
         $orderItems = OrderItemsFactory::makeFromStatus($builtResponse->getBody());

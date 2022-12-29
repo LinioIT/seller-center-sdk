@@ -14,7 +14,7 @@ class ProductsFactoryTest extends LinioTestCase
 {
     public function testItLogsTheErrorsInTheXmlStructure(): void
     {
-        $xmlString = $this->getSchema('Product/ProductsResponse.xml');
+        $xmlString = $this->getSchema('Product/ErrorProductsResponse.xml');
         $xml = new SimpleXMLElement($xmlString);
 
         $logger = $this->prophesize(LoggerInterface::class);

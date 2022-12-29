@@ -7,7 +7,7 @@ namespace Linio\SellerCenter;
 use DateTimeImmutable;
 use Exception;
 use InvalidArgumentException;
-use Linio\SellerCenter\Application\Configuration;
+use Linio\SellerCenter\Application\Parameters;
 use Linio\SellerCenter\Model\Brand\Brand;
 use Linio\SellerCenter\Model\Category\Categories;
 use Linio\SellerCenter\Model\Category\Category;
@@ -16,6 +16,9 @@ use Linio\SellerCenter\Model\Product\Product;
 use Linio\SellerCenter\Model\Product\ProductData;
 use Linio\SellerCenter\Model\Product\Products;
 use Linio\SellerCenter\Response\FeedResponse;
+use Prophecy\Argument;
+use Prophecy\Prophecy\ObjectProphecy;
+use Psr\Log\LoggerInterface;
 
 class ProductManagerTest extends LinioTestCase
 {
@@ -32,9 +35,26 @@ class ProductManagerTest extends LinioTestCase
     protected $faker;
 
     /**
-     * @var Configuration
+     * @var ObjectProphecy
      */
-    protected $configuration;
+    protected $logger;
+
+    public function prepareLogTest(bool $debug): void
+    {
+        $this->logger = $this->prophesize(LoggerInterface::class);
+
+        $this->logger->debug(
+            Argument::type('string'),
+            Argument::type('array')
+        )->shouldBeCalled();
+
+        if (!$debug) {
+            $this->logger->debug(
+                Argument::type('string'),
+                Argument::type('array')
+            )->shouldNotBeCalled();
+        }
+    }
 
     public function setUp(): void
     {
@@ -46,18 +66,11 @@ class ProductManagerTest extends LinioTestCase
 
         $this->products->add($this->primaryProduct());
         $this->products->add($this->secondProduct());
-
-        $env = $this->getParameters();
-        $this->configuration = new Configuration($env['key'], $env['username'], $env['endpoint'], $env['version']);
     }
 
     public function testItReturnsACollectionOfProducts(): void
     {
-        $client = $this->createClientWithResponse(
-            $this->getSchema('Product/ProductsResponse.xml')
-        );
-        $sdkClient = new SellerCenterSdk($this->configuration, $client);
-
+        $sdkClient = $this->getSdkClient($this->getSchema('Product/ProductsResponse.xml'));
         $result = $sdkClient->products()->getAllProducts();
 
         $this->assertIsArray($result);
@@ -66,11 +79,7 @@ class ProductManagerTest extends LinioTestCase
 
     public function testItReturnsACollectionOfProductsCreatedAfterADateTime(): void
     {
-        $client = $this->createClientWithResponse(
-            $this->getSchema('Product/ProductsResponse.xml')
-        );
-
-        $sdkClient = new SellerCenterSdk($this->configuration, $client);
+        $sdkClient = $this->getSdkClient($this->getSchema('Product/ProductsResponse.xml'));
 
         $createdAfter = DateTimeImmutable::createFromFormat('Y-m-d H:i:s', '2018-09-01 00:00:00');
 
@@ -82,11 +91,7 @@ class ProductManagerTest extends LinioTestCase
 
     public function testItReturnsACollectionOfProductsCreatedBeforeADateTime(): void
     {
-        $client = $this->createClientWithResponse(
-            $this->getSchema('Product/ProductsResponse.xml')
-        );
-
-        $sdkClient = new SellerCenterSdk($this->configuration, $client);
+        $sdkClient = $this->getSdkClient($this->getSchema('Product/ProductsResponse.xml'));
 
         $createdBefore = DateTimeImmutable::createFromFormat('Y-m-d H:i:s', '2019-01-23 00:00:00');
 
@@ -98,10 +103,7 @@ class ProductManagerTest extends LinioTestCase
 
     public function testItReturnsACollectionOfProductsUpdatedAfterADateTime(): void
     {
-        $client = $this->createClientWithResponse(
-            $this->getSchema('Product/ProductsResponse.xml')
-        );
-        $sdkClient = new SellerCenterSdk($this->configuration, $client);
+        $sdkClient = $this->getSdkClient($this->getSchema('Product/ProductsResponse.xml'));
 
         $updatedAfter = DateTimeImmutable::createFromFormat('Y-m-d H:i:s', '2019-01-23 00:00:00');
 
@@ -113,10 +115,7 @@ class ProductManagerTest extends LinioTestCase
 
     public function testItReturnsACollectionOfProductsUpdatedBeforeADateTime(): void
     {
-        $client = $this->createClientWithResponse(
-            $this->getSchema('Product/ProductsResponse.xml')
-        );
-        $sdkClient = new SellerCenterSdk($this->configuration, $client);
+        $sdkClient = $this->getSdkClient($this->getSchema('Product/ProductsResponse.xml'));
 
         $updatedBefore = DateTimeImmutable::createFromFormat('Y-m-d H:i:s', '2019-01-23 00:00:00');
 
@@ -128,10 +127,7 @@ class ProductManagerTest extends LinioTestCase
 
     public function testItReturnsACollectionOfProductsSearchedByValue(): void
     {
-        $client = $this->createClientWithResponse(
-            $this->getSchema('Product/ProductsResponse.xml')
-        );
-        $sdkClient = new SellerCenterSdk($this->configuration, $client);
+        $sdkClient = $this->getSdkClient($this->getSchema('Product/ProductsResponse.xml'));
 
         $search = 'pil';
 
@@ -146,10 +142,7 @@ class ProductManagerTest extends LinioTestCase
      */
     public function testItReturnsACollectionOfProductsFiltered(string $filters): void
     {
-        $client = $this->createClientWithResponse(
-            $this->getSchema('Product/ProductsResponse.xml')
-        );
-        $sdkClient = new SellerCenterSdk($this->configuration, $client);
+        $sdkClient = $this->getSdkClient($this->getSchema('Product/ProductsResponse.xml'));
 
         $result = $sdkClient->products()->filterProducts($filters);
 
@@ -159,10 +152,7 @@ class ProductManagerTest extends LinioTestCase
 
     public function testItReturnsACollectionOfProductsBySkuSellerList(): void
     {
-        $client = $this->createClientWithResponse(
-            $this->getSchema('Product/ProductsResponse.xml')
-        );
-        $sdkClient = new SellerCenterSdk($this->configuration, $client);
+        $sdkClient = $this->getSdkClient($this->getSchema('Product/ProductsResponse.xml'));
 
         $skuSellerList = ['jasku-10001', 'jasku-10002'];
 
@@ -176,20 +166,14 @@ class ProductManagerTest extends LinioTestCase
     {
         $this->expectException(InvalidArgumentException::class);
 
-        $client = $this->createClientWithResponse(
-            $this->getSchema('Product/ProductsResponse.xml')
-        );
-        $sdkClient = new SellerCenterSdk($this->configuration, $client);
+        $sdkClient = $this->getSdkClient($this->getSchema('Product/ProductsResponse.xml'));
 
         $sdkClient->products()->getProductsBySellerSku([]);
     }
 
     public function testItReturnsACollectionOfProductsFromParameters(): void
     {
-        $client = $this->createClientWithResponse(
-            $this->getSchema('Product/ProductsResponse.xml')
-        );
-        $sdkClient = new SellerCenterSdk($this->configuration, $client);
+        $sdkClient = $this->getSdkClient($this->getSchema('Product/ProductsResponse.xml'));
 
         $createdBefore = DateTimeImmutable::createFromFormat('Y-m-d H:i:s', '2019-01-23 00:00:00');
         $createdAfter = DateTimeImmutable::createFromFormat('Y-m-d H:i:s', '2019-01-23 00:00:00');
@@ -225,8 +209,7 @@ class ProductManagerTest extends LinioTestCase
             ucfirst($action)
         );
 
-        $client = $this->createClientWithResponse($body);
-        $sdkClient = new SellerCenterSdk($this->configuration, $client);
+        $sdkClient = $this->getSdkClient($body);
 
         $result = $sdkClient->products()->{$action}($this->products);
 
@@ -248,8 +231,7 @@ class ProductManagerTest extends LinioTestCase
             'Image'
         );
 
-        $client = $this->createClientWithResponse($body);
-        $sdkClient = new SellerCenterSdk($this->configuration, $client);
+        $sdkClient = $this->getSdkClient($body);
 
         $result = $sdkClient->products()->addImage($images);
 
@@ -274,10 +256,274 @@ class ProductManagerTest extends LinioTestCase
             'E0125: Test Error'
         );
 
-        $client = $this->createClientWithResponse($body, 400);
-        $sdkClient = new SellerCenterSdk($this->configuration, $client);
+        $sdkClient = $this->getSdkClient($body, null, 400);
 
         $sdkClient->products()->productCreate($this->products);
+    }
+
+    /**
+     * @dataProvider debugParameter
+     */
+    public function testItLogsDependingOnDebugParamWhenProductCreateSuccessResponse(bool $debug): void
+    {
+        $body = sprintf(
+            $this->getSchema('Feed/ProductActionFeedResponse.xml'),
+            'productCreate'
+        );
+
+        $this->prepareLogTest($debug);
+        $sdkClient = $this->getSdkClient($body, $this->logger);
+
+        $sdkClient->products()->productCreate($this->products, $debug);
+    }
+
+    /**
+     * @dataProvider debugParameter
+     */
+    public function testItLogsDependingOnDebugParamWhenProductUpdateSuccessResponse(bool $debug): void
+    {
+        $body = sprintf(
+            $this->getSchema('Feed/ProductActionFeedResponse.xml'),
+            'productUpdate'
+        );
+
+        $this->prepareLogTest($debug);
+        $sdkClient = $this->getSdkClient($body, $this->logger);
+
+        $sdkClient->products()->productUpdate($this->products, $debug);
+    }
+
+    /**
+     * @dataProvider debugParameter
+     */
+    public function testItLogsDependingOnDebugParamWhenProductRemoveSuccessResponse(bool $debug): void
+    {
+        $body = sprintf(
+            $this->getSchema('Feed/ProductActionFeedResponse.xml'),
+            'productRemove'
+        );
+
+        $this->prepareLogTest($debug);
+        $sdkClient = $this->getSdkClient($body, $this->logger);
+
+        $sdkClient->products()->productRemove($this->products, $debug);
+    }
+
+    /**
+     * @dataProvider debugParameter
+     */
+    public function testItLogsDependingOnDebugParamWhenAddImageSuccessResponse(bool $debug): void
+    {
+        $body = sprintf(
+            $this->getSchema('Feed/ProductActionFeedResponse.xml'),
+            'Image'
+        );
+
+        $this->prepareLogTest($debug);
+        $sdkClient = $this->getSdkClient($body, $this->logger);
+
+        $sdkClient->products()->addImage(
+            ['testSku' => [
+                    'http://static.somecdn.com/moneyshot.jpeg',
+                    'http://static.somecdn.com/front.jpeg',
+                    'http://static.somecdn.com/rear.jpeg',
+                ],
+            ],
+            $debug
+        );
+    }
+
+    /**
+     * @dataProvider debugParameter
+     */
+    public function testItLogsDependingOnDebugParamWhenGetProductsSuccessResponse(bool $debug): void
+    {
+        $this->prepareLogTest($debug);
+        $sdkClient = $this->getSdkClient(
+            $this->getSchema('Product/ProductsResponse.xml'),
+            $this->logger
+        );
+
+        $sdkClient->products()->getProducts(
+            new Parameters(),
+            $debug
+        );
+    }
+
+    /**
+     * @dataProvider debugParameter
+     */
+    public function testItLogsDependingOnDebugParamWhenGetAllProductsSuccessResponse(bool $debug): void
+    {
+        $this->prepareLogTest($debug);
+        $sdkClient = $this->getSdkClient(
+            $this->getSchema('Product/ProductsResponse.xml'),
+            $this->logger
+        );
+
+        $sdkClient->products()->getAllProducts(
+            100,
+            100,
+            $debug
+        );
+    }
+
+    /**
+     * @dataProvider debugParameter
+     */
+    public function testItLogsDependingOnDebugParamWhenGetProductsCreatedAfterSuccessResponse(bool $debug): void
+    {
+        $this->prepareLogTest($debug);
+        $sdkClient = $this->getSdkClient(
+            $this->getSchema('Product/ProductsResponse.xml'),
+            $this->logger
+        );
+
+        $sdkClient->products()->getProductsCreatedAfter(
+            DateTimeImmutable::createFromFormat('Y-m-d H:i:s', '2018-09-01 00:00:00'),
+            100,
+            100,
+            $debug
+        );
+    }
+
+    /**
+     * @dataProvider debugParameter
+     */
+    public function testItLogsDependingOnDebugParamWhenGetProductsCreatedBeforeSuccessResponse(bool $debug): void
+    {
+        $this->prepareLogTest($debug);
+        $sdkClient = $this->getSdkClient(
+            $this->getSchema('Product/ProductsResponse.xml'),
+            $this->logger
+        );
+
+        $sdkClient->products()->getProductsCreatedBefore(
+            DateTimeImmutable::createFromFormat('Y-m-d H:i:s', '2018-09-01 00:00:00'),
+            100,
+            100,
+            $debug
+        );
+    }
+
+    /**
+     * @dataProvider debugParameter
+     */
+    public function testItLogsDependingOnDebugParamWhenGetProductsUpdatedAfterSuccessResponse(bool $debug): void
+    {
+        $this->prepareLogTest($debug);
+        $sdkClient = $this->getSdkClient(
+            $this->getSchema('Product/ProductsResponse.xml'),
+            $this->logger
+        );
+
+        $sdkClient->products()->getProductsUpdatedAfter(
+            DateTimeImmutable::createFromFormat('Y-m-d H:i:s', '2018-09-01 00:00:00'),
+            100,
+            100,
+            $debug
+        );
+    }
+
+    /**
+     * @dataProvider debugParameter
+     */
+    public function testItLogsDependingOnDebugParamWhenGetProductsUpdatedBeforeSuccessResponse(bool $debug): void
+    {
+        $this->prepareLogTest($debug);
+        $sdkClient = $this->getSdkClient(
+            $this->getSchema('Product/ProductsResponse.xml'),
+            $this->logger
+        );
+
+        $sdkClient->products()->getProductsUpdatedBefore(
+            DateTimeImmutable::createFromFormat('Y-m-d H:i:s', '2018-09-01 00:00:00'),
+            100,
+            100,
+            $debug
+        );
+    }
+
+    /**
+     * @dataProvider debugParameter
+     */
+    public function testItLogsDependingOnDebugParamWhenSearchProductsSuccessResponse(bool $debug): void
+    {
+        $this->prepareLogTest($debug);
+        $sdkClient = $this->getSdkClient(
+            $this->getSchema('Product/ProductsResponse.xml'),
+            $this->logger
+        );
+
+        $sdkClient->products()->searchProducts(
+            'test-sku',
+            100,
+            100,
+            $debug
+        );
+    }
+
+    /**
+     * @dataProvider debugParameter
+     */
+    public function testItLogsDependingOnDebugParamWhenFilterProductsSuccessResponse(bool $debug): void
+    {
+        $this->prepareLogTest($debug);
+        $sdkClient = $this->getSdkClient(
+            $this->getSchema('Product/ProductsResponse.xml'),
+            $this->logger
+        );
+
+        $sdkClient->products()->filterProducts(
+            'live',
+            100,
+            100,
+            $debug
+        );
+    }
+
+    /**
+     * @dataProvider debugParameter
+     */
+    public function testItLogsDependingOnDebugParamWhenGetProductsBySellerSkuSuccessResponse(bool $debug): void
+    {
+        $this->prepareLogTest($debug);
+        $sdkClient = $this->getSdkClient(
+            $this->getSchema('Product/ProductsResponse.xml'),
+            $this->logger
+        );
+
+        $sdkClient->products()->getProductsBySellerSku(
+            ['test-sku1', 'test-sku2'],
+            100,
+            100,
+            $debug
+        );
+    }
+
+    /**
+     * @dataProvider debugParameter
+     */
+    public function testItLogsDependingOnDebugParamWhenGetProductsFromParametersSuccessResponse(bool $debug): void
+    {
+        $this->prepareLogTest($debug);
+        $sdkClient = $this->getSdkClient(
+            $this->getSchema('Product/ProductsResponse.xml'),
+            $this->logger
+        );
+
+        $sdkClient->products()->getProductsFromParameters(
+            null,
+            null,
+            null,
+            'live',
+            100,
+            100,
+            ['test-sku'],
+            null,
+            null,
+            $debug
+        );
     }
 
     public function filters(): array
@@ -402,6 +648,14 @@ class ProductManagerTest extends LinioTestCase
                     ],
                 ],
             ],
+        ];
+    }
+
+    public function debugParameter()
+    {
+        return [
+            [false],
+            [true],
         ];
     }
 }

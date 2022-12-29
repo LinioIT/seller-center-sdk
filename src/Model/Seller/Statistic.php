@@ -10,12 +10,12 @@ use stdClass;
 class Statistic implements JsonSerializable
 {
     /**
-     * @var array
+     * @var mixed[]
      */
     protected $productStatistics;
 
     /**
-     * @var array
+     * @var mixed[]
      */
     protected $orderStatistics;
 
@@ -29,11 +29,17 @@ class Statistic implements JsonSerializable
         return $statistics;
     }
 
+    /**
+     * @return mixed[]
+     */
     public function getProductStatistics(): array
     {
         return $this->productStatistics;
     }
 
+    /**
+     * @return mixed[]
+     */
     public function getOrderStatistics(): array
     {
         return $this->orderStatistics;

@@ -22,8 +22,10 @@ class QualityControlManager extends BaseManager
     /**
      * @return QualityControl[]
      */
-    protected function getQcStatus(Parameters $parameters): array
-    {
+    protected function getQcStatus(
+        Parameters $parameters,
+        bool $debug = true
+    ): array {
         $action = 'GetQcStatus';
 
         $parameters->set(['Action' => $action]);
@@ -47,21 +49,23 @@ class QualityControlManager extends BaseManager
         $body = (string) $response->getBody();
         $builtResponse = HandleResponse::parse($body);
 
-        $this->logger->debug(
-            LogMessageFormatter::fromAction($requestId, $action, LogMessageFormatter::TYPE_REQUEST),
-            [
-                'request' => [
-                    'url' => (string) $request->getUri(),
-                    'method' => $request->getMethod(),
-                    'body' => (string) $request->getBody(),
-                    'parameters' => $parameters->all(),
-                ],
-                'response' => [
-                    'head' => $builtResponse->getHead()->asXML(),
-                    'body' => $builtResponse->getBody()->asXML(),
-                ],
-            ]
-        );
+        if ($debug) {
+            $this->logger->debug(
+                LogMessageFormatter::fromAction($requestId, $action, LogMessageFormatter::TYPE_REQUEST),
+                [
+                    'request' => [
+                        'url' => (string) $request->getUri(),
+                        'method' => $request->getMethod(),
+                        'body' => (string) $request->getBody(),
+                        'parameters' => $parameters->all(),
+                    ],
+                    'response' => [
+                        'head' => $builtResponse->getHead()->asXML(),
+                        'body' => $builtResponse->getBody()->asXML(),
+                    ],
+                ]
+            );
+        }
 
         $qualityControls = QualityControlsFactory::make($builtResponse->getBody());
 
@@ -71,13 +75,19 @@ class QualityControlManager extends BaseManager
     /**
      * @return QualityControl[]
      */
-    public function getAllQcStatus(int $limit = self::DEFAULT_LIMIT, int $offset = self::DEFAULT_OFFSET): array
-    {
+    public function getAllQcStatus(
+        int $limit = self::DEFAULT_LIMIT,
+        int $offset = self::DEFAULT_OFFSET,
+        bool $debug = true
+    ): array {
         $parameters = clone $this->parameters;
 
         $this->setListDimensions($parameters, $limit, $offset);
 
-        return $this->getQcStatus($parameters);
+        return $this->getQcStatus(
+            $parameters,
+            $debug
+        );
     }
 
     /**
@@ -88,7 +98,8 @@ class QualityControlManager extends BaseManager
     public function getQcStatusBySkuSellerList(
         array $skuSellerList = [],
         int $limit = self::DEFAULT_LIMIT,
-        int $offset = self::DEFAULT_OFFSET
+        int $offset = self::DEFAULT_OFFSET,
+        bool $debug = true
     ): array {
         $parameters = clone $this->parameters;
 
@@ -102,7 +113,10 @@ class QualityControlManager extends BaseManager
             ['SkuSellerList' => Json::encode($skuSellerList)]
         );
 
-        return $this->getQcStatus($parameters);
+        return $this->getQcStatus(
+            $parameters,
+            $debug
+        );
     }
 
     protected function setListDimensions(Parameters &$parameters, int $limit, int $offset): void

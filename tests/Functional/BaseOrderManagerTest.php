@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace Linio\SellerCenter;
 
+use DateTime;
 use DateTimeImmutable;
 use Exception;
 use Linio\SellerCenter\Application\Configuration;
@@ -17,20 +18,41 @@ use Linio\SellerCenter\Model\Order\OrderItems;
 use Linio\SellerCenter\Model\Order\TrackingCode;
 use Linio\SellerCenter\Service\OrderManager;
 use Prophecy\Argument;
+use Prophecy\Prophecy\ObjectProphecy;
 use Psr\Log\LoggerInterface;
 
 class BaseOrderManagerTest extends LinioTestCase
 {
     use ClientHelper;
 
+    /**
+     * @var ObjectProphecy
+     */
+    protected $logger;
+
+    private const ORDER_INIT_DATE = '-3 month';
+    private const ORDER_END_DATE = '-2 week';
+
+    public function prepareLogTest(bool $debug): void
+    {
+        $this->logger = $this->prophesize(LoggerInterface::class);
+
+        $this->logger->debug(
+            Argument::type('string'),
+            Argument::type('array')
+        )->shouldBeCalled();
+
+        if (!$debug) {
+            $this->logger->debug(
+                Argument::type('string'),
+                Argument::type('array')
+            )->shouldNotBeCalled();
+        }
+    }
+
     public function testItReturnsAOrder(): void
     {
-        $client = $this->createClientWithResponse($this->getOrdersResponse('Order/OrderResponse.xml'));
-
-        $env = $this->getParameters();
-        $configuration = new Configuration($env['key'], $env['username'], $env['endpoint'], $env['version']);
-
-        $sdkClient = new SellerCenterSdk($configuration, $client);
+        $sdkClient = $this->getSdkClient($this->getOrdersResponse('Order/OrderResponse.xml'));
 
         $orderId = 4687503;
 
@@ -41,12 +63,7 @@ class BaseOrderManagerTest extends LinioTestCase
 
     public function testItReturnsACollectionOfOrderItems(): void
     {
-        $client = $this->createClientWithResponse($this->getOrdersResponse('Order/OrderItemsResponse.xml'));
-
-        $env = $this->getParameters();
-        $configuration = new Configuration($env['key'], $env['username'], $env['endpoint'], $env['version']);
-
-        $sdkClient = new SellerCenterSdk($configuration, $client);
+        $sdkClient = $this->getSdkClient($this->getOrdersResponse('Order/OrderItemsResponse.xml'));
 
         $orderId = 6750999;
 
@@ -58,15 +75,9 @@ class BaseOrderManagerTest extends LinioTestCase
 
     public function testItReturnAMultipleCollectionsOfOrderItems(): void
     {
-        $client = $this->createClientWithResponse($this->getOrdersResponse('Order/OrdersItemsResponse.xml'));
-
-        $env = $this->getParameters();
-        $configuration = new Configuration($env['key'], $env['username'], $env['endpoint'], $env['version']);
-
-        $sdkClient = new SellerCenterSdk($configuration, $client);
+        $sdkClient = $this->getSdkClient($this->getOrdersResponse('Order/OrdersItemsResponse.xml'));
 
         $ordersId = [4687808, 6653173];
-
         $result = $sdkClient->orders()->getMultipleOrderItems($ordersId);
 
         $this->assertIsArray($result);
@@ -88,12 +99,7 @@ class BaseOrderManagerTest extends LinioTestCase
         string $sortDirection,
         string $status
     ): void {
-        $client = $this->createClientWithResponse($this->getOrdersResponse());
-
-        $env = $this->getParameters();
-        $configuration = new Configuration($env['key'], $env['username'], $env['endpoint'], $env['version']);
-
-        $sdkClient = new SellerCenterSdk($configuration, $client);
+        $sdkClient = $this->getSdkClient($this->getOrdersResponse());
 
         $result = $sdkClient->orders()->getOrdersCreatedBetween(
             $createdAfter,
@@ -118,12 +124,7 @@ class BaseOrderManagerTest extends LinioTestCase
         string $sortDirection,
         string $status
     ): void {
-        $client = $this->createClientWithResponse($this->getOrdersResponse());
-
-        $env = $this->getParameters();
-        $configuration = new Configuration($env['key'], $env['username'], $env['endpoint'], $env['version']);
-
-        $sdkClient = new SellerCenterSdk($configuration, $client);
+        $sdkClient = $this->getSdkClient($this->getOrdersResponse());
 
         $result = $sdkClient->orders()->getOrdersUpdatedBetween(
             $updatedAfter,
@@ -148,12 +149,7 @@ class BaseOrderManagerTest extends LinioTestCase
         string $sortDirection,
         string $status
     ): void {
-        $client = $this->createClientWithResponse($this->getOrdersResponse());
-
-        $env = $this->getParameters();
-        $configuration = new Configuration($env['key'], $env['username'], $env['endpoint'], $env['version']);
-
-        $sdkClient = new SellerCenterSdk($configuration, $client);
+        $sdkClient = $this->getSdkClient($this->getOrdersResponse());
 
         $result = $sdkClient->orders()->getOrdersCreatedAfter(
             $createdAfter,
@@ -177,12 +173,7 @@ class BaseOrderManagerTest extends LinioTestCase
         string $sortDirection,
         string $status
     ): void {
-        $client = $this->createClientWithResponse($this->getOrdersResponse());
-
-        $env = $this->getParameters();
-        $configuration = new Configuration($env['key'], $env['username'], $env['endpoint'], $env['version']);
-
-        $sdkClient = new SellerCenterSdk($configuration, $client);
+        $sdkClient = $this->getSdkClient($this->getOrdersResponse());
 
         $result = $sdkClient->orders()->getOrdersCreatedBefore(
             $createdBefore,
@@ -206,12 +197,7 @@ class BaseOrderManagerTest extends LinioTestCase
         string $sortDirection,
         string $status
     ): void {
-        $client = $this->createClientWithResponse($this->getOrdersResponse());
-
-        $env = $this->getParameters();
-        $configuration = new Configuration($env['key'], $env['username'], $env['endpoint'], $env['version']);
-
-        $sdkClient = new SellerCenterSdk($configuration, $client);
+        $sdkClient = $this->getSdkClient($this->getOrdersResponse());
 
         $result = $sdkClient->orders()->getOrdersUpdatedAfter(
             $updatedAfter,
@@ -235,12 +221,7 @@ class BaseOrderManagerTest extends LinioTestCase
         string $sortDirection,
         string $status
     ): void {
-        $client = $this->createClientWithResponse($this->getOrdersResponse());
-
-        $env = $this->getParameters();
-        $configuration = new Configuration($env['key'], $env['username'], $env['endpoint'], $env['version']);
-
-        $sdkClient = new SellerCenterSdk($configuration, $client);
+        $sdkClient = $this->getSdkClient($this->getOrdersResponse());
 
         $result = $sdkClient->orders()->getOrdersUpdatedBefore(
             $updatedBefore,
@@ -264,12 +245,7 @@ class BaseOrderManagerTest extends LinioTestCase
         string $sortDirection,
         string $status
     ): void {
-        $client = $this->createClientWithResponse($this->getOrdersResponse());
-
-        $env = $this->getParameters();
-        $configuration = new Configuration($env['key'], $env['username'], $env['endpoint'], $env['version']);
-
-        $sdkClient = new SellerCenterSdk($configuration, $client);
+        $sdkClient = $this->getSdkClient($this->getOrdersResponse());
 
         $result = $sdkClient->orders()->getOrdersWithStatus(
             $status,
@@ -289,12 +265,7 @@ class BaseOrderManagerTest extends LinioTestCase
 
         $this->expectExceptionMessage('The parameter Status is invalid.');
 
-        $client = $this->createClientWithResponse($this->getOrdersResponse());
-
-        $env = $this->getParameters();
-        $configuration = new Configuration($env['key'], $env['username'], $env['endpoint'], $env['version']);
-
-        $sdkClient = new SellerCenterSdk($configuration, $client);
+        $sdkClient = $this->getSdkClient($this->getOrdersResponse());
 
         $status = 'invalid status';
 
@@ -322,12 +293,7 @@ class BaseOrderManagerTest extends LinioTestCase
         string $sortDirection,
         string $status
     ): void {
-        $client = $this->createClientWithResponse($this->getOrdersResponse());
-
-        $env = $this->getParameters();
-        $configuration = new Configuration($env['key'], $env['username'], $env['endpoint'], $env['version']);
-
-        $sdkClient = new SellerCenterSdk($configuration, $client);
+        $sdkClient = $this->getSdkClient($this->getOrdersResponse());
 
         $result = $sdkClient->orders()->getOrdersFromParameters(
             $createdAfter,
@@ -358,12 +324,7 @@ class BaseOrderManagerTest extends LinioTestCase
             'E0125: Test Error'
         );
 
-        $client = $this->createClientWithResponse($body, 400);
-
-        $parameters = $this->getParameters();
-        $configuration = new Configuration($parameters['key'], $parameters['username'], $parameters['endpoint'], $parameters['version']);
-
-        $sdkClient = new SellerCenterSdk($configuration, $client);
+        $sdkClient = $this->getSdkClient($body, null, 400);
 
         $orderItems = $sdkClient->orders()->setStatusToReadyToShip([1], 'deliveryType', 'shippingProvider');
 
@@ -398,16 +359,14 @@ class BaseOrderManagerTest extends LinioTestCase
             0,
             ''
         );
-        $client = $this->createClientWithResponse($body, 400);
-
-        $parameters = $this->getParameters();
-        $configuration = new Configuration($parameters['key'], $parameters['username'], $parameters['endpoint'], $parameters['version']);
-
-        $sdkClient = new SellerCenterSdk($configuration, $client);
+        $sdkClient = $this->getSdkClient($body, null, 400);
         $sdkClient->orders()->setStatusToCanceled(1, 'someReason', 'someReasonDetail');
     }
 
-    public function testItLogsWhenSettingStatusToCanceledReturnSuccessResponse(): void
+    /**
+     * @dataProvider debugParameter
+     */
+    public function testItLogsDependingOnDebugParamWhenSettingStatusToCanceledReturnSuccessResponse(bool $debug): void
     {
         $body = sprintf(
             $this->getOrdersResponse('Order/SetOrderStatusSuccessResponse.xml'),
@@ -416,29 +375,391 @@ class BaseOrderManagerTest extends LinioTestCase
             1
         );
 
-        $client = $this->createClientWithResponse($body, 400);
+        $this->prepareLogTest($debug);
+        $sdkClient = $this->getSdkClient($body, $this->logger);
 
-        $parameters = $this->getParameters();
-        $configuration = new Configuration($parameters['key'], $parameters['username'], $parameters['endpoint'], $parameters['version']);
-        $logger = $this->prophesize(LoggerInterface::class);
-        $logger->debug(
-            Argument::type('string'),
-            Argument::type('array')
+        $sdkClient->orders()->setStatusToCanceled(
+            1,
+            'someReason',
+            'someReasonDetail',
+            $debug
+        );
+    }
+
+    /**
+     * @dataProvider debugParameter
+     */
+    public function testItLogsDependingOnDebugParamWhenGetOrdersWithStatusSuccessResponse(bool $debug): void
+    {
+        $body = $this->getOrdersResponse('Order/OrdersResponse.xml');
+        $this->prepareLogTest($debug);
+        $sdkClient = $this->getSdkClient($body, $this->logger);
+
+        $this->logger->info(
+            Argument::type('string')
         )->shouldBeCalled();
-        $sdkClient = new SellerCenterSdk($configuration, $client, $logger->reveal());
-        $sdkClient->orders()->setStatusToCanceled(1, 'someReason', 'someReasonDetail');
+
+        if (!$debug) {
+            $this->logger->info(
+                Argument::type('string')
+            )->shouldNotBeCalled();
+        }
+
+        $sdkClient->orders()->getOrdersWithStatus(
+            'pending',
+            100,
+            100,
+            'created_at',
+            'asc',
+            $debug
+        );
+    }
+
+    /**
+     * @dataProvider debugParameter
+     */
+    public function testItLogsDependingOnDebugParamWhenGetOrderItemsSuccessResponse(bool $debug): void
+    {
+        $body = $this->getOrdersResponse('Order/OrderItemsResponse.xml');
+        $this->prepareLogTest($debug);
+        $sdkClient = $this->getSdkClient($body, $this->logger);
+
+        $this->logger->info(
+            Argument::type('string')
+        )->shouldBeCalled();
+
+        if (!$debug) {
+            $this->logger->info(
+                Argument::type('string')
+            )->shouldNotBeCalled();
+        }
+
+        $sdkClient->orders()->getOrderItems(
+            1,
+            $debug
+        );
+    }
+
+    /**
+     * @dataProvider debugParameter
+     */
+    public function testItLogsDependingOnDebugParamWhenGetMultipleOrderItemsSuccessResponse(bool $debug): void
+    {
+        $body = $this->getOrdersResponse('Order/OrdersItemsResponse.xml');
+        $this->prepareLogTest($debug);
+        $sdkClient = $this->getSdkClient($body, $this->logger);
+
+        $this->logger->info(
+            Argument::type('string')
+        )->shouldBeCalled();
+
+        if (!$debug) {
+            $this->logger->info(
+                Argument::type('string')
+            )->shouldNotBeCalled();
+        }
+
+        $sdkClient->orders()->getMultipleOrderItems(
+            [1],
+            $debug
+        );
+    }
+
+    /**
+     * @dataProvider debugParameter
+     */
+    public function testItLogsDependingOnDebugParamWhenGetOrdersCreatedBetweenSuccessResponse(bool $debug): void
+    {
+        $body = $this->getOrdersResponse('Order/OrdersResponse.xml');
+        $this->prepareLogTest($debug);
+        $sdkClient = $this->getSdkClient($body, $this->logger);
+
+        $this->logger->info(
+            Argument::type('string')
+        )->shouldBeCalled();
+
+        if (!$debug) {
+            $this->logger->info(
+                Argument::type('string')
+            )->shouldNotBeCalled();
+        }
+
+        $since = new DateTime(self::ORDER_INIT_DATE);
+        $until = new DateTime(self::ORDER_END_DATE);
+        $limit = 20;
+        $offset = 0;
+        $sortBy = '';
+        $sortDirection = 'DESC';
+
+        $sdkClient->orders()->getOrdersCreatedBetween(
+            $since,
+            $until,
+            $limit,
+            $offset,
+            $sortBy,
+            $sortDirection,
+            $debug
+        );
+    }
+
+    /**
+     * @dataProvider debugParameter
+     */
+    public function testItLogsDependingOnDebugParamWhenGetOrdersUpdatedBetweenSuccessResponse(bool $debug): void
+    {
+        $body = $this->getOrdersResponse('Order/OrdersResponse.xml');
+        $this->prepareLogTest($debug);
+        $sdkClient = $this->getSdkClient($body, $this->logger);
+
+        $this->logger->info(
+            Argument::type('string')
+        )->shouldBeCalled();
+
+        if (!$debug) {
+            $this->logger->info(
+                Argument::type('string')
+            )->shouldNotBeCalled();
+        }
+
+        $since = new DateTime(self::ORDER_INIT_DATE);
+        $until = new DateTime(self::ORDER_END_DATE);
+        $limit = 20;
+        $offset = 0;
+        $sortBy = '';
+        $sortDirection = 'DESC';
+
+        $sdkClient->orders()->getOrdersUpdatedBetween(
+            $since,
+            $until,
+            $limit,
+            $offset,
+            $sortBy,
+            $sortDirection,
+            $debug
+        );
+    }
+
+    /**
+     * @dataProvider debugParameter
+     */
+    public function testItLogsDependingOnDebugParamWhenGetOrdersCreatedBeforeSuccessResponse(bool $debug): void
+    {
+        $body = $this->getOrdersResponse('Order/OrdersResponse.xml');
+        $this->prepareLogTest($debug);
+        $sdkClient = $this->getSdkClient($body, $this->logger);
+
+        $this->logger->info(
+            Argument::type('string')
+        )->shouldBeCalled();
+
+        if (!$debug) {
+            $this->logger->info(
+                Argument::type('string')
+            )->shouldNotBeCalled();
+        }
+
+        $since = new DateTime(self::ORDER_INIT_DATE);
+        $limit = 20;
+        $offset = 0;
+        $sortBy = '';
+        $sortDirection = 'DESC';
+
+        $sdkClient->orders()->getOrdersCreatedBefore(
+            $since,
+            $limit,
+            $offset,
+            $sortBy,
+            $sortDirection,
+            $debug
+        );
+    }
+
+    /**
+     * @dataProvider debugParameter
+     */
+    public function testItLogsDependingOnDebugParamWhenGetOrdersUpdatedBeforeSuccessResponse(bool $debug): void
+    {
+        $body = $this->getOrdersResponse('Order/OrdersResponse.xml');
+        $this->prepareLogTest($debug);
+        $sdkClient = $this->getSdkClient($body, $this->logger);
+
+        $this->logger->info(
+            Argument::type('string')
+        )->shouldBeCalled();
+
+        if (!$debug) {
+            $this->logger->info(
+                Argument::type('string')
+            )->shouldNotBeCalled();
+        }
+
+        $since = new DateTime(self::ORDER_INIT_DATE);
+        $limit = 20;
+        $offset = 0;
+        $sortBy = '';
+        $sortDirection = 'DESC';
+
+        $sdkClient->orders()->getOrdersUpdatedBefore(
+            $since,
+            $limit,
+            $offset,
+            $sortBy,
+            $sortDirection,
+            $debug
+        );
+    }
+
+    /**
+     * @dataProvider debugParameter
+     */
+    public function testItLogsDependingOnDebugParamWhenGetOrdersCreatedAfterSuccessResponse(bool $debug): void
+    {
+        $body = $this->getOrdersResponse('Order/OrdersResponse.xml');
+        $this->prepareLogTest($debug);
+        $sdkClient = $this->getSdkClient($body, $this->logger);
+
+        $this->logger->info(
+            Argument::type('string')
+        )->shouldBeCalled();
+
+        if (!$debug) {
+            $this->logger->info(
+                Argument::type('string')
+            )->shouldNotBeCalled();
+        }
+
+        $since = new DateTime(self::ORDER_INIT_DATE);
+        $limit = 20;
+        $offset = 0;
+        $sortBy = '';
+        $sortDirection = 'DESC';
+
+        $sdkClient->orders()->getOrdersCreatedAfter(
+            $since,
+            $limit,
+            $offset,
+            $sortBy,
+            $sortDirection,
+            $debug
+        );
+    }
+
+    /**
+     * @dataProvider debugParameter
+     */
+    public function testItLogsDependingOnDebugParamWhenGetOrdersUpdatedAfterSuccessResponse(bool $debug): void
+    {
+        $body = $this->getOrdersResponse('Order/OrdersResponse.xml');
+        $this->prepareLogTest($debug);
+        $sdkClient = $this->getSdkClient($body, $this->logger);
+
+        $this->logger->info(
+            Argument::type('string')
+        )->shouldBeCalled();
+
+        if (!$debug) {
+            $this->logger->info(
+                Argument::type('string')
+            )->shouldNotBeCalled();
+        }
+
+        $since = new DateTime(self::ORDER_INIT_DATE);
+        $limit = 20;
+        $offset = 0;
+        $sortBy = '';
+        $sortDirection = 'DESC';
+
+        $sdkClient->orders()->getOrdersUpdatedAfter(
+            $since,
+            $limit,
+            $offset,
+            $sortBy,
+            $sortDirection,
+            $debug
+        );
+    }
+
+    /**
+     * @dataProvider debugParameter
+     */
+    public function testItLogsDependingOnDebugParamWhenGetOrdersFromParametersSuccessResponse(bool $debug): void
+    {
+        $body = $this->getOrdersResponse('Order/OrdersResponse.xml');
+        $this->prepareLogTest($debug);
+        $sdkClient = $this->getSdkClient($body, $this->logger);
+
+        $this->logger->info(
+            Argument::type('string')
+        )->shouldBeCalled();
+
+        if (!$debug) {
+            $this->logger->info(
+                Argument::type('string')
+            )->shouldNotBeCalled();
+        }
+
+        $limit = 20;
+        $offset = 0;
+        $sortBy = '';
+        $sortDirection = 'DESC';
+
+        $sdkClient->orders()->getOrdersFromParameters(
+            null,
+            null,
+            null,
+            null,
+            'pending',
+            $limit,
+            $offset,
+            $sortBy,
+            $sortDirection,
+            $debug
+        );
+    }
+
+    /**
+     * @dataProvider debugParameter
+     */
+    public function testItLogsDependingOnDebugParamWhenGetTrackingCodeSuccessResponse(bool $debug): void
+    {
+        $body = $this->getOrdersResponse('Order/TrackingCodeSucessResponse.xml');
+        $this->prepareLogTest($debug);
+        $sdkClient = $this->getSdkClient($body, $this->logger);
+
+        $sdkClient->orders()->getTrackingCode(
+            '10f9780b-380c-4625-8024-b166ece74453',
+            'chilexpress',
+            $debug
+        );
+    }
+
+    /**
+     * @dataProvider debugParameter
+     */
+    public function testItLogsDependingOnDebugParamWhenGetFailureReasonsSuccessResponse(bool $debug): void
+    {
+        $body = $this->getOrdersResponse('Order/FailureReasonsSuccessResponse.xml');
+        $this->prepareLogTest($debug);
+        $sdkClient = $this->getSdkClient($body, $this->logger);
+
+        $this->logger->info(
+            Argument::type('string')
+        )->shouldBeCalled();
+
+        if (!$debug) {
+            $this->logger->info(
+                Argument::type('string')
+            )->shouldNotBeCalled();
+        }
+
+        $sdkClient->orders()->getFailureReasons($debug);
     }
 
     public function testItReturnFailureReasons(): void
     {
         $xml = $this->getOrdersResponse('Order/FailureReasonsSuccessResponse.xml');
 
-        $client = $this->createClientWithResponse($xml);
-        $parameters = $this->getParameters();
-
-        $configuration = new Configuration($parameters['key'], $parameters['username'], $parameters['endpoint'], $parameters['version']);
-
-        $sdkClient = new SellerCenterSdk($configuration, $client);
+        $sdkClient = $this->getSdkClient($xml);
 
         $failureReasons = $sdkClient->orders()->getFailureReasons();
 
@@ -448,12 +769,7 @@ class BaseOrderManagerTest extends LinioTestCase
     public function testItGetTrackingCode(): void
     {
         $xml = $this->getOrdersResponse('Order/TrackingCodeSucessResponse.xml');
-        $client = $this->createClientWithResponse($xml);
-        $parameters = $this->getParameters();
-
-        $configuration = new Configuration($parameters['key'], $parameters['username'], $parameters['endpoint'], $parameters['version']);
-
-        $sdkClient = new SellerCenterSdk($configuration, $client);
+        $sdkClient = $this->getSdkClient($xml);
 
         $response = $sdkClient->orders()->getTrackingCode(
             '1e8382f4-70b6-4ffd-b479-f7373408d232',
@@ -490,6 +806,14 @@ class BaseOrderManagerTest extends LinioTestCase
             [null, $date, $date, null, 'created_at', 'ASC', 'returned'],
             [$date, null, null, $date, 'invalid', 'invalid', 'shipped'],
             [null, null, null, null, 'created_at', 'ASC', 'failed'],
+        ];
+    }
+
+    public function debugParameter()
+    {
+        return [
+            [false],
+            [true],
         ];
     }
 

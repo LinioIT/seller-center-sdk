@@ -9,7 +9,7 @@ use Linio\SellerCenter\Model\Seller\Statistic;
 
 class SellerManager extends BaseManager
 {
-    public function getStatistics(): Statistic
+    public function getStatistics(bool $debug = true): Statistic
     {
         $action = 'GetStatistics';
 
@@ -17,7 +17,13 @@ class SellerManager extends BaseManager
 
         $requestId = $this->generateRequestId();
 
-        $builtResponse = $this->executeAction($action, $parameters, $requestId, 'GET');
+        $builtResponse = $this->executeAction(
+            $action,
+            $parameters,
+            $requestId,
+            'GET',
+            $debug
+        );
 
         return StatisticsFactory::make($builtResponse->getBody());
     }

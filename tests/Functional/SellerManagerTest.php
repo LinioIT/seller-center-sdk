@@ -5,23 +5,40 @@ declare(strict_types=1);
 namespace Linio\SellerCenter;
 
 use Exception;
-use Linio\SellerCenter\Application\Configuration;
 use Linio\SellerCenter\Model\Seller\Statistic;
+use Prophecy\Argument;
+use Prophecy\Prophecy\ObjectProphecy;
+use Psr\Log\LoggerInterface;
 
 class SellerManagerTest extends LinioTestCase
 {
     use ClientHelper;
 
+    /**
+     * @var ObjectProphecy
+     */
+    protected $logger;
+
+    public function prepareLogTest(bool $debug): void
+    {
+        $this->logger = $this->prophesize(LoggerInterface::class);
+
+        $this->logger->debug(
+            Argument::type('string'),
+            Argument::type('array')
+        )->shouldBeCalled();
+
+        if (!$debug) {
+            $this->logger->debug(
+                Argument::type('string'),
+                Argument::type('array')
+            )->shouldNotBeCalled();
+        }
+    }
+
     public function testItReturnsStatistics(): void
     {
-        $body = $this->getSchema('Seller/Statistics.xml');
-
-        $client = $this->createClientWithResponse($body);
-
-        $parameters = $this->getParameters();
-        $configuration = new Configuration($parameters['key'], $parameters['username'], $parameters['endpoint'], $parameters['version']);
-
-        $sdkClient = new SellerCenterSdk($configuration, $client);
+        $sdkClient = $this->getSdkClient($this->getSchema('Seller/Statistics.xml'));
 
         $result = $sdkClient->seller()->getStatistics();
 
@@ -44,14 +61,30 @@ class SellerManagerTest extends LinioTestCase
             <Body/>
         </ErrorResponse>';
 
-        $client = $this->createClientWithResponse($body, 400);
-
-        $env = $this->getParameters();
-
-        $configuration = new Configuration($env['key'], $env['username'], $env['endpoint'], $env['version']);
-
-        $sdkClient = new SellerCenterSdk($configuration, $client);
+        $sdkClient = $this->getSdkClient($body, null, 400);
 
         $sdkClient->seller()->getStatistics();
+    }
+
+    /**
+     * @dataProvider debugParameter
+     */
+    public function testItLogsDependingOnDebugParamWhenGetStatisticsSuccessResponse(bool $debug): void
+    {
+        $this->prepareLogTest($debug);
+        $sdkClient = $this->getSdkClient(
+            $this->getSchema('Seller/Statistics.xml'),
+            $this->logger
+        );
+
+        $sdkClient->seller()->getStatistics($debug);
+    }
+
+    public function debugParameter()
+    {
+        return [
+            [false],
+            [true],
+        ];
     }
 }

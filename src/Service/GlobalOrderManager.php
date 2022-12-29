@@ -16,7 +16,8 @@ class GlobalOrderManager extends BaseOrderManager
     public function setInvoiceNumber(
         int $orderItemId,
         string $invoiceNumber,
-        ?string $invoiceDocumentLink
+        ?string $invoiceDocumentLink,
+        bool $debug = true
     ): SuccessResponse {
         $action = 'SetInvoiceNumber';
 
@@ -37,14 +38,16 @@ class GlobalOrderManager extends BaseOrderManager
             $action,
             $parameters,
             $requestId,
-            'POST'
+            'POST',
+            $debug
         );
     }
 
     public function setInvoiceDocument(
         int $orderItemId,
         string $invoiceNumber,
-        string $invoiceDocument
+        string $invoiceDocument,
+        bool $debug = true
     ): FeedResponse {
         $action = 'SetInvoiceDocument';
 
@@ -62,6 +65,7 @@ class GlobalOrderManager extends BaseOrderManager
             $parameters,
             $requestId,
             'POST',
+            $debug,
             $invoiceDocument
         );
 
@@ -76,7 +80,8 @@ class GlobalOrderManager extends BaseOrderManager
     public function setStatusToReadyToShip(
         array $orderItemIds,
         string $deliveryType,
-        ?string $packageId = null
+        ?string $packageId = null,
+        bool $debug = true
     ): array {
         $action = 'SetStatusToReadyToShip';
 
@@ -97,7 +102,8 @@ class GlobalOrderManager extends BaseOrderManager
             $action,
             $parameters,
             $requestId,
-            'POST'
+            'POST',
+            $debug
         );
 
         $orderItems = OrderItemsFactory::makeFromStatus($builtResponse->getBody());
@@ -112,7 +118,8 @@ class GlobalOrderManager extends BaseOrderManager
      */
     public function setStatusToPackedByMarketplace(
         array $orderItemIds,
-        string $deliveryType
+        string $deliveryType,
+        bool $debug = true
     ): array {
         $action = 'SetStatusToPackedByMarketplace';
 
@@ -129,7 +136,8 @@ class GlobalOrderManager extends BaseOrderManager
             $action,
             $parameters,
             $requestId,
-            'POST'
+            'POST',
+            $debug
         );
 
         $orderItems = OrderItemsFactory::makeFromStatus($builtResponse->getBody());
