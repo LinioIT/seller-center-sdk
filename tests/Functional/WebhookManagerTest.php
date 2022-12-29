@@ -205,9 +205,4 @@ class WebhookManagerTest extends LinioTestCase
             [true],
         ];
     }
-
-    private function getResponse(): string
-    {
-        return '';
-    }
 }
