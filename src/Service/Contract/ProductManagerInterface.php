@@ -16,26 +16,30 @@ interface ProductManagerInterface
     public const DEFAULT_OFFSET = 0;
     public const DEFAULT_FILTER = 'all';
 
-    public function productUpdate(Products $products): FeedResponse;
+    public function productUpdate(Products $products, bool $debug = true): FeedResponse;
 
-    public function productCreate(Products $products): FeedResponse;
+    public function productCreate(Products $products, bool $debug = true): FeedResponse;
 
-    public function productRemove(Products $products): FeedResponse;
+    public function productRemove(Products $products, bool $debug = true): FeedResponse;
 
     /**
      * @param mixed[] $productImages
      */
-    public function addImage(array $productImages): FeedResponse;
+    public function addImage(array $productImages, bool $debug = true): FeedResponse;
 
     /**
      * @return mixed[]
      */
-    public function getProducts(Parameters $parameters): array;
+    public function getProducts(Parameters $parameters, bool $debug = true): array;
 
     /**
      * @return ProductInterface[]
      */
-    public function getAllProducts(int $limit = self::DEFAULT_LIMIT, int $offset = self::DEFAULT_OFFSET): array;
+    public function getAllProducts(
+        int $limit = self::DEFAULT_LIMIT,
+        int $offset = self::DEFAULT_OFFSET,
+        bool $debug = true
+    ): array;
 
     /**
      * @return ProductInterface[]
@@ -43,7 +47,8 @@ interface ProductManagerInterface
     public function getProductsCreatedAfter(
         DateTimeInterface $createdAfter,
         int $limit = self::DEFAULT_LIMIT,
-        int $offset = self::DEFAULT_OFFSET
+        int $offset = self::DEFAULT_OFFSET,
+        bool $debug = true
     ): array;
 
     /**
@@ -52,7 +57,8 @@ interface ProductManagerInterface
     public function getProductsCreatedBefore(
         DateTimeInterface $createdBefore,
         int $limit = self::DEFAULT_LIMIT,
-        int $offset = self::DEFAULT_OFFSET
+        int $offset = self::DEFAULT_OFFSET,
+        bool $debug = true
     ): array;
 
     /**
@@ -61,7 +67,8 @@ interface ProductManagerInterface
     public function getProductsUpdatedAfter(
         DateTimeInterface $updatedAfter,
         int $limit = self::DEFAULT_LIMIT,
-        int $offset = self::DEFAULT_LIMIT
+        int $offset = self::DEFAULT_LIMIT,
+        bool $debug = true
     ): array;
 
     /**
@@ -70,7 +77,8 @@ interface ProductManagerInterface
     public function getProductsUpdatedBefore(
         DateTimeInterface $updatedBefore,
         int $limit = self::DEFAULT_LIMIT,
-        int $offset = self::DEFAULT_OFFSET
+        int $offset = self::DEFAULT_OFFSET,
+        bool $debug = true
     ): array;
 
     /**
@@ -79,7 +87,8 @@ interface ProductManagerInterface
     public function searchProducts(
         string $searchValue,
         int $limit = self::DEFAULT_LIMIT,
-        int $offset = self::DEFAULT_OFFSET
+        int $offset = self::DEFAULT_OFFSET,
+        bool $debug = true
     ): array;
 
     /**
@@ -88,7 +97,8 @@ interface ProductManagerInterface
     public function filterProducts(
         string $filter,
         int $limit = self::DEFAULT_LIMIT,
-        int $offset = self::DEFAULT_OFFSET
+        int $offset = self::DEFAULT_OFFSET,
+        bool $debug = true
     ): array;
 
     /**
@@ -99,7 +109,8 @@ interface ProductManagerInterface
     public function getProductsBySellerSku(
         array $skuSellerList,
         int $limit = self::DEFAULT_LIMIT,
-        int $offset = self::DEFAULT_OFFSET
+        int $offset = self::DEFAULT_OFFSET,
+        bool $debug = true
     ): array;
 
     /**
@@ -116,7 +127,8 @@ interface ProductManagerInterface
         int $offset = self::DEFAULT_OFFSET,
         ?array $skuSellerList = null,
         ?DateTimeInterface $updateAfter = null,
-        ?DateTimeInterface $updateBefore = null
+        ?DateTimeInterface $updateBefore = null,
+        bool $debug = true
     ): array;
 
     public function setListDimensions(Parameters &$parameters, int $limit, int $offset): void;

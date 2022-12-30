@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<SuccessResponse>
+  <Head>
+    <RequestId/>
+    <RequestAction>GetQcStatus</RequestAction>
+    <ResponseType>State</ResponseType>
+    <Timestamp>2016-04-28T15:09:01+0200</Timestamp>
+  </Head>
+  <Body>
+    <Status>
+      <State>
+        <SellerSKU>TestProduct2030</SellerSKU>
+        <Status>approved</Status>
+        <DataChanged>1</DataChanged>
+      </State>
+      <State>
+        <SellerSKU>TestProduct2031</SellerSKU>
+        <Status>approved</Status>
+        <DataChanged>1</DataChanged>
+      </State>
+      <State>
+        <SellerSKU>TestProduct2032</SellerSKU>
+        <Status>pending</Status>
+      </State>
+      <State>
+        <SellerSKU>TestProduct2033</SellerSKU>
+        <Status>pending</Status>
+      </State>
+      <State>
+        <SellerSKU>TestProduct2034</SellerSKU>
+        <Status>rejected</Status>
+        <Reason>Wrong Description; Wrong Translation</Reason>
+      </State>
+      <State>
+        <SellerSKU>TestProduct2035</SellerSKU>
+        <Status>rejected</Status>
+        <Reason>Price Not Reasonable; Image Corrupt</Reason>
+      </State>
+    </Status>
+  </Body>
+</SuccessResponse>

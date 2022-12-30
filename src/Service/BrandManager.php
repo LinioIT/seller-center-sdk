@@ -16,7 +16,7 @@ class BrandManager extends BaseManager
     /**
      * @return Brand[]
      */
-    public function getBrands(): array
+    public function getBrands(bool $debug = true): array
     {
         $action = 'GetBrands';
 
@@ -43,21 +43,23 @@ class BrandManager extends BaseManager
 
         $builtResponse = HandleResponse::parse($body);
 
-        $this->logger->debug(
-            LogMessageFormatter::fromAction($requestId, $action, LogMessageFormatter::TYPE_REQUEST),
-            [
-                'request' => [
-                    'url' => (string) $request->getUri(),
-                    'method' => $request->getMethod(),
-                    'body' => (string) $request->getBody(),
-                    'parameters' => $parameters->all(),
-                ],
-                'response' => [
-                    'head' => $builtResponse->getHead()->asXML(),
-                    'body' => $builtResponse->getBody()->asXML(),
-                ],
-            ]
-        );
+        if ($debug) {
+            $this->logger->debug(
+                LogMessageFormatter::fromAction($requestId, $action, LogMessageFormatter::TYPE_REQUEST),
+                [
+                    'request' => [
+                        'url' => (string) $request->getUri(),
+                        'method' => $request->getMethod(),
+                        'body' => (string) $request->getBody(),
+                        'parameters' => $parameters->all(),
+                    ],
+                    'response' => [
+                        'head' => $builtResponse->getHead()->asXML(),
+                        'body' => $builtResponse->getBody()->asXML(),
+                    ],
+                ]
+            );
+        }
 
         $brands = BrandsFactory::make($builtResponse->getBody());
 

@@ -23,8 +23,10 @@ class FeedManager extends BaseManager
     private const FEED_OFFSET_LIST_ACTION = 'FeedOffsetList';
     private const FEED_CANCEL_ACTION = 'FeedCancel';
 
-    public function getFeedStatusById(string $id): Feed
-    {
+    public function getFeedStatusById(
+        string $id,
+        bool $debug = true
+    ): Feed {
         $action = 'FeedStatus';
 
         $parameters = clone $this->parameters;
@@ -50,21 +52,23 @@ class FeedManager extends BaseManager
 
         $builtResponse = HandleResponse::parse($body);
 
-        $this->logger->debug(
-            LogMessageFormatter::fromAction($requestId, $action, LogMessageFormatter::TYPE_REQUEST),
-            [
-                'request' => [
-                    'url' => (string) $request->getUri(),
-                    'method' => $request->getMethod(),
-                    'body' => (string) $request->getBody(),
-                    'parameters' => $parameters->all(),
-                ],
-                'response' => [
-                    'head' => $builtResponse->getHead()->asXML(),
-                    'body' => $builtResponse->getBody()->asXML(),
-                ],
-            ]
-        );
+        if ($debug) {
+            $this->logger->debug(
+                LogMessageFormatter::fromAction($requestId, $action, LogMessageFormatter::TYPE_REQUEST),
+                [
+                    'request' => [
+                        'url' => (string) $request->getUri(),
+                        'method' => $request->getMethod(),
+                        'body' => (string) $request->getBody(),
+                        'parameters' => $parameters->all(),
+                    ],
+                    'response' => [
+                        'head' => $builtResponse->getHead()->asXML(),
+                        'body' => $builtResponse->getBody()->asXML(),
+                    ],
+                ]
+            );
+        }
 
         return FeedFactory::make($builtResponse->getBody()->FeedDetail);
     }
@@ -72,7 +76,7 @@ class FeedManager extends BaseManager
     /**
      * @return Feed[]
      */
-    public function getFeedList(): array
+    public function getFeedList(bool $debug = true): array
     {
         $action = 'FeedList';
 
@@ -96,22 +100,23 @@ class FeedManager extends BaseManager
 
         $body = (string) $response->getBody();
         $builtResponse = HandleResponse::parse($body);
-
-        $this->logger->debug(
-            LogMessageFormatter::fromAction($requestId, $action, LogMessageFormatter::TYPE_REQUEST),
-            [
-                'request' => [
-                    'url' => (string) $request->getUri(),
-                    'method' => $request->getMethod(),
-                    'body' => (string) $request->getBody(),
-                    'parameters' => $parameters->all(),
-                ],
-                'response' => [
-                    'head' => $builtResponse->getHead()->asXML(),
-                    'body' => $builtResponse->getBody()->asXML(),
-                ],
-            ]
-        );
+        if ($debug) {
+            $this->logger->debug(
+                LogMessageFormatter::fromAction($requestId, $action, LogMessageFormatter::TYPE_REQUEST),
+                [
+                    'request' => [
+                        'url' => (string) $request->getUri(),
+                        'method' => $request->getMethod(),
+                        'body' => (string) $request->getBody(),
+                        'parameters' => $parameters->all(),
+                    ],
+                    'response' => [
+                        'head' => $builtResponse->getHead()->asXML(),
+                        'body' => $builtResponse->getBody()->asXML(),
+                    ],
+                ]
+            );
+        }
 
         $list = FeedsFactory::make($builtResponse->getBody());
 
@@ -126,7 +131,8 @@ class FeedManager extends BaseManager
         ?int $pageSize = null,
         ?string $status = null,
         ?DateTimeInterface $createdAfter = null,
-        ?DateTimeInterface $updatedAfter = null
+        ?DateTimeInterface $updatedAfter = null,
+        bool $debug = true
     ): array {
         $action = self::FEED_OFFSET_LIST_ACTION;
         $parameters = $this->makeParametersForAction($action);
@@ -139,7 +145,7 @@ class FeedManager extends BaseManager
         }
 
         if ($updatedAfter) {
-            $formattedCreatedAfter = $updatedAfter->format(self::DATE_TIME_FORMAT);
+            $formattedUpdatedAfter = $updatedAfter->format(self::DATE_TIME_FORMAT);
         }
 
         $parameters->set([
@@ -147,47 +153,51 @@ class FeedManager extends BaseManager
             'PageSize' => $pageSize,
             'Status' => $status,
             'CreationDate' => $formattedCreatedAfter,
-            'UpdatedDate' => $formattedCreatedAfter,
+            'UpdatedDate' => $formattedUpdatedAfter,
         ]);
 
         $requestId = $this->generateRequestId();
         $response = $this->executeAction(
             $action,
             $parameters,
-            $requestId
+            $requestId,
+            'GET',
+            $debug
         );
+
         $list = FeedsFactory::make($response->getBody());
 
-        $this->logger->info(sprintf(
-            '%d::%s::APIResponse::SellerCenterSdk: %d feeds was recovered',
-            $requestId,
-            $action,
-            count($list->all())
-        ));
+        if ($debug) {
+            $this->logger->info(sprintf(
+                '%s::%s::APIResponse::SellerCenterSdk: %d feeds was recovered',
+                $requestId,
+                $action,
+                count($list->all())
+            ));
+        }
 
         return array_values($list->all());
     }
 
-    public function getFeedCount(): FeedCount
+    public function getFeedCount(bool $debug = true): FeedCount
     {
         $action = 'FeedCount';
         $requestId = $this->generateRequestId();
 
-        $response = $this->getResponse($action, $requestId);
-
-        $this->logger->info(
-            sprintf(
-                '%d::%s::APIResponse::SellerCenterSdk: feed count was recovered',
-                $requestId,
-                $action
-            )
+        $response = $this->getResponse(
+            $action,
+            $requestId,
+            $debug
         );
 
         return FeedCountFactory::make($response);
     }
 
-    private function getResponse(string $action, string $requestId): SimpleXMLElement
-    {
+    private function getResponse(
+        string $action,
+        string $requestId,
+        bool $debug = true
+    ): SimpleXMLElement {
         $parameters = clone $this->parameters;
         $parameters->set([
             'Action' => $action,
@@ -210,27 +220,30 @@ class FeedManager extends BaseManager
 
         $builtResponse = HandleResponse::parse($body);
 
-        $this->logger->debug(
-            LogMessageFormatter::fromAction($requestId, $action, LogMessageFormatter::TYPE_REQUEST),
-            [
-                'request' => [
-                    'url' => (string) $request->getUri(),
-                    'method' => $request->getMethod(),
-                    'body' => (string) $request->getBody(),
-                    'parameters' => $parameters->all(),
-                ],
-                'response' => [
-                    'head' => $builtResponse->getHead()->asXML(),
-                    'body' => $builtResponse->getBody()->asXML(),
-                ],
-            ]
-        );
+        if ($debug) {
+            $this->logger->debug(
+                LogMessageFormatter::fromAction($requestId, $action, LogMessageFormatter::TYPE_REQUEST),
+                [
+                    'request' => [
+                        'url' => (string) $request->getUri(),
+                        'body' => (string) $request->getBody(),
+                        'parameters' => $parameters->all(),
+                    ],
+                    'response' => [
+                        'head' => $builtResponse->getHead()->asXML(),
+                        'body' => $builtResponse->getBody()->asXML(),
+                    ],
+                ]
+            );
+        }
 
         return $builtResponse->getBody();
     }
 
-    public function feedCancel(string $id): FeedResponse
-    {
+    public function feedCancel(
+        string $id,
+        bool $debug = true
+    ): FeedResponse {
         $action = self::FEED_CANCEL_ACTION;
         $parameters = $this->makeParametersForAction($action);
         $parameters->set([
@@ -243,19 +256,10 @@ class FeedManager extends BaseManager
             $action,
             $parameters,
             $requestId,
-            'POST'
+            'POST',
+            $debug
         );
 
-        $feedResponse = FeedResponseFactory::make($response->getHead());
-
-        $this->logger->info(
-            sprintf(
-                '%d::%s::APIResponse::SellerCenterSdk: the feed was cancel',
-                $requestId,
-                $action
-            )
-        );
-
-        return $feedResponse;
+        return FeedResponseFactory::make($response->getHead());
     }
 }

@@ -21,7 +21,7 @@ class CategoryManager extends BaseManager
     /**
      * @return Category[]
      */
-    public function getCategoryTree(): array
+    public function getCategoryTree(bool $debug = true): array
     {
         $action = 'GetCategoryTree';
 
@@ -48,21 +48,23 @@ class CategoryManager extends BaseManager
 
         $builtResponse = HandleResponse::parse($body);
 
-        $this->logger->debug(
-            LogMessageFormatter::fromAction($requestId, $action, LogMessageFormatter::TYPE_REQUEST),
-            [
-                'request' => [
-                    'url' => (string) $request->getUri(),
-                    'method' => $request->getMethod(),
-                    'body' => (string) $request->getBody(),
-                    'parameters' => $parameters->all(),
-                ],
-                'response' => [
-                    'head' => $builtResponse->getHead()->asXML(),
-                    'body' => $builtResponse->getBody()->asXML(),
-                ],
-            ]
-        );
+        if ($debug) {
+            $this->logger->debug(
+                LogMessageFormatter::fromAction($requestId, $action, LogMessageFormatter::TYPE_REQUEST),
+                [
+                    'request' => [
+                        'url' => (string) $request->getUri(),
+                        'method' => $request->getMethod(),
+                        'body' => (string) $request->getBody(),
+                        'parameters' => $parameters->all(),
+                    ],
+                    'response' => [
+                        'head' => $builtResponse->getHead()->asXML(),
+                        'body' => $builtResponse->getBody()->asXML(),
+                    ],
+                ]
+            );
+        }
 
         $categories = CategoriesFactory::make($builtResponse->getBody());
 
@@ -72,8 +74,10 @@ class CategoryManager extends BaseManager
     /**
      * @return CategoryAttribute[]
      */
-    public function getCategoryAttributes(int $categoryId): array
-    {
+    public function getCategoryAttributes(
+        int $categoryId,
+        bool $debug = true
+    ): array {
         $action = 'GetCategoryAttributes';
 
         $parameters = clone $this->parameters;
@@ -102,21 +106,23 @@ class CategoryManager extends BaseManager
 
         $builtResponse = HandleResponse::parse($body);
 
-        $this->logger->debug(
-            LogMessageFormatter::fromAction($requestId, $action, LogMessageFormatter::TYPE_REQUEST),
-            [
-                'request' => [
-                    'url' => (string) $request->getUri(),
-                    'method' => $request->getMethod(),
-                    'body' => (string) $request->getBody(),
-                    'parameters' => $parameters->all(),
-                ],
-                'response' => [
-                    'head' => $builtResponse->getHead()->asXML(),
-                    'body' => $builtResponse->getBody()->asXML(),
-                ],
-            ]
-        );
+        if ($debug) {
+            $this->logger->debug(
+                LogMessageFormatter::fromAction($requestId, $action, LogMessageFormatter::TYPE_REQUEST),
+                [
+                    'request' => [
+                        'url' => (string) $request->getUri(),
+                        'method' => $request->getMethod(),
+                        'body' => (string) $request->getBody(),
+                        'parameters' => $parameters->all(),
+                    ],
+                    'response' => [
+                        'head' => $builtResponse->getHead()->asXML(),
+                        'body' => $builtResponse->getBody()->asXML(),
+                    ],
+                ]
+            );
+        }
 
         $categoryAttributes = CategoryAttributesFactory::make($builtResponse->getBody());
 
@@ -128,8 +134,10 @@ class CategoryManager extends BaseManager
      *
      * @return AttributeSet[]
      */
-    public function getCategoriesByAttributesSet(?array $attributesSetIds): array
-    {
+    public function getCategoriesByAttributesSet(
+        ?array $attributesSetIds,
+        bool $debug = true
+    ): array {
         $action = 'GetCategoriesByAttributeSet';
 
         $parameters = clone $this->parameters;
@@ -163,21 +171,23 @@ class CategoryManager extends BaseManager
 
         $builtResponse = HandleResponse::parse($body);
 
-        $this->logger->debug(
-            LogMessageFormatter::fromAction($requestId, $action, LogMessageFormatter::TYPE_REQUEST),
-            [
-                'request' => [
-                    'url' => (string) $request->getUri(),
-                    'method' => $request->getMethod(),
-                    'body' => (string) $request->getBody(),
-                    'parameters' => $parameters->all(),
-                ],
-                'response' => [
-                    'head' => $builtResponse->getHead()->asXML(),
-                    'body' => $builtResponse->getBody()->asXML(),
-                ],
-            ]
-        );
+        if ($debug) {
+            $this->logger->debug(
+                LogMessageFormatter::fromAction($requestId, $action, LogMessageFormatter::TYPE_REQUEST),
+                [
+                    'request' => [
+                        'url' => (string) $request->getUri(),
+                        'method' => $request->getMethod(),
+                        'body' => (string) $request->getBody(),
+                        'parameters' => $parameters->all(),
+                    ],
+                    'response' => [
+                        'head' => $builtResponse->getHead()->asXML(),
+                        'body' => $builtResponse->getBody()->asXML(),
+                    ],
+                ]
+            );
+        }
 
         $attributesSet = AttributesSetFactory::make($builtResponse->getBody());
 

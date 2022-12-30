@@ -4,61 +4,44 @@ declare(strict_types=1);
 
 namespace Linio\SellerCenter\Functional;
 
-use Linio\SellerCenter\Application\Configuration;
 use Linio\SellerCenter\ClientHelper;
 use Linio\SellerCenter\LinioTestCase;
 use Linio\SellerCenter\Model\Category\Category;
-use Linio\SellerCenter\SellerCenterSdk;
+use Prophecy\Argument;
+use Prophecy\Prophecy\ObjectProphecy;
+use Psr\Log\LoggerInterface;
 
 class CategoryManagerTest extends LinioTestCase
 {
     use ClientHelper;
 
+    /**
+     * @var ObjectProphecy
+     */
+    protected $logger;
+
+    public function prepareLogTest(bool $debug): void
+    {
+        $this->logger = $this->prophesize(LoggerInterface::class);
+
+        $this->logger->debug(
+            Argument::type('string'),
+            Argument::type('array')
+        )->shouldBeCalled();
+
+        if (!$debug) {
+            $this->logger->debug(
+                Argument::type('string'),
+                Argument::type('array')
+            )->shouldNotBeCalled();
+        }
+    }
+
     public function testTheCategoriesWillBeCreatedFromAnXml(): void
     {
-        $body = '<?xml version="1.0" encoding="UTF-8"?>
-                <SuccessResponse>
-                  <Head>
-                    <RequestId/>
-                    <RequestAction>GetCategoryTree</RequestAction>
-                    <ResponseType>Categories</ResponseType>
-                    <Timestamp>2015-07-01T11:11:11+0000</Timestamp>
-                  </Head>
-                  <Body>
-                    <Categories>
-                      <Category>
-                        <Name>Quadrilaterals</Name>
-                        <CategoryId>2790</CategoryId>
-                        <GlobalIdentifier>QUADRILATER</GlobalIdentifier>
-                        <AttributeSetId>1</AttributeSetId>
-                        <Children>
-                          <Category>
-                            <Name>Rectangles</Name>
-                            <CategoryId>589</CategoryId>
-                            <GlobalIdentifier>RECTANGLE</GlobalIdentifier>
-                            <AttributeSetId>1</AttributeSetId>
-                            <Children>
-                              <Category>
-                                <Name>Squares</Name>
-                                <CategoryId>603</CategoryId>
-                                <GlobalIdentifier>SQUARE</GlobalIdentifier>
-                                <AttributeSetId>2</AttributeSetId>
-                                <Children/>
-                              </Category>
-                            </Children>
-                          </Category>
-                        </Children>
-                      </Category>
-                    </Categories>
-                  </Body>
-                </SuccessResponse>';
+        $body = $this->getSchema('Category/GetCategoryTreeSucessResponse.xml');
+        $sdk = $this->getSdkClient($body);
 
-        $client = $this->createClientWithResponse($body);
-
-        $env = $this->getParameters();
-        $configuration = new Configuration($env['key'], $env['username'], $env['endpoint'], $env['version']);
-
-        $sdk = new SellerCenterSdk($configuration, $client);
         $result = $sdk->categories()->getCategoryTree();
 
         $this->assertIsArray($result);
@@ -84,5 +67,55 @@ class CategoryManagerTest extends LinioTestCase
         $this->assertEquals(603, $child_2->getId());
         $this->assertEquals('SQUARE', $child_2->getGlobalIdentifier());
         $this->assertEquals(2, $child_2->getAttributeSetId());
+    }
+
+    /**
+     * @dataProvider debugParameter
+     */
+    public function testItLogsDependingOnDebugParamWhenGetCategoryTreeSuccessResponse(bool $debug): void
+    {
+        $body = $this->getSchema('Category/GetCategoryTreeSucessResponse.xml');
+        $this->prepareLogTest($debug);
+        $sdkClient = $this->getSdkClient($body, $this->logger);
+
+        $sdkClient->categories()->getCategoryTree($debug);
+    }
+
+    /**
+     * @dataProvider debugParameter
+     */
+    public function testItLogsDependingOnDebugParamWhenGetCategoryAttributesTreeSuccessResponse(bool $debug): void
+    {
+        $body = $this->getSchema('Category/GetCategoryAttributesSuccessResponse.xml');
+        $this->prepareLogTest($debug);
+        $sdkClient = $this->getSdkClient($body, $this->logger);
+
+        $sdkClient->categories()->getCategoryAttributes(
+            1,
+            $debug
+        );
+    }
+
+    /**
+     * @dataProvider debugParameter
+     */
+    public function testItLogsDependingOnDebugParamWhenGetCategoriesByAttributeSetSuccessResponse(bool $debug): void
+    {
+        $body = $this->getSchema('Category/GetCategoriesByAttributesSetSuccessResponse.xml');
+        $this->prepareLogTest($debug);
+        $sdkClient = $this->getSdkClient($body, $this->logger);
+
+        $sdkClient->categories()->getCategoriesByAttributesSet(
+            [1],
+            $debug
+        );
+    }
+
+    public function debugParameter()
+    {
+        return [
+            [false],
+            [true],
+        ];
     }
 }

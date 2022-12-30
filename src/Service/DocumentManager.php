@@ -17,8 +17,11 @@ class DocumentManager extends BaseManager
     /**
      * @param mixed[] $orderItemIds
      */
-    public function getDocument(string $documentType, array $orderItemIds): Document
-    {
+    public function getDocument(
+        string $documentType,
+        array $orderItemIds,
+        bool $debug = true
+    ): Document {
         $action = 'GetDocument';
 
         $parameters = clone $this->parameters;
@@ -47,21 +50,23 @@ class DocumentManager extends BaseManager
         $body = (string) $response->getBody();
         $builtResponse = HandleResponse::parse($body);
 
-        $this->logger->debug(
-            LogMessageFormatter::fromAction($requestId, $action, LogMessageFormatter::TYPE_REQUEST),
-            [
-                'request' => [
-                    'url' => (string) $request->getUri(),
-                    'method' => $request->getMethod(),
-                    'body' => (string) $request->getBody(),
-                    'parameters' => $parameters->all(),
-                ],
-                'response' => [
-                    'head' => $builtResponse->getHead()->asXML(),
-                    'body' => $builtResponse->getBody()->asXML(),
-                ],
-            ]
-        );
+        if ($debug) {
+            $this->logger->debug(
+                LogMessageFormatter::fromAction($requestId, $action, LogMessageFormatter::TYPE_REQUEST),
+                [
+                    'request' => [
+                        'url' => (string) $request->getUri(),
+                        'method' => $request->getMethod(),
+                        'body' => (string) $request->getBody(),
+                        'parameters' => $parameters->all(),
+                    ],
+                    'response' => [
+                        'head' => $builtResponse->getHead()->asXML(),
+                        'body' => $builtResponse->getBody()->asXML(),
+                    ],
+                ]
+            );
+        }
 
         return DocumentFactory::make($builtResponse->getBody()->Documents->Document);
     }

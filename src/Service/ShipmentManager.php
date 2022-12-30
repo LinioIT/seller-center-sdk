@@ -16,7 +16,7 @@ class ShipmentManager extends BaseManager
     /**
      * @return  ShipmentProvider[]
      */
-    public function getShipmentProviders(): array
+    public function getShipmentProviders(bool $debug = true): array
     {
         $action = 'GetShipmentProviders';
 
@@ -42,21 +42,23 @@ class ShipmentManager extends BaseManager
         $body = (string) $response->getBody();
         $builtResponse = HandleResponse::parse($body);
 
-        $this->logger->debug(
-            LogMessageFormatter::fromAction($requestId, $action, LogMessageFormatter::TYPE_REQUEST),
-            [
-                'request' => [
-                    'url' => (string) $request->getUri(),
-                    'method' => $request->getMethod(),
-                    'body' => (string) $request->getBody(),
-                    'parameters' => $parameters->all(),
-                ],
-                'response' => [
-                    'head' => $builtResponse->getHead()->asXML(),
-                    'body' => $builtResponse->getBody()->asXML(),
-                ],
-            ]
-        );
+        if ($debug) {
+            $this->logger->debug(
+                LogMessageFormatter::fromAction($requestId, $action, LogMessageFormatter::TYPE_REQUEST),
+                [
+                    'request' => [
+                        'url' => (string) $request->getUri(),
+                        'method' => $request->getMethod(),
+                        'body' => (string) $request->getBody(),
+                        'parameters' => $parameters->all(),
+                    ],
+                    'response' => [
+                        'head' => $builtResponse->getHead()->asXML(),
+                        'body' => $builtResponse->getBody()->asXML(),
+                    ],
+                ]
+            );
+        }
 
         $shipmentProviders = ShipmentProvidersFactory::make($builtResponse->getBody());
 
