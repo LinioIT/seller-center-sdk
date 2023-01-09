@@ -15,31 +15,29 @@ class HandleResponseTest extends LinioTestCase
     {
         $this->expectException(InvalidXmlException::class);
 
-        HandleResponse::parse('invalid-xml');
+        $response = 'invalid-xml';
+
+        HandleResponse::parse($response);
+        HandleResponse::validate($response);
     }
 
     public function testItThrowAnExceptionWithAnEmptyXml(): void
     {
         $this->expectException(EmptyXmlException::class);
 
-        HandleResponse::parse('<xml></xml>');
+        $response = '<xml></xml>';
+
+        HandleResponse::parse($response);
+        HandleResponse::validate($response);
     }
 
     public function testItThrowAnExceptionWithAnErrorResponse(): void
     {
         $this->expectException(ErrorResponseException::class);
 
-        $xml = '<?xml version="1.0" encoding="UTF-8"?>
-        <ErrorResponse>
-            <Head>
-                <RequestAction>GetOrder</RequestAction>
-                <ErrorType>Sender</ErrorType>
-                <ErrorCode>125</ErrorCode>
-                <ErrorMessage>E0125: Test Error</ErrorMessage>
-            </Head>
-            <Body/>
-        </ErrorResponse>';
+        $xml = $this->getSchema('Response/ErrorResponse.xml');
 
         HandleResponse::parse($xml);
+        HandleResponse::validate($xml);
     }
 }

@@ -66,6 +66,8 @@ class CategoryManager extends BaseManager
             );
         }
 
+        HandleResponse::validate($body);
+
         $categories = CategoriesFactory::make($builtResponse->getBody());
 
         return $categories->all();
@@ -123,6 +125,8 @@ class CategoryManager extends BaseManager
                 ]
             );
         }
+
+        HandleResponse::validate($body);
 
         $categoryAttributes = CategoryAttributesFactory::make($builtResponse->getBody());
 
@@ -188,6 +192,8 @@ class CategoryManager extends BaseManager
                 ]
             );
         }
+
+        HandleResponse::validate($body);
 
         $attributesSet = AttributesSetFactory::make($builtResponse->getBody());
 

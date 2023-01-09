@@ -78,6 +78,8 @@ class WebhookManager extends BaseManager
             );
         }
 
+        HandleResponse::validate($body);
+
         return (string) $builtResponse->getBody()->Webhook->WebhookId;
     }
 
@@ -135,6 +137,8 @@ class WebhookManager extends BaseManager
                 ]
             );
         }
+
+        HandleResponse::validate($body);
     }
 
     /**
@@ -185,6 +189,8 @@ class WebhookManager extends BaseManager
                 ]
             );
         }
+
+        HandleResponse::validate($body);
 
         $webhooks = WebhooksFactory::make($builtResponse->getBody());
 
@@ -274,6 +280,8 @@ class WebhookManager extends BaseManager
                 ]
             );
         }
+
+        HandleResponse::validate($body);
 
         $events = EventsFactory::make($builtResponse->getBody());
 

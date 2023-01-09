@@ -75,6 +75,8 @@ class GlobalProductManager extends BaseManager implements ProductManagerInterfac
             );
         }
 
+        HandleResponse::validate($body);
+
         return FeedResponseFactory::make($builtResponse->getHead());
     }
 
@@ -129,6 +131,8 @@ class GlobalProductManager extends BaseManager implements ProductManagerInterfac
             );
         }
 
+        HandleResponse::validate($body);
+
         return FeedResponseFactory::make($builtResponse->getHead());
     }
 
@@ -182,6 +186,8 @@ class GlobalProductManager extends BaseManager implements ProductManagerInterfac
                 ]
             );
         }
+
+        HandleResponse::validate($body);
 
         return FeedResponseFactory::make($builtResponse->getHead());
     }
@@ -251,6 +257,8 @@ class GlobalProductManager extends BaseManager implements ProductManagerInterfac
             );
         }
 
+        HandleResponse::validate($body);
+
         return FeedResponseFactory::make($builtResponse->getHead());
     }
 
@@ -302,6 +310,8 @@ class GlobalProductManager extends BaseManager implements ProductManagerInterfac
                 ]
             );
         }
+
+        HandleResponse::validate($body);
 
         $products = GlobalProductsFactory::make($builtResponse->getBody(), $this->logger);
 

@@ -68,6 +68,8 @@ class DocumentManager extends BaseManager
             );
         }
 
+        HandleResponse::validate($body);
+
         return DocumentFactory::make($builtResponse->getBody()->Documents->Document);
     }
 }
