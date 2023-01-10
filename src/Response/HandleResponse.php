@@ -15,12 +15,12 @@ class HandleResponse
 {
     public static function parse(string $data): SuccessResponse
     {
-        return SuccessResponse::fromXml(HandleResponse::getXml($data));
+        return SuccessResponse::fromXml(self::getXml($data));
     }
 
     public static function validate(string $data): void
     {
-        $xml = HandleResponse::getXml($data);
+        $xml = self::getXml($data);
 
         if ($xml->getName() == ResponseStatus::ERROR) {
             throw new ErrorResponseException($xml);
