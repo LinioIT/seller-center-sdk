@@ -61,6 +61,8 @@ class BrandManager extends BaseManager
             );
         }
 
+        HandleResponse::validate($body);
+
         $brands = BrandsFactory::make($builtResponse->getBody());
 
         return array_values($brands->all());

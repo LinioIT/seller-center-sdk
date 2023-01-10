@@ -67,6 +67,8 @@ class QualityControlManager extends BaseManager
             );
         }
 
+        HandleResponse::validate($body);
+
         $qualityControls = QualityControlsFactory::make($builtResponse->getBody());
 
         return array_values($qualityControls->all());

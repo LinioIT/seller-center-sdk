@@ -70,6 +70,8 @@ class FeedManager extends BaseManager
             );
         }
 
+        HandleResponse::validate($body);
+
         return FeedFactory::make($builtResponse->getBody()->FeedDetail);
     }
 
@@ -117,6 +119,8 @@ class FeedManager extends BaseManager
                 ]
             );
         }
+
+        HandleResponse::validate($body);
 
         $list = FeedsFactory::make($builtResponse->getBody());
 
@@ -236,6 +240,8 @@ class FeedManager extends BaseManager
                 ]
             );
         }
+
+        HandleResponse::validate($body);
 
         return $builtResponse->getBody();
     }

@@ -60,6 +60,8 @@ class ShipmentManager extends BaseManager
             );
         }
 
+        HandleResponse::validate($body);
+
         $shipmentProviders = ShipmentProvidersFactory::make($builtResponse->getBody());
 
         return $shipmentProviders->all();
