@@ -5,12 +5,12 @@ declare(strict_types=1);
 namespace Linio\SellerCenter;
 
 use Exception;
-use Linio\SellerCenter\Model\Seller\Statistic;
+use Linio\SellerCenter\Model\Seller\Seller;
 use Prophecy\Argument;
 use Prophecy\Prophecy\ObjectProphecy;
 use Psr\Log\LoggerInterface;
 
-class SellerManagerTest extends LinioTestCase
+class GlobalSellerManagerTest extends LinioTestCase
 {
     use ClientHelper;
 
@@ -36,13 +36,13 @@ class SellerManagerTest extends LinioTestCase
         }
     }
 
-    public function testItReturnsStatistics(): void
+    public function testItReturnsSeller(): void
     {
-        $sdkClient = $this->getSdkClient($this->getSchema('Seller/Statistics.xml'));
+        $sdkClient = $this->getSdkClient($this->getSchema('Seller/GetSellerByUserSuccessResponse.xml'));
 
-        $result = $sdkClient->seller()->getStatistics();
+        $result = $sdkClient->globalSeller()->getSellerByUser();
 
-        $this->assertInstanceOf(Statistic::class, $result);
+        $this->assertInstanceOf(Seller::class, $result);
     }
 
     public function testItThrowsAnExceptionWhenTheResponseIsAnError(): void
@@ -54,21 +54,21 @@ class SellerManagerTest extends LinioTestCase
 
         $sdkClient = $this->getSdkClient($body, null, 400);
 
-        $sdkClient->seller()->getStatistics();
+        $sdkClient->globalSeller()->getSellerByUser();
     }
 
     /**
      * @dataProvider debugParameter
      */
-    public function testItLogsDependingOnDebugParamWhenGetStatisticsSuccessResponse(bool $debug): void
+    public function testItLogsDependingOnDebugParamWhenGetSellerByUserSuccessResponse(bool $debug): void
     {
         $this->prepareLogTest($debug);
         $sdkClient = $this->getSdkClient(
-            $this->getSchema('Seller/Statistics.xml'),
+            $this->getSchema('Seller/GetSellerByUserSuccessResponse.xml'),
             $this->logger
         );
 
-        $sdkClient->seller()->getStatistics($debug);
+        $sdkClient->globalSeller()->getSellerByUser($debug);
     }
 
     public function debugParameter()

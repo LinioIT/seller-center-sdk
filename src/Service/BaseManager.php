@@ -111,7 +111,7 @@ class BaseManager
 
         $body = (string) $response->getBody();
         $builtResponse = HandleResponse::parse($body);
-        
+
         if ($debug) {
             $this->logRequest($action, $requestId, $request, $parameters, $builtResponse);
         }

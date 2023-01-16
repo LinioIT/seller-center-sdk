@@ -5,11 +5,11 @@ declare(strict_types=1);
 namespace Linio\SellerCenter\Response;
 
 use Exception;
-use SimpleXMLElement;
 use Linio\SellerCenter\Application\ResponseStatus;
 use Linio\SellerCenter\Exception\EmptyXmlException;
-use Linio\SellerCenter\Exception\InvalidXmlException;
 use Linio\SellerCenter\Exception\ErrorResponseException;
+use Linio\SellerCenter\Exception\InvalidXmlException;
+use SimpleXMLElement;
 
 class HandleResponse
 {

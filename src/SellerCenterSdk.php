@@ -17,6 +17,7 @@ use Linio\SellerCenter\Service\DocumentManager;
 use Linio\SellerCenter\Service\FeedManager;
 use Linio\SellerCenter\Service\GlobalOrderManager;
 use Linio\SellerCenter\Service\GlobalProductManager;
+use Linio\SellerCenter\Service\GlobalSellerManager;
 use Linio\SellerCenter\Service\OrderManager;
 use Linio\SellerCenter\Service\ProductManager;
 use Linio\SellerCenter\Service\QualityControlManager;
@@ -107,6 +108,11 @@ class SellerCenterSdk
      * @var SellerManager
      */
     protected $seller;
+
+    /**
+     * @var GlobalSellerManager
+     */
+    protected $globalSeller;
 
     /**
      * @param \GuzzleHttp\ClientInterface|\Psr\Http\Client\ClientInterface|null $client
@@ -303,5 +309,19 @@ class SellerCenterSdk
         }
 
         return $this->seller;
+    }
+
+    public function globalSeller(): GlobalSellerManager
+    {
+        if (empty($this->globalSeller)) {
+            $this->globalSeller = new GlobalSellerManager(
+                $this->configuration,
+                $this->client,
+                $this->parameters,
+                $this->logger
+            );
+        }
+
+        return $this->globalSeller;
     }
 }
