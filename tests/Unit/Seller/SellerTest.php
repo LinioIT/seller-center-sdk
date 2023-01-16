@@ -37,10 +37,6 @@ class SellerTest extends LinioTestCase
 
     public function testItSetsSndGetValuesCorrectly(): void
     {
-        // $body = $this->getSchema('Seller/GetSellerByUserSuccessResponse.xml');
-        // $xml = simplexml_load_string($body);
-
-        // $seller = SellerFactory::make($xml->Body);
         $seller = new Seller();
 
         $seller->setShortCode($this->shortCode);
