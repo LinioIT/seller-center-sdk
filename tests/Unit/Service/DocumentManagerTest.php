@@ -13,7 +13,23 @@ use ReflectionClass;
 
 class DocumentManagerTest extends TestCase
 {
-    public function testItReturnsTheTheLoggerWhenIsSet(): void
+    public function testReturnsADocumentManager(): void
+    {
+        $configuration = $this->prophesize(Configuration::class);
+        $client = $this->prophesize(ClientInterface::class);
+        $parameters = $this->prophesize(Parameters::class);
+        $logger = $this->prophesize(TestLogger::class);
+
+        $documentManager = new DocumentManager(
+            $configuration->reveal(),
+            $client->reveal(),
+            $parameters->reveal(),
+            $logger->reveal()
+        );
+        $this->assertInstanceOf(DocumentManager::class, $documentManager);
+    }
+
+    public function testItReturnsTheLoggerWhenIsSet(): void
     {
         $configuration = $this->prophesize(Configuration::class);
         $client = $this->prophesize(ClientInterface::class);

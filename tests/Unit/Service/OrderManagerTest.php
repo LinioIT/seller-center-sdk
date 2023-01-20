@@ -14,20 +14,36 @@ use ReflectionClass;
 
 class OrderManagerTest extends TestCase
 {
-    public function testItReturnsTheTheLoggerWhenIsSet(): void
+    public function testReturnsAOrderManagerManager(): void
+    {
+        $configuration = $this->prophesize(Configuration::class);
+        $client = $this->prophesize(ClientInterface::class);
+        $parameters = $this->prophesize(Parameters::class);
+        $logger = $this->prophesize(TestLogger::class);
+
+        $orderManager = new OrderManager(
+            $configuration->reveal(),
+            $client->reveal(),
+            $parameters->reveal(),
+            $logger->reveal()
+        );
+        $this->assertInstanceOf(OrderManager::class, $orderManager);
+    }
+
+    public function testItReturnsTheLoggerWhenIsSet(): void
     {
         $configuration = $this->prophesize(Configuration::class);
         $client = $this->prophesize(ClientInterface::class);
         $logger = $this->prophesize(TestLogger::class);
         $parameters = $this->prophesize(Parameters::class);
 
-        $brandManager = new OrderManager($configuration->reveal(), $client->reveal(), $parameters->reveal(), $logger->reveal());
+        $orderManager = new OrderManager($configuration->reveal(), $client->reveal(), $parameters->reveal(), $logger->reveal());
 
         $reflectionClass = new ReflectionClass(OrderManager::class);
         $property = $reflectionClass->getProperty('logger');
         $property->setAccessible(true);
 
-        $setted = $property->getValue($brandManager);
+        $setted = $property->getValue($orderManager);
 
         $this->assertInstanceOf(TestLogger::class, $setted);
     }

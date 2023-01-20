@@ -106,15 +106,17 @@ $brandList = $sdk->brands()->getBrands();
 
 Here is a list of the actual managers in the SDK:
 
-- [BrandManager](docs/Managers/Brand.md)
-- [CategoryManager](docs/Managers/Category.md)
-- [DocumentManager](docs/Managers/Document.md)
-- [FeedManager](docs/Managers/Feed.md)
+- [BrandManager](docs/Managers/BrandManager.md)
+- [CategoryManager](docs/Managers/CategoryManager.md)
+- [DocumentManager](docs/Managers/DocumentManager.md)
+- [FeedManager](docs/Managers/FeedManager.md)
 - [GlobalOrderManager](docs/Managers/GlobalOrderManager.md)
+- [GlobalSellerManager](docs/Managers/GlobalSellerManager.md)
 - [LinioOrderManager](docs/Managers/OrderManager.md)
-- [ProductManager](docs/Managers/Product.md)
-- [QualityControlManager](docs/Managers/QcStatus.md)
-- [WebookManager](docs/Managers/Webook.md)
+- [SellerManager](docs/Managers/SellerManager.md)
+- [ProductManager](docs/Managers/ProductManager.md)
+- [QualityControlManager](docs/Managers/QualityControlManager.md)
+- [WebhookManager](docs/Managers/WebhookManager.md)
 
 ### Logging
 

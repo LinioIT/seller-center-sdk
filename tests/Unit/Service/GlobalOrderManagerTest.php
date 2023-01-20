@@ -2,31 +2,33 @@
 
 declare(strict_types=1);
 
-namespace Linio\SellerCenter\Service;
+namespace Linio\SellerCenter\Unit\Service;
 
 use Linio\SellerCenter\Application\Configuration;
 use Linio\SellerCenter\Application\Parameters;
 use Linio\SellerCenter\Contract\ClientInterface;
-use Linio\SellerCenter\LinioTestCase;
+use Linio\SellerCenter\Service\GlobalOrderManager;
+use Linio\SellerCenter\Service\OrderManager;
+use PHPUnit\Framework\TestCase;
 use Psr\Log\Test\TestLogger;
 use ReflectionClass;
 
-class ShipmentManagerTest extends LinioTestCase
+class GlobalOrderManagerTest extends TestCase
 {
-    public function testReturnsAShipmentManager(): void
+    public function testReturnsAOrderManagerManager(): void
     {
         $configuration = $this->prophesize(Configuration::class);
         $client = $this->prophesize(ClientInterface::class);
         $parameters = $this->prophesize(Parameters::class);
         $logger = $this->prophesize(TestLogger::class);
 
-        $shipmentManager = new ShipmentManager(
+        $globalOrderManager = new GlobalOrderManager(
             $configuration->reveal(),
             $client->reveal(),
             $parameters->reveal(),
             $logger->reveal()
         );
-        $this->assertInstanceOf(ShipmentManager::class, $shipmentManager);
+        $this->assertInstanceOf(GlobalOrderManager::class, $globalOrderManager);
     }
 
     public function testItReturnsTheLoggerWhenIsSet(): void
@@ -36,13 +38,13 @@ class ShipmentManagerTest extends LinioTestCase
         $logger = $this->prophesize(TestLogger::class);
         $parameters = $this->prophesize(Parameters::class);
 
-        $shipmentManager = new ShipmentManager($configuration->reveal(), $client->reveal(), $parameters->reveal(), $logger->reveal());
+        $globalOrderManager = new GlobalOrderManager($configuration->reveal(), $client->reveal(), $parameters->reveal(), $logger->reveal());
 
-        $rs = new ReflectionClass(ShipmentManager::class);
-        $property = $rs->getProperty('logger');
+        $reflectionClass = new ReflectionClass(OrderManager::class);
+        $property = $reflectionClass->getProperty('logger');
         $property->setAccessible(true);
 
-        $setted = $property->getValue($shipmentManager);
+        $setted = $property->getValue($globalOrderManager);
 
         $this->assertInstanceOf(TestLogger::class, $setted);
     }

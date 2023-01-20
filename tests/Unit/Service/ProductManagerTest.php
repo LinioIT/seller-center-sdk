@@ -7,6 +7,7 @@ namespace Linio\SellerCenter\Unit\Service;
 use Linio\SellerCenter\Application\Configuration;
 use Linio\SellerCenter\Application\Parameters;
 use Linio\SellerCenter\Contract\ClientInterface;
+use Linio\SellerCenter\Service\Contract\ProductManagerInterface;
 use Linio\SellerCenter\Service\ProductManager;
 use PHPUnit\Framework\TestCase;
 use Psr\Log\Test\TestLogger;
@@ -14,7 +15,7 @@ use ReflectionClass;
 
 class ProductManagerTest extends TestCase
 {
-    public function testReturnsAGlobalProductInterface(): void
+    public function testReturnsAProductManagerAndProductManagerInterface(): void
     {
         $configuration = $this->prophesize(Configuration::class);
         $client = $this->prophesize(ClientInterface::class);
@@ -28,9 +29,10 @@ class ProductManagerTest extends TestCase
             $logger->reveal()
         );
         $this->assertInstanceOf(ProductManager::class, $productManager);
+        $this->assertInstanceOf(ProductManagerInterface::class, $productManager);
     }
 
-    public function testReturnsTheTheLoggerWhenIsSetted(): void
+    public function testReturnsTheLoggerWhenIsSetted(): void
     {
         $configuration = $this->prophesize(Configuration::class);
         $client = $this->prophesize(ClientInterface::class);

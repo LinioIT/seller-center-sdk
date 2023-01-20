@@ -1,5 +1,7 @@
 # Global Order Manager
 
+Manager to support Falabella Order endpoints
+
 ## Index
 - [Global Order Manager](#global-order-manager)
   - [Index](#index)
@@ -51,6 +53,7 @@ To retrieve a specific order, it's only needed to specify the id and run the met
 | Parameter | Type | Description | Required | Default |
 | --------- | ---- | ----------- | -------- | ------- |
 | `$orderId` | int | The ID of the order to retrieve | Yes | - |
+| `$debug` | bool |  Whether it logs or not the request and response log | No | true | 
 
 #### Example
 
@@ -77,6 +80,7 @@ This method provides you the possibility to use the most common parameters in on
 | `$offset` | int | Number of orders to skip at the beginning of the list. | No | 0 |
 | `$sortBy` | string | Allows choosing the sorting column. The possible values are created_at and updated_at. | No | created_at |
 | `$sortDirection` | string | Specify the sort type. The possible are values (ASC, DESC). | No | ASC |
+| `$debug` | bool |  Whether it logs or not the request and response log | No | true | 
   
 #### Example
 
@@ -99,6 +103,7 @@ This method returns the orders created between two specified dates.
 | `$offset` | int | Number of orders to skip at the beginning of the list. | No | 0 |
 | `$sortBy` | string | Allows choosing the sorting column. The possible values are created_at and updated_at. | No | created_at |
 | `$sortDirection` | string | Specify the sort type. The possible are values (ASC, DESC). | No | ASC |
+| `$debug` | bool |  Whether it logs or not the request and response log | No | true | 
 
 #### Example
 
@@ -126,6 +131,7 @@ This method returns the orders between the two specified dates.
 | `$offset` | int | Number of orders to skip at the beginning of the list. | No | 0 |
 | `$sortBy` | string | Allows choosing the sorting column. The possible values are created_at and updated_at. | No | created_at |
 | `$sortDirection` | string | Specify the sort type. The possible are values (ASC, DESC). | No | ASC |
+| `$debug` | bool |  Whether it logs or not the request and response log | No | true | 
 
 #### Example
 
@@ -149,6 +155,7 @@ This method returns the orders created after the specified date.
 | `$offset` | int | Number of orders to skip at the beginning of the list. | No | 0 |
 | `$sortBy` | string | Allows choosing the sorting column. The possible values are created_at and updated_at. | No | created_at |
 | `$sortDirection` | string | Specify the sort type. The possible are values (ASC, DESC). | No | ASC |
+| `$debug` | bool |  Whether it logs or not the request and response log | No | true | 
 
 #### Example
 
@@ -174,6 +181,7 @@ This method returns the orders created before the specified date.
 | `$offset` | int | Number of orders to skip at the beginning of the list. | No | 0 |
 | `$sortBy` | string | Allows choosing the sorting column. The possible values are created_at and updated_at. | No | created_at |
 | `$sortDirection` | string | Specify the sort type. The possible are values (ASC, DESC). | No | ASC |
+| `$debug` | bool |  Whether it logs or not the request and response log | No | true | 
 
 #### Example
 
@@ -197,6 +205,7 @@ This method returns the orders updated after the specified date.
 | `$offset` | int | Number of orders to skip at the beginning of the list. | No | 0 |
 | `$sortBy` | string | Allows choosing the sorting column. The possible values are created_at and updated_at. | No | created_at |
 | `$sortDirection` | string | Specify the sort type. The possible are values (ASC, DESC). | No | ASC |
+| `$debug` | bool |  Whether it logs or not the request and response log | No | true | 
 
 #### Example
 
@@ -220,6 +229,7 @@ This method returns the orders updated before the specified date.
 | `$offset` | int | Number of orders to skip at the beginning of the list. | No | 0 |
 | `$sortBy` | string | Allows choosing the sorting column. The possible values are created_at and updated_at. | No | created_at |
 | `$sortDirection` | string | Specify the sort type. The possible are values (ASC, DESC). | No | ASC |
+| `$debug` | bool |  Whether it logs or not the request and response log | No | true | 
 
 #### Example
 ```php
@@ -242,6 +252,7 @@ This method returns the orders with the specified status.
 | `$offset` | int | Number of orders to skip at the beginning of the list. | No | 0 |
 | `$sortBy` | string | Allows choosing the sorting column. The possible values are created_at and updated_at. | No | created_at |
 | `$sortDirection` | string | Specify the sort type. The possible are values (ASC, DESC). | No | ASC |
+| `$debug` | bool |  Whether it logs or not the request and response log | No | true | 
 
 #### Example
 
@@ -262,6 +273,7 @@ It's possible to get the items that belong to an Order as follows.
 | Parameter | Type | Description | Required | Default |
 | --------- | :----: | ----------- | :--------: | :-------: |
 | `$orderId` | int | The ID of the order from which you want to retrieve its items. | Yes | - |
+| `$debug` | bool |  Whether it logs or not the request and response log | No | true | 
 
 #### Example
 
@@ -270,13 +282,14 @@ It's possible to get the items that belong to an Order as follows.
 $orderItems = $sdk->globalOrders()->getOrderItems(1234);
 ```
 
------
+-----------
 
 ### getMultipleOrderItems
 
 | Parameter | Type | Description | Required | Default |
 | --------- | :----: | ----------- | :--------: | :-------: |
 | `$orderIdList` | array | An array of integers representing multiple orders ids. | Yes | - |
+| `$debug` | bool |  Whether it logs or not the request and response log | No | true | 
 
 #### Example
 
@@ -286,6 +299,7 @@ $orderIdList = [1234, 5678, 8901];
 // Get items from orders #1234, #5678 and #8901
 $orderItems = $sdk->globalOrders()->getMultipleOrderItems($orderIdList);
 ```
+-----------
 
 ## Setting order status
 
@@ -297,6 +311,7 @@ This method sets an order item as packed and returns order items as the response
 | --------- | :----: | ----------- | :--------: | :-------: |
 | `$orderItemIds` | array | Array of order item IDs to be set as packed | Yes | - |
 | `$deliveryType` | string | One of the following: 'dropship' (The seller will send out the package on his own), 'pickup' (Shop should pick up the item from the seller) or 'send_to_warehouse' (The seller will send the item to the warehouse) | Yes | - |
+| `$debug` | bool |  Whether it logs or not the request and response log | No | true | 
 
 #### Example
 
@@ -318,6 +333,9 @@ This method sets an order item as ready to ship and returns the order items as t
 | `$orderItemIds` | array | Array of order item IDs to be set as ready to ship | Yes | - |
 | `$deliveryType` | string | One of the following: 'dropship' (The seller will send out the package on his own), 'pickup' (Shop should pick up the item from the seller) or 'send_to_warehouse' (The seller will send the item to the warehouse) | Yes | - |
 | `$packageId` | string | The actual package Id. A custom one or provided by GetOrderItems call | No | - |
+| `$debug` | bool |  Whether it logs or not the request and response log | No | true | 
+
+
 
 #### Example
 
@@ -338,6 +356,9 @@ This method cancels a single item.
 | `$orderItem` | int | The ID of the order item that you want to cancel | Yes | - |
 | `$reason` | string | The reason for canceling. Seller Center has several accepted reasons. | Yes | - |
 | `$reasonDetail` | string | A reason detail for canceling | No | - |
+| `$debug` | bool |  Whether it logs or not the request and response log | No | true | 
+
+
     
 _Note: Valid Reason and ReasonDetail are provided by Seller Center API using [GetFailureReasons](https://sellerapi.sellercenter.net/docs/getfailurereasons).
 Even if the ReasonDetail could be retrieved with the mentioned request, the seller could provide any custom detail._
@@ -357,6 +378,8 @@ foreach ($orderItems as $orderItem) {
 }
 ```
 
+-----------
+
 ## Setting order invoice number
 
 ### setInvoiceNumber
@@ -368,6 +391,8 @@ This method sets the invoice number.
 | `$orderItemId` | int | Identifier of the order item should be updated | Yes | - |
 | `$invoiceNumber` | string | The invoice number | Yes | - |
 | `$invoiceDocumentLink` | string | Document URL | No | - |
+| `$debug` | bool |  Whether it logs or not the request and response log | No | true | 
+
 
 #### Example
 
@@ -380,6 +405,8 @@ $invoiceDocumentLink = 'https://fakeInvoice.pdf';
 $orderItems = $sdk->globalOrders()->setInvoiceNumber($orderItems, $invoiceNumber, $invoiceDocumentLink);
 ```
 
+-----------
+
 ## Setting order invoice document
 
 ### setInvoiceDocument
@@ -391,6 +418,8 @@ This method sets the invoice document.
 | `$orderItemId` | int | Identifier of the order item | Yes | - |
 | `$invoiceNumber` | string | The invoice number | Yes | - |
 | `$invoiceDocument` | string | Document XML format | Yes | - |
+| `$debug` | bool |  Whether it logs or not the request and response log | No | true | 
+
 
 NOTE: Invoice will be changed for all order items in the package.
 

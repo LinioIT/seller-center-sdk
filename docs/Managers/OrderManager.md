@@ -1,7 +1,9 @@
 # Linio Order Manager
 
+Manager to support Linio Order endpoints
+
 ## Index
-- [Orders](#linio-order-manager)
+- [Linio Order Manager](#linio-order-manager)
   - [Index](#index)
   - [Getting an order](#getting-an-order)
     - [getOrder](#getorder)
@@ -36,7 +38,7 @@
       - [Example](#example-12)
     - [setStatusToReadyToShip](#setstatustoreadytoship)
       - [Example](#example-13)
-     - [setStatusToCanceled](#setstatustocanceled)
+    - [setStatusToCanceled](#setstatustocanceled)
       - [Example](#example-14)
   - [Setting order invoice number](#setting-order-invoice-number)
     - [setInvoiceNumber](#setinvoicenumber)
@@ -51,6 +53,7 @@ To retrieve a specific order, it's only needed to specify the id and run the met
 | Parameter | Type | Description | Required | Default |
 | --------- | ---- | ----------- | -------- | ------- |
 | `$orderId` | int | The ID of the order to retrieve | Yes | - |
+| `$debug` | bool |  Whether it logs or not the request and response log | No | true | 
 
 #### Example
 
@@ -77,6 +80,7 @@ This method provides you the possibility to use the most common parameters in on
 | `$offset` | int | Number of orders to skip at the beginning of the list. | No | 0 |
 | `$sortBy` | string | Allows choosing the sorting column. The possible values are created_at and updated_at. | No | created_at |
 | `$sortDirection` | string | Specify the sort type. The possible are values (ASC, DESC). | No | ASC |
+| `$debug` | bool |  Whether it logs or not the request and response log | No | true | 
   
 #### Example
 
@@ -99,6 +103,7 @@ This method returns the orders created between two specified dates.
 | `$offset` | int | Number of orders to skip at the beginning of the list. | No | 0 |
 | `$sortBy` | string | Allows choosing the sorting column. The possible values are created_at and updated_at. | No | created_at |
 | `$sortDirection` | string | Specify the sort type. The possible are values (ASC, DESC). | No | ASC |
+| `$debug` | bool |  Whether it logs or not the request and response log | No | true | 
 
 #### Example
 
@@ -126,6 +131,7 @@ This method returns the orders between the two specified dates.
 | `$offset` | int | Number of orders to skip at the beginning of the list. | No | 0 |
 | `$sortBy` | string | Allows choosing the sorting column. The possible values are created_at and updated_at. | No | created_at |
 | `$sortDirection` | string | Specify the sort type. The possible are values (ASC, DESC). | No | ASC |
+| `$debug` | bool |  Whether it logs or not the request and response log | No | true | 
 
 #### Example
 
@@ -149,6 +155,7 @@ This method returns the orders created after the specified date.
 | `$offset` | int | Number of orders to skip at the beginning of the list. | No | 0 |
 | `$sortBy` | string | Allows choosing the sorting column. The possible values are created_at and updated_at. | No | created_at |
 | `$sortDirection` | string | Specify the sort type. The possible are values (ASC, DESC). | No | ASC |
+| `$debug` | bool |  Whether it logs or not the request and response log | No | true | 
 
 #### Example
 
@@ -174,6 +181,7 @@ This method returns the orders created before the specified date.
 | `$offset` | int | Number of orders to skip at the beginning of the list. | No | 0 |
 | `$sortBy` | string | Allows choosing the sorting column. The possible values are created_at and updated_at. | No | created_at |
 | `$sortDirection` | string | Specify the sort type. The possible are values (ASC, DESC). | No | ASC |
+| `$debug` | bool |  Whether it logs or not the request and response log | No | true | 
 
 #### Example
 
@@ -197,6 +205,7 @@ This method returns the orders updated after the specified date.
 | `$offset` | int | Number of orders to skip at the beginning of the list. | No | 0 |
 | `$sortBy` | string | Allows choosing the sorting column. The possible values are created_at and updated_at. | No | created_at |
 | `$sortDirection` | string | Specify the sort type. The possible are values (ASC, DESC). | No | ASC |
+| `$debug` | bool |  Whether it logs or not the request and response log | No | true | 
 
 #### Example
 
@@ -220,6 +229,7 @@ This method returns the orders updated before the specified date.
 | `$offset` | int | Number of orders to skip at the beginning of the list. | No | 0 |
 | `$sortBy` | string | Allows choosing the sorting column. The possible values are created_at and updated_at. | No | created_at |
 | `$sortDirection` | string | Specify the sort type. The possible are values (ASC, DESC). | No | ASC |
+| `$debug` | bool |  Whether it logs or not the request and response log | No | true | 
 
 #### Example
 ```php
@@ -242,6 +252,7 @@ This method returns the orders with the specified status.
 | `$offset` | int | Number of orders to skip at the beginning of the list. | No | 0 |
 | `$sortBy` | string | Allows choosing the sorting column. The possible values are created_at and updated_at. | No | created_at |
 | `$sortDirection` | string | Specify the sort type. The possible are values (ASC, DESC). | No | ASC |
+| `$debug` | bool |  Whether it logs or not the request and response log | No | true | 
 
 #### Example
 
@@ -262,6 +273,7 @@ It's possible to get the items that belong to an Order as follows.
 | Parameter | Type | Description | Required | Default |
 | --------- | :----: | ----------- | :--------: | :-------: |
 | `$orderId` | int | The ID of the order from which you want to retrieve its items. | Yes | - |
+| `$debug` | bool |  Whether it logs or not the request and response log | No | true | 
 
 #### Example
 
@@ -277,6 +289,7 @@ $orderItems = $sdk->orders()->getOrderItems(1234);
 | Parameter | Type | Description | Required | Default |
 | --------- | :----: | ----------- | :--------: | :-------: |
 | `$orderIdList` | array | An array of integers representing multiple orders ids. | Yes | - |
+| `$debug` | bool |  Whether it logs or not the request and response log | No | true | 
 
 #### Example
 
@@ -296,6 +309,7 @@ This method sets the Imei for the order items in the parameters and return the s
 | Parameter | Type | Description | Required | Default |
 | --------- | :----: | ----------- | :--------: | :-------: |
 | `$orderItems` | array | Array of order item to set the imei | Yes | - |
+| `$debug` | bool |  Whether it logs or not the request and response log | No | true | 
 
 #### Example
 
@@ -322,6 +336,7 @@ This method sets an order item as packed and returns order items as the response
 | `$deliveryType` | string | One of the following: 'dropship' (The seller will send out the package on his own), 'pickup' (Shop should pick up the item from the seller) or 'send_to_warehouse' (The seller will send the item to the warehouse) | Yes | - |
 | `$shippingProvider` | string |Valid shipment provider as looked up via [GetShipmentProviders](https://sellerapi.sellercenter.net/docs/getshipmentproviders) | Yes | - |
 | `$trackingNumber` | string | The actual tracking number. A custom one or provided by GetOrderItems call | Yes | - |
+| `$debug` | bool |  Whether it logs or not the request and response log | No | true | 
 
 #### Example
 
@@ -344,6 +359,7 @@ This method sets an order item as ready to ship and returns the order items as t
 | `$deliveryType` | string | One of the following: 'dropship' (The seller will send out the package on his own), 'pickup' (Shop should pick up the item from the seller) or 'send_to_warehouse' (The seller will send the item to the warehouse) | Yes | - |
 | `$shippingProvider` | string |Valid shipment provider as looked up via [GetShipmentProviders](https://sellerapi.sellercenter.net/docs/getshipmentproviders) | Yes | - |
 | `$trackingNumber` | string | The actual tracking number. A custom one or provided by GetOrderItems call | Yes | - |
+| `$debug` | bool |  Whether it logs or not the request and response log | No | true | 
 
 #### Example
 
@@ -365,6 +381,7 @@ This method cancels a single item.
 | `$orderItem` | int | The ID of the order item that you want to cancel | Yes | - |
 | `$reason` | string | The reason for canceling. Seller Center has several accepted reasons. | Yes | - |
 | `$reasonDetail` | string | A reason detail for canceling | No | - |
+| `$debug` | bool |  Whether it logs or not the request and response log | No | true | 
     
 _Note: Valid Reason and ReasonDetail are provided by Seller Center API using [GetFailureReasons](https://sellerapi.sellercenter.net/docs/getfailurereasons).
 Even if the ReasonDetail could be retrieved with the mentioned request, the seller could provide any custom detail._
@@ -394,6 +411,7 @@ This method sets the invoice number.
 | --------- | :----: | ----------- | :--------: | :-------: |
 | `$orderItemId` | int | Identifier of the order item should be updated | Yes | - |
 | `$invoiceNumber` | string | The invoice number | Yes | - |
+| `$debug` | bool |  Whether it logs or not the request and response log | No | true | 
 
 #### Example
 
