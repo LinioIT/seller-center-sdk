@@ -50,12 +50,10 @@ class OrderManager extends BaseOrderManager
             'InvoiceNumber' => $invoiceNumber,
         ]);
 
-        $requestId = $this->generateRequestId();
-
         return $this->executeAction(
             $action,
             $parameters,
-            $requestId,
+            null,
             'POST',
             $debug
         );
@@ -89,12 +87,10 @@ class OrderManager extends BaseOrderManager
             $parameters->set(['TrackingNumber' => $trackingNumber]);
         }
 
-        $requestId = $this->generateRequestId();
-
         $builtResponse = $this->executeAction(
             $action,
             $parameters,
-            $requestId,
+            null,
             'POST',
             $debug
         );
@@ -132,12 +128,10 @@ class OrderManager extends BaseOrderManager
             $parameters->set(['TrackingNumber' => $trackingNumber]);
         }
 
-        $requestId = $this->generateRequestId();
-
         $builtResponse = $this->executeAction(
             $action,
             $parameters,
-            $requestId,
+            null,
             'POST',
             $debug
         );

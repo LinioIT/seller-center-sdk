@@ -7,19 +7,15 @@ namespace Linio\SellerCenter\Service;
 use DateTimeInterface;
 use Linio\Component\Util\Json;
 use Linio\SellerCenter\Application\Parameters;
-use Linio\SellerCenter\Application\Security\Signature;
 use Linio\SellerCenter\Contract\ProductFilters;
 use Linio\SellerCenter\Exception\EmptyArgumentException;
-use Linio\SellerCenter\Factory\RequestFactory;
 use Linio\SellerCenter\Factory\Xml\FeedResponseFactory;
 use Linio\SellerCenter\Factory\Xml\Product\GlobalProductsFactory;
-use Linio\SellerCenter\Formatter\LogMessageFormatter;
 use Linio\SellerCenter\Model\Product\GlobalProduct;
 use Linio\SellerCenter\Model\Product\Images;
 use Linio\SellerCenter\Model\Product\Product;
 use Linio\SellerCenter\Model\Product\Products;
 use Linio\SellerCenter\Response\FeedResponse;
-use Linio\SellerCenter\Response\HandleResponse;
 use Linio\SellerCenter\Service\Contract\ProductManagerInterface;
 use Linio\SellerCenter\Transformer\Product\ProductsTransformer;
 
@@ -29,165 +25,50 @@ class GlobalProductManager extends BaseManager implements ProductManagerInterfac
         Products $products,
         bool $debug = true
     ): FeedResponse {
-        $action = 'ProductCreate';
-
-        $parameters = clone $this->parameters;
-        $parameters->set(['Action' => $action]);
-        $parameters->set([
-            'Signature' => Signature::generate($parameters, $this->configuration->getKey())->get(),
-        ]);
-
-        $xml = ProductsTransformer::asXmlString($products);
-        $requestHeaders = $this->generateRequestHeaders(['Content-type' => 'text/xml; charset=UTF8']);
-        $requestId = $requestHeaders[self::REQUEST_ID_HEADER];
-
-        $request = RequestFactory::make(
-            'POST',
-            $this->configuration->getEndpoint(),
-            $requestHeaders,
-            $xml
+        return $this->executeProductAction(
+            'ProductCreate',
+            ProductsTransformer::asXmlString($products),
+            $debug
         );
-
-        $response = $this->client->send($request, [
-            'query' => $parameters->all(),
-        ]);
-
-        $body = (string) $response->getBody();
-
-        $builtResponse = HandleResponse::parse($body);
-
-        if ($debug) {
-            $this->logger->debug(
-                LogMessageFormatter::fromAction($requestId, $action, LogMessageFormatter::TYPE_REQUEST),
-                [
-                    'request' => [
-                        'url' => (string) $request->getUri(),
-                        'method' => $request->getMethod(),
-                        'body' => (string) $request->getBody(),
-                        'parameters' => $parameters->all(),
-                    ],
-                    'response' => [
-                        'head' => $builtResponse->getHead()->asXML(),
-                        'body' => $builtResponse->getBody()->asXML(),
-                        'statusCode' => $response->getStatusCode(),
-                    ],
-                ]
-            );
-        }
-
-        HandleResponse::validate($body);
-
-        return FeedResponseFactory::make($builtResponse->getHead());
     }
 
     public function productUpdate(
         Products $products,
         bool $debug = true
     ): FeedResponse {
-        $action = 'ProductUpdate';
-
-        $parameters = clone $this->parameters;
-        $parameters->set(['Action' => $action]);
-        $parameters->set([
-            'Signature' => Signature::generate($parameters, $this->configuration->getKey())->get(),
-        ]);
-
-        $xml = ProductsTransformer::asXmlString($products);
-
-        $requestHeaders = $this->generateRequestHeaders(['Content-type' => 'text/xml; charset=UTF8']);
-        $requestId = $requestHeaders[self::REQUEST_ID_HEADER];
-
-        $request = RequestFactory::make(
-            'POST',
-            $this->configuration->getEndpoint(),
-            $requestHeaders,
-            $xml
+        return $this->executeProductAction(
+            'ProductUpdate',
+            ProductsTransformer::asXmlString($products),
+            $debug
         );
-
-        $response = $this->client->send($request, [
-            'query' => $parameters->all(),
-        ]);
-
-        $body = (string) $response->getBody();
-
-        $builtResponse = HandleResponse::parse($body);
-
-        if ($debug) {
-            $this->logger->debug(
-                LogMessageFormatter::fromAction($requestId, $action, LogMessageFormatter::TYPE_REQUEST),
-                [
-                    'request' => [
-                        'url' => (string) $request->getUri(),
-                        'method' => $request->getMethod(),
-                        'body' => (string) $request->getBody(),
-                        'parameters' => $parameters->all(),
-                    ],
-                    'response' => [
-                        'head' => $builtResponse->getHead()->asXML(),
-                        'body' => $builtResponse->getBody()->asXML(),
-                        'statusCode' => $response->getStatusCode(),
-                    ],
-                ]
-            );
-        }
-
-        HandleResponse::validate($body);
-
-        return FeedResponseFactory::make($builtResponse->getHead());
     }
 
     public function productRemove(
         Products $products,
         bool $debug = true
     ): FeedResponse {
-        $action = 'ProductRemove';
+        return $this->executeProductAction(
+            'ProductRemove',
+            ProductsTransformer::skusAsXmlString($products),
+            $debug
+        );
+    }
 
-        $parameters = clone $this->parameters;
-        $parameters->set(['Action' => $action]);
-        $parameters->set([
-            'Signature' => Signature::generate($parameters, $this->configuration->getKey())->get(),
-        ]);
+    protected function executeProductAction(
+        string $action,
+        string $xml,
+        bool $debug = true
+    ): FeedResponse {
+        $parameters = $this->makeParametersForAction($action);
 
-        $xml = ProductsTransformer::skusAsXmlString($products);
-
-        $requestHeaders = $this->generateRequestHeaders(['Content-type' => 'text/xml; charset=UTF8']);
-        $requestId = $requestHeaders[self::REQUEST_ID_HEADER];
-
-        $request = RequestFactory::make(
+        $builtResponse = $this->executeAction(
+            $action,
+            $parameters,
+            null,
             'POST',
-            $this->configuration->getEndpoint(),
-            $requestHeaders,
+            $debug,
             $xml
         );
-
-        $response = $this->client->send($request, [
-            'query' => $parameters->all(),
-        ]);
-
-        $body = (string) $response->getBody();
-
-        $builtResponse = HandleResponse::parse($body);
-
-        if ($debug) {
-            $this->logger->debug(
-                LogMessageFormatter::fromAction($requestId, $action, LogMessageFormatter::TYPE_REQUEST),
-                [
-                    'request' => [
-                        'url' => (string) $request->getUri(),
-                        'method' => $request->getMethod(),
-                        'body' => (string) $request->getBody(),
-                        'parameters' => $parameters->all(),
-                    ],
-                    'response' => [
-                        'head' => $builtResponse->getHead()->asXML(),
-                        'body' => $builtResponse->getBody()->asXML(),
-                        'statusCode' => $response->getStatusCode(),
-                    ],
-                ]
-            );
-        }
-
-        HandleResponse::validate($body);
 
         return FeedResponseFactory::make($builtResponse->getHead());
     }
@@ -201,11 +82,7 @@ class GlobalProductManager extends BaseManager implements ProductManagerInterfac
     ): FeedResponse {
         $action = 'Image';
 
-        $parameters = clone $this->parameters;
-        $parameters->set(['Action' => $action]);
-        $parameters->set([
-            'Signature' => Signature::generate($parameters, $this->configuration->getKey())->get(),
-        ]);
+        $parameters = $this->makeParametersForAction($action);
 
         $products = new Products();
 
@@ -220,44 +97,14 @@ class GlobalProductManager extends BaseManager implements ProductManagerInterfac
 
         $xml = ProductsTransformer::imagesAsXmlString($products);
 
-        $requestHeaders = $this->generateRequestHeaders(['Content-type' => 'text/xml; charset=UTF8']);
-        $requestId = $requestHeaders[self::REQUEST_ID_HEADER];
-
-        $request = RequestFactory::make(
+        $builtResponse = $this->executeAction(
+            $action,
+            $parameters,
+            null,
             'POST',
-            $this->configuration->getEndpoint(),
-            $requestHeaders,
+            $debug,
             $xml
         );
-
-        $response = $this->client->send($request, [
-            'query' => $parameters->all(),
-        ]);
-
-        $body = (string) $response->getBody();
-
-        $builtResponse = HandleResponse::parse($body);
-
-        if ($debug) {
-            $this->logger->debug(
-                LogMessageFormatter::fromAction($requestId, $action, LogMessageFormatter::TYPE_REQUEST),
-                [
-                    'request' => [
-                        'url' => (string) $request->getUri(),
-                        'method' => $request->getMethod(),
-                        'body' => (string) $request->getBody(),
-                        'parameters' => $parameters->all(),
-                    ],
-                    'response' => [
-                        'head' => $builtResponse->getHead()->asXML(),
-                        'body' => $builtResponse->getBody()->asXML(),
-                        'statusCode' => $response->getStatusCode(),
-                    ],
-                ]
-            );
-        }
-
-        HandleResponse::validate($body);
 
         return FeedResponseFactory::make($builtResponse->getHead());
     }
@@ -272,46 +119,14 @@ class GlobalProductManager extends BaseManager implements ProductManagerInterfac
         $action = 'GetProducts';
 
         $parameters->set(['Action' => $action]);
-        $parameters->set([
-            'Signature' => Signature::generate($parameters, $this->configuration->getKey())->get(),
-        ]);
 
-        $requestHeaders = $this->generateRequestHeaders();
-        $requestId = $requestHeaders[self::REQUEST_ID_HEADER];
-
-        $request = RequestFactory::make(
+        $builtResponse = $this->executeAction(
+            $action,
+            $parameters,
+            null,
             'GET',
-            $this->configuration->getEndpoint(),
-            $requestHeaders
+            $debug
         );
-
-        $response = $this->client->send($request, [
-            'query' => $parameters->all(),
-        ]);
-
-        $body = (string) $response->getBody();
-
-        $builtResponse = HandleResponse::parse($body);
-
-        if ($debug) {
-            $this->logger->debug(
-                LogMessageFormatter::fromAction($requestId, $action, LogMessageFormatter::TYPE_REQUEST),
-                [
-                    'request' => [
-                        'url' => (string) $request->getUri(),
-                        'method' => $request->getMethod(),
-                        'body' => (string) $request->getBody(),
-                        'parameters' => $parameters->all(),
-                    ],
-                    'response' => [
-                        'head' => $builtResponse->getHead()->asXML(),
-                        'body' => $builtResponse->getBody()->asXML(),
-                    ],
-                ]
-            );
-        }
-
-        HandleResponse::validate($body);
 
         $products = GlobalProductsFactory::make($builtResponse->getBody(), $this->logger);
 

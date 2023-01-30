@@ -5,72 +5,32 @@ declare(strict_types=1);
 namespace Linio\SellerCenter\Service;
 
 use DateTimeInterface;
-use Linio\SellerCenter\Application\Security\Signature;
-use Linio\SellerCenter\Factory\RequestFactory;
 use Linio\SellerCenter\Factory\Xml\Feed\FeedCountFactory;
 use Linio\SellerCenter\Factory\Xml\Feed\FeedFactory;
 use Linio\SellerCenter\Factory\Xml\Feed\FeedsFactory;
 use Linio\SellerCenter\Factory\Xml\FeedResponseFactory;
-use Linio\SellerCenter\Formatter\LogMessageFormatter;
 use Linio\SellerCenter\Model\Feed\Feed;
 use Linio\SellerCenter\Model\Feed\FeedCount;
 use Linio\SellerCenter\Response\FeedResponse;
-use Linio\SellerCenter\Response\HandleResponse;
-use SimpleXMLElement;
 
 class FeedManager extends BaseManager
 {
-    private const FEED_OFFSET_LIST_ACTION = 'FeedOffsetList';
-    private const FEED_CANCEL_ACTION = 'FeedCancel';
-
     public function getFeedStatusById(
         string $id,
         bool $debug = true
     ): Feed {
         $action = 'FeedStatus';
 
-        $parameters = clone $this->parameters;
-        $parameters->set([
-            'Action' => $action,
-            'FeedID' => $id,
-        ]);
-        $parameters->set([
-            'Signature' => Signature::generate($parameters, $this->configuration->getKey())->get(),
-        ]);
+        $parameters = $this->makeParametersForAction($action);
+        $parameters->set(['FeedID' => $id]);
 
-        $requestHeaders = $this->generateRequestHeaders();
-        $requestId = $requestHeaders[self::REQUEST_ID_HEADER];
-
-        $request = RequestFactory::make(
+        $builtResponse = $this->executeAction(
+            $action,
+            $parameters,
+            null,
             'GET',
-            $this->configuration->getEndpoint(),
-            $requestHeaders
+            $debug
         );
-        $response = $this->client->send($request, ['query' => $parameters->all()]);
-
-        $body = (string) $response->getBody();
-
-        $builtResponse = HandleResponse::parse($body);
-
-        if ($debug) {
-            $this->logger->debug(
-                LogMessageFormatter::fromAction($requestId, $action, LogMessageFormatter::TYPE_REQUEST),
-                [
-                    'request' => [
-                        'url' => (string) $request->getUri(),
-                        'method' => $request->getMethod(),
-                        'body' => (string) $request->getBody(),
-                        'parameters' => $parameters->all(),
-                    ],
-                    'response' => [
-                        'head' => $builtResponse->getHead()->asXML(),
-                        'body' => $builtResponse->getBody()->asXML(),
-                    ],
-                ]
-            );
-        }
-
-        HandleResponse::validate($body);
 
         return FeedFactory::make($builtResponse->getBody()->FeedDetail);
     }
@@ -82,45 +42,15 @@ class FeedManager extends BaseManager
     {
         $action = 'FeedList';
 
-        $parameters = clone $this->parameters;
-        $parameters->set([
-            'Action' => $action,
-        ]);
-        $parameters->set([
-            'Signature' => Signature::generate($parameters, $this->configuration->getKey())->get(),
-        ]);
+        $parameters = $this->makeParametersForAction($action);
 
-        $requestHeaders = $this->generateRequestHeaders();
-        $requestId = $requestHeaders[self::REQUEST_ID_HEADER];
-
-        $request = RequestFactory::make(
+        $builtResponse = $this->executeAction(
+            $action,
+            $parameters,
+            null,
             'GET',
-            $this->configuration->getEndpoint(),
-            $requestHeaders
+            $debug
         );
-        $response = $this->client->send($request, ['query' => $parameters->all()]);
-
-        $body = (string) $response->getBody();
-        $builtResponse = HandleResponse::parse($body);
-        if ($debug) {
-            $this->logger->debug(
-                LogMessageFormatter::fromAction($requestId, $action, LogMessageFormatter::TYPE_REQUEST),
-                [
-                    'request' => [
-                        'url' => (string) $request->getUri(),
-                        'method' => $request->getMethod(),
-                        'body' => (string) $request->getBody(),
-                        'parameters' => $parameters->all(),
-                    ],
-                    'response' => [
-                        'head' => $builtResponse->getHead()->asXML(),
-                        'body' => $builtResponse->getBody()->asXML(),
-                    ],
-                ]
-            );
-        }
-
-        HandleResponse::validate($body);
 
         $list = FeedsFactory::make($builtResponse->getBody());
 
@@ -138,7 +68,8 @@ class FeedManager extends BaseManager
         ?DateTimeInterface $updatedAfter = null,
         bool $debug = true
     ): array {
-        $action = self::FEED_OFFSET_LIST_ACTION;
+        $action = 'FeedOffsetList';
+
         $parameters = $this->makeParametersForAction($action);
 
         $formattedCreatedAfter = null;
@@ -186,82 +117,33 @@ class FeedManager extends BaseManager
     public function getFeedCount(bool $debug = true): FeedCount
     {
         $action = 'FeedCount';
-        $requestId = $this->generateRequestId();
 
-        $response = $this->getResponse(
+        $parameters = $this->makeParametersForAction($action);
+
+        $builtResponse = $this->executeAction(
             $action,
-            $requestId,
+            $parameters,
+            null,
+            'GET',
             $debug
         );
 
-        return FeedCountFactory::make($response);
-    }
-
-    private function getResponse(
-        string $action,
-        string $requestId,
-        bool $debug = true
-    ): SimpleXMLElement {
-        $parameters = clone $this->parameters;
-        $parameters->set([
-            'Action' => $action,
-        ]);
-        $parameters->set([
-            'Signature' => Signature::generate($parameters, $this->configuration->getKey())->get(),
-        ]);
-
-        $requestHeaders = $this->generateRequestHeaders([self::REQUEST_ID_HEADER => $requestId]);
-
-        $request = RequestFactory::make(
-            'GET',
-            $this->configuration->getEndpoint(),
-            $requestHeaders
-        );
-
-        $response = $this->client->send($request, ['query' => $parameters->all()]);
-
-        $body = (string) $response->getBody();
-
-        $builtResponse = HandleResponse::parse($body);
-
-        if ($debug) {
-            $this->logger->debug(
-                LogMessageFormatter::fromAction($requestId, $action, LogMessageFormatter::TYPE_REQUEST),
-                [
-                    'request' => [
-                        'url' => (string) $request->getUri(),
-                        'body' => (string) $request->getBody(),
-                        'parameters' => $parameters->all(),
-                    ],
-                    'response' => [
-                        'head' => $builtResponse->getHead()->asXML(),
-                        'body' => $builtResponse->getBody()->asXML(),
-                    ],
-                ]
-            );
-        }
-
-        HandleResponse::validate($body);
-
-        return $builtResponse->getBody();
+        return FeedCountFactory::make($builtResponse->getBody());
     }
 
     public function feedCancel(
         string $id,
         bool $debug = true
     ): FeedResponse {
-        $action = self::FEED_CANCEL_ACTION;
-        $parameters = $this->makeParametersForAction($action);
-        $parameters->set([
-            'FeedID' => $id,
-        ]);
+        $action = 'FeedCancel';
 
-        $requestId = $this->generateRequestId();
+        $parameters = $this->makeParametersForAction($action);
+        $parameters->set(['FeedID' => $id]);
 
         $response = $this->executeAction(
             $action,
             $parameters,
-            $requestId,
+            null,
             'POST',
             $debug
         );
