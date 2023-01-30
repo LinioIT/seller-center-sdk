@@ -65,6 +65,13 @@ class BaseManagerTest extends LinioTestCase
         $this->assertNotEmpty($requestId);
     }
 
+    public function testItGeneratesHeaders(): void
+    {
+        $headers = $this->baseManager->generateRequestHeaders([]);
+        $this->assertIsArray($headers);
+        $this->assertNotEmpty($headers);
+    }
+
     public function testItBuildQueryParameters(): void
     {
         $this->parametersStub->set(['foo' => true]);

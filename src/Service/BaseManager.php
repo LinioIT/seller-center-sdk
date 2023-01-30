@@ -76,7 +76,7 @@ class BaseManager
      *
      * @return mixed[]
      */
-    protected function generateRequestHeaders(array $customHeaders = []): array
+    public function generateRequestHeaders(array $customHeaders = []): array
     {
         $headers = [
             self::CONTENT_TYPE_HEADER => self::CONTENT_TYPE_HEADER_VALUE,
