@@ -5,16 +5,12 @@ declare(strict_types=1);
 namespace Linio\SellerCenter\Service;
 
 use Linio\Component\Util\Json;
-use Linio\SellerCenter\Application\Security\Signature;
-use Linio\SellerCenter\Factory\RequestFactory;
 use Linio\SellerCenter\Factory\Xml\Category\AttributesSetFactory;
 use Linio\SellerCenter\Factory\Xml\Category\CategoriesFactory;
 use Linio\SellerCenter\Factory\Xml\Category\CategoryAttributesFactory;
-use Linio\SellerCenter\Formatter\LogMessageFormatter;
 use Linio\SellerCenter\Model\Category\AttributeSet;
 use Linio\SellerCenter\Model\Category\Category;
 use Linio\SellerCenter\Model\Category\CategoryAttribute;
-use Linio\SellerCenter\Response\HandleResponse;
 
 class CategoryManager extends BaseManager
 {
@@ -25,48 +21,15 @@ class CategoryManager extends BaseManager
     {
         $action = 'GetCategoryTree';
 
-        $parameters = clone $this->parameters;
-        $parameters->set(['Action' => $action]);
-        $parameters->set([
-            'Signature' => Signature::generate($parameters, $this->configuration->getKey())->get(),
-        ]);
+        $parameters = $this->makeParametersForAction($action);
 
-        $requestHeaders = $this->generateRequestHeaders();
-        $requestId = $requestHeaders[self::REQUEST_ID_HEADER];
-
-        $request = RequestFactory::make(
+        $builtResponse = $this->executeAction(
+            $action,
+            $parameters,
+            null,
             'GET',
-            $this->configuration->getEndpoint(),
-            $requestHeaders
+            $debug
         );
-
-        $response = $this->client->send($request, [
-            'query' => $parameters->all(),
-        ]);
-
-        $body = (string) $response->getBody();
-
-        $builtResponse = HandleResponse::parse($body);
-
-        if ($debug) {
-            $this->logger->debug(
-                LogMessageFormatter::fromAction($requestId, $action, LogMessageFormatter::TYPE_REQUEST),
-                [
-                    'request' => [
-                        'url' => (string) $request->getUri(),
-                        'method' => $request->getMethod(),
-                        'body' => (string) $request->getBody(),
-                        'parameters' => $parameters->all(),
-                    ],
-                    'response' => [
-                        'head' => $builtResponse->getHead()->asXML(),
-                        'body' => $builtResponse->getBody()->asXML(),
-                    ],
-                ]
-            );
-        }
-
-        HandleResponse::validate($body);
 
         $categories = CategoriesFactory::make($builtResponse->getBody());
 
@@ -82,51 +45,16 @@ class CategoryManager extends BaseManager
     ): array {
         $action = 'GetCategoryAttributes';
 
-        $parameters = clone $this->parameters;
-        $parameters->set([
-            'Action' => $action,
-            'PrimaryCategory' => $categoryId,
-        ]);
-        $parameters->set([
-            'Signature' => Signature::generate($parameters, $this->configuration->getKey())->get(),
-        ]);
+        $parameters = $this->makeParametersForAction($action);
+        $parameters->set(['PrimaryCategory' => $categoryId]);
 
-        $requestHeaders = $this->generateRequestHeaders();
-        $requestId = $requestHeaders[self::REQUEST_ID_HEADER];
-
-        $request = RequestFactory::make(
+        $builtResponse = $this->executeAction(
+            $action,
+            $parameters,
+            null,
             'GET',
-            $this->configuration->getEndpoint(),
-            $requestHeaders
+            $debug
         );
-
-        $response = $this->client->send($request, [
-            'query' => $parameters->all(),
-        ]);
-
-        $body = (string) $response->getBody();
-
-        $builtResponse = HandleResponse::parse($body);
-
-        if ($debug) {
-            $this->logger->debug(
-                LogMessageFormatter::fromAction($requestId, $action, LogMessageFormatter::TYPE_REQUEST),
-                [
-                    'request' => [
-                        'url' => (string) $request->getUri(),
-                        'method' => $request->getMethod(),
-                        'body' => (string) $request->getBody(),
-                        'parameters' => $parameters->all(),
-                    ],
-                    'response' => [
-                        'head' => $builtResponse->getHead()->asXML(),
-                        'body' => $builtResponse->getBody()->asXML(),
-                    ],
-                ]
-            );
-        }
-
-        HandleResponse::validate($body);
 
         $categoryAttributes = CategoryAttributesFactory::make($builtResponse->getBody());
 
@@ -143,57 +71,23 @@ class CategoryManager extends BaseManager
         bool $debug = true
     ): array {
         $action = 'GetCategoriesByAttributeSet';
-
-        $parameters = clone $this->parameters;
-        $parameters->set(['Action' => $action]);
-
         $attributesSetValue = 0;
+
+        $parameters = $this->makeParametersForAction($action);
 
         if (!empty($attributesSetIds)) {
             $attributesSetValue = Json::encode($attributesSetIds);
         }
 
         $parameters->set(['AttributeSet' => $attributesSetValue]);
-        $parameters->set([
-            'Signature' => Signature::generate($parameters, $this->configuration->getKey())->get(),
-        ]);
 
-        $requestHeaders = $this->generateRequestHeaders();
-        $requestId = $requestHeaders[self::REQUEST_ID_HEADER];
-
-        $request = RequestFactory::make(
+        $builtResponse = $this->executeAction(
+            $action,
+            $parameters,
+            null,
             'GET',
-            $this->configuration->getEndpoint(),
-            $requestHeaders
+            $debug
         );
-
-        $response = $this->client->send($request, [
-            'query' => $parameters->all(),
-        ]);
-
-        $body = (string) $response->getBody();
-
-        $builtResponse = HandleResponse::parse($body);
-
-        if ($debug) {
-            $this->logger->debug(
-                LogMessageFormatter::fromAction($requestId, $action, LogMessageFormatter::TYPE_REQUEST),
-                [
-                    'request' => [
-                        'url' => (string) $request->getUri(),
-                        'method' => $request->getMethod(),
-                        'body' => (string) $request->getBody(),
-                        'parameters' => $parameters->all(),
-                    ],
-                    'response' => [
-                        'head' => $builtResponse->getHead()->asXML(),
-                        'body' => $builtResponse->getBody()->asXML(),
-                    ],
-                ]
-            );
-        }
-
-        HandleResponse::validate($body);
 
         $attributesSet = AttributesSetFactory::make($builtResponse->getBody());
 

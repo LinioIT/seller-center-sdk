@@ -15,12 +15,10 @@ class GlobalSellerManager extends BaseSellerManager
 
         $parameters = $this->makeParametersForAction($action);
 
-        $requestId = $this->generateRequestId();
-
         $builtResponse = $this->executeAction(
             $action,
             $parameters,
-            $requestId,
+            null,
             'GET',
             $debug
         );

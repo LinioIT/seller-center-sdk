@@ -32,12 +32,10 @@ class GlobalOrderManager extends BaseOrderManager
             $parameters->set(['InvoiceDocumentLink' => $invoiceDocumentLink]);
         }
 
-        $requestId = $this->generateRequestId();
-
         return $this->executeAction(
             $action,
             $parameters,
-            $requestId,
+            null,
             'POST',
             $debug
         );
@@ -58,12 +56,10 @@ class GlobalOrderManager extends BaseOrderManager
             'InvoiceNumber' => $invoiceNumber,
         ]);
 
-        $requestId = $this->generateRequestId();
-
         $response = $this->executeAction(
             $action,
             $parameters,
-            $requestId,
+            null,
             'POST',
             $debug,
             $invoiceDocument
@@ -96,12 +92,10 @@ class GlobalOrderManager extends BaseOrderManager
             $parameters->set(['PackageId' => $packageId]);
         }
 
-        $requestId = $this->generateRequestId();
-
         $builtResponse = $this->executeAction(
             $action,
             $parameters,
-            $requestId,
+            null,
             'POST',
             $debug
         );
@@ -130,12 +124,10 @@ class GlobalOrderManager extends BaseOrderManager
             'DeliveryType' => $deliveryType,
         ]);
 
-        $requestId = $this->generateRequestId();
-
         $builtResponse = $this->executeAction(
             $action,
             $parameters,
-            $requestId,
+            null,
             'POST',
             $debug
         );

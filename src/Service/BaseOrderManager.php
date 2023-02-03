@@ -43,12 +43,10 @@ class BaseOrderManager extends BaseManager
             'OrderId' => $orderId,
         ]);
 
-        $requestId = $this->generateRequestId();
-
         $builtResponse = $this->executeAction(
             $action,
             $parameters,
-            $requestId,
+            null,
             'GET',
             $debug
         );
@@ -157,8 +155,6 @@ class BaseOrderManager extends BaseManager
     ): array {
         $action = 'GetOrders';
 
-        $parameters->set(['Action' => $action]);
-
         $requestId = $this->generateRequestId();
 
         $builtResponse = $this->executeAction(
@@ -199,7 +195,7 @@ class BaseOrderManager extends BaseManager
         string $sortDirection = self::DEFAULT_SORT_DIRECTION,
         bool $debug = true
     ): array {
-        $parameters = clone $this->parameters;
+        $parameters = $this->makeParametersForGetOrdersAction();
 
         $this->setListDimensions($parameters, $limit, $offset);
         $this->setSortParametersList($parameters, $sortBy, $sortDirection);
@@ -227,7 +223,7 @@ class BaseOrderManager extends BaseManager
         string $sortDirection = self::DEFAULT_SORT_DIRECTION,
         bool $debug = true
     ): array {
-        $parameters = clone $this->parameters;
+        $parameters = $this->makeParametersForGetOrdersAction();
 
         $this->setListDimensions($parameters, $limit, $offset);
         $this->setSortParametersList($parameters, $sortBy, $sortDirection);
@@ -254,7 +250,7 @@ class BaseOrderManager extends BaseManager
         string $sortDirection = self::DEFAULT_SORT_DIRECTION,
         bool $debug = true
     ): array {
-        $parameters = clone $this->parameters;
+        $parameters = $this->makeParametersForGetOrdersAction();
 
         $this->setListDimensions($parameters, $limit, $offset);
         $this->setSortParametersList($parameters, $sortBy, $sortDirection);
@@ -280,7 +276,7 @@ class BaseOrderManager extends BaseManager
         string $sortDirection = self::DEFAULT_SORT_DIRECTION,
         bool $debug = true
     ): array {
-        $parameters = clone $this->parameters;
+        $parameters = $this->makeParametersForGetOrdersAction();
 
         $this->setListDimensions($parameters, $limit, $offset);
         $this->setSortParametersList($parameters, $sortBy, $sortDirection);
@@ -306,7 +302,7 @@ class BaseOrderManager extends BaseManager
         string $sortDirection = self::DEFAULT_SORT_DIRECTION,
         bool $debug = true
     ): array {
-        $parameters = clone $this->parameters;
+        $parameters = $this->makeParametersForGetOrdersAction();
 
         $this->setListDimensions($parameters, $limit, $offset);
         $this->setSortParametersList($parameters, $sortBy, $sortDirection);
@@ -332,7 +328,7 @@ class BaseOrderManager extends BaseManager
         string $sortDirection = self::DEFAULT_SORT_DIRECTION,
         bool $debug = true
     ): array {
-        $parameters = clone $this->parameters;
+        $parameters = $this->makeParametersForGetOrdersAction();
 
         $this->setListDimensions($parameters, $limit, $offset);
         $this->setSortParametersList($parameters, $sortBy, $sortDirection);
@@ -358,7 +354,7 @@ class BaseOrderManager extends BaseManager
         string $sortDirection = self::DEFAULT_SORT_DIRECTION,
         bool $debug = true
     ): array {
-        $parameters = clone $this->parameters;
+        $parameters = $this->makeParametersForGetOrdersAction();
 
         $this->setListDimensions($parameters, $limit, $offset);
         $this->setSortParametersList($parameters, $sortBy, $sortDirection);
@@ -392,7 +388,7 @@ class BaseOrderManager extends BaseManager
         string $sortDirection = self::DEFAULT_SORT_DIRECTION,
         bool $debug = true
     ): array {
-        $parameters = clone $this->parameters;
+        $parameters = $this->makeParametersForGetOrdersAction();
 
         $this->setListDimensions($parameters, $limit, $offset);
         $this->setSortParametersList($parameters, $sortBy, $sortDirection);
@@ -437,12 +433,10 @@ class BaseOrderManager extends BaseManager
             'shipping_provider_name' => $shippingProvider,
         ]);
 
-        $requestId = $this->generateRequestId();
-
         $response = $this->executeAction(
             $action,
             $parameters,
-            $requestId,
+            null,
             'GET',
             $debug
         );
@@ -469,12 +463,10 @@ class BaseOrderManager extends BaseManager
             $parameters->set(['ReasonDetail' => $reasonDetail]);
         }
 
-        $requestId = $this->generateRequestId();
-
         return $this->executeAction(
             $action,
             $parameters,
-            $requestId,
+            null,
             'POST',
             $debug
         );
@@ -544,5 +536,10 @@ class BaseOrderManager extends BaseManager
             'SortBy' => $sortBy,
             'SortDirection' => $sortDirection,
         ]);
+    }
+
+    protected function makeParametersForGetOrdersAction(): Parameters
+    {
+        return $this->makeParametersForAction('GetOrders');
     }
 }

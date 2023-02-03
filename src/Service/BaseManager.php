@@ -21,6 +21,8 @@ class BaseManager
     protected const X_SOURCE_HEADER = 'X-Source';
     protected const USER_AGENT_HEADER = 'User-Agent';
     protected const REQUEST_ID_HEADER = 'Request-ID';
+    protected const CONTENT_TYPE_HEADER = 'Content-type';
+    protected const CONTENT_TYPE_HEADER_VALUE = 'text/xml; charset=UTF8';
 
     /**
      * @var LoggerInterface
@@ -74,9 +76,10 @@ class BaseManager
      *
      * @return mixed[]
      */
-    protected function generateRequestHeaders(array $customHeaders = []): array
+    public function generateRequestHeaders(array $customHeaders = []): array
     {
         $headers = [
+            self::CONTENT_TYPE_HEADER => self::CONTENT_TYPE_HEADER_VALUE,
             self::REQUEST_ID_HEADER => $this->generateRequestId(),
             self::X_SOURCE_HEADER => $this->configuration->getSource(),
             self::USER_AGENT_HEADER => $this->configuration->getUserAgent(),
@@ -92,12 +95,14 @@ class BaseManager
     public function executeAction(
         string $action,
         Parameters $parameters,
-        string $requestId,
+        ?string $requestId,
         string $httpMethod = 'GET',
         bool $debug = true,
         ?string $body = null
     ): SuccessResponse {
-        $requestHeaders = $this->generateRequestHeaders([self::REQUEST_ID_HEADER => $requestId]);
+        $requestHeaders = $this->generateRequestHeaders(
+            [self::REQUEST_ID_HEADER => $requestId ?? $this->generateRequestId()]
+        );
 
         $request = RequestFactory::make(
             $httpMethod,
@@ -105,6 +110,7 @@ class BaseManager
             $requestHeaders,
             $body
         );
+
         $response = $this->client->send($request, [
             'query' => $this->buildQuery($parameters),
         ]);
@@ -113,7 +119,13 @@ class BaseManager
         $builtResponse = HandleResponse::parse($body);
 
         if ($debug) {
-            $this->logRequest($action, $requestId, $request, $parameters, $builtResponse);
+            $this->logRequest(
+                $action,
+                $requestHeaders[self::REQUEST_ID_HEADER],
+                $request,
+                $parameters,
+                $builtResponse
+            );
         }
 
         HandleResponse::validate($body);
@@ -147,6 +159,7 @@ class BaseManager
                 'request' => [
                     'url' => (string) $request->getUri(),
                     'method' => $request->getMethod(),
+                    'headers' => $request->getHeaders(),
                     'body' => (string) $request->getBody(),
                     'parameters' => $parameters->all(),
                 ],

@@ -6,13 +6,9 @@ namespace Linio\SellerCenter\Service;
 
 use Linio\Component\Util\Json;
 use Linio\SellerCenter\Application\Parameters;
-use Linio\SellerCenter\Application\Security\Signature;
 use Linio\SellerCenter\Exception\EmptyArgumentException;
-use Linio\SellerCenter\Factory\RequestFactory;
 use Linio\SellerCenter\Factory\Xml\QualityControl\QualityControlsFactory;
-use Linio\SellerCenter\Formatter\LogMessageFormatter;
 use Linio\SellerCenter\Model\QualityControl\QualityControl;
-use Linio\SellerCenter\Response\HandleResponse;
 
 class QualityControlManager extends BaseManager
 {
@@ -26,48 +22,13 @@ class QualityControlManager extends BaseManager
         Parameters $parameters,
         bool $debug = true
     ): array {
-        $action = 'GetQcStatus';
-
-        $parameters->set(['Action' => $action]);
-        $parameters->set([
-            'Signature' => Signature::generate($parameters, $this->configuration->getKey())->get(),
-        ]);
-
-        $requestHeaders = $this->generateRequestHeaders();
-        $requestId = $requestHeaders[self::REQUEST_ID_HEADER];
-
-        $request = RequestFactory::make(
+        $builtResponse = $this->executeAction(
+            'GetQcStatus',
+            $parameters,
+            null,
             'GET',
-            $this->configuration->getEndpoint(),
-            $requestHeaders
+            $debug
         );
-
-        $response = $this->client->send($request, [
-            'query' => $parameters->all(),
-        ]);
-
-        $body = (string) $response->getBody();
-        $builtResponse = HandleResponse::parse($body);
-
-        if ($debug) {
-            $this->logger->debug(
-                LogMessageFormatter::fromAction($requestId, $action, LogMessageFormatter::TYPE_REQUEST),
-                [
-                    'request' => [
-                        'url' => (string) $request->getUri(),
-                        'method' => $request->getMethod(),
-                        'body' => (string) $request->getBody(),
-                        'parameters' => $parameters->all(),
-                    ],
-                    'response' => [
-                        'head' => $builtResponse->getHead()->asXML(),
-                        'body' => $builtResponse->getBody()->asXML(),
-                    ],
-                ]
-            );
-        }
-
-        HandleResponse::validate($body);
 
         $qualityControls = QualityControlsFactory::make($builtResponse->getBody());
 
@@ -82,7 +43,7 @@ class QualityControlManager extends BaseManager
         int $offset = self::DEFAULT_OFFSET,
         bool $debug = true
     ): array {
-        $parameters = clone $this->parameters;
+        $parameters = $this->makeParametersForGetQcStatusAction();
 
         $this->setListDimensions($parameters, $limit, $offset);
 
@@ -103,7 +64,7 @@ class QualityControlManager extends BaseManager
         int $offset = self::DEFAULT_OFFSET,
         bool $debug = true
     ): array {
-        $parameters = clone $this->parameters;
+        $parameters = $this->makeParametersForGetQcStatusAction();
 
         if (empty($skuSellerList)) {
             throw new EmptyArgumentException('SkuSellerList');
@@ -132,5 +93,10 @@ class QualityControlManager extends BaseManager
                 'Offset' => $verifiedOffset,
             ]
         );
+    }
+
+    protected function makeParametersForGetQcStatusAction(): Parameters
+    {
+        return $this->makeParametersForAction('GetQcStatus');
     }
 }
