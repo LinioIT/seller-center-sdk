@@ -60,21 +60,21 @@ class GlobalOrderManagerTest extends LinioTestCase
 
     public function testItReturnsSuccessResponseWhenSetInvoiceNumberInGlobal(): void
     {
-        $orderItemId = 1;
+        $orderItemIds = [1];
         $invoiceNumber = '123132465465465465456';
         $documentLink = 'https://fakeInvoice.pdf';
 
         $body = sprintf(
             $this->getSchema('Order/SetInvoiceNumberSuccessResponse.xml'),
             'SetInvoiceNumber',
-            $orderItemId,
+            end($orderItemIds),
             $invoiceNumber
         );
 
         $sdkClient = $this->getSdkClient($body);
 
         $response = $sdkClient->globalOrders()->setInvoiceNumber(
-            $orderItemId,
+            $orderItemIds,
             $invoiceNumber,
             $documentLink
         );
@@ -137,14 +137,14 @@ class GlobalOrderManagerTest extends LinioTestCase
      */
     public function testItLogsDependingOnDebugParamWhenSetInvoiceNumberGlobalSuccessResponse(bool $debug): void
     {
-        $orderItemId = 1;
+        $orderItemIds = [1, 5];
         $invoiceNumber = '123132465465465465456';
         $documentLink = 'https://fakeInvoice.pdf';
 
         $body = sprintf(
             $this->getSchema('Order/SetInvoiceNumberSuccessResponse.xml'),
             'SetInvoiceNumber',
-            $orderItemId,
+            end($orderItemIds),
             $invoiceNumber
         );
 
@@ -152,7 +152,7 @@ class GlobalOrderManagerTest extends LinioTestCase
         $sdkClient = $this->getSdkClient($body, $this->logger);
 
         $sdkClient->globalOrders()->setInvoiceNumber(
-            $orderItemId,
+            $orderItemIds,
             $invoiceNumber,
             $documentLink,
             $debug

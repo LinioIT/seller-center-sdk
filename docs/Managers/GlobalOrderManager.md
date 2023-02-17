@@ -388,7 +388,7 @@ This method sets the invoice number.
 
 | Parameter | Type | Description | Required | Default |
 | --------- | :----: | ----------- | :--------: | :-------: |
-| `$orderItemId` | int | Identifier of the order item should be updated | Yes | - |
+| `$orderItemIds` | array | Identifier of the order items should be updated | Yes | - |
 | `$invoiceNumber` | string | The invoice number | Yes | - |
 | `$invoiceDocumentLink` | string | Document URL | No | - |
 | `$debug` | bool |  Whether it logs or not the request and response log | No | true | 

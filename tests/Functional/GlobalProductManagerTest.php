@@ -327,10 +327,10 @@ class GlobalProductManagerTest extends LinioTestCase
 
         $sdkClient->globalProducts()->addImage(
             ['testSku' => [
-                    'http://static.somecdn.com/moneyshot.jpeg',
-                    'http://static.somecdn.com/front.jpeg',
-                    'http://static.somecdn.com/rear.jpeg',
-                ],
+                'http://static.somecdn.com/moneyshot.jpeg',
+                'http://static.somecdn.com/front.jpeg',
+                'http://static.somecdn.com/rear.jpeg',
+            ],
             ],
             $debug
         );
