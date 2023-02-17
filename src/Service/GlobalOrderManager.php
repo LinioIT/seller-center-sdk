@@ -13,8 +13,11 @@ use Linio\SellerCenter\Response\SuccessResponse;
 
 class GlobalOrderManager extends BaseOrderManager
 {
+    /**
+     * @param int[] $orderItemIds
+     */
     public function setInvoiceNumber(
-        int $orderItemId,
+        array $orderItemIds,
         string $invoiceNumber,
         ?string $invoiceDocumentLink,
         bool $debug = true
@@ -24,7 +27,7 @@ class GlobalOrderManager extends BaseOrderManager
         $parameters = $this->makeParametersForAction($action);
 
         $parameters->set([
-            'OrderItemId' => $orderItemId,
+            'OrderItemIds' => Json::encode($orderItemIds),
             'InvoiceNumber' => $invoiceNumber,
         ]);
 
