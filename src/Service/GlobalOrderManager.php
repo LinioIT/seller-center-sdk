@@ -5,14 +5,20 @@ declare(strict_types=1);
 namespace Linio\SellerCenter\Service;
 
 use Linio\Component\Util\Json;
-use Linio\SellerCenter\Factory\Xml\FeedResponseFactory;
-use Linio\SellerCenter\Factory\Xml\Order\OrderItemsFactory;
 use Linio\SellerCenter\Model\Order\OrderItem;
 use Linio\SellerCenter\Response\FeedResponse;
 use Linio\SellerCenter\Response\SuccessResponse;
+use Linio\SellerCenter\Factory\Xml\FeedResponseFactory;
+use Linio\SellerCenter\Exception\InvalidDomainException;
+use Linio\SellerCenter\Factory\Xml\Order\OrderItemsFactory;
 
 class GlobalOrderManager extends BaseOrderManager
 {
+    const ALLOWED_INVOICE_TYPE = [
+      'BOLETA', 
+      'NOTA_DE_CREDITO'
+    ];
+
     /**
      * @param int[] $orderItemIds
      */
@@ -44,19 +50,30 @@ class GlobalOrderManager extends BaseOrderManager
         );
     }
 
+    /**
+     * @param int[] $orderItemIds
+     */
     public function setInvoiceDocument(
-        int $orderItemId,
+        array $orderItemIds,
         string $invoiceNumber,
+        string $invoiceType,
         string $invoiceDocument,
         bool $debug = true
     ): FeedResponse {
+        $upperInvoiceType = strtoupper($invoiceType);
+
+        if (!in_array(strtoupper($upperInvoiceType), self::ALLOWED_INVOICE_TYPE)) {
+            throw new InvalidDomainException('InvoiceType');
+        }
+
         $action = 'SetInvoiceDocument';
 
         $parameters = $this->makeParametersForAction($action);
 
         $parameters->set([
-            'OrderItemId' => $orderItemId,
+            'OrderItemIds' => Json::encode($orderItemIds),
             'InvoiceNumber' => $invoiceNumber,
+            'InvoiceType' => $upperInvoiceType
         ]);
 
         $response = $this->executeAction(
