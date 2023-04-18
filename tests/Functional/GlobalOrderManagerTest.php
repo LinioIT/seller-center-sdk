@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace Linio\SellerCenter;
 
+use Linio\SellerCenter\Exception\InvalidDomainException;
 use Linio\SellerCenter\Model\Order\OrderItem;
 use Linio\SellerCenter\Response\FeedResponse;
 use Linio\SellerCenter\Response\SuccessResponse;
@@ -49,13 +50,28 @@ class GlobalOrderManagerTest extends LinioTestCase
         $sdkClient = $this->getSdkClient($body);
 
         $response = $sdkClient->globalOrders()->setInvoiceDocument(
-            1,
+            [1],
             'test123',
+            'BOLETA',
             $this->getSchema('Order/InvoiceDocument.xml')
         );
 
         $this->assertInstanceOf(FeedResponse::class, $response);
         $this->assertEquals($response->getRequestId(), $feedId);
+    }
+
+    public function testItThrowsInvalidDomainExceptionWhenSetInvoiceDocumentInvalidDocumentType(): void
+    {
+        $this->expectException(InvalidDomainException::class);
+
+        $sdkClient = $this->getSdkClient('');
+
+        $sdkClient->globalOrders()->setInvoiceDocument(
+            [1],
+            'test123',
+            'incorrect_document_type',
+            $this->getSchema('Order/InvoiceDocument.xml')
+        );
     }
 
     public function testItReturnsSuccessResponseWhenSetInvoiceNumberInGlobal(): void
@@ -175,8 +191,9 @@ class GlobalOrderManagerTest extends LinioTestCase
         $sdkClient = $this->getSdkClient($body, $this->logger);
 
         $sdkClient->globalOrders()->setInvoiceDocument(
-            1,
+            [1],
             'test123',
+            'BOLETA',
             $this->getSchema('Order/InvoiceDocument.xml'),
             $debug
         );
