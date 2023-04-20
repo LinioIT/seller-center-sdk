@@ -415,8 +415,9 @@ This method sets the invoice document.
 
 | Parameter | Type | Description | Required | Default |
 | --------- | :----: | ----------- | :--------: | :-------: |
-| `$orderItemId` | int | Identifier of the order item | Yes | - |
+| `$orderItemId` | array | Identifiers of the order items | Yes | - |
 | `$invoiceNumber` | string | The invoice number | Yes | - |
+| `$invoiceType` | string | The invoice document type: BOLETA or NOTA_DE_CREDITO | Yes | - |
 | `$invoiceDocument` | string | Document XML format | Yes | - |
 | `$debug` | bool |  Whether it logs or not the request and response log | No | true | 
 
