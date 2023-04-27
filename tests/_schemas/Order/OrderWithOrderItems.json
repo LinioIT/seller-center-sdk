@@ -20,6 +20,7 @@
   "promisedShippingTime": null,
   "extraAttributes": null,
   "statuses": null,
+  "operatorCode": null,
   "orderItems": [
     {
       "orderItemId": "%d",
