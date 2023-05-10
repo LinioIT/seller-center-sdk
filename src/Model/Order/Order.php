@@ -346,6 +346,7 @@ class Order implements JsonSerializable
         $serialized->extraAttributes = $this->extraAttributes;
         $serialized->statuses = $this->statuses;
         $serialized->orderItems = $this->orderItems;
+        $serialized->operatorCode = $this->operatorCode;
 
         return $serialized;
     }

@@ -5,18 +5,18 @@ declare(strict_types=1);
 namespace Linio\SellerCenter\Service;
 
 use Linio\Component\Util\Json;
+use Linio\SellerCenter\Exception\InvalidDomainException;
+use Linio\SellerCenter\Factory\Xml\FeedResponseFactory;
+use Linio\SellerCenter\Factory\Xml\Order\OrderItemsFactory;
 use Linio\SellerCenter\Model\Order\OrderItem;
 use Linio\SellerCenter\Response\FeedResponse;
 use Linio\SellerCenter\Response\SuccessResponse;
-use Linio\SellerCenter\Factory\Xml\FeedResponseFactory;
-use Linio\SellerCenter\Exception\InvalidDomainException;
-use Linio\SellerCenter\Factory\Xml\Order\OrderItemsFactory;
 
 class GlobalOrderManager extends BaseOrderManager
 {
     const ALLOWED_INVOICE_TYPE = [
-      'BOLETA', 
-      'NOTA_DE_CREDITO'
+        'BOLETA',
+        'NOTA_DE_CREDITO',
     ];
 
     /**
@@ -73,7 +73,7 @@ class GlobalOrderManager extends BaseOrderManager
         $parameters->set([
             'OrderItemIds' => Json::encode($orderItemIds),
             'InvoiceNumber' => $invoiceNumber,
-            'InvoiceType' => $upperInvoiceType
+            'InvoiceType' => $upperInvoiceType,
         ]);
 
         $response = $this->executeAction(
