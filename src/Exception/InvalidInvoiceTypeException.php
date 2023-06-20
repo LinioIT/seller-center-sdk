@@ -12,6 +12,6 @@ class InvalidInvoiceTypeException extends InvalidArgumentValueException
 
     public function __construct()
     {
-        parent::__construct(self::INVOICE_TYPE_FIELD, InvoiceDocument::INVOICE_TYPE);
+        parent::__construct(self::INVOICE_TYPE_FIELD, InvoiceDocument::INVOICE_TYPES);
     }
 }

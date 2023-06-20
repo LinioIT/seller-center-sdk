@@ -12,6 +12,6 @@ class InvalidInvoiceDocumentFormatException extends InvalidArgumentValueExceptio
 
     public function __construct()
     {
-        parent::__construct(self::INVOICE_DOC_FORMAT_FIELD, InvoiceDocument::INVOICE_DOCUMENT_FORMAT);
+        parent::__construct(self::INVOICE_DOC_FORMAT_FIELD, InvoiceDocument::INVOICE_DOCUMENT_FORMATS);
     }
 }

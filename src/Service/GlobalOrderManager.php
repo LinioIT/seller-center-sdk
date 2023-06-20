@@ -96,12 +96,12 @@ class GlobalOrderManager extends BaseOrderManager
         bool $debug = true
     ): SuccessJsonResponse {
         $action = 'Upload';
-        $extraPath = '/seller-api-wrapper/v1/marketplace-sellers/upload-pdf';
+        $path = '/seller-api-wrapper/v1/marketplace-sellers/upload-pdf';
         $customHeader = ['Service' => 'Invoice'];
 
         $invoiceDocumentFormatted = Json::encode($invoiceDocument->jsonSerialize());
 
-        return $this->executeActionJson(
+        return $this->executeJsonAction(
             $action,
             new Parameters(),
             null,
@@ -110,7 +110,7 @@ class GlobalOrderManager extends BaseOrderManager
             $invoiceDocumentFormatted,
             true,
             $customHeader,
-            $extraPath
+            $path
         );
     }
 

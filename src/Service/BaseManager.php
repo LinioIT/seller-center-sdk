@@ -4,18 +4,17 @@ declare(strict_types=1);
 
 namespace Linio\SellerCenter\Service;
 
-use Linio\Component\Util\Json;
 use Linio\SellerCenter\Application\Configuration;
 use Linio\SellerCenter\Application\Parameters;
 use Linio\SellerCenter\Application\Security\Signature;
 use Linio\SellerCenter\Contract\ClientInterface;
-use Linio\SellerCenter\Contract\SuccessResponse as ContractSuccessResponse;
 use Linio\SellerCenter\Factory\RequestFactory;
 use Linio\SellerCenter\Formatter\LogMessageFormatter;
 use Linio\SellerCenter\Response\HandleResponse;
 use Linio\SellerCenter\Response\SuccessJsonResponse;
 use Linio\SellerCenter\Response\SuccessResponse;
 use Psr\Http\Message\RequestInterface;
+use Psr\Http\Message\ResponseInterface;
 use Psr\Log\LoggerInterface;
 
 class BaseManager
@@ -75,7 +74,6 @@ class BaseManager
         return bin2hex(random_bytes(16));
     }
 
-    //original
     public function executeAction(
         string $action,
         Parameters $parameters,
@@ -95,9 +93,7 @@ class BaseManager
             $body
         );
 
-        $response = $this->client->send($request, [
-            'query' => $this->buildQuery($parameters),
-        ]);
+        $response = $this->generateRequest(false, $parameters, $request);
 
         $body = (string) $response->getBody();
         $builtResponse = HandleResponse::parse($body);
@@ -108,8 +104,10 @@ class BaseManager
                 $requestHeaders[self::REQUEST_ID_HEADER],
                 $request,
                 $parameters,
-                $builtResponse->getHead()->asXML(),
-                $builtResponse->getBody()->asXML()
+                [
+                    'head' => $builtResponse->getHead()->asXML(),
+                    'body' => $builtResponse->getBody()->asXML(),
+                ]
             );
         }
 
@@ -117,8 +115,11 @@ class BaseManager
 
         return $builtResponse;
     }
-    //dos
-    public function executeActionJson(
+
+    /**
+     * @param string[] $customHeader
+     */
+    public function executeJsonAction(
         string $action,
         Parameters $parameters,
         ?string $requestId,
@@ -127,25 +128,24 @@ class BaseManager
         ?string $body = null,
         bool $useHeaderParams = false,
         array $customHeader = [],
-        string $extraPath = ''
+        string $path = ''
     ): SuccessJsonResponse {
-
-        $requestHeaders = $this->generateRequestHeaders($customHeader, $requestId, $action, $useHeaderParams, false);
+        $requestHeaders = $this->generateRequestHeaders(
+            $customHeader,
+            $requestId,
+            $action,
+            $useHeaderParams,
+            false
+        );
 
         $request = RequestFactory::make(
             $httpMethod,
-            sprintf('%s%s', $this->configuration->getEndpoint(), $extraPath),
+            sprintf('%s%s', $this->configuration->getEndpoint(), $path),
             $requestHeaders,
             $body
         );
 
-        if(!$useHeaderParams){
-            $query = $this->buildQuery($parameters);
-        }
-
-        $response = $this->client->send($request, [
-            'query' => $query ?? $parameters,
-        ]);
+        $response = $this->generateRequest($useHeaderParams, $parameters, $request);
 
         $body = (string) $response->getBody();
         $builtResponse = HandleResponse::parseJson($body);
@@ -156,8 +156,10 @@ class BaseManager
                 $requestHeaders[self::REQUEST_ID_HEADER],
                 $request,
                 $parameters,
-                Json::encode($builtResponse->getMessage()),
-                Json::encode($builtResponse->getData())
+                [
+                    'message' => $builtResponse->getMessage(),
+                    'data' => $builtResponse->getDataToString(),
+                ]
             );
         }
 
@@ -165,78 +167,20 @@ class BaseManager
 
         return $builtResponse;
     }
-    //tres
 
-    // /**
-    //  * @param string[] $customHeader
-    //  */
-    // public function executeAction(
-    //     string $action,
-    //     Parameters $parameters,
-    //     ?string $requestId,
-    //     string $httpMethod = 'GET',
-    //     bool $debug = true,
-    //     ?string $body = null,
-    //     bool $useHeaderParams = false,
-    //     array $customHeader = [],
-    //     bool $isXml = true,
-    //     string $extraPath = ''
-    // ): ContractSuccessResponse {
-    //     $requestHeaders = $this->generateRequestHeaders($customHeader, $requestId, $action, $useHeaderParams, $isXml);
-
-    //     $request = RequestFactory::make(
-    //         $httpMethod,
-    //         sprintf('%s%s', $this->configuration->getEndpoint(), $extraPath),
-    //         $requestHeaders,
-    //         $body
-    //     );
-
-    //     if (!$useHeaderParams) {
-    //         $query = $this->buildQuery($parameters);
-    //     }
-
-    //     $response = $this->client->send($request, [
-    //         'query' => $query ?? $parameters,
-    //     ]);
-
-    //     $body = (string) $response->getBody();
-    //     $builtResponse = $this->parseResponse($body, $isXml);
-
-    //     if ($debug) {
-    //         $this->logRequest(
-    //             $action,
-    //             $requestHeaders[self::REQUEST_ID_HEADER],
-    //             $request,
-    //             $parameters,
-    //             $builtResponse->getBaseData(),
-    //             $builtResponse->getDetailData()
-    //         );
-    //     }
-
-    //     $this->validateResponse($body, $isXml);
-
-    //     return $builtResponse;
-    // }
-
-    private function validateResponse(string $body, bool $isXml): void
-    {
-        if ($isXml) {
-            HandleResponse::validate($body);
-
-            return;
+    private function generateRequest(
+        bool $useHeaderParams,
+        Parameters $parameters,
+        RequestInterface $request
+    ): ResponseInterface {
+        if (!$useHeaderParams) {
+            $query = $this->buildQuery($parameters);
         }
 
-        HandleResponse::validateJsonResponse($body);
+        return $this->client->send($request, [
+            'query' => $query ?? $parameters,
+        ]);
     }
-
-    // private function parseResponse(string $body, bool $isXml): ContractSuccessResponse
-    // {
-    //     if ($isXml) {
-    //         return HandleResponse::parse($body);
-    //     }
-
-    //     return HandleResponse::parseJson($body);
-    // }
 
     /**
      * @return mixed[]
@@ -253,15 +197,16 @@ class BaseManager
         ];
     }
 
+    /**
+     * @param mixed[] $response
+     */
     private function logRequest(
         string $action,
         string $requestId,
         RequestInterface $request,
         Parameters $parameters,
-        string $head,
-        string $body
+        array $response
     ): void {
-        var_dump($head, $body);
         $this->logger->debug(
             LogMessageFormatter::fromAction($requestId, $action, LogMessageFormatter::TYPE_REQUEST),
             [
@@ -272,15 +217,14 @@ class BaseManager
                     'body' => (string) $request->getBody(),
                     'parameters' => $parameters->all(),
                 ],
-                'response' => [
-                    'head' => $head,
-                    'body' => $body,
-                ],
+                'response' => $response,
             ]
         );
     }
 
     /**
+     * @param string[] $customHeader
+     *
      * @return mixed[]
      */
     public function generateRequestHeaders(array $customHeader = [], ?string $requestId = null, string $action = '', bool $useHeaderParams = false, bool $isXml = true): array

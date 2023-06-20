@@ -5,16 +5,15 @@ declare(strict_types=1);
 namespace Linio\SellerCenter\Response;
 
 use Exception;
-use SimpleXMLElement;
 use Linio\Component\Util\Json as JsonFormatter;
 use Linio\SellerCenter\Application\ResponseStatus;
-use Linio\SellerCenter\Exception\EmptyXmlException;
 use Linio\SellerCenter\Exception\EmptyJsonException;
-use Linio\SellerCenter\Response\SuccessJsonResponse;
-use Linio\SellerCenter\Exception\InvalidXmlException;
-use Linio\SellerCenter\Exception\InvalidJsonException;
-use Linio\SellerCenter\Exception\ErrorResponseException;
+use Linio\SellerCenter\Exception\EmptyXmlException;
 use Linio\SellerCenter\Exception\ErrorJsonResponseException;
+use Linio\SellerCenter\Exception\ErrorResponseException;
+use Linio\SellerCenter\Exception\InvalidJsonException;
+use Linio\SellerCenter\Exception\InvalidXmlException;
+use SimpleXMLElement;
 
 class HandleResponse
 {
@@ -25,11 +24,12 @@ class HandleResponse
 
     public static function parseJson(string $data): SuccessJsonResponse
     {
-        $json = self::getJson($data);
-
-        return SuccessJsonResponse::fromJson($json);
+        return SuccessJsonResponse::fromJson(self::getJson($data));
     }
 
+    /**
+     * @throws ErrorResponseException
+     */
     public static function validate(string $data): void
     {
         $xml = self::getXml($data);
@@ -39,15 +39,22 @@ class HandleResponse
         }
     }
 
+    /**
+     * @throws ErrorJsonResponseException
+     */
     public static function validateJsonResponse(string $data): void
     {
         $json = JsonFormatter::decode($data);
 
-        if (isset($json['ErrorResponse']) || isset($json['errors']) ) {
+        if (isset($json['ErrorResponse']) || isset($json['errors'])) {
             throw new ErrorJsonResponseException($json['ErrorResponse'] ?? $json['errors']);
         }
     }
 
+    /**
+     * @throws InvalidXmlException
+     * @throws EmptyXmlException
+     */
     public static function getXml(string $data): SimpleXMLElement
     {
         try {
@@ -64,6 +71,9 @@ class HandleResponse
     }
 
     /**
+     * @throws InvalidJsonException
+     * @throws EmptyJsonException
+     *
      * @return mixed[]
      */
     public static function getJson(string $data): array

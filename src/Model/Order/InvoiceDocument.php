@@ -7,36 +7,58 @@ namespace Linio\SellerCenter\Model\Document;
 use DateTime;
 use JsonSerializable;
 use Linio\SellerCenter\Contract\BusinessUnitOperatorCodes;
-use Linio\SellerCenter\Contract\DocumentInterface;
-use Linio\SellerCenter\Exception\InvalidDocumentTypeException;
-use Linio\SellerCenter\Exception\InvalidFileException;
 use Linio\SellerCenter\Exception\InvalidInvoiceDocumentFormatException;
 use Linio\SellerCenter\Exception\InvalidInvoiceTypeException;
-use Linio\SellerCenter\Exception\InvalidMimeTypeException;
 use Linio\SellerCenter\Exception\InvalidOperatorCodeException;
 use Linio\SellerCenter\Model\Order\OrderItems;
 use stdClass;
 
 class InvoiceDocument implements JsonSerializable
 {
-    const INVOICE_TYPE = [
-        "BOLETA",
-        "NOTA_DE_CREDITO",
-        "FACTURA",
+    const INVOICE_TYPES = [
+        'BOLETA',
+        'NOTA_DE_CREDITO',
+        'FACTURA',
     ];
 
-    const INVOICE_DOCUMENT_FORMAT = [
-        'pdf'
+    const INVOICE_DOCUMENT_FORMATS = [
+        'pdf',
     ];
 
-    private OrderItems $orderItems;
-    private string $invoiceNumber;
-    private DateTime $invoiceDate;
-    private string $invoiceType;
-    private string $operatorCode;
-    private string $invoiceDocumentFormat;
-    private string $invoiceDocumentBase64;
+    /**
+     * @var OrderItems
+     */
+    private $orderItems;
 
+    /**
+     * @var string
+     */
+    private $invoiceNumber;
+
+    /**
+     * @var DateTime
+     */
+    private $invoiceDate;
+
+    /**
+     * @var string
+     */
+    private $invoiceType;
+
+    /**
+     * @var string
+     */
+    private $operatorCode;
+
+    /**
+     * @var string
+     */
+    private $invoiceDocumentFormat;
+
+    /**
+     * @var string
+     */
+    private $invoiceDocumentBase64;
 
     public function __construct(
         string $invoiceNumber,
@@ -48,12 +70,12 @@ class InvoiceDocument implements JsonSerializable
         ?string $invoiceDocumentFormat = 'pdf'
     ) {
         $invoiceType = strtoupper($invoiceType);
-        if (!in_array($invoiceType, self::INVOICE_TYPE)) {
+        if (!in_array($invoiceType, self::INVOICE_TYPES)) {
             throw new InvalidInvoiceTypeException();
         }
 
         $invoiceDocumentFormat = strtolower($invoiceDocumentFormat);
-        if (!in_array($invoiceDocumentFormat, self::INVOICE_DOCUMENT_FORMAT)) {
+        if (!in_array($invoiceDocumentFormat, self::INVOICE_DOCUMENT_FORMATS)) {
             throw new InvalidInvoiceDocumentFormatException();
         }
 
@@ -146,11 +168,10 @@ class InvoiceDocument implements JsonSerializable
         return $this->invoiceDocumentBase64;
     }
 
-
     public function jsonSerialize(): stdClass
     {
         $serialized = new stdClass();
-        
+
         $serialized->orderItems = $this->orderItems;
         $serialized->invoiceNumber = $this->invoiceNumber;
         $serialized->invoiceDate = $this->invoiceDate;
@@ -158,6 +179,7 @@ class InvoiceDocument implements JsonSerializable
         $serialized->operatorCode = $this->operatorCode;
         $serialized->invoiceDocumentFormat = $this->invoiceDocumentFormat;
         $serialized->invoiceDocumentBase64 = $this->invoiceDocumentBase64;
+
         return $serialized;
     }
 }

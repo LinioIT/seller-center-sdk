@@ -8,27 +8,41 @@ use Linio\Component\Util\Json;
 
 class SuccessJsonResponse
 {
+    const EMPTY_MESSAGE = 'Empty message';
+    const MESSAGE_KEY = 'message';
+    const DATA_KEY = 'data';
 
-    protected string $message;
+    /**
+     * @var string
+     */
+    protected $message;
+
     /**
      * @var mixed[]
      */
-    protected array $data;
-    
+    protected $data;
+
     /**
      * @var mixed[]
      */
-    protected array $json;
+    protected $json;
 
     /**
      * @param mixed[] $json
      */
     public static function fromJson(array $json): SuccessJsonResponse
     {
-        //return new self($json['message'] ?? 'Empty message', $json['data'] ?? [], $json);
-        return new self('test', [],[]);
+        return new self(
+            $json[self::MESSAGE_KEY] ?? self::EMPTY_MESSAGE,
+            $json[self::DATA_KEY] ?? [],
+            $json
+        );
     }
 
+    /**
+     * @param mixed[] $data
+     * @param mixed[] $json
+     */
     public function __construct(string $message, array $data, array $json)
     {
         $this->message = $message;
@@ -49,12 +63,7 @@ class SuccessJsonResponse
         return $this->data;
     }
 
-    public function getBaseData(): string
-    {
-        return $this->message;
-    }
-
-    public function getDetailData(): string
+    public function getDataToString(): string
     {
         return Json::encode($this->getData());
     }
