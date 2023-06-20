@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace Linio\SellerCenter\Response;
 
+use Linio\SellerCenter\Contract\SuccessResponse as ContractSuccessResponse;
 use SimpleXMLElement;
 
 class SuccessResponse
@@ -43,5 +44,15 @@ class SuccessResponse
     public function getHead(): SimpleXMLElement
     {
         return $this->head;
+    }
+
+    public function getBaseData(): string
+    {
+        return $this->getHead()->asXML() ?: '';
+    }
+
+    public function getDetailData(): string
+    {
+        return $this->getBody()->asXML() ?: '';
     }
 }

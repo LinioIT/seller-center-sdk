@@ -5,11 +5,16 @@ declare(strict_types=1);
 namespace Linio\SellerCenter\Response;
 
 use Exception;
+use SimpleXMLElement;
+use Linio\Component\Util\Json as JsonFormatter;
 use Linio\SellerCenter\Application\ResponseStatus;
 use Linio\SellerCenter\Exception\EmptyXmlException;
-use Linio\SellerCenter\Exception\ErrorResponseException;
+use Linio\SellerCenter\Exception\EmptyJsonException;
+use Linio\SellerCenter\Response\SuccessJsonResponse;
 use Linio\SellerCenter\Exception\InvalidXmlException;
-use SimpleXMLElement;
+use Linio\SellerCenter\Exception\InvalidJsonException;
+use Linio\SellerCenter\Exception\ErrorResponseException;
+use Linio\SellerCenter\Exception\ErrorJsonResponseException;
 
 class HandleResponse
 {
@@ -18,12 +23,28 @@ class HandleResponse
         return SuccessResponse::fromXml(self::getXml($data));
     }
 
+    public static function parseJson(string $data): SuccessJsonResponse
+    {
+        $json = self::getJson($data);
+
+        return SuccessJsonResponse::fromJson($json);
+    }
+
     public static function validate(string $data): void
     {
         $xml = self::getXml($data);
 
         if ($xml->getName() == ResponseStatus::ERROR) {
             throw new ErrorResponseException($xml);
+        }
+    }
+
+    public static function validateJsonResponse(string $data): void
+    {
+        $json = JsonFormatter::decode($data);
+
+        if (isset($json['ErrorResponse']) || isset($json['errors']) ) {
+            throw new ErrorJsonResponseException($json['ErrorResponse'] ?? $json['errors']);
         }
     }
 
@@ -40,5 +61,23 @@ class HandleResponse
         }
 
         return $xml;
+    }
+
+    /**
+     * @return mixed[]
+     */
+    public static function getJson(string $data): array
+    {
+        try {
+            $json = JsonFormatter::decode($data);
+        } catch (Exception $e) {
+            throw new InvalidJsonException();
+        }
+
+        if (empty($json)) {
+            throw new EmptyJsonException();
+        }
+
+        return $json;
     }
 }

@@ -102,6 +102,30 @@ class BaseManagerTest extends LinioTestCase
         $this->assertTrue(true);
     }
 
+    public function testItExecutesActionDD(): void
+    {
+        $response = $this->prophesize(ResponseInterface::class);
+        $response->getBody()->shouldBeCalled()->willReturn($this->getJsonSuccessResponse());
+
+        $this->loggerStub
+            ->debug(Argument::type('string'), Argument::type('array'))
+            ->shouldBeCalledTimes(1);
+
+        $this->clientStub
+            ->send(
+                Argument::type(RequestInterface::class),
+                Argument::type('array')
+            )
+            ->shouldBeCalled()
+            ->willReturn($response->reveal());
+
+        $this->baseManager->executeAction('FooAction', $this->parametersStub, 'dsad', 'GET', true, '{
+            "orderItemIds": [
+                "216435"
+            ],
+            "invoiceNumber": "1",}', true, ['Format' => 'format', 'Service' => 'service'], false, '/extrapath');
+    }
+
     private function getRawSuccessResponse(): string
     {
         return '<?xml version="1.0" encoding="UTF-8"?>
@@ -111,5 +135,22 @@ class BaseManagerTest extends LinioTestCase
                          <Body>
                          </Body>
                     </SuccessResponse>';
+    }
+
+    private function getJsonSuccessResponse(): string
+    {
+        return '{
+            "message": "Invoice Uploaded Successfully",
+            "data": {
+            "invoiceNumber": 0,
+            "invoiceDate": "string",
+            "sellerOrderNumber": "string",
+            "invoiceDocument": "string",
+            "invoiceDocumentFormat": "pdf",
+            "invoiceType": "BOLETA",
+            "operatorCode": "FACL",
+            "invoiceLines": []
+            }
+            }';
     }
 }

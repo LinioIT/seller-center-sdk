@@ -20,7 +20,7 @@ class SignatureTest extends LinioTestCase
 
         $parameters = Parameters::fromBasics($configuration->getUser(), $configuration->getVersion());
 
-        $signature = Signature::generate($parameters, $configuration->getKey());
+        $signature = Signature::generate($parameters->all(), $configuration->getKey());
 
         $rs = new ReflectionClass(Signature::class);
         $property = $rs->getProperty('signature');
@@ -39,7 +39,7 @@ class SignatureTest extends LinioTestCase
         $parameters = Parameters::fromBasics($configuration->getUser(), $configuration->getVersion());
         $parameters->set(['integer-parameter' => 1]);
 
-        $signature = Signature::generate($parameters, $configuration->getKey());
+        $signature = Signature::generate($parameters->all(), $configuration->getKey());
 
         $rs = new ReflectionClass(Signature::class);
         $property = $rs->getProperty('signature');
@@ -55,6 +55,6 @@ class SignatureTest extends LinioTestCase
         $this->expectException(InvalidApiKeyException::class);
         $this->expectExceptionMessage('The API KEY cannot be null.');
         $parameters = new Parameters();
-        Signature::generate($parameters, '');
+        Signature::generate($parameters->all(), '');
     }
 }
