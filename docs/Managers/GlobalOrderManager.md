@@ -43,6 +43,8 @@ Manager to support Falabella Order endpoints
   - [Setting order invoice document](#setting-order-invoice-document)
     - [setInvoiceDocument](#setinvoicedocument)
       - [Example](#example-15)
+    - [uploadInvoiceDocument](#uploadinvoicedocument)
+      - [Example](#example-15)
   
 ## Getting an order
 
@@ -435,5 +437,36 @@ $invoiceNumber = '123132465465465465456';
 $invoiceDocument = '<?xml version="1.0" encoding="UTF-8"?><Node><Item>[Invoice data]]</Item></Node>';
 
 $orderItems = $sdk->globalOrders()->setInvoiceDocument($firstOrderItem, $invoiceNumber, $invoiceDocument);
+```
+--------------
+
+### uploadInvoiceDocument
+
+This method sets the invoice document in base64.
+
+| Parameter | Type | Description | Required | Default |
+| --------- | :----: | ----------- | :--------: | :-------: |
+| `$invoiceDocument` | InvoiceDocument | Entity that represents the data and content of the document | Yes | - |
+| `$debug` | bool |  Whether it logs or not the request and response log | No | true | 
+
+#### Example
+
+```php
+// Create items collection
+$orderItems = new OrderItems();
+$orderItem = OrderItem::fromStatus(21, 123123, '123123', 'packageID123');
+$orderItems->add($orderItem);
+
+// Create invoice document
+$invoiceDocument = new InvoiceDocument(
+    '13123',
+    new DateTime(),
+    'BOLETA',
+    'FACL',
+    'qwertyuiopasdfghjklzxcvbnm',
+    $orderItems
+);
+
+$orderItems = $sdk->globalOrders()->uploadInvoiceDocument($invoiceDocument);
 ```
 --------------

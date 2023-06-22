@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace Linio\SellerCenter\Exception;
 
-use Linio\SellerCenter\Model\Document\InvoiceDocument;
+use Linio\SellerCenter\Model\Order\InvoiceDocument;
 
 class InvalidInvoiceDocumentFormatException extends InvalidArgumentValueException
 {

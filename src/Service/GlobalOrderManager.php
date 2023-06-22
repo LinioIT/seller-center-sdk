@@ -9,7 +9,7 @@ use Linio\SellerCenter\Application\Parameters;
 use Linio\SellerCenter\Exception\InvalidDomainException;
 use Linio\SellerCenter\Factory\Xml\FeedResponseFactory;
 use Linio\SellerCenter\Factory\Xml\Order\OrderItemsFactory;
-use Linio\SellerCenter\Model\Document\InvoiceDocument;
+use Linio\SellerCenter\Model\Order\InvoiceDocument;
 use Linio\SellerCenter\Model\Order\OrderItem;
 use Linio\SellerCenter\Response\FeedResponse;
 use Linio\SellerCenter\Response\SuccessJsonResponse;

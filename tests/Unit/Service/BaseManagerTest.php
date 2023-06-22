@@ -8,6 +8,7 @@ use Linio\SellerCenter\Application\Configuration;
 use Linio\SellerCenter\Application\Parameters;
 use Linio\SellerCenter\Contract\ClientInterface;
 use Linio\SellerCenter\LinioTestCase;
+use Linio\SellerCenter\Response\SuccessJsonResponse;
 use Linio\SellerCenter\Service\BaseManager;
 use PHPUnit\Framework\MockObject\MockObject;
 use Prophecy\Argument;
@@ -102,28 +103,48 @@ class BaseManagerTest extends LinioTestCase
         $this->assertTrue(true);
     }
 
-    public function testItExecutesActionDD(): void
+    public function testItExecutesJsonAction(): void
     {
         $response = $this->prophesize(ResponseInterface::class);
         $response->getBody()->shouldBeCalled()->willReturn($this->getJsonSuccessResponse());
 
         $this->loggerStub
-            ->debug(Argument::type('string'), Argument::type('array'))
+            ->debug(
+                Argument::that(
+                    function (string $message) {
+                        return str_contains($message, 'requestId') &&
+                            str_contains($message, 'FooAction');
+                    }
+                ),
+                Argument::that(
+                    function (array $context) {
+                        return in_array('application/json', $context['request']['headers']['Content-type']) &&
+                            in_array('baz/extrapath', $context['request']) &&
+                            in_array('requestId', $context['request']['headers']['Request-ID']) &&
+                            in_array('service', $context['request']['headers']['Service']) &&
+                            in_array('bar', $context['request']['headers']['UserID']) &&
+                            in_array('FooAction', $context['request']['headers']['Action']) &&
+                            key_exists('Signature', $context['request']['headers']);
+                    }
+                )
+            )
             ->shouldBeCalledTimes(1);
 
         $this->clientStub
             ->send(
                 Argument::type(RequestInterface::class),
-                Argument::type('array')
+                ['query' => new Parameters()]
             )
             ->shouldBeCalled()
             ->willReturn($response->reveal());
 
-        $this->baseManager->executeAction('FooAction', $this->parametersStub, 'dsad', 'GET', true, '{
+        $result = $this->baseManager->executeJsonAction('FooAction', $this->parametersStub, 'requestId', 'GET', true, '{
             "orderItemIds": [
                 "216435"
             ],
-            "invoiceNumber": "1",}', true, ['Format' => 'format', 'Service' => 'service'], false, '/extrapath');
+            "invoiceNumber": "1",}', true, ['Format' => 'format', 'Service' => 'service'], '/extrapath');
+
+        $this->assertInstanceOf(SuccessJsonResponse::class, $result);
     }
 
     private function getRawSuccessResponse(): string

@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace Linio\SellerCenter\Model\Document;
+namespace Linio\SellerCenter\Model\Order;
 
 use DateTime;
 use JsonSerializable;
@@ -10,7 +10,6 @@ use Linio\SellerCenter\Contract\BusinessUnitOperatorCodes;
 use Linio\SellerCenter\Exception\InvalidInvoiceDocumentFormatException;
 use Linio\SellerCenter\Exception\InvalidInvoiceTypeException;
 use Linio\SellerCenter\Exception\InvalidOperatorCodeException;
-use Linio\SellerCenter\Model\Order\OrderItems;
 use stdClass;
 
 class InvoiceDocument implements JsonSerializable
@@ -79,7 +78,7 @@ class InvoiceDocument implements JsonSerializable
             throw new InvalidInvoiceDocumentFormatException();
         }
 
-        $operatorCode = strtoupper($operatorCode);
+        $operatorCode = strtolower($operatorCode);
         if (!in_array($operatorCode, BusinessUnitOperatorCodes::COUNTRY_OPERATOR)) {
             throw new InvalidOperatorCodeException();
         }
@@ -91,46 +90,6 @@ class InvoiceDocument implements JsonSerializable
         $this->operatorCode = $operatorCode;
         $this->invoiceDocumentFormat = $invoiceDocumentFormat;
         $this->invoiceDocumentBase64 = $invoiceDocumentBase64;
-    }
-
-    public function setOrdersItems(OrderItems $orderItems): void
-    {
-        $this->orderItems = $orderItems;
-    }
-
-    public function setInvoiceNumber(string $invoiceNumber): void
-    {
-        $this->invoiceNumber = $invoiceNumber;
-    }
-
-    public function setInvoiceDate(DateTime $invoiceDate): void
-    {
-        $this->invoiceDate = $invoiceDate;
-    }
-
-    public function setInvoiceType(string $invoiceType): void
-    {
-        $this->invoiceType = $invoiceType;
-    }
-
-    public function setOperatorCode(string $operatorCode): void
-    {
-        $this->operatorCode = $operatorCode;
-    }
-
-    public function setInvoiceDocumentFormat(string $invoiceDocumentFormat): void
-    {
-        $this->invoiceDocumentFormat = $invoiceDocumentFormat;
-    }
-
-    public function setInvoiceDocumentBase64(string $invoiceDocumentBase64): void
-    {
-        $this->invoiceDocumentBase64 = $invoiceDocumentBase64;
-    }
-
-    public function setOrderItems(OrderItems $orderItems): void
-    {
-        $this->orderItems = $orderItems;
     }
 
     public function getOrderItems(): OrderItems
@@ -172,13 +131,17 @@ class InvoiceDocument implements JsonSerializable
     {
         $serialized = new stdClass();
 
-        $serialized->orderItems = $this->orderItems;
+        foreach ($this->orderItems->all() as $item) {
+            $orderItems[] = $item->getOrderItemId();
+        }
+
+        $serialized->orderItemIds = $orderItems ?? [];
         $serialized->invoiceNumber = $this->invoiceNumber;
-        $serialized->invoiceDate = $this->invoiceDate;
+        $serialized->invoiceDate = $this->invoiceDate->format('Y-m-d');
         $serialized->invoiceType = $this->invoiceType;
-        $serialized->operatorCode = $this->operatorCode;
+        $serialized->operatorCode = strtoupper($this->operatorCode);
         $serialized->invoiceDocumentFormat = $this->invoiceDocumentFormat;
-        $serialized->invoiceDocumentBase64 = $this->invoiceDocumentBase64;
+        $serialized->invoiceDocument = $this->invoiceDocumentBase64;
 
         return $serialized;
     }
