@@ -5,11 +5,14 @@ declare(strict_types=1);
 namespace Linio\SellerCenter\Service;
 
 use Linio\Component\Util\Json;
+use Linio\SellerCenter\Application\Parameters;
 use Linio\SellerCenter\Exception\InvalidDomainException;
 use Linio\SellerCenter\Factory\Xml\FeedResponseFactory;
 use Linio\SellerCenter\Factory\Xml\Order\OrderItemsFactory;
+use Linio\SellerCenter\Model\Order\InvoiceDocument;
 use Linio\SellerCenter\Model\Order\OrderItem;
 use Linio\SellerCenter\Response\FeedResponse;
+use Linio\SellerCenter\Response\SuccessJsonResponse;
 use Linio\SellerCenter\Response\SuccessResponse;
 
 class GlobalOrderManager extends BaseOrderManager
@@ -86,6 +89,29 @@ class GlobalOrderManager extends BaseOrderManager
         );
 
         return FeedResponseFactory::make($response->getHead());
+    }
+
+    public function uploadInvoiceDocument(
+        InvoiceDocument $invoiceDocument,
+        bool $debug = true
+    ): SuccessJsonResponse {
+        $action = 'Upload';
+        $path = '/seller-api-wrapper/v1/marketplace-sellers/upload-pdf';
+        $customHeader = ['Service' => 'Invoice'];
+
+        $invoiceDocumentFormatted = Json::encode($invoiceDocument->jsonSerialize());
+
+        return $this->executeJsonAction(
+            $action,
+            new Parameters(),
+            null,
+            'POST',
+            $debug,
+            $invoiceDocumentFormatted,
+            true,
+            $customHeader,
+            $path
+        );
     }
 
     /**

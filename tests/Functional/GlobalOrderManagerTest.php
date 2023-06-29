@@ -4,9 +4,13 @@ declare(strict_types=1);
 
 namespace Linio\SellerCenter;
 
+use DateTime;
 use Linio\SellerCenter\Exception\InvalidDomainException;
+use Linio\SellerCenter\Model\Order\InvoiceDocument;
 use Linio\SellerCenter\Model\Order\OrderItem;
+use Linio\SellerCenter\Model\Order\OrderItems;
 use Linio\SellerCenter\Response\FeedResponse;
+use Linio\SellerCenter\Response\SuccessJsonResponse;
 use Linio\SellerCenter\Response\SuccessResponse;
 use Prophecy\Argument;
 use Prophecy\Prophecy\ObjectProphecy;
@@ -58,6 +62,30 @@ class GlobalOrderManagerTest extends LinioTestCase
 
         $this->assertInstanceOf(FeedResponse::class, $response);
         $this->assertEquals($response->getRequestId(), $feedId);
+    }
+
+    public function testItReturnsSuccessResponseWhenUploadInvoiceDocument(): void
+    {
+        $orderItems = new OrderItems();
+        $orderItem = OrderItem::fromStatus(21, 123123, '123123', 'packageID123');
+        $orderItems->add($orderItem);
+
+        $invoiceDocument = new InvoiceDocument(
+            '13123',
+            new DateTime(),
+            'BOLETA',
+            'FACL',
+            'qwertyuiopasdfghjklzxcvbnm',
+            $orderItems
+        );
+
+        $body = $this->getSchema('Response/InvoiceDocumentSuccessResponse.json');
+        $sdkClient = $this->getSdkClient($body);
+
+        $response = $sdkClient->globalOrders()->uploadInvoiceDocument(
+            $invoiceDocument
+        );
+        $this->assertInstanceOf(SuccessJsonResponse::class, $response);
     }
 
     public function testItThrowsInvalidDomainExceptionWhenSetInvoiceDocumentInvalidDocumentType(): void

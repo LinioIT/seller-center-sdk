@@ -52,12 +52,12 @@ class LinioTestCase extends TestCase
     }
 
     public function getSdkClient(
-        string $xml,
+        string $body,
         ?ObjectProphecy $logger = null,
         int $statusCode = 200,
         ?string $extraResponse = null
     ): SellerCenterSdk {
-        $client = $this->createClientWithResponse($xml, $statusCode, $extraResponse);
+        $client = $this->createClientWithResponse($body, $statusCode, $extraResponse);
 
         $parameters = $this->getParameters();
         $configuration = new Configuration($parameters['key'], $parameters['username'], $parameters['endpoint'], $parameters['version']);

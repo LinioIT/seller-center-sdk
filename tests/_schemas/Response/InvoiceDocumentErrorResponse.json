@@ -1,0 +1,12 @@
+{
+    "errors": [
+      {
+        "status": 400,
+        "code": "Bad Request",
+        "title": {
+          "en": "string",
+          "es": "string"
+        }
+      }
+    ]
+  }
