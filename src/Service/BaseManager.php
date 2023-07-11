@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace Linio\SellerCenter\Service;
 
+use DateTimeImmutable;
 use Linio\SellerCenter\Application\Configuration;
 use Linio\SellerCenter\Application\Parameters;
 use Linio\SellerCenter\Application\Security\Signature;
@@ -178,7 +179,7 @@ class BaseManager
         }
 
         return $this->client->send($request, [
-            'query' => $query ?? $parameters,
+            'query' => $query ?? $parameters->all(),
         ]);
     }
 
@@ -236,21 +237,21 @@ class BaseManager
             self::USER_AGENT_HEADER => $this->configuration->getUserAgent(),
         ];
 
-        $headerComplete = $header + $customHeader;
+        $headerComplete = $customHeader;
 
         if ($useHeaderParams) {
             $headerComplete['UserID'] = $this->configuration->getUser();
             $headerComplete['Version'] = $this->configuration->getVersion();
             $headerComplete['Format'] = $isXml ? 'XML' : 'JSON';
-            $headerComplete['Timestamp'] = 'Timestamps';
+            $headerComplete['Timestamp'] = (new DateTimeImmutable())->format(DATE_ATOM);
             $headerComplete['Action'] = $action;
-
+            ksort($headerComplete);
             $headerComplete['Signature'] = Signature::generate(
                 $headerComplete,
                 $this->configuration->getKey()
             )->get();
         }
 
-        return $headerComplete;
+        return $headerComplete + $header;
     }
 }
