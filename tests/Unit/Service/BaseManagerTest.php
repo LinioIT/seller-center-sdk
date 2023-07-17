@@ -133,7 +133,7 @@ class BaseManagerTest extends LinioTestCase
         $this->clientStub
             ->send(
                 Argument::type(RequestInterface::class),
-                ['query' => new Parameters()]
+                ['query' => []]
             )
             ->shouldBeCalled()
             ->willReturn($response->reveal());
