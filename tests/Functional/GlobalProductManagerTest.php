@@ -7,7 +7,7 @@ namespace Linio\SellerCenter;
 use DateTimeImmutable;
 use Exception;
 use InvalidArgumentException;
-use Linio\SellerCenter\Application\Configuration;
+use Linio\SellerCenter\Application\Parameters;
 use Linio\SellerCenter\Model\Brand\Brand;
 use Linio\SellerCenter\Model\Category\Categories;
 use Linio\SellerCenter\Model\Category\Category;
@@ -18,6 +18,9 @@ use Linio\SellerCenter\Model\Product\Image;
 use Linio\SellerCenter\Model\Product\ProductData;
 use Linio\SellerCenter\Model\Product\Products;
 use Linio\SellerCenter\Response\FeedResponse;
+use Prophecy\Argument;
+use Prophecy\Prophecy\ObjectProphecy;
+use Psr\Log\LoggerInterface;
 
 class GlobalProductManagerTest extends LinioTestCase
 {
@@ -34,9 +37,26 @@ class GlobalProductManagerTest extends LinioTestCase
     protected $faker;
 
     /**
-     * @var Configuration
+     * @var ObjectProphecy
      */
-    protected $configuration;
+    protected $logger;
+
+    public function prepareLogTest(bool $debug): void
+    {
+        $this->logger = $this->prophesize(LoggerInterface::class);
+
+        $this->logger->debug(
+            Argument::type('string'),
+            Argument::type('array')
+        )->shouldBeCalled();
+
+        if (!$debug) {
+            $this->logger->debug(
+                Argument::type('string'),
+                Argument::type('array')
+            )->shouldNotBeCalled();
+        }
+    }
 
     public function setUp(): void
     {
@@ -48,17 +68,11 @@ class GlobalProductManagerTest extends LinioTestCase
 
         $this->globalProducts->add($this->primaryProduct(true));
         $this->globalProducts->add($this->secondProduct(true));
-
-        $env = $this->getParameters();
-        $this->configuration = new Configuration($env['key'], $env['username'], $env['endpoint'], $env['version']);
     }
 
     public function testItReturnsACollectionOfProducts(): void
     {
-        $client = $this->createClientWithResponse(
-            $this->getSchema('Product/GlobalProductsResponse.xml')
-        );
-        $sdkClient = new SellerCenterSdk($this->configuration, $client);
+        $sdkClient = $this->getSdkClient($this->getSchema('Product/GlobalProductsResponse.xml'));
 
         $result = $sdkClient->globalProducts()->getAllProducts();
 
@@ -68,11 +82,7 @@ class GlobalProductManagerTest extends LinioTestCase
 
     public function testItReturnsACollectionOfProductsCreatedAfterADateTime(): void
     {
-        $client = $this->createClientWithResponse(
-            $this->getSchema('Product/GlobalProductsResponse.xml')
-        );
-
-        $sdkClient = new SellerCenterSdk($this->configuration, $client);
+        $sdkClient = $this->getSdkClient($this->getSchema('Product/GlobalProductsResponse.xml'));
 
         $createdAfter = DateTimeImmutable::createFromFormat('Y-m-d H:i:s', '2018-09-01 00:00:00');
 
@@ -84,11 +94,7 @@ class GlobalProductManagerTest extends LinioTestCase
 
     public function testItReturnsACollectionOfProductsCreatedBeforeADateTime(): void
     {
-        $client = $this->createClientWithResponse(
-            $this->getSchema('Product/GlobalProductsResponse.xml')
-        );
-
-        $sdkClient = new SellerCenterSdk($this->configuration, $client);
+        $sdkClient = $this->getSdkClient($this->getSchema('Product/GlobalProductsResponse.xml'));
 
         $createdBefore = DateTimeImmutable::createFromFormat('Y-m-d H:i:s', '2019-01-23 00:00:00');
 
@@ -100,10 +106,7 @@ class GlobalProductManagerTest extends LinioTestCase
 
     public function testItReturnsACollectionOfProductsUpdatedAfterADateTime(): void
     {
-        $client = $this->createClientWithResponse(
-            $this->getSchema('Product/GlobalProductsResponse.xml')
-        );
-        $sdkClient = new SellerCenterSdk($this->configuration, $client);
+        $sdkClient = $this->getSdkClient($this->getSchema('Product/GlobalProductsResponse.xml'));
 
         $updatedAfter = DateTimeImmutable::createFromFormat('Y-m-d H:i:s', '2019-01-23 00:00:00');
 
@@ -115,10 +118,7 @@ class GlobalProductManagerTest extends LinioTestCase
 
     public function testItReturnsACollectionOfProductsUpdatedBeforeADateTime(): void
     {
-        $client = $this->createClientWithResponse(
-            $this->getSchema('Product/GlobalProductsResponse.xml')
-        );
-        $sdkClient = new SellerCenterSdk($this->configuration, $client);
+        $sdkClient = $this->getSdkClient($this->getSchema('Product/GlobalProductsResponse.xml'));
 
         $updatedBefore = DateTimeImmutable::createFromFormat('Y-m-d H:i:s', '2019-01-23 00:00:00');
 
@@ -130,10 +130,7 @@ class GlobalProductManagerTest extends LinioTestCase
 
     public function testItReturnsACollectionOfProductsSearchedByValue(): void
     {
-        $client = $this->createClientWithResponse(
-            $this->getSchema('Product/GlobalProductsResponse.xml')
-        );
-        $sdkClient = new SellerCenterSdk($this->configuration, $client);
+        $sdkClient = $this->getSdkClient($this->getSchema('Product/GlobalProductsResponse.xml'));
 
         $search = 'pil';
 
@@ -148,10 +145,7 @@ class GlobalProductManagerTest extends LinioTestCase
      */
     public function testItReturnsACollectionOfProductsFiltered(string $filters): void
     {
-        $client = $this->createClientWithResponse(
-            $this->getSchema('Product/GlobalProductsResponse.xml')
-        );
-        $sdkClient = new SellerCenterSdk($this->configuration, $client);
+        $sdkClient = $this->getSdkClient($this->getSchema('Product/GlobalProductsResponse.xml'));
 
         $result = $sdkClient->globalProducts()->filterProducts($filters);
 
@@ -161,10 +155,7 @@ class GlobalProductManagerTest extends LinioTestCase
 
     public function testItReturnsACollectionOfProductsBySkuSellerList(): void
     {
-        $client = $this->createClientWithResponse(
-            $this->getSchema('Product/GlobalProductsResponse.xml')
-        );
-        $sdkClient = new SellerCenterSdk($this->configuration, $client);
+        $sdkClient = $this->getSdkClient($this->getSchema('Product/GlobalProductsResponse.xml'));
 
         $skuSellerList = ['jasku-10001', 'jasku-10002'];
 
@@ -178,20 +169,14 @@ class GlobalProductManagerTest extends LinioTestCase
     {
         $this->expectException(InvalidArgumentException::class);
 
-        $client = $this->createClientWithResponse(
-            $this->getSchema('Product/GlobalProductsResponse.xml')
-        );
-        $sdkClient = new SellerCenterSdk($this->configuration, $client);
+        $sdkClient = $this->getSdkClient($this->getSchema('Product/GlobalProductsResponse.xml'));
 
         $sdkClient->globalProducts()->getProductsBySellerSku([]);
     }
 
     public function testItReturnsACollectionOfProductsFromParameters(): void
     {
-        $client = $this->createClientWithResponse(
-            $this->getSchema('Product/GlobalProductsResponse.xml')
-        );
-        $sdkClient = new SellerCenterSdk($this->configuration, $client);
+        $sdkClient = $this->getSdkClient($this->getSchema('Product/GlobalProductsResponse.xml'));
 
         $createdBefore = DateTimeImmutable::createFromFormat('Y-m-d H:i:s', '2019-01-23 00:00:00');
         $createdAfter = DateTimeImmutable::createFromFormat('Y-m-d H:i:s', '2019-01-23 00:00:00');
@@ -227,8 +212,7 @@ class GlobalProductManagerTest extends LinioTestCase
             ucfirst($action)
         );
 
-        $client = $this->createClientWithResponse($body);
-        $sdkClient = new SellerCenterSdk($this->configuration, $client);
+        $sdkClient = $this->getSdkClient($body);
 
         $result = $sdkClient->globalProducts()->{$action}($this->globalProducts);
 
@@ -250,8 +234,7 @@ class GlobalProductManagerTest extends LinioTestCase
             'Image'
         );
 
-        $client = $this->createClientWithResponse($body);
-        $sdkClient = new SellerCenterSdk($this->configuration, $client);
+        $sdkClient = $this->getSdkClient($body);
 
         $result = $sdkClient->globalProducts()->addImage($images);
 
@@ -276,10 +259,274 @@ class GlobalProductManagerTest extends LinioTestCase
             'E0125: Test Error'
         );
 
-        $client = $this->createClientWithResponse($body, 400);
-        $sdkClient = new SellerCenterSdk($this->configuration, $client);
+        $sdkClient = $this->getSdkClient($body);
 
-        $sdkClient->products()->productCreate($this->globalProducts);
+        $sdkClient->globalProducts()->productCreate($this->globalProducts);
+    }
+
+    /**
+     * @dataProvider debugParameter
+     */
+    public function testItLogsDependingOnDebugParamWhenProductCreateGlobalSuccessResponse(bool $debug): void
+    {
+        $body = sprintf(
+            $this->getSchema('Feed/ProductActionFeedResponse.xml'),
+            'productCreate'
+        );
+
+        $this->prepareLogTest($debug);
+        $sdkClient = $this->getSdkClient($body, $this->logger);
+
+        $sdkClient->globalProducts()->productCreate($this->globalProducts, $debug);
+    }
+
+    /**
+     * @dataProvider debugParameter
+     */
+    public function testItLogsDependingOnDebugParamWhenProductUpdateGlobalSuccessResponse(bool $debug): void
+    {
+        $body = sprintf(
+            $this->getSchema('Feed/ProductActionFeedResponse.xml'),
+            'productUpdate'
+        );
+
+        $this->prepareLogTest($debug);
+        $sdkClient = $this->getSdkClient($body, $this->logger);
+
+        $sdkClient->globalProducts()->productUpdate($this->globalProducts, $debug);
+    }
+
+    /**
+     * @dataProvider debugParameter
+     */
+    public function testItLogsDependingOnDebugParamWhenProductRemoveGlobalSuccessResponse(bool $debug): void
+    {
+        $body = sprintf(
+            $this->getSchema('Feed/ProductActionFeedResponse.xml'),
+            'productRemove'
+        );
+
+        $this->prepareLogTest($debug);
+        $sdkClient = $this->getSdkClient($body, $this->logger);
+
+        $sdkClient->globalProducts()->productRemove($this->globalProducts, $debug);
+    }
+
+    /**
+     * @dataProvider debugParameter
+     */
+    public function testItLogsDependingOnDebugParamWhenAddImageGlobalSuccessResponse(bool $debug): void
+    {
+        $body = sprintf(
+            $this->getSchema('Feed/ProductActionFeedResponse.xml'),
+            'Image'
+        );
+
+        $this->prepareLogTest($debug);
+        $sdkClient = $this->getSdkClient($body, $this->logger);
+
+        $sdkClient->globalProducts()->addImage(
+            ['testSku' => [
+                'http://static.somecdn.com/moneyshot.jpeg',
+                'http://static.somecdn.com/front.jpeg',
+                'http://static.somecdn.com/rear.jpeg',
+            ],
+            ],
+            $debug
+        );
+    }
+
+    /**
+     * @dataProvider debugParameter
+     */
+    public function testItLogsDependingOnDebugParamWhenGetProductsGlobalSuccessResponse(bool $debug): void
+    {
+        $this->prepareLogTest($debug);
+        $sdkClient = $this->getSdkClient(
+            $this->getSchema('Product/GlobalProductsResponse.xml'),
+            $this->logger
+        );
+
+        $sdkClient->globalProducts()->getProducts(
+            new Parameters(),
+            $debug
+        );
+    }
+
+    /**
+     * @dataProvider debugParameter
+     */
+    public function testItLogsDependingOnDebugParamWhenGetAllProductsGlobalSuccessResponse(bool $debug): void
+    {
+        $this->prepareLogTest($debug);
+        $sdkClient = $this->getSdkClient(
+            $this->getSchema('Product/GlobalProductsResponse.xml'),
+            $this->logger
+        );
+
+        $sdkClient->globalProducts()->getAllProducts(
+            100,
+            100,
+            $debug
+        );
+    }
+
+    /**
+     * @dataProvider debugParameter
+     */
+    public function testItLogsDependingOnDebugParamWhenGetProductsCreatedAfterGlobalSuccessResponse(bool $debug): void
+    {
+        $this->prepareLogTest($debug);
+        $sdkClient = $this->getSdkClient(
+            $this->getSchema('Product/GlobalProductsResponse.xml'),
+            $this->logger
+        );
+
+        $sdkClient->globalProducts()->getProductsCreatedAfter(
+            DateTimeImmutable::createFromFormat('Y-m-d H:i:s', '2018-09-01 00:00:00'),
+            100,
+            100,
+            $debug
+        );
+    }
+
+    /**
+     * @dataProvider debugParameter
+     */
+    public function testItLogsDependingOnDebugParamWhenGetProductsCreatedBeforeGlobalSuccessResponse(bool $debug): void
+    {
+        $this->prepareLogTest($debug);
+        $sdkClient = $this->getSdkClient(
+            $this->getSchema('Product/GlobalProductsResponse.xml'),
+            $this->logger
+        );
+
+        $sdkClient->globalProducts()->getProductsCreatedBefore(
+            DateTimeImmutable::createFromFormat('Y-m-d H:i:s', '2018-09-01 00:00:00'),
+            100,
+            100,
+            $debug
+        );
+    }
+
+    /**
+     * @dataProvider debugParameter
+     */
+    public function testItLogsDependingOnDebugParamWhenGetProductsUpdatedAfterGlobalSuccessResponse(bool $debug): void
+    {
+        $this->prepareLogTest($debug);
+        $sdkClient = $this->getSdkClient(
+            $this->getSchema('Product/GlobalProductsResponse.xml'),
+            $this->logger
+        );
+
+        $sdkClient->globalProducts()->getProductsUpdatedAfter(
+            DateTimeImmutable::createFromFormat('Y-m-d H:i:s', '2018-09-01 00:00:00'),
+            100,
+            100,
+            $debug
+        );
+    }
+
+    /**
+     * @dataProvider debugParameter
+     */
+    public function testItLogsDependingOnDebugParamWhenGetProductsUpdatedBeforeGlobalSuccessResponse(bool $debug): void
+    {
+        $this->prepareLogTest($debug);
+        $sdkClient = $this->getSdkClient(
+            $this->getSchema('Product/GlobalProductsResponse.xml'),
+            $this->logger
+        );
+
+        $sdkClient->globalProducts()->getProductsUpdatedBefore(
+            DateTimeImmutable::createFromFormat('Y-m-d H:i:s', '2018-09-01 00:00:00'),
+            100,
+            100,
+            $debug
+        );
+    }
+
+    /**
+     * @dataProvider debugParameter
+     */
+    public function testItLogsDependingOnDebugParamWhenSearchProductsGlobalSuccessResponse(bool $debug): void
+    {
+        $this->prepareLogTest($debug);
+        $sdkClient = $this->getSdkClient(
+            $this->getSchema('Product/GlobalProductsResponse.xml'),
+            $this->logger
+        );
+
+        $sdkClient->globalProducts()->searchProducts(
+            'test-sku',
+            100,
+            100,
+            $debug
+        );
+    }
+
+    /**
+     * @dataProvider debugParameter
+     */
+    public function testItLogsDependingOnDebugParamWhenFilterProductsGlobalSuccessResponse(bool $debug): void
+    {
+        $this->prepareLogTest($debug);
+        $sdkClient = $this->getSdkClient(
+            $this->getSchema('Product/GlobalProductsResponse.xml'),
+            $this->logger
+        );
+
+        $sdkClient->globalProducts()->filterProducts(
+            'live',
+            100,
+            100,
+            $debug
+        );
+    }
+
+    /**
+     * @dataProvider debugParameter
+     */
+    public function testItLogsDependingOnDebugParamWhenGetProductsBySellerSkuGlobalSuccessResponse(bool $debug): void
+    {
+        $this->prepareLogTest($debug);
+        $sdkClient = $this->getSdkClient(
+            $this->getSchema('Product/GlobalProductsResponse.xml'),
+            $this->logger
+        );
+
+        $sdkClient->globalProducts()->getProductsBySellerSku(
+            ['test-sku1', 'test-sku2'],
+            100,
+            100,
+            $debug
+        );
+    }
+
+    /**
+     * @dataProvider debugParameter
+     */
+    public function testItLogsDependingOnDebugParamWhenGetProductsFromParametersGlobalSuccessResponse(bool $debug): void
+    {
+        $this->prepareLogTest($debug);
+        $sdkClient = $this->getSdkClient(
+            $this->getSchema('Product/GlobalProductsResponse.xml'),
+            $this->logger
+        );
+
+        $sdkClient->globalProducts()->getProductsFromParameters(
+            null,
+            null,
+            null,
+            'live',
+            100,
+            100,
+            ['test-sku'],
+            null,
+            null,
+            $debug
+        );
     }
 
     public function filters(): array
@@ -422,6 +669,14 @@ class GlobalProductManagerTest extends LinioTestCase
                     ],
                 ],
             ],
+        ];
+    }
+
+    public function debugParameter()
+    {
+        return [
+            [false],
+            [true],
         ];
     }
 }

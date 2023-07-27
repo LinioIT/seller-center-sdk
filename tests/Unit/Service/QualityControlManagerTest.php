@@ -9,16 +9,29 @@ use Linio\SellerCenter\Application\Parameters;
 use Linio\SellerCenter\Contract\ClientInterface;
 use Linio\SellerCenter\LinioTestCase;
 use Linio\SellerCenter\Service\QualityControlManager;
-use Prophecy\PhpUnit\ProphecyTrait;
 use Psr\Log\Test\TestLogger;
 use ReflectionClass;
 use ReflectionMethod;
 
 class QualityControlManagerTest extends LinioTestCase
 {
-    use ProphecyTrait;
+    public function testReturnsAQualityControlManager(): void
+    {
+        $configuration = $this->prophesize(Configuration::class);
+        $client = $this->prophesize(ClientInterface::class);
+        $parameters = $this->prophesize(Parameters::class);
+        $logger = $this->prophesize(TestLogger::class);
 
-    public function testItReturnsTheTheLoggerWhenIsSet(): void
+        $qcManager = new QualityControlManager(
+            $configuration->reveal(),
+            $client->reveal(),
+            $parameters->reveal(),
+            $logger->reveal()
+        );
+        $this->assertInstanceOf(QualityControlManager::class, $qcManager);
+    }
+
+    public function testItReturnsTheLoggerWhenIsSet(): void
     {
         $configuration = $this->prophesize(Configuration::class);
         $client = $this->prophesize(ClientInterface::class);

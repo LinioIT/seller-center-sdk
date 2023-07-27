@@ -31,8 +31,10 @@ class BaseOrderManager extends BaseManager
     public const DEFAULT_SORT_BY = 'created_at';
     public const DEFAULT_SORT_DIRECTION = 'ASC';
 
-    public function getOrder(int $orderId): Order
-    {
+    public function getOrder(
+        int $orderId,
+        bool $debug = true
+    ): Order {
         $action = 'GetOrder';
 
         $parameters = $this->makeParametersForAction($action);
@@ -41,33 +43,24 @@ class BaseOrderManager extends BaseManager
             'OrderId' => $orderId,
         ]);
 
-        $requestId = $this->generateRequestId();
-
         $builtResponse = $this->executeAction(
             $action,
             $parameters,
-            $requestId,
-            'GET'
+            null,
+            'GET',
+            $debug
         );
 
-        $orderResponse = OrderFactory::make($builtResponse->getBody()->Orders->Order);
-
-        $this->logger->info(
-            sprintf(
-                '%d::%s::APIResponse::SellerCenterSdk: the order was recovered',
-                $requestId,
-                $action
-            )
-        );
-
-        return $orderResponse;
+        return OrderFactory::make($builtResponse->getBody()->Orders->Order);
     }
 
     /**
      * @return OrderItem[]
      */
-    public function getOrderItems(int $orderId): array
-    {
+    public function getOrderItems(
+        int $orderId,
+        bool $debug = true
+    ): array {
         $action = 'GetOrderItems';
 
         $parameters = $this->makeParametersForAction($action);
@@ -82,21 +75,24 @@ class BaseOrderManager extends BaseManager
             $action,
             $parameters,
             $requestId,
-            'GET'
+            'GET',
+            $debug
         );
 
         $orderItems = OrderItemsFactory::make($builtResponse->getBody());
 
         $orderItemsResponse = array_values($orderItems->all());
 
-        $this->logger->info(
-            sprintf(
-                '%d::%s::APIResponse::SellerCenterSdk: %d order items was recovered',
-                $requestId,
-                $action,
-                count($orderItems->all())
-            )
-        );
+        if ($debug) {
+            $this->logger->info(
+                sprintf(
+                    '%s::%s::APIResponse::SellerCenterSdk: %d order items was recovered',
+                    $requestId,
+                    $action,
+                    count($orderItems->all())
+                )
+            );
+        }
 
         return $orderItemsResponse;
     }
@@ -106,8 +102,10 @@ class BaseOrderManager extends BaseManager
      *
      * @return Order[]
      */
-    public function getMultipleOrderItems(array $orderIdList): array
-    {
+    public function getMultipleOrderItems(
+        array $orderIdList,
+        bool $debug = true
+    ): array {
         $action = 'GetMultipleOrderItems';
 
         $parameters = $this->makeParametersForAction($action);
@@ -126,21 +124,24 @@ class BaseOrderManager extends BaseManager
             $action,
             $parameters,
             $requestId,
-            'GET'
+            'GET',
+            $debug
         );
 
         $orderItems = OrdersItemsFactory::make($builtResponse->getBody());
 
         $multipleOrderItemsResponse = array_values($orderItems->all());
 
-        $this->logger->info(
-            sprintf(
-                '%d::%s::APIResponse::SellerCenterSdk: %d orders items was recovered',
-                $requestId,
-                $action,
-                count($orderItems->all())
-            )
-        );
+        if ($debug) {
+            $this->logger->info(
+                sprintf(
+                    '%s::%s::APIResponse::SellerCenterSdk: %d orders items was recovered',
+                    $requestId,
+                    $action,
+                    count($orderItems->all())
+                )
+            );
+        }
 
         return $multipleOrderItemsResponse;
     }
@@ -148,11 +149,11 @@ class BaseOrderManager extends BaseManager
     /**
      * @return Order[]
      */
-    protected function getOrders(Parameters $parameters): array
-    {
+    protected function getOrders(
+        Parameters $parameters,
+        bool $debug = true
+    ): array {
         $action = 'GetOrders';
-
-        $parameters->set(['Action' => $action]);
 
         $requestId = $this->generateRequestId();
 
@@ -160,21 +161,24 @@ class BaseOrderManager extends BaseManager
             $action,
             $parameters,
             $requestId,
-            'GET'
+            'GET',
+            $debug
         );
 
         $orders = OrdersFactory::make($builtResponse->getBody());
 
         $ordersResponse = array_values($orders->all());
 
-        $this->logger->info(
-            sprintf(
-                '%d::%s::APIResponse::SellerCenterSdk: %d orders was recovered',
-                $requestId,
-                $action,
-                count($orders->all())
-            )
-        );
+        if ($debug) {
+            $this->logger->info(
+                sprintf(
+                    '%s::%s::APIResponse::SellerCenterSdk: %d orders was recovered',
+                    $requestId,
+                    $action,
+                    count($orders->all())
+                )
+            );
+        }
 
         return $ordersResponse;
     }
@@ -188,9 +192,10 @@ class BaseOrderManager extends BaseManager
         int $limit = self::DEFAULT_LIMIT,
         int $offset = self::DEFAULT_OFFSET,
         string $sortBy = self::DEFAULT_SORT_BY,
-        string $sortDirection = self::DEFAULT_SORT_DIRECTION
+        string $sortDirection = self::DEFAULT_SORT_DIRECTION,
+        bool $debug = true
     ): array {
-        $parameters = clone $this->parameters;
+        $parameters = $this->makeParametersForGetOrdersAction();
 
         $this->setListDimensions($parameters, $limit, $offset);
         $this->setSortParametersList($parameters, $sortBy, $sortDirection);
@@ -200,7 +205,10 @@ class BaseOrderManager extends BaseManager
             'CreatedBefore' => $createdBefore->format('Y-m-d\TH:i:s'),
         ]);
 
-        return $this->getOrders($parameters);
+        return $this->getOrders(
+            $parameters,
+            $debug
+        );
     }
 
     /**
@@ -212,9 +220,10 @@ class BaseOrderManager extends BaseManager
         int $limit = self::DEFAULT_LIMIT,
         int $offset = self::DEFAULT_OFFSET,
         string $sortBy = self::DEFAULT_SORT_BY,
-        string $sortDirection = self::DEFAULT_SORT_DIRECTION
+        string $sortDirection = self::DEFAULT_SORT_DIRECTION,
+        bool $debug = true
     ): array {
-        $parameters = clone $this->parameters;
+        $parameters = $this->makeParametersForGetOrdersAction();
 
         $this->setListDimensions($parameters, $limit, $offset);
         $this->setSortParametersList($parameters, $sortBy, $sortDirection);
@@ -224,7 +233,10 @@ class BaseOrderManager extends BaseManager
             'UpdatedBefore' => $updatedBefore->format('Y-m-d\TH:i:s'),
         ]);
 
-        return $this->getOrders($parameters);
+        return $this->getOrders(
+            $parameters,
+            $debug
+        );
     }
 
     /**
@@ -235,9 +247,10 @@ class BaseOrderManager extends BaseManager
         int $limit = self::DEFAULT_LIMIT,
         int $offset = self::DEFAULT_OFFSET,
         string $sortBy = self::DEFAULT_SORT_BY,
-        string $sortDirection = self::DEFAULT_SORT_DIRECTION
+        string $sortDirection = self::DEFAULT_SORT_DIRECTION,
+        bool $debug = true
     ): array {
-        $parameters = clone $this->parameters;
+        $parameters = $this->makeParametersForGetOrdersAction();
 
         $this->setListDimensions($parameters, $limit, $offset);
         $this->setSortParametersList($parameters, $sortBy, $sortDirection);
@@ -246,7 +259,10 @@ class BaseOrderManager extends BaseManager
             'CreatedAfter' => $createdAfter->format('Y-m-d\TH:i:s'),
         ]);
 
-        return $this->getOrders($parameters);
+        return $this->getOrders(
+            $parameters,
+            $debug
+        );
     }
 
     /**
@@ -257,9 +273,10 @@ class BaseOrderManager extends BaseManager
         int $limit = self::DEFAULT_LIMIT,
         int $offset = self::DEFAULT_OFFSET,
         string $sortBy = self::DEFAULT_SORT_BY,
-        string $sortDirection = self::DEFAULT_SORT_DIRECTION
+        string $sortDirection = self::DEFAULT_SORT_DIRECTION,
+        bool $debug = true
     ): array {
-        $parameters = clone $this->parameters;
+        $parameters = $this->makeParametersForGetOrdersAction();
 
         $this->setListDimensions($parameters, $limit, $offset);
         $this->setSortParametersList($parameters, $sortBy, $sortDirection);
@@ -268,7 +285,10 @@ class BaseOrderManager extends BaseManager
             'CreatedBefore' => $createdBefore->format('Y-m-d\TH:i:s'),
         ]);
 
-        return $this->getOrders($parameters);
+        return $this->getOrders(
+            $parameters,
+            $debug
+        );
     }
 
     /**
@@ -279,9 +299,10 @@ class BaseOrderManager extends BaseManager
         int $limit = self::DEFAULT_LIMIT,
         int $offset = self::DEFAULT_OFFSET,
         string $sortBy = self::DEFAULT_SORT_BY,
-        string $sortDirection = self::DEFAULT_SORT_DIRECTION
+        string $sortDirection = self::DEFAULT_SORT_DIRECTION,
+        bool $debug = true
     ): array {
-        $parameters = clone $this->parameters;
+        $parameters = $this->makeParametersForGetOrdersAction();
 
         $this->setListDimensions($parameters, $limit, $offset);
         $this->setSortParametersList($parameters, $sortBy, $sortDirection);
@@ -290,7 +311,10 @@ class BaseOrderManager extends BaseManager
             'UpdatedAfter' => $updatedAfter->format('Y-m-d\TH:i:s'),
         ]);
 
-        return $this->getOrders($parameters);
+        return $this->getOrders(
+            $parameters,
+            $debug
+        );
     }
 
     /**
@@ -301,9 +325,10 @@ class BaseOrderManager extends BaseManager
         int $limit = self::DEFAULT_LIMIT,
         int $offset = self::DEFAULT_OFFSET,
         string $sortBy = self::DEFAULT_SORT_BY,
-        string $sortDirection = self::DEFAULT_SORT_DIRECTION
+        string $sortDirection = self::DEFAULT_SORT_DIRECTION,
+        bool $debug = true
     ): array {
-        $parameters = clone $this->parameters;
+        $parameters = $this->makeParametersForGetOrdersAction();
 
         $this->setListDimensions($parameters, $limit, $offset);
         $this->setSortParametersList($parameters, $sortBy, $sortDirection);
@@ -312,7 +337,10 @@ class BaseOrderManager extends BaseManager
             'UpdatedBefore' => $updatedBefore->format('Y-m-d\TH:i:s'),
         ]);
 
-        return $this->getOrders($parameters);
+        return $this->getOrders(
+            $parameters,
+            $debug
+        );
     }
 
     /**
@@ -323,9 +351,10 @@ class BaseOrderManager extends BaseManager
         int $limit = self::DEFAULT_LIMIT,
         int $offset = self::DEFAULT_OFFSET,
         string $sortBy = self::DEFAULT_SORT_BY,
-        string $sortDirection = self::DEFAULT_SORT_DIRECTION
+        string $sortDirection = self::DEFAULT_SORT_DIRECTION,
+        bool $debug = true
     ): array {
-        $parameters = clone $this->parameters;
+        $parameters = $this->makeParametersForGetOrdersAction();
 
         $this->setListDimensions($parameters, $limit, $offset);
         $this->setSortParametersList($parameters, $sortBy, $sortDirection);
@@ -338,7 +367,10 @@ class BaseOrderManager extends BaseManager
             'Status' => $status,
         ]);
 
-        return $this->getOrders($parameters);
+        return $this->getOrders(
+            $parameters,
+            $debug
+        );
     }
 
     /**
@@ -353,9 +385,10 @@ class BaseOrderManager extends BaseManager
         int $limit = self::DEFAULT_LIMIT,
         int $offset = self::DEFAULT_OFFSET,
         string $sortBy = self::DEFAULT_SORT_BY,
-        string $sortDirection = self::DEFAULT_SORT_DIRECTION
+        string $sortDirection = self::DEFAULT_SORT_DIRECTION,
+        bool $debug = true
     ): array {
-        $parameters = clone $this->parameters;
+        $parameters = $this->makeParametersForGetOrdersAction();
 
         $this->setListDimensions($parameters, $limit, $offset);
         $this->setSortParametersList($parameters, $sortBy, $sortDirection);
@@ -380,12 +413,16 @@ class BaseOrderManager extends BaseManager
             $parameters->set(['Status' => $status]);
         }
 
-        return $this->getOrders($parameters);
+        return $this->getOrders(
+            $parameters,
+            $debug
+        );
     }
 
     public function getTrackingCode(
         string $packageId,
-        string $shippingProvider
+        string $shippingProvider,
+        bool $debug = true
     ): TrackingCode {
         $action = 'GetTrackingCode';
 
@@ -396,21 +433,12 @@ class BaseOrderManager extends BaseManager
             'shipping_provider_name' => $shippingProvider,
         ]);
 
-        $requestId = $this->generateRequestId();
-
         $response = $this->executeAction(
             $action,
             $parameters,
-            $requestId,
-            'GET'
-        );
-
-        $this->logger->info(
-            sprintf(
-                '%d::%s::APIResponse::SellerCenterSdk: Get Tracking Code',
-                $requestId,
-                $action
-            )
+            null,
+            'GET',
+            $debug
         );
 
         return TrackingCodeFactory::make($response->getBody());
@@ -419,7 +447,8 @@ class BaseOrderManager extends BaseManager
     public function setStatusToCanceled(
         int $orderItemId,
         string $reason,
-        string $reasonDetail = null
+        string $reasonDetail = null,
+        bool $debug = true
     ): SuccessResponse {
         $action = 'SetStatusToCanceled';
 
@@ -434,30 +463,19 @@ class BaseOrderManager extends BaseManager
             $parameters->set(['ReasonDetail' => $reasonDetail]);
         }
 
-        $requestId = $this->generateRequestId();
-
-        $response = $this->executeAction(
+        return $this->executeAction(
             $action,
             $parameters,
-            $requestId,
-            'POST'
+            null,
+            'POST',
+            $debug
         );
-
-        $this->logger->info(
-            sprintf(
-                '%d::%s::APIResponse::SellerCenterSdk: the items status was changed',
-                $requestId,
-                $action
-            )
-        );
-
-        return $response;
     }
 
     /**
      * @return FailureReason[]
      */
-    public function getFailureReasons(): array
+    public function getFailureReasons(bool $debug = true): array
     {
         $action = 'GetFailureReasons';
 
@@ -469,21 +487,24 @@ class BaseOrderManager extends BaseManager
             $action,
             $parameters,
             $requestId,
-            'POST'
+            'POST',
+            $debug
         );
 
         $reasons = FailureReasonsFactory::make($builtResponse->getBody());
 
         $reasonsResponse = $reasons->all();
 
-        $this->logger->info(
-            sprintf(
-                '%d::%s::APIResponse::SellerCenterSdk: %d failure reasons was recovered',
-                $requestId,
-                $action,
-                count($reasons->all())
-            )
-        );
+        if ($debug) {
+            $this->logger->info(
+                sprintf(
+                    '%s::%s::APIResponse::SellerCenterSdk: %d failure reasons was recovered',
+                    $requestId,
+                    $action,
+                    count($reasons->all())
+                )
+            );
+        }
 
         return $reasonsResponse;
     }
@@ -515,5 +536,10 @@ class BaseOrderManager extends BaseManager
             'SortBy' => $sortBy,
             'SortDirection' => $sortDirection,
         ]);
+    }
+
+    protected function makeParametersForGetOrdersAction(): Parameters
+    {
+        return $this->makeParametersForAction('GetOrders');
     }
 }

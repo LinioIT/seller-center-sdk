@@ -18,7 +18,8 @@ class OrderManager extends BaseOrderManager
      * @return OrderItem[]
      */
     public function setOrderItemsImei(
-        array $orderItems
+        array $orderItems,
+        bool $debug = true
     ): array {
         $action = 'SetImei';
         $parameters = $this->makeParametersForAction($action);
@@ -29,25 +30,17 @@ class OrderManager extends BaseOrderManager
             $parameters,
             $requestId,
             'POST',
+            $debug,
             OrderItemsTransformer::orderItemsImeiAsXmlString($orderItems)
         );
 
-        $orderItems = OrderItemsFactory::makeFromImeiStatus($builtResponse->getBody());
-
-        $this->logger->info(
-            sprintf(
-                '%d::%s::APIResponse::SellerCenterSdk: Imei Set',
-                $requestId,
-                $action
-            )
-        );
-
-        return $orderItems;
+        return OrderItemsFactory::makeFromImeiStatus($builtResponse->getBody());
     }
 
     public function setInvoiceNumber(
         int $orderItemId,
-        string $invoiceNumber
+        string $invoiceNumber,
+        bool $debug = true
     ): SuccessResponse {
         $action = 'SetInvoiceNumber';
         $parameters = $this->makeParametersForAction($action);
@@ -57,23 +50,13 @@ class OrderManager extends BaseOrderManager
             'InvoiceNumber' => $invoiceNumber,
         ]);
 
-        $requestId = $this->generateRequestId();
-        $response = $this->executeAction(
+        return $this->executeAction(
             $action,
             $parameters,
-            $requestId,
-            'POST'
+            null,
+            'POST',
+            $debug
         );
-
-        $this->logger->info(
-            sprintf(
-                '%d::%s::APIResponse::SellerCenterSdk: Invoice Number Set',
-                $requestId,
-                $action
-            )
-        );
-
-        return $response;
     }
 
     /**
@@ -85,7 +68,8 @@ class OrderManager extends BaseOrderManager
         array $orderItemIds,
         string $deliveryType,
         string $shippingProvider = null,
-        string $trackingNumber = null
+        string $trackingNumber = null,
+        bool $debug = true
     ): array {
         $action = 'SetStatusToReadyToShip';
 
@@ -103,28 +87,17 @@ class OrderManager extends BaseOrderManager
             $parameters->set(['TrackingNumber' => $trackingNumber]);
         }
 
-        $requestId = $this->generateRequestId();
-
         $builtResponse = $this->executeAction(
             $action,
             $parameters,
-            $requestId,
-            'POST'
+            null,
+            'POST',
+            $debug
         );
 
         $orderItems = OrderItemsFactory::makeFromStatus($builtResponse->getBody());
 
-        $orderItemsResponse = array_values($orderItems->all());
-
-        $this->logger->info(
-            sprintf(
-                '%d::%s::APIResponse::SellerCenterSdk: the items status was changed',
-                $requestId,
-                $action
-            )
-        );
-
-        return $orderItemsResponse;
+        return array_values($orderItems->all());
     }
 
     /**
@@ -136,7 +109,8 @@ class OrderManager extends BaseOrderManager
         array $orderItemIds,
         string $deliveryType,
         string $shippingProvider = null,
-        string $trackingNumber = null
+        string $trackingNumber = null,
+        bool $debug = true
     ): array {
         $action = 'SetStatusToPackedByMarketplace';
 
@@ -154,27 +128,16 @@ class OrderManager extends BaseOrderManager
             $parameters->set(['TrackingNumber' => $trackingNumber]);
         }
 
-        $requestId = $this->generateRequestId();
-
         $builtResponse = $this->executeAction(
             $action,
             $parameters,
-            $requestId,
-            'POST'
+            null,
+            'POST',
+            $debug
         );
 
         $orderItems = OrderItemsFactory::makeFromStatus($builtResponse->getBody());
 
-        $orderItemsResponse = array_values($orderItems->all());
-
-        $this->logger->info(
-            sprintf(
-                '%d::%s::APIResponse::SellerCenterSdk: the items status was changed',
-                $requestId,
-                $action
-            )
-        );
-
-        return $orderItemsResponse;
+        return array_values($orderItems->all());
     }
 }

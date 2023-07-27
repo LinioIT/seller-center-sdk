@@ -9,15 +9,28 @@ use Linio\SellerCenter\Application\Parameters;
 use Linio\SellerCenter\Contract\ClientInterface;
 use Linio\SellerCenter\LinioTestCase;
 use Linio\SellerCenter\Service\BrandManager;
-use Prophecy\PhpUnit\ProphecyTrait;
 use Psr\Log\Test\TestLogger;
 use ReflectionClass;
 
 class BrandManagerTest extends LinioTestCase
-{
-    use ProphecyTrait;
+{   
+    public function testReturnsABrandManager(): void
+    {
+        $configuration = $this->prophesize(Configuration::class);
+        $client = $this->prophesize(ClientInterface::class);
+        $parameters = $this->prophesize(Parameters::class);
+        $logger = $this->prophesize(TestLogger::class);
 
-    public function testItReturnsTheTheLoggerWhenIsSet(): void
+        $brandManager = new BrandManager(
+            $configuration->reveal(),
+            $client->reveal(),
+            $parameters->reveal(),
+            $logger->reveal()
+        );
+        $this->assertInstanceOf(BrandManager::class, $brandManager);
+    }
+
+    public function testItReturnsTheLoggerWhenIsSet(): void
     {
         $configuration = $this->prophesize(Configuration::class);
         $client = $this->prophesize(ClientInterface::class);

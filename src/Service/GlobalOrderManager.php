@@ -5,25 +5,38 @@ declare(strict_types=1);
 namespace Linio\SellerCenter\Service;
 
 use Linio\Component\Util\Json;
+use Linio\SellerCenter\Application\Parameters;
+use Linio\SellerCenter\Exception\InvalidDomainException;
 use Linio\SellerCenter\Factory\Xml\FeedResponseFactory;
 use Linio\SellerCenter\Factory\Xml\Order\OrderItemsFactory;
+use Linio\SellerCenter\Model\Order\InvoiceDocument;
 use Linio\SellerCenter\Model\Order\OrderItem;
 use Linio\SellerCenter\Response\FeedResponse;
+use Linio\SellerCenter\Response\SuccessJsonResponse;
 use Linio\SellerCenter\Response\SuccessResponse;
 
 class GlobalOrderManager extends BaseOrderManager
 {
+    const ALLOWED_INVOICE_TYPE = [
+        'BOLETA',
+        'NOTA_DE_CREDITO',
+    ];
+
+    /**
+     * @param int[] $orderItemIds
+     */
     public function setInvoiceNumber(
-        int $orderItemId,
+        array $orderItemIds,
         string $invoiceNumber,
-        ?string $invoiceDocumentLink
+        ?string $invoiceDocumentLink,
+        bool $debug = true
     ): SuccessResponse {
         $action = 'SetInvoiceNumber';
 
         $parameters = $this->makeParametersForAction($action);
 
         $parameters->set([
-            'OrderItemId' => $orderItemId,
+            'OrderItemIds' => Json::encode($orderItemIds),
             'InvoiceNumber' => $invoiceNumber,
         ]);
 
@@ -31,61 +44,74 @@ class GlobalOrderManager extends BaseOrderManager
             $parameters->set(['InvoiceDocumentLink' => $invoiceDocumentLink]);
         }
 
-        $requestId = $this->generateRequestId();
-
-        $response = $this->executeAction(
+        return $this->executeAction(
             $action,
             $parameters,
-            $requestId,
-            'POST'
+            null,
+            'POST',
+            $debug
         );
-
-        $this->logger->info(
-            sprintf(
-                '%d::%s::APIResponse::SellerCenterSdk: Invoice Number Set',
-                $requestId,
-                $action
-            )
-        );
-
-        return $response;
     }
 
+    /**
+     * @param int[] $orderItemIds
+     */
     public function setInvoiceDocument(
-        int $orderItemId,
+        array $orderItemIds,
         string $invoiceNumber,
-        string $invoiceDocument
+        string $invoiceType,
+        string $invoiceDocument,
+        bool $debug = true
     ): FeedResponse {
+        $upperInvoiceType = strtoupper($invoiceType);
+
+        if (!in_array(strtoupper($upperInvoiceType), self::ALLOWED_INVOICE_TYPE)) {
+            throw new InvalidDomainException('InvoiceType');
+        }
+
         $action = 'SetInvoiceDocument';
 
         $parameters = $this->makeParametersForAction($action);
 
         $parameters->set([
-            'OrderItemId' => $orderItemId,
+            'OrderItemIds' => Json::encode($orderItemIds),
             'InvoiceNumber' => $invoiceNumber,
+            'InvoiceType' => $upperInvoiceType,
         ]);
-
-        $requestId = $this->generateRequestId();
 
         $response = $this->executeAction(
             $action,
             $parameters,
-            $requestId,
+            null,
             'POST',
+            $debug,
             $invoiceDocument
         );
 
-        $feedResponse = FeedResponseFactory::make($response->getHead());
+        return FeedResponseFactory::make($response->getHead());
+    }
 
-        $this->logger->info(
-            sprintf(
-                '%d::%s::APIResponse::SellerCenterSdk: Invoice Document Set',
-                $requestId,
-                $action
-            )
+    public function uploadInvoiceDocument(
+        InvoiceDocument $invoiceDocument,
+        bool $debug = true
+    ): SuccessJsonResponse {
+        $action = 'Upload';
+        $path = '/seller-api-wrapper/v1/marketplace-sellers/upload-pdf';
+        $customHeader = ['Service' => 'Invoice'];
+
+        $invoiceDocumentFormatted = Json::encode($invoiceDocument->jsonSerialize());
+
+        return $this->executeJsonAction(
+            $action,
+            new Parameters(),
+            null,
+            'POST',
+            $debug,
+            $invoiceDocumentFormatted,
+            true,
+            $customHeader,
+            $path
         );
-
-        return $feedResponse;
     }
 
     /**
@@ -96,7 +122,8 @@ class GlobalOrderManager extends BaseOrderManager
     public function setStatusToReadyToShip(
         array $orderItemIds,
         string $deliveryType,
-        ?string $packageId = null
+        ?string $packageId = null,
+        bool $debug = true
     ): array {
         $action = 'SetStatusToReadyToShip';
 
@@ -111,28 +138,17 @@ class GlobalOrderManager extends BaseOrderManager
             $parameters->set(['PackageId' => $packageId]);
         }
 
-        $requestId = $this->generateRequestId();
-
         $builtResponse = $this->executeAction(
             $action,
             $parameters,
-            $requestId,
-            'POST'
+            null,
+            'POST',
+            $debug
         );
 
         $orderItems = OrderItemsFactory::makeFromStatus($builtResponse->getBody());
 
-        $orderItemsResponse = array_values($orderItems->all());
-
-        $this->logger->info(
-            sprintf(
-                '%d::%s::APIResponse::SellerCenterSdk: the items status was changed',
-                $requestId,
-                $action
-            )
-        );
-
-        return $orderItemsResponse;
+        return array_values($orderItems->all());
     }
 
     /**
@@ -142,7 +158,8 @@ class GlobalOrderManager extends BaseOrderManager
      */
     public function setStatusToPackedByMarketplace(
         array $orderItemIds,
-        string $deliveryType
+        string $deliveryType,
+        bool $debug = true
     ): array {
         $action = 'SetStatusToPackedByMarketplace';
 
@@ -153,27 +170,16 @@ class GlobalOrderManager extends BaseOrderManager
             'DeliveryType' => $deliveryType,
         ]);
 
-        $requestId = $this->generateRequestId();
-
         $builtResponse = $this->executeAction(
             $action,
             $parameters,
-            $requestId,
-            'POST'
+            null,
+            'POST',
+            $debug
         );
 
         $orderItems = OrderItemsFactory::makeFromStatus($builtResponse->getBody());
 
-        $orderItemsResponse = array_values($orderItems->all());
-
-        $this->logger->info(
-            sprintf(
-                '%d::%s::APIResponse::SellerCenterSdk: the items status was changed',
-                $requestId,
-                $action
-            )
-        );
-
-        return $orderItemsResponse;
+        return array_values($orderItems->all());
     }
 }

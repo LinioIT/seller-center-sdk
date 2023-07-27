@@ -8,13 +8,26 @@ use Linio\SellerCenter\Application\Configuration;
 use Linio\SellerCenter\Application\Parameters;
 use Linio\SellerCenter\Contract\ClientInterface;
 use Linio\SellerCenter\LinioTestCase;
-use Prophecy\PhpUnit\ProphecyTrait;
 use Psr\Log\Test\TestLogger;
 use ReflectionClass;
 
 class ShipmentManagerTest extends LinioTestCase
 {
-    use ProphecyTrait;
+    public function testReturnsAShipmentManager(): void
+    {
+        $configuration = $this->prophesize(Configuration::class);
+        $client = $this->prophesize(ClientInterface::class);
+        $parameters = $this->prophesize(Parameters::class);
+        $logger = $this->prophesize(TestLogger::class);
+
+        $shipmentManager = new ShipmentManager(
+            $configuration->reveal(),
+            $client->reveal(),
+            $parameters->reveal(),
+            $logger->reveal()
+        );
+        $this->assertInstanceOf(ShipmentManager::class, $shipmentManager);
+    }
 
     public function testItReturnsTheLoggerWhenIsSet(): void
     {

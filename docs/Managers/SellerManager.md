@@ -1,8 +1,23 @@
-# Seller
+# Linio Seller Manager
 
-## Getting the statistics
+## Index
+- [Linio Seller Manager](#linio-seller-manager)
+  - [Index](#index)
+  - [Getting Seller Statistics](#getting-seller-statistics)
+    - [getStatistics](#getstatistics)
+      - [Example](#example)
 
-You can get the seller statistics available in the following example.
+## Getting Seller Statistics
+  
+### getStatistics
+
+Returns the seller statistics, i.e. amount of products, and orders.
+
+| Parameter | Type | Description | Required | Default |
+| --------- | ---- | ----------- | -------- | ------- |
+| `$debug` | bool |  Whether it logs or not the request and response log | No | true | 
+
+#### Example
 
 ```php
     $statistics = $sdk->seller()->getStatistics();

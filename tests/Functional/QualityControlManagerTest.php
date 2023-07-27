@@ -5,21 +5,40 @@ declare(strict_types=1);
 namespace Linio\SellerCenter;
 
 use InvalidArgumentException;
-use Linio\SellerCenter\Application\Configuration;
 use Linio\SellerCenter\Model\QualityControl\QualityControl;
+use Prophecy\Argument;
+use Prophecy\Prophecy\ObjectProphecy;
+use Psr\Log\LoggerInterface;
 
 class QualityControlManagerTest extends LinioTestCase
 {
     use ClientHelper;
 
+    /**
+     * @var ObjectProphecy
+     */
+    protected $logger;
+
+    public function prepareLogTest(bool $debug): void
+    {
+        $this->logger = $this->prophesize(LoggerInterface::class);
+
+        $this->logger->debug(
+            Argument::type('string'),
+            Argument::type('array')
+        )->shouldBeCalled();
+
+        if (!$debug) {
+            $this->logger->debug(
+                Argument::type('string'),
+                Argument::type('array')
+            )->shouldNotBeCalled();
+        }
+    }
+
     public function testItReturnsACollectionOfQualityControls(): void
     {
-        $client = $this->createClientWithResponse($this->getResponse());
-
-        $parameters = $this->getParameters();
-        $configuration = new Configuration($parameters['key'], $parameters['username'], $parameters['endpoint'], $parameters['version']);
-
-        $sdkClient = new SellerCenterSdk($configuration, $client);
+        $sdkClient = $this->getSdkClient($this->getSchema('QcStatus/QcStatusSuccessResponse.xml'));
 
         $result = $sdkClient->qualityControl()->getAllQcStatus();
 
@@ -30,12 +49,7 @@ class QualityControlManagerTest extends LinioTestCase
 
     public function testItReturnsACollectionOfQualityControlsBySkuSellerList(): void
     {
-        $client = $this->createClientWithResponse($this->getResponse());
-
-        $env = $this->getParameters();
-        $configuration = new Configuration($env['key'], $env['username'], $env['endpoint'], $env['version']);
-
-        $sdkClient = new SellerCenterSdk($configuration, $client);
+        $sdkClient = $this->getSdkClient($this->getSchema('QcStatus/QcStatusSuccessResponse.xml'));
 
         $skuSellerList = [
             'TestProduct2030',
@@ -55,58 +69,47 @@ class QualityControlManagerTest extends LinioTestCase
     {
         $this->expectException(InvalidArgumentException::class);
 
-        $client = $this->createClientWithResponse($this->getResponse());
-
-        $env = $this->getParameters();
-        $configuration = new Configuration($env['key'], $env['username'], $env['endpoint'], $env['version']);
-
-        $sdkClient = new SellerCenterSdk($configuration, $client);
+        $sdkClient = $this->getSdkClient($this->getSchema('QcStatus/QcStatusSuccessResponse.xml'));
 
         $sdkClient->qualityControl()->getQcStatusBySkuSellerList([]);
     }
 
-    public function getResponse(): string
+    /**
+     * @dataProvider debugParameter
+     */
+    public function testItLogsDependingOnDebugParamWhenGetAllQcStatusSuccessResponse(bool $debug): void
     {
-        return '<?xml version="1.0" encoding="UTF-8"?>
-                    <SuccessResponse>
-                         <Head>
-                              <RequestId/>
-                              <RequestAction>GetQcStatus</RequestAction>
-                              <ResponseType>State</ResponseType>
-                              <Timestamp>2016-04-28T15:09:01+0200</Timestamp>
-                         </Head>
-                         <Body>
-                              <Status>
-                                   <State>
-                                        <SellerSKU>TestProduct2030</SellerSKU>
-                                        <Status>approved</Status>
-                                        <DataChanged>1</DataChanged>
-                                   </State>
-                                   <State>
-                                        <SellerSKU>TestProduct2031</SellerSKU>
-                                        <Status>approved</Status>
-                                        <DataChanged>1</DataChanged>
-                                   </State>
-                                   <State>
-                                        <SellerSKU>TestProduct2032</SellerSKU>
-                                        <Status>pending</Status>
-                                   </State>
-                                   <State>
-                                        <SellerSKU>TestProduct2033</SellerSKU>
-                                        <Status>pending</Status>
-                                   </State>
-                                   <State>
-                                        <SellerSKU>TestProduct2034</SellerSKU>
-                                        <Status>rejected</Status>
-                                        <Reason>Wrong Description; Wrong Translation</Reason>
-                                   </State>
-                                   <State>
-                                        <SellerSKU>TestProduct2035</SellerSKU>
-                                        <Status>rejected</Status>
-                                        <Reason>Price Not Reasonable; Image Corrupt</Reason>
-                                   </State>
-                              </Status>
-                         </Body>
-                    </SuccessResponse>';
+        $this->prepareLogTest($debug);
+        $sdkClient = $this->getSdkClient($this->getSchema('QcStatus/QcStatusSuccessResponse.xml'), $this->logger);
+
+        $sdkClient->qualityControl()->getAllQcStatus(
+            100,
+            100,
+            $debug
+        );
+    }
+
+    /**
+     * @dataProvider debugParameter
+     */
+    public function testItLogsDependingOnDebugParamWhenGetQcStatusBySkuSellerListSuccessResponse(bool $debug): void
+    {
+        $this->prepareLogTest($debug);
+        $sdkClient = $this->getSdkClient($this->getSchema('QcStatus/QcStatusSuccessResponse.xml'), $this->logger);
+
+        $sdkClient->qualityControl()->getQcStatusBySkuSellerList(
+            ['test-sku'],
+            100,
+            100,
+            $debug
+        );
+    }
+
+    public function debugParameter()
+    {
+        return [
+            [false],
+            [true],
+        ];
     }
 }

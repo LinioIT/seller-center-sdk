@@ -9,28 +9,41 @@ use Linio\SellerCenter\Application\Parameters;
 use Linio\SellerCenter\Contract\ClientInterface;
 use Linio\SellerCenter\Service\OrderManager;
 use PHPUnit\Framework\TestCase;
-use Prophecy\PhpUnit\ProphecyTrait;
 use Psr\Log\Test\TestLogger;
 use ReflectionClass;
 
 class OrderManagerTest extends TestCase
 {
-    use ProphecyTrait;
+    public function testReturnsAOrderManagerManager(): void
+    {
+        $configuration = $this->prophesize(Configuration::class);
+        $client = $this->prophesize(ClientInterface::class);
+        $parameters = $this->prophesize(Parameters::class);
+        $logger = $this->prophesize(TestLogger::class);
 
-    public function testItReturnsTheTheLoggerWhenIsSet(): void
+        $orderManager = new OrderManager(
+            $configuration->reveal(),
+            $client->reveal(),
+            $parameters->reveal(),
+            $logger->reveal()
+        );
+        $this->assertInstanceOf(OrderManager::class, $orderManager);
+    }
+
+    public function testItReturnsTheLoggerWhenIsSet(): void
     {
         $configuration = $this->prophesize(Configuration::class);
         $client = $this->prophesize(ClientInterface::class);
         $logger = $this->prophesize(TestLogger::class);
         $parameters = $this->prophesize(Parameters::class);
 
-        $brandManager = new OrderManager($configuration->reveal(), $client->reveal(), $parameters->reveal(), $logger->reveal());
+        $orderManager = new OrderManager($configuration->reveal(), $client->reveal(), $parameters->reveal(), $logger->reveal());
 
         $reflectionClass = new ReflectionClass(OrderManager::class);
         $property = $reflectionClass->getProperty('logger');
         $property->setAccessible(true);
 
-        $setted = $property->getValue($brandManager);
+        $setted = $property->getValue($orderManager);
 
         $this->assertInstanceOf(TestLogger::class, $setted);
     }
