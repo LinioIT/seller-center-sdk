@@ -95,8 +95,8 @@ class GlobalOrderManager extends BaseOrderManager
         InvoiceDocument $invoiceDocument,
         bool $debug = true
     ): SuccessJsonResponse {
-        $action = 'Upload';
-        $path = '/seller-api-wrapper/v1/marketplace-sellers/upload-pdf';
+        $action = 'SetInvoicePDF';
+        $path = '/v1/marketplace-sellers/invoice/pdf';
         $customHeader = ['Service' => 'Invoice'];
 
         $invoiceDocumentFormatted = Json::encode($invoiceDocument->jsonSerialize());
