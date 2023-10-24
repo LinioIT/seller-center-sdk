@@ -83,7 +83,7 @@ class Product extends BaseProduct implements JsonSerializable, ProductInterface,
         ?Images $images = null,
         ?array $overrideAttributes = []
     ): self {
-        self::ValidateArguments($sellerSku, $name, $description, $productId);
+        self::ValidateArguments($sellerSku, $name, $description);
 
         if ($price <= 0) {
             throw new InvalidDomainException('Price');
