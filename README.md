@@ -9,6 +9,10 @@ Installation
 
 The recommended way to install the SDK is [through composer](http://getcomposer.org)
 
+We have two main branch depending on platform, please use correct branch and follow its README file:
+ -for Falabella use [gsc-master](https://github.com/LinioIT/seller-center-sdk/tree/gsc-master)
+ -for Linio use [master](https://github.com/LinioIT/seller-center-sdk/tree/master)
+
 Edit your composer.json to add the repository URL:
 
     {
@@ -91,7 +95,8 @@ Here is a list of the actual managers in the SDK:
 - [OrderManager](docs/Managers/Order.md)
 - [ProductManager](docs/Managers/Product.md)
 - [QualityControlManager](docs/Managers/QcStatus.md)
-- [WebookManager](docs/Managers/Webook.md)
+- [WebhookManager](docs/Managers/Webhook.md)
+- [Shipment](docs/Managers/Shipment.md)
 
 ### Logging
 
