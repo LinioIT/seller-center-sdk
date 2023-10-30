@@ -9,6 +9,10 @@ Installation
 
 The recommended way to install the SDK is [through composer](http://getcomposer.org)
 
+We have two main branch depending on platform, please use correct branch and follow its README file:
+ -for Falabella use [gsc-master](https://github.com/LinioIT/seller-center-sdk/tree/gsc-master)
+ -for Linio use [master](https://github.com/LinioIT/seller-center-sdk/tree/master)
+
 Edit your composer.json to add the repository URL:
 
     {
@@ -22,7 +26,7 @@ Edit your composer.json to add the repository URL:
 
 Then require the package:
 
-    $ composer require linio/seller-center-sdk
+    $ composer require "linio/seller-center-sdk: dev-gsc-master"
 
 Quick start
 -----
@@ -110,13 +114,15 @@ Here is a list of the actual managers in the SDK:
 - [CategoryManager](docs/Managers/CategoryManager.md)
 - [DocumentManager](docs/Managers/DocumentManager.md)
 - [FeedManager](docs/Managers/FeedManager.md)
-- [GlobalOrderManager](docs/Managers/GlobalOrderManager.md)
-- [GlobalSellerManager](docs/Managers/GlobalSellerManager.md)
+- [FalabellaOrderManager](docs/Managers/GlobalOrderManager.md)
+- [FalabellaSellerManager](docs/Managers/GlobalSellerManager.md)
 - [LinioOrderManager](docs/Managers/OrderManager.md)
-- [SellerManager](docs/Managers/SellerManager.md)
-- [ProductManager](docs/Managers/ProductManager.md)
+- [LinioSellerManager](docs/Managers/SellerManager.md)
+- [LinioProductManager](docs/Managers/ProductManager.md)
 - [QualityControlManager](docs/Managers/QualityControlManager.md)
 - [WebhookManager](docs/Managers/WebhookManager.md)
+- [FalabellaProductManager](docs/Managers/GlobalProductManager.md)
+- [ShipmentManager](docs/Managers/ShipmentManager.md)
 
 ### Logging
 
