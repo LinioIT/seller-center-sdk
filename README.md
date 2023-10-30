@@ -110,18 +110,18 @@ $brandList = $sdk->brands()->getBrands();
 
 Here is a list of the actual managers in the SDK:
 
+- [LinioSellerManager](docs/Managers/SellerManager.md)
+- [FalabellaSellerManager](docs/Managers/GlobalSellerManager.md)
+- [LinioOrderManager](docs/Managers/OrderManager.md)
+- [FalabellaOrderManager](docs/Managers/GlobalOrderManager.md)
+- [LinioProductManager](docs/Managers/ProductManager.md)
+- [FalabellaProductManager](docs/Managers/GlobalProductManager.md)
 - [BrandManager](docs/Managers/BrandManager.md)
 - [CategoryManager](docs/Managers/CategoryManager.md)
 - [DocumentManager](docs/Managers/DocumentManager.md)
 - [FeedManager](docs/Managers/FeedManager.md)
-- [FalabellaOrderManager](docs/Managers/GlobalOrderManager.md)
-- [FalabellaSellerManager](docs/Managers/GlobalSellerManager.md)
-- [LinioOrderManager](docs/Managers/OrderManager.md)
-- [LinioSellerManager](docs/Managers/SellerManager.md)
-- [LinioProductManager](docs/Managers/ProductManager.md)
 - [QualityControlManager](docs/Managers/QualityControlManager.md)
 - [WebhookManager](docs/Managers/WebhookManager.md)
-- [FalabellaProductManager](docs/Managers/GlobalProductManager.md)
 - [ShipmentManager](docs/Managers/ShipmentManager.md)
 
 ### Logging
