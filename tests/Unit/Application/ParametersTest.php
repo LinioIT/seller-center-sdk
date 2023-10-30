@@ -70,4 +70,29 @@ class ParametersTest extends LinioTestCase
         $this->assertEquals('version', $basics['Version']);
         $this->assertEquals('json', $basics['Format']);
     }
+
+    /**
+     * @dataProvider configurationProvider
+     */
+    public function testItCreatesParameterFromConfiguration(Configuration $configuration): void
+    {
+        $parameters = Parameters::fromConfiguration($configuration);
+
+        $basics = $parameters->all();
+        $this->assertEquals('API_USERNAME', $basics['UserID']);
+        $this->assertEquals('API_VERSION', $basics['Version']);
+        $this->assertEquals('XML', $basics['Format']);
+    }
+
+    public function configurationProvider(): array
+    {
+        return [
+            'default case' => [
+                'configuration' => new Configuration('API_KEY', 'API_USERNAME', 'API_ENDPOINT', 'API_VERSION'),
+            ],
+            'full case' => [
+                'configuration' => new Configuration('API_KEY', 'API_USERNAME', 'API_ENDPOINT', 'API_VERSION', 'SOURCE', 'USER_ID', 'NOT_PHP', '5.5', 'INTEGRATOR', 'CL'),
+            ],
+        ];
+    }
 }

@@ -56,6 +56,12 @@ class OrderItemFactory
         'PurchaseOrderNumber',
     ];
 
+    private const REQUIRED_FIELDS_FROM_IMEI_STATUS = [
+        'OrderItemId',
+        'Imei',
+        'Status',
+    ];
+
     public static function make(SimpleXMLElement $element): OrderItem
     {
         XmlStructureValidator::validateStructure($element, self::XML_MODEL, self::REQUIRED_FIELDS);
@@ -111,7 +117,8 @@ class OrderItemFactory
             $createdAt,
             $updatedAt,
             (string) $element->ReturnStatus,
-            (string) $element->SalesType ?? null
+            (string) $element->SalesType ?? null,
+            (string) $element->Imei ?? null
         );
     }
 
@@ -127,6 +134,22 @@ class OrderItemFactory
             (int) $element->PurchaseOrderId,
             (string) $element->PurchaseOrderNumber,
             $packageId
+        );
+    }
+
+    public static function makeFromImeiStatus(SimpleXMLElement $element): OrderItem
+    {
+        XmlStructureValidator::validateStructure($element, self::XML_MODEL, self::REQUIRED_FIELDS_FROM_IMEI_STATUS);
+
+        $orderItemId = (int) $element->OrderItemId;
+        $imei = empty($element->Imei) ? null : (string) $element->Imei;
+        $message = empty($element->Message) ? null : (string) $element->Message;
+
+        return OrderItem::fromImeiStatus(
+            $orderItemId,
+            $imei,
+            (string) $element->Status,
+            $message
         );
     }
 }

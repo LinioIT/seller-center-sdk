@@ -52,6 +52,7 @@
         <ParentSku>jasku-10002</ParentSku>
         <Quantity>1000</Quantity>
         <Available>1000</Available>
+        <Name>jasku-1000123</Name>
         <Price>22000.00</Price>
         <SalePrice>20000.00</SalePrice>
         <SaleStartDate>2019-01-23 00:00:00</SaleStartDate>

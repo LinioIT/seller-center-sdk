@@ -26,7 +26,7 @@ class Order implements JsonSerializable
     protected $customerLastName;
 
     /**
-     * @var int
+     * @var string|int
      */
     protected $orderNumber;
 
@@ -127,10 +127,11 @@ class Order implements JsonSerializable
 
     /**
      * @param string[] $statuses
+     * @param string|int $orderNumber
      */
     public static function fromData(
         int $orderId,
-        int $orderNumber,
+        $orderNumber,
         ?string $customerFirstName,
         ?string $customerLastName,
         string $paymentMethod,
@@ -145,7 +146,7 @@ class Order implements JsonSerializable
         ?DateTimeInterface $addressUpdatedAt,
         Address $addressBilling,
         Address $addressShipping,
-        string $nationalRegistrationNumber,
+        ?string $nationalRegistrationNumber,
         int $itemsCount,
         ?DateTimeInterface $promisedShippingTime,
         ?string $extraAttributes,
@@ -180,12 +181,15 @@ class Order implements JsonSerializable
         return $order;
     }
 
-    public static function fromItems(int $orderId, int $orderNumber, OrderItems $orderItems): Order
+    /**
+     * @param string|int $orderNumber
+     */
+    public static function fromItems(int $orderId, $orderNumber, OrderItems $orderItems): Order
     {
         $order = new self();
 
         $order->orderId = $orderId;
-        $order->orderNumber = $orderNumber;
+        $order->orderNumber = is_numeric($orderNumber) ? (int) $orderNumber : (string) $orderNumber;
         $order->orderItems = $orderItems;
 
         return $order;
@@ -206,7 +210,10 @@ class Order implements JsonSerializable
         return $this->customerLastName;
     }
 
-    public function getOrderNumber(): int
+    /**
+     * @return string|int
+     */
+    public function getOrderNumber()
     {
         return $this->orderNumber;
     }
@@ -339,6 +346,7 @@ class Order implements JsonSerializable
         $serialized->extraAttributes = $this->extraAttributes;
         $serialized->statuses = $this->statuses;
         $serialized->orderItems = $this->orderItems;
+        $serialized->operatorCode = $this->operatorCode;
 
         return $serialized;
     }

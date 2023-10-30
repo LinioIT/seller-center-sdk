@@ -43,4 +43,34 @@ class ConfigurationTest extends LinioTestCase
 
         $this->assertEquals($configuration->getUser(), 'API_USERNAME');
     }
+
+    /**
+     * @dataProvider configurationProvider
+     */
+    public function testItSetsUserAgent(Configuration $configuration, string $userAgent): void
+    {
+        $this->assertEquals($userAgent, $configuration->getUserAgent());
+    }
+
+    public function configurationProvider(): array
+    {
+        return [
+            'default case' => [
+                'configuration' => new Configuration('API_KEY', 'API_USERNAME', 'API_ENDPOINT', 'API_VERSION'),
+                'userAgent' => sprintf('/PHP/%s', phpversion()),
+            ],
+            'full case' => [
+                'configuration' => new Configuration('API_KEY', 'API_USERNAME', 'API_ENDPOINT', 'API_VERSION', 'SOURCE', 'SELLER_ID', 'NOT_PHP', '5.5', 'INTEGRATOR', 'CL'),
+                'userAgent' => 'SELLER_ID/NOT_PHP/5.5/INTEGRATOR/CL',
+            ],
+            'missing country' => [
+                'configuration' => new Configuration('API_KEY', 'API_USERNAME', 'API_ENDPOINT', 'API_VERSION', 'SOURCE', 'SELLER_ID', 'NOT_PHP', '5.5', 'INTEGRATOR'),
+                'userAgent' => 'SELLER_ID/NOT_PHP/5.5/INTEGRATOR',
+            ],
+            'missing integrator' => [
+                'configuration' => new Configuration('API_KEY', 'API_USERNAME', 'API_ENDPOINT', 'API_VERSION', 'SOURCE', 'SELLER_ID', 'NOT_PHP', '5.5', null, 'CL'),
+                'userAgent' => 'SELLER_ID/NOT_PHP/5.5/CL',
+            ],
+        ];
+    }
 }

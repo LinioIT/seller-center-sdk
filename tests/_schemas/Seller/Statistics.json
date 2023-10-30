@@ -1,0 +1,34 @@
+{
+    "productStatistics": {
+        "Active": 5036,
+        "All": 5963,
+        "Deleted": 90,
+        "ImageMissing": 1156,
+        "Inactive": 927,
+        "Live": 1486,
+        "Pending": 103,
+        "PoorQuality": 1790,
+        "SoldOut": 2084,
+        "Total": 6053
+    },
+    "orderStatistics": {
+        "Canceled": 436,
+        "Delivered": 2824,
+        "Digital": 0,
+        "Economy": 1,
+        "Express": 0,
+        "Failed": 45,
+        "NoExtInvoiceKey": 3113,
+        "NotPrintedPending": 4,
+        "NotPrintedReadyToShip": 0,
+        "Pending": 4,
+        "ReadyToShip": 4,
+        "ReturnRejected": 2,
+        "ReturnShippedByCustomer": 0,
+        "ReturnWaitingForApproval": 0,
+        "Returned": 123,
+        "Shipped": 10,
+        "Standard": 3,
+        "Total": 3449
+    }
+}

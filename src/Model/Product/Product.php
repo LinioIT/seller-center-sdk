@@ -15,7 +15,7 @@ use Linio\SellerCenter\Model\Product\Contract\ProductInterface;
 use Linio\SellerCenter\Model\Product\Contract\VariationProductInterface;
 use stdClass;
 
-class Product extends BaseProduct implements JsonSerializable, ProductInterface, VariationProductInterface
+class Product extends BaseProduct implements JsonSerializable, ProductInterface, VariationProductInterface, ProductStatus
 {
     /**
      * @var string
@@ -23,7 +23,7 @@ class Product extends BaseProduct implements JsonSerializable, ProductInterface,
     protected $status;
 
     /**
-     * @var float
+     * @var float|null
      */
     protected $price;
 
@@ -48,17 +48,25 @@ class Product extends BaseProduct implements JsonSerializable, ProductInterface,
     protected $quantity;
 
     /**
-     * @var int
+     * @var int|null
      */
     protected $available;
+
+    /**
+     * @var string[]
+     */
+    protected $overrideAttributes;
 
     public function __construct()
     {
         $this->productData = new ProductData();
         $this->images = new Images();
+        $this->overrideAttributes = [];
     }
 
     /**
+     * @param string[] $overrideAttributes
+     *
      * @return static
      */
     public static function fromBasicData(
@@ -68,11 +76,12 @@ class Product extends BaseProduct implements JsonSerializable, ProductInterface,
         Category $primaryCategory,
         string $description,
         Brand $brand,
-        float $price,
+        ?float $price,
         string $productId,
         ?string $taxClass,
         ProductData $productData,
-        ?Images $images = null
+        ?Images $images = null,
+        ?array $overrideAttributes = []
     ): self {
         self::ValidateArguments($sellerSku, $name, $description, $productId);
 
@@ -103,10 +112,12 @@ class Product extends BaseProduct implements JsonSerializable, ProductInterface,
             $product->attachImages($images);
         }
 
+        $product->setOverrideAttributes($overrideAttributes);
+
         return $product;
     }
 
-    public function getPrice(): float
+    public function getPrice(): ?float
     {
         return $this->price;
     }
@@ -149,7 +160,7 @@ class Product extends BaseProduct implements JsonSerializable, ProductInterface,
         return $this->quantity;
     }
 
-    public function getAvailable(): int
+    public function getAvailable(): ?int
     {
         return $this->available;
     }
@@ -166,7 +177,7 @@ class Product extends BaseProduct implements JsonSerializable, ProductInterface,
         }
     }
 
-    public function setPrice(float $price): void
+    public function setPrice(?float $price): void
     {
         if ($price > 0) {
             $this->price = $price;
@@ -197,11 +208,27 @@ class Product extends BaseProduct implements JsonSerializable, ProductInterface,
         }
     }
 
-    public function setAvailable(int $available): void
+    public function setAvailable(?int $available): void
     {
         if ($available <= $this->quantity && $available >= 0) {
             $this->available = $available;
         }
+    }
+
+    /**
+     * @param string[] $overrideAttributes
+     */
+    public function setOverrideAttributes(array $overrideAttributes): void
+    {
+        $this->overrideAttributes = $overrideAttributes;
+    }
+
+    /**
+     * @return string[]
+     */
+    public function getOverrideAttributes(): array
+    {
+        return $this->overrideAttributes;
     }
 
     /**

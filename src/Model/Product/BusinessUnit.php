@@ -12,7 +12,7 @@ use Linio\SellerCenter\Exception\InvalidDomainException;
 use Linio\SellerCenter\Model\Product\Contract\VariationProductInterface;
 use stdClass;
 
-class BusinessUnit implements JsonSerializable, VariationProductInterface
+class BusinessUnit implements JsonSerializable, VariationProductInterface, ProductStatus
 {
     public const FEED_BUSINESS_UNIT = 'BusinessUnit';
     public const FEED_OPERATOR_CODE = 'OperatorCode';
@@ -35,7 +35,7 @@ class BusinessUnit implements JsonSerializable, VariationProductInterface
     protected $operatorCode;
 
     /**
-     * @var float
+     * @var float|null
      */
     protected $price;
 
@@ -55,7 +55,7 @@ class BusinessUnit implements JsonSerializable, VariationProductInterface
     protected $specialToDate;
 
     /**
-     * @var int
+     * @var int|null
      */
     protected $stock;
 
@@ -69,16 +69,25 @@ class BusinessUnit implements JsonSerializable, VariationProductInterface
      */
     protected $isPublished;
 
+    /**
+     * @var string[]
+     */
+    protected $overrideAttributes;
+
+    /**
+     * @param string[] $overrideAttributes
+     */
     public function __construct(
         string $operatorCode,
-        float $price,
-        int $stock,
+        ?float $price,
+        ?int $stock,
         string $status,
         ?int $isPublished = null,
         ?string $businessUnit = null,
         ?float $specialPrice = null,
         ?DateTimeInterface $specialFromDate = null,
-        ?DateTimeInterface $specialToDate = null
+        ?DateTimeInterface $specialToDate = null,
+        ?array $overrideAttributes = []
     ) {
         $this->setOperatorCode($operatorCode);
         $this->setPrice($price);
@@ -89,6 +98,7 @@ class BusinessUnit implements JsonSerializable, VariationProductInterface
         $this->setSaleStartDate($specialFromDate);
         $this->setSaleEndDate($specialToDate);
         $this->setIsPublished($isPublished);
+        $this->setOverrideAttributes($overrideAttributes);
     }
 
     public function getBusinessUnit(): ?string
@@ -101,7 +111,7 @@ class BusinessUnit implements JsonSerializable, VariationProductInterface
         return $this->operatorCode;
     }
 
-    public function getPrice(): float
+    public function getPrice(): ?float
     {
         return $this->price;
     }
@@ -139,12 +149,12 @@ class BusinessUnit implements JsonSerializable, VariationProductInterface
         return $this->specialToDate->format('Y-m-d H:i:s');
     }
 
-    public function getStock(): int
+    public function getStock(): ?int
     {
         return $this->stock;
     }
 
-    public function getAvailable(): int
+    public function getAvailable(): ?int
     {
         return $this->stock;
     }
@@ -168,13 +178,23 @@ class BusinessUnit implements JsonSerializable, VariationProductInterface
 
         $attributes[self::FEED_OPERATOR_CODE] = $this->operatorCode;
         $attributes[self::FEED_PRICE] = $this->price;
-        $attributes[self::FEED_SPECIAL_PRICE] = $this->specialPrice ?? '';
-        $attributes[self::FEED_SPECIAL_FROM_DATE] = $this->specialFromDate ?? '';
-        $attributes[self::FEED_SPECIAL_TO_DATE] = $this->specialToDate ?? '';
+        $attributes[self::FEED_SPECIAL_PRICE] = $this->specialPrice;
+        $attributes[self::FEED_SPECIAL_FROM_DATE] = $this->getSaleStartDateString();
+        $attributes[self::FEED_SPECIAL_TO_DATE] = $this->getSaleEndDateString();
         $attributes[self::FEED_STOCK] = $this->stock;
         $attributes[self::FEED_STATUS] = $this->status;
 
-        return $attributes;
+        return array_filter(
+            $attributes,
+            function ($value, $key) {
+                if (in_array($key, $this->getOverrideAttributes())) {
+                    return true;
+                }
+
+                return !($value === null || $value === '');
+            },
+            ARRAY_FILTER_USE_BOTH
+        );
     }
 
     public function setBusinessUnit(?string $businessUnit): void
@@ -190,9 +210,9 @@ class BusinessUnit implements JsonSerializable, VariationProductInterface
         $this->operatorCode = $operatorCode;
     }
 
-    public function setPrice(float $price): void
+    public function setPrice(?float $price): void
     {
-        if ($price < 0) {
+        if ($price !== null && $price <= 0) {
             throw new InvalidDomainException('Price');
         }
         $this->price = $price;
@@ -216,9 +236,9 @@ class BusinessUnit implements JsonSerializable, VariationProductInterface
         $this->specialToDate = $specialToDate;
     }
 
-    public function setStock(int $stock): void
+    public function setStock(?int $stock): void
     {
-        if ($stock < 0) {
+        if ($stock !== null && $stock < 0) {
             throw new InvalidDomainException('Stock');
         }
         $this->stock = $stock;
@@ -233,6 +253,22 @@ class BusinessUnit implements JsonSerializable, VariationProductInterface
         }
     }
 
+    /**
+     * @param string[] $overrideAttributes
+     */
+    public function setOverrideAttributes(array $overrideAttributes): void
+    {
+        $this->overrideAttributes = $overrideAttributes;
+    }
+
+    /**
+     * @return string[]
+     */
+    public function getOverrideAttributes(): array
+    {
+        return $this->overrideAttributes;
+    }
+
     public function setIsPublished(?int $isPublished): void
     {
         $this->isPublished = $isPublished;
@@ -245,8 +281,8 @@ class BusinessUnit implements JsonSerializable, VariationProductInterface
         $serialized->operatorCode = $this->operatorCode;
         $serialized->price = $this->price;
         $serialized->specialPrice = $this->specialPrice ?? '';
-        $serialized->specialFromDate = $this->specialFromDate ?? '';
-        $serialized->specialToDate = $this->specialToDate ?? '';
+        $serialized->specialFromDate = $this->getSaleStartDateString() ?? '';
+        $serialized->specialToDate = $this->getSaleEndDateString() ?? '';
         $serialized->stock = $this->stock;
         $serialized->status = $this->status;
         $serialized->isPublished = $this->isPublished;

@@ -49,4 +49,18 @@ class Parameters
 
         return $parameters;
     }
+
+    public static function fromConfiguration(Configuration $configuration): Parameters
+    {
+        $parameters = new Parameters();
+
+        $parameters->set([
+            'Timestamp' => (new DateTimeImmutable())->format(DATE_ATOM),
+            'UserID' => $configuration->getUser(),
+            'Version' => $configuration->getVersion(),
+            'Format' => 'XML',
+        ]);
+
+        return $parameters;
+    }
 }

@@ -5,6 +5,10 @@
   <Phone>%s</Phone>
   <Phone2></Phone2>
   <Address1>%s</Address1>
+  <Address2>%s</Address2>
+  <Address3>%s</Address3>
+  <Address4>%s</Address4>
+  <Address5>%s</Address5>
   <CustomerEmail>%s</CustomerEmail>
   <City>%s</City>
   <Ward>%s</Ward>

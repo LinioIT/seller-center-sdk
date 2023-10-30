@@ -15,7 +15,23 @@ use ReflectionMethod;
 
 class QualityControlManagerTest extends LinioTestCase
 {
-    public function testItReturnsTheTheLoggerWhenIsSet(): void
+    public function testReturnsAQualityControlManager(): void
+    {
+        $configuration = $this->prophesize(Configuration::class);
+        $client = $this->prophesize(ClientInterface::class);
+        $parameters = $this->prophesize(Parameters::class);
+        $logger = $this->prophesize(TestLogger::class);
+
+        $qcManager = new QualityControlManager(
+            $configuration->reveal(),
+            $client->reveal(),
+            $parameters->reveal(),
+            $logger->reveal()
+        );
+        $this->assertInstanceOf(QualityControlManager::class, $qcManager);
+    }
+
+    public function testItReturnsTheLoggerWhenIsSet(): void
     {
         $configuration = $this->prophesize(Configuration::class);
         $client = $this->prophesize(ClientInterface::class);

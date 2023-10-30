@@ -4,7 +4,6 @@ declare(strict_types=1);
 
 namespace Linio\SellerCenter\Product;
 
-use Linio\SellerCenter\Exception\MaxImagesExceededException;
 use Linio\SellerCenter\Factory\Xml\Product\ImagesFactory;
 use Linio\SellerCenter\LinioTestCase;
 use Linio\SellerCenter\Model\Product\Image;
@@ -74,22 +73,6 @@ class ImagesTest extends LinioTestCase
         $images->addMany($availableImages);
 
         $this->assertCount(8, $images->all());
-    }
-
-    /**
-     * @dataProvider generatedImages
-     */
-    public function testItThrowsAnExceptionByOverflow(array $imageStack): void
-    {
-        $this->expectException(MaxImagesExceededException::class);
-        $this->expectExceptionMessage(sprintf('Only %s are supported into the collection.', Images::MAX_IMAGES_ALLOWED));
-
-        $availableImages = array_slice($imageStack, 0, Images::MAX_IMAGES_ALLOWED);
-        $image = array_slice($imageStack, 8, 1)[0];
-
-        $images = new Images();
-        $images->addMany($availableImages);
-        $images->add($image);
     }
 
     /**

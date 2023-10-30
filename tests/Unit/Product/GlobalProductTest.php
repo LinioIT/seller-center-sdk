@@ -22,18 +22,24 @@ use SimpleXMLElement;
 
 class GlobalProductTest extends LinioTestCase
 {
-    protected $sellerSku = '2145819109aaeu7';
+    protected $sellerSku = '21458191097';
     protected $newSellerSku = null;
     protected $name = 'Magic Product';
     protected $variation = 'XL';
     protected $primaryCategory;
+    protected $primaryCategoryName = 'Celulares';
     protected $description = 'This is a bold product.';
     protected $brand;
+    protected $brandName = 'Samsung';
     protected $price = 5999.00;
     protected $taxClass = 'IVA exento 0%';
     protected $productId = '123326998';
     protected $operatorCode = 'facl';
     protected $productData;
+    protected $color = 'Beige';
+    protected $colorBasico = 'Beige';
+    protected $size = 'L';
+    protected $talla = 'XL';
     protected $businessUnits;
 
     protected $shopSku = 'HA997TB1EVQQ2LCO-9273602';
@@ -41,6 +47,7 @@ class GlobalProductTest extends LinioTestCase
     protected $parentSku = '2145819188aaeu3';
     protected $status = 'inactive';
     protected $qcStatus = 'approved';
+    protected $url = 'https://staging.falabella.com/falabella-cl/product/100283906/Kids-Drawing-pencils/100283907';
     protected $stock = 100;
     protected $isPublished = 0;
     protected $categories;
@@ -65,9 +72,9 @@ class GlobalProductTest extends LinioTestCase
 
         $this->faker = $this->getFaker();
 
-        $this->brand = Brand::fromName('Samsung');
+        $this->brand = Brand::fromName($this->brandName);
 
-        $this->primaryCategory = Category::fromName('Celulares');
+        $this->primaryCategory = Category::fromName($this->primaryCategoryName);
 
         $this->productData = new ProductData(
             $this->conditionType,
@@ -156,7 +163,12 @@ class GlobalProductTest extends LinioTestCase
         $product->setCategories($this->categories);
         $product->setMainImage($this->mainImage);
         $product->setQcStatus($this->qcStatus);
+        $product->setUrl($this->url);
         $product->attachImages($this->images);
+        $product->setColor($this->color);
+        $product->setColorBasico($this->colorBasico);
+        $product->setSize($this->size);
+        $product->setTalla($this->talla);
 
         $this->assertInstanceOf(GlobalProduct::class, $product);
         $this->assertEquals($product->getSellerSku(), $this->sellerSku);
@@ -175,20 +187,25 @@ class GlobalProductTest extends LinioTestCase
         $this->assertEquals($product->getMainImage(), $this->mainImage);
         $this->assertEquals($product->getImages(), $this->images);
         $this->assertEquals($product->getQcStatus(), $this->qcStatus);
+        $this->assertEquals($product->getUrl(), $this->url);
+        $this->assertEquals($product->getColor(), $this->color);
+        $this->assertEquals($product->getColorBasico(), $this->colorBasico);
+        $this->assertEquals($product->getSize(), $this->size);
+        $this->assertEquals($product->getTalla(), $this->talla);
     }
 
-    public function testItMakesAProductFromXml(): void
+    /**
+     * @dataProvider xmlGlobalProductProvider
+     */
+    public function testItMakesAProductFromXml(string $xmlGlobalProduct, bool $hasFashionAttr): void
     {
-        $sXml = $this->createXmlStringForAGlobalProduct();
-
-        $xml = new SimpleXMLElement($sXml);
+        $xml = new SimpleXMLElement($xmlGlobalProduct);
 
         $product = GlobalProductFactory::make($xml);
 
         $this->assertInstanceOf(GlobalProduct::class, $product);
         $this->assertEquals((string) $xml->SellerSku, $product->getSellerSku());
         $this->assertEquals((string) $xml->Name, $product->getName());
-        $this->assertEquals((string) $xml->Variation, $product->getVariation());
         $this->assertEquals((string) $xml->ProductId, $product->getProductId());
         $this->assertEquals((string) $xml->Description, $product->getDescription());
         $this->assertEquals((string) $xml->TaxClass, $product->getTaxClass());
@@ -201,7 +218,6 @@ class GlobalProductTest extends LinioTestCase
         $this->assertEquals($product->getProductData()->getAttribute('PackageLength'), (float) $xml->ProductData->PackageLength);
         $this->assertEquals($product->getProductData()->getAttribute('PackageWidth'), (float) $xml->ProductData->PackageWidth);
         $this->assertEquals($product->getProductData()->getAttribute('PackageWeight'), (float) $xml->ProductData->PackageWeight);
-
         $this->assertEquals((string) $xml->ShopSku, $product->getShopSku());
         $this->assertEquals((string) $xml->ProductSin, $product->getProductSin());
         $this->assertEquals((int) $xml->BusinessUnits->BusinessUnit[0]->Stock, $product->getBusinessUnits()->findByOperatorCode($this->operatorCode)->getStock());
@@ -214,6 +230,21 @@ class GlobalProductTest extends LinioTestCase
         $this->assertInstanceOf(Images::class, $product->getImages());
         $this->assertContainsOnlyInstancesOf(Image::class, $product->getImages()->all());
         $this->assertCount(2, $product->getImages()->all());
+        $this->assertEquals((string) $xml->QCStatus, $product->getQcStatus());
+
+        if ($hasFashionAttr) {
+            $this->assertEmpty($product->getVariation());
+            $this->assertEquals($xml->Color, $product->getColor());
+            $this->assertEquals($xml->ColorBasico, $product->getColorBasico());
+            $this->assertEquals($xml->Size, $product->getSize());
+            $this->assertEquals($xml->Talla, $product->getTalla());
+        } else {
+            $this->assertEquals((string) $xml->Variation, $product->getVariation());
+            $this->assertEmpty($product->getColor());
+            $this->assertEmpty($product->getColorBasico());
+            $this->assertEmpty($product->getSize());
+            $this->assertEmpty($product->getTalla());
+        }
     }
 
     public function testItReturnsAJsonRepresentation(): void
@@ -237,6 +268,10 @@ class GlobalProductTest extends LinioTestCase
         $product->setCategories($this->categories);
         $product->setMainImage($this->mainImage);
         $product->setQcStatus($this->qcStatus);
+        $product->setColor($this->color);
+        $product->setColorBasico($this->colorBasico);
+        $product->setSize($this->size);
+        $product->setTalla($this->talla);
         $product->attachImages($this->images);
 
         $expectedJson = $expectedJson = Json::decode($this->getSchema('Product/GlobalProduct.json'));
@@ -301,7 +336,6 @@ class GlobalProductTest extends LinioTestCase
             ['Brand'],
             ['Description'],
             ['TaxClass'],
-            ['Variation'],
             ['ProductId'],
             ['PrimaryCategory'],
             ['ProductData'],
@@ -319,12 +353,13 @@ class GlobalProductTest extends LinioTestCase
             $this->name,
             $this->shopSku,
             $this->productSin,
-            $this->brand->getName(),
+            $this->brandName,
             $this->description,
             $this->taxClass,
             $this->variation,
             $this->productId,
-            $this->primaryCategory->getName(),
+            $this->primaryCategoryName,
+            $this->url,
             $this->qcStatus,
             $this->conditionType,
             $this->packageHeight,
@@ -337,5 +372,62 @@ class GlobalProductTest extends LinioTestCase
             $this->status,
             $this->isPublished
         );
+    }
+
+    public function createXmlStringForAGlobalProductWithFashion(bool $hasFashionData): string
+    {
+        $schema = 'Product/GlobalProductOptionalVariations.xml';
+
+        $xmlVariation = '<Variation>XL</Variation>';
+
+        $xmlFashion = '<Color>Beige</Color>
+        <ColorBasico>Beige</ColorBasico>
+        <Size>L</Size>
+        <Talla>XL</Talla>';
+
+        return sprintf(
+            $this->getSchema($schema),
+            $this->sellerSku,
+            $this->parentSku,
+            $this->newSellerSku,
+            $this->name,
+            $this->shopSku,
+            $this->productSin,
+            $this->brandName,
+            $this->description,
+            $this->taxClass,
+            $hasFashionData ? $xmlFashion : $xmlVariation,
+            $this->productId,
+            $this->primaryCategoryName,
+            $this->url,
+            $this->qcStatus,
+            $this->conditionType,
+            $this->packageHeight,
+            $this->packageLength,
+            $this->packageWidth,
+            $this->packageWeight,
+            $this->operatorCode,
+            $this->price,
+            $this->stock,
+            $this->status,
+            $this->isPublished
+        );
+    }
+
+    /**
+     * @return mixed[]
+     */
+    public function xmlGlobalProductProvider(): array
+    {
+        return [
+            'with variation without fashion data' => [
+                $this->createXmlStringForAGlobalProductWithFashion(false),
+                false,
+            ],
+            'without variation with fashion data' => [
+                $this->createXmlStringForAGlobalProductWithFashion(true),
+                true,
+            ],
+        ];
     }
 }

@@ -31,7 +31,6 @@ class OrderFactory
         'AddressUpdatedAt',
         'AddressBilling',
         'AddressShipping',
-        'NationalRegistrationNumber',
         'PromisedShippingTime',
         'ItemsCount',
         'ExtraAttributes',
@@ -60,6 +59,8 @@ class OrderFactory
         $dateTime = DateTimeImmutable::createFromFormat('Y-m-d H:i:s', (string) $element->PromisedShippingTime);
         $promisedShippingTime = !empty($dateTime) ? $dateTime : null;
 
+        $nationalRegistrationNumber = !empty($element->NationalRegistrationNumber) ? (string) $element->NationalRegistrationNumber : null;
+
         $statuses = [];
         foreach ($element->Statuses->Status as $status) {
             array_push($statuses, (string) $status);
@@ -70,9 +71,11 @@ class OrderFactory
             throw new InvalidDomainException('OperatorCode');
         }
 
+        $orderNumber = is_numeric((string) $element->OrderNumber) ? (int) $element->OrderNumber : (string) $element->OrderNumber;
+
         return Order::fromData(
             (int) $element->OrderId,
-            (int) $element->OrderNumber,
+            $orderNumber,
             (string) $element->CustomerFirstName,
             (string) $element->CustomerLastName,
             (string) $element->PaymentMethod,
@@ -87,7 +90,7 @@ class OrderFactory
             $addressUpdatedAt,
             $addressBilling,
             $addressShipping,
-            (string) $element->NationalRegistrationNumber,
+            $nationalRegistrationNumber,
             (int) $element->ItemsCount,
             $promisedShippingTime,
             (string) $element->ExtraAttributes,

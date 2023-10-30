@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace Linio\SellerCenter\Service;
 
+use DateTimeImmutable;
 use Linio\SellerCenter\Application\Configuration;
 use Linio\SellerCenter\Application\Parameters;
 use Linio\SellerCenter\Application\Security\Signature;
@@ -11,15 +12,21 @@ use Linio\SellerCenter\Contract\ClientInterface;
 use Linio\SellerCenter\Factory\RequestFactory;
 use Linio\SellerCenter\Formatter\LogMessageFormatter;
 use Linio\SellerCenter\Response\HandleResponse;
+use Linio\SellerCenter\Response\SuccessJsonResponse;
 use Linio\SellerCenter\Response\SuccessResponse;
 use Psr\Http\Message\RequestInterface;
+use Psr\Http\Message\ResponseInterface;
 use Psr\Log\LoggerInterface;
 
 class BaseManager
 {
     protected const DATE_TIME_FORMAT = 'Y-m-d\TH:i:s';
     protected const X_SOURCE_HEADER = 'X-Source';
+    protected const USER_AGENT_HEADER = 'User-Agent';
     protected const REQUEST_ID_HEADER = 'Request-ID';
+    protected const CONTENT_TYPE_HEADER = 'Content-type';
+    protected const CONTENT_TYPE_HEADER_VALUE = 'text/xml; charset=UTF8';
+    protected const CONTENT_TYPE_HEADER_VALUE_ALT = 'application/json';
 
     /**
      * @var LoggerInterface
@@ -68,50 +75,112 @@ class BaseManager
         return bin2hex(random_bytes(16));
     }
 
-    /**
-     * @param mixed[] $customHeaders
-     *
-     * @return mixed[]
-     */
-    protected function generateRequestHeaders(array $customHeaders = []): array
-    {
-        $headers = [
-            self::REQUEST_ID_HEADER => $this->generateRequestId(),
-            self::X_SOURCE_HEADER => $this->configuration->getSource(),
-        ];
-
-        if (empty($customHeaders)) {
-            return $headers;
-        }
-
-        return array_merge($customHeaders, $headers);
-    }
-
     public function executeAction(
         string $action,
         Parameters $parameters,
-        string $requestId,
-        string $httpMethod = 'GET'
+        ?string $requestId,
+        string $httpMethod = 'GET',
+        bool $debug = true,
+        ?string $body = null
     ): SuccessResponse {
-        $requestHeaders = $this->generateRequestHeaders([self::REQUEST_ID_HEADER => $requestId]);
+        $requestHeaders = $this->generateRequestHeaders(
+            [self::REQUEST_ID_HEADER => $requestId ?? $this->generateRequestId()]
+        );
 
-        $request = RequestFactory::make($httpMethod, $this->configuration->getEndpoint(), $requestHeaders);
+        $request = RequestFactory::make(
+            $httpMethod,
+            $this->configuration->getEndpoint(),
+            $requestHeaders,
+            $body
+        );
 
-        $this->logRequest($action, $requestId, $request, $parameters);
-
-        $response = $this->client->send($request, [
-            'query' => $this->buildQuery($parameters),
-        ]);
+        $response = $this->generateRequest(false, $parameters, $request);
 
         $body = (string) $response->getBody();
-
-        $this->logRawResponse($action, $requestId, $body);
-
         $builtResponse = HandleResponse::parse($body);
 
-        $this->logHandledResponse($action, $requestId, $builtResponse);
+        if ($debug) {
+            $this->logRequest(
+                $action,
+                $requestHeaders[self::REQUEST_ID_HEADER],
+                $request,
+                $parameters,
+                [
+                    'head' => $builtResponse->getHead()->asXML(),
+                    'body' => $builtResponse->getBody()->asXML(),
+                ]
+            );
+        }
+
+        HandleResponse::validate($body);
 
         return $builtResponse;
+    }
+
+    /**
+     * @param string[] $customHeader
+     */
+    public function executeJsonAction(
+        string $action,
+        Parameters $parameters,
+        ?string $requestId,
+        string $httpMethod = 'GET',
+        bool $debug = true,
+        ?string $body = null,
+        bool $useHeaderParams = false,
+        array $customHeader = [],
+        string $path = ''
+    ): SuccessJsonResponse {
+        $requestHeaders = $this->generateRequestHeaders(
+            $customHeader,
+            $requestId,
+            $action,
+            $useHeaderParams,
+            false
+        );
+
+        $request = RequestFactory::make(
+            $httpMethod,
+            sprintf('%s%s', $this->configuration->getEndpoint(), $path),
+            $requestHeaders,
+            $body
+        );
+
+        $response = $this->generateRequest($useHeaderParams, $parameters, $request);
+
+        $body = (string) $response->getBody();
+        $builtResponse = HandleResponse::parseJson($body);
+
+        if ($debug) {
+            $this->logRequest(
+                $action,
+                $requestHeaders[self::REQUEST_ID_HEADER],
+                $request,
+                $parameters,
+                [
+                    'message' => $builtResponse->getMessage(),
+                    'data' => $builtResponse->getDataToString(),
+                ]
+            );
+        }
+
+        HandleResponse::validateJsonResponse($body);
+
+        return $builtResponse;
+    }
+
+    private function generateRequest(
+        bool $useHeaderParams,
+        Parameters $parameters,
+        RequestInterface $request
+    ): ResponseInterface {
+        if (!$useHeaderParams) {
+            $query = $this->buildQuery($parameters);
+        }
+
+        return $this->client->send($request, [
+            'query' => $query ?? $parameters->all(),
+        ]);
     }
 
     /**
@@ -119,7 +188,9 @@ class BaseManager
      */
     public function buildQuery(Parameters $parameters): array
     {
-        return $parameters->all() + [
+        $parameters = $parameters->all();
+
+        return $parameters + [
             'Signature' => Signature::generate(
                 $parameters,
                 $this->configuration->getKey()
@@ -127,41 +198,60 @@ class BaseManager
         ];
     }
 
+    /**
+     * @param mixed[] $response
+     */
     private function logRequest(
         string $action,
         string $requestId,
         RequestInterface $request,
-        Parameters $parameters
+        Parameters $parameters,
+        array $response
     ): void {
         $this->logger->debug(
             LogMessageFormatter::fromAction($requestId, $action, LogMessageFormatter::TYPE_REQUEST),
             [
-                'url' => (string) $request->getUri(),
-                'method' => $request->getMethod(),
-                'body' => (string) $request->getBody(),
-                'parameters' => $parameters->all(),
+                'request' => [
+                    'url' => (string) $request->getUri(),
+                    'method' => $request->getMethod(),
+                    'headers' => $request->getHeaders(),
+                    'body' => (string) $request->getBody(),
+                    'parameters' => $parameters->all(),
+                ],
+                'response' => $response,
             ]
         );
     }
 
-    private function logRawResponse(string $action, string $requestId, string $body): void
+    /**
+     * @param string[] $customHeader
+     *
+     * @return mixed[]
+     */
+    public function generateRequestHeaders(array $customHeader = [], ?string $requestId = null, string $action = '', bool $useHeaderParams = false, bool $isXml = true): array
     {
-        $this->logger->debug(
-            LogMessageFormatter::fromAction($requestId, $action, LogMessageFormatter::TYPE_RESPONSE),
-            [
-                'body' => $body,
-            ]
-        );
-    }
+        $header = [
+            self::CONTENT_TYPE_HEADER => $isXml ? self::CONTENT_TYPE_HEADER_VALUE : self::CONTENT_TYPE_HEADER_VALUE_ALT,
+            self::REQUEST_ID_HEADER => $requestId ?? $this->generateRequestId(),
+            self::X_SOURCE_HEADER => $this->configuration->getSource(),
+            self::USER_AGENT_HEADER => $this->configuration->getUserAgent(),
+        ];
 
-    private function logHandledResponse(string $action, string $requestId, SuccessResponse $handledResponse): void
-    {
-        $this->logger->debug(
-            LogMessageFormatter::fromAction($requestId, $action, LogMessageFormatter::TYPE_BUILT_RESPONSE),
-            [
-                'head' => $handledResponse->getHead()->asXML(),
-                'body' => $handledResponse->getBody()->asXML(),
-            ]
-        );
+        $headerComplete = $customHeader;
+
+        if ($useHeaderParams) {
+            $headerComplete['UserID'] = $this->configuration->getUser();
+            $headerComplete['Version'] = $this->configuration->getVersion();
+            $headerComplete['Format'] = $isXml ? 'XML' : 'JSON';
+            $headerComplete['Timestamp'] = (new DateTimeImmutable())->format(DATE_ATOM);
+            $headerComplete['Action'] = $action;
+            ksort($headerComplete);
+            $headerComplete['Signature'] = Signature::generate(
+                $headerComplete,
+                $this->configuration->getKey()
+            )->get();
+        }
+
+        return $headerComplete + $header;
     }
 }

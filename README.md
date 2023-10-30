@@ -9,6 +9,10 @@ Installation
 
 The recommended way to install the SDK is [through composer](http://getcomposer.org)
 
+We have two main branch depending on platform, please use correct branch and follow its README file:
+ -for Falabella use [gsc-master](https://github.com/LinioIT/seller-center-sdk/tree/gsc-master)
+ -for Linio use [master](https://github.com/LinioIT/seller-center-sdk/tree/master)
+
 Edit your composer.json to add the repository URL:
 
     {
@@ -22,7 +26,7 @@ Edit your composer.json to add the repository URL:
 
 Then require the package:
 
-    $ composer require linio/seller-center-sdk
+    $ composer require "linio/seller-center-sdk: dev-gsc-master"
 
 Quick start
 -----
@@ -50,7 +54,29 @@ All the interaction with the platform will be guided through the SDK class **Sel
 ```php
 $client = new Client(); // Guzzle >= v6 only or a PSR7 HTTP Client
 
-$configuration = new \Linio\SellerCenter\Application\Configuration('api-key-provided', 'api-username-provided', 'https://enviroment-seller-center-api.com', '1.0');
+//If you're not an integrator, the following parameters should suffice for the configuration
+
+$configuration = new \Linio\SellerCenter\Application\Configuration(
+    'api-key-provided',
+    'api-username-provided',
+    'https://enviroment-seller-center-api.com',
+    '1.0',
+    );
+
+// Otherwise you'll need to set the following additional parameters. These are necessary in order to set the User-Agent header which is mandatory for API communication.
+
+$configuration = new \Linio\SellerCenter\Application\Configuration(
+    'api-key-provided',
+    'api-username-provided',
+    'https://enviroment-seller-center-api.com',
+    '1.0',
+    'SDK', // Source
+    'seller-id',
+    'PHP', //Language
+    '7.5', //Language version
+    'integrator-name',
+    'cl' //Country
+    );
 
 $sdk = new \Linio\SellerCenter\SellerCenterSdk($configuration, $client);
 ```
@@ -84,14 +110,19 @@ $brandList = $sdk->brands()->getBrands();
 
 Here is a list of the actual managers in the SDK:
 
-- [BrandManager](docs/Managers/Brand.md)
-- [CategoryManager](docs/Managers/Category.md)
-- [DocumentManager](docs/Managers/Document.md)
-- [FeedManager](docs/Managers/Feed.md)
-- [OrderManager](docs/Managers/Order.md)
-- [ProductManager](docs/Managers/Product.md)
-- [QualityControlManager](docs/Managers/QcStatus.md)
-- [WebookManager](docs/Managers/Webook.md)
+- [LinioSellerManager](docs/Managers/SellerManager.md)
+- [FalabellaSellerManager](docs/Managers/GlobalSellerManager.md)
+- [LinioOrderManager](docs/Managers/OrderManager.md)
+- [FalabellaOrderManager](docs/Managers/GlobalOrderManager.md)
+- [LinioProductManager](docs/Managers/ProductManager.md)
+- [FalabellaProductManager](docs/Managers/GlobalProductManager.md)
+- [BrandManager](docs/Managers/BrandManager.md)
+- [CategoryManager](docs/Managers/CategoryManager.md)
+- [DocumentManager](docs/Managers/DocumentManager.md)
+- [FeedManager](docs/Managers/FeedManager.md)
+- [QualityControlManager](docs/Managers/QualityControlManager.md)
+- [WebhookManager](docs/Managers/WebhookManager.md)
+- [ShipmentManager](docs/Managers/ShipmentManager.md)
 
 ### Logging
 

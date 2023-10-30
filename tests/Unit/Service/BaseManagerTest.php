@@ -8,6 +8,7 @@ use Linio\SellerCenter\Application\Configuration;
 use Linio\SellerCenter\Application\Parameters;
 use Linio\SellerCenter\Contract\ClientInterface;
 use Linio\SellerCenter\LinioTestCase;
+use Linio\SellerCenter\Response\SuccessJsonResponse;
 use Linio\SellerCenter\Service\BaseManager;
 use PHPUnit\Framework\MockObject\MockObject;
 use Prophecy\Argument;
@@ -65,6 +66,13 @@ class BaseManagerTest extends LinioTestCase
         $this->assertNotEmpty($requestId);
     }
 
+    public function testItGeneratesHeaders(): void
+    {
+        $headers = $this->baseManager->generateRequestHeaders([]);
+        $this->assertIsArray($headers);
+        $this->assertNotEmpty($headers);
+    }
+
     public function testItBuildQueryParameters(): void
     {
         $this->parametersStub->set(['foo' => true]);
@@ -81,7 +89,7 @@ class BaseManagerTest extends LinioTestCase
 
         $this->loggerStub
             ->debug(Argument::type('string'), Argument::type('array'))
-            ->shouldBeCalledTimes(3);
+            ->shouldBeCalledTimes(1);
 
         $this->clientStub
             ->send(
@@ -95,6 +103,50 @@ class BaseManagerTest extends LinioTestCase
         $this->assertTrue(true);
     }
 
+    public function testItExecutesJsonAction(): void
+    {
+        $response = $this->prophesize(ResponseInterface::class);
+        $response->getBody()->shouldBeCalled()->willReturn($this->getJsonSuccessResponse());
+
+        $this->loggerStub
+            ->debug(
+                Argument::that(
+                    function (string $message) {
+                        return str_contains($message, 'requestId') &&
+                            str_contains($message, 'FooAction');
+                    }
+                ),
+                Argument::that(
+                    function (array $context) {
+                        return in_array('application/json', $context['request']['headers']['Content-type']) &&
+                            in_array('baz/extrapath', $context['request']) &&
+                            in_array('requestId', $context['request']['headers']['Request-ID']) &&
+                            in_array('service', $context['request']['headers']['Service']) &&
+                            in_array('bar', $context['request']['headers']['UserID']) &&
+                            in_array('FooAction', $context['request']['headers']['Action']) &&
+                            key_exists('Signature', $context['request']['headers']);
+                    }
+                )
+            )
+            ->shouldBeCalledTimes(1);
+
+        $this->clientStub
+            ->send(
+                Argument::type(RequestInterface::class),
+                ['query' => []]
+            )
+            ->shouldBeCalled()
+            ->willReturn($response->reveal());
+
+        $result = $this->baseManager->executeJsonAction('FooAction', $this->parametersStub, 'requestId', 'GET', true, '{
+            "orderItemIds": [
+                "216435"
+            ],
+            "invoiceNumber": "1",}', true, ['Format' => 'format', 'Service' => 'service'], '/extrapath');
+
+        $this->assertInstanceOf(SuccessJsonResponse::class, $result);
+    }
+
     private function getRawSuccessResponse(): string
     {
         return '<?xml version="1.0" encoding="UTF-8"?>
@@ -104,5 +156,22 @@ class BaseManagerTest extends LinioTestCase
                          <Body>
                          </Body>
                     </SuccessResponse>';
+    }
+
+    private function getJsonSuccessResponse(): string
+    {
+        return '{
+            "message": "Invoice Uploaded Successfully",
+            "data": {
+            "invoiceNumber": 0,
+            "invoiceDate": "string",
+            "sellerOrderNumber": "string",
+            "invoiceDocument": "string",
+            "invoiceDocumentFormat": "pdf",
+            "invoiceType": "BOLETA",
+            "operatorCode": "FACL",
+            "invoiceLines": []
+            }
+            }';
     }
 }

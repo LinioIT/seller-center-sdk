@@ -1,11 +1,15 @@
 {
   "name":"Magic Product",
-  "sellerSku":"2145819109aaeu7",
+  "sellerSku":"21458191097",
   "newSellerSku":null,
   "shopSku":"HA997TB1EVQQ2LCO-9273602",
   "productSin":"4K173432N2D5",
   "parentSku":"2145819188aaeu3",
   "variation":"XL",
+  "color":"Beige",
+  "colorBasico":"Beige",
+  "size":"L",
+  "talla":"XL",
   "primaryCategory":{
     "categoryId":null,
     "name":"Celulares",

@@ -6,19 +6,34 @@ namespace Linio\SellerCenter\Contract;
 
 interface BusinessUnitOperatorCodes
 {
-    public const FALABELLA_CHILE = 'facl';
-    public const FALABELLA_PERU = 'fape';
-    public const LINIO_CHILE = 'licl';
-    public const LINIO_PERU = 'lipe';
-    public const SODIMAC_CHILE = 'socl';
-    public const SODIMAC_PERU = 'sope';
+    public const FALA_CHILE = 'facl';
+    public const FALA_PERU = 'fape';
+    public const FALA_MEXICO = 'famx';
+    public const FALA_COLOMBIA = 'faco';
+
+    public const CODE_CHILE = 'cl';
+    public const CODE_PERU = 'pe';
+    public const CODE_MEXICO = 'mx';
+    public const CODE_COLOMBIA = 'co';
 
     public const OPERATOR_CODES = [
-        self::FALABELLA_CHILE,
-        self::FALABELLA_PERU,
-        self::LINIO_CHILE,
-        self::LINIO_PERU,
-        self::SODIMAC_CHILE,
-        self::SODIMAC_PERU,
+        self::FALA_CHILE,
+        self::FALA_PERU,
+        self::FALA_MEXICO,
+        self::FALA_COLOMBIA,
+    ];
+
+    public const COUNTRY_CODES = [
+        self::CODE_CHILE,
+        self::CODE_PERU,
+        self::CODE_MEXICO,
+        self::CODE_COLOMBIA,
+    ];
+
+    public const COUNTRY_OPERATOR = [
+        self::CODE_CHILE => self::FALA_CHILE,
+        self::CODE_PERU => self::FALA_PERU,
+        self::CODE_MEXICO => self::FALA_MEXICO,
+        self::CODE_COLOMBIA => self::FALA_COLOMBIA,
     ];
 }

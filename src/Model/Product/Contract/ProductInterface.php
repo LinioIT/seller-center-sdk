@@ -25,7 +25,7 @@ interface ProductInterface
 
     public function getName(): string;
 
-    public function getVariation(): string;
+    public function getVariation(): ?string;
 
     public function getPrimaryCategory(): Category;
 
@@ -38,6 +38,8 @@ interface ProductInterface
     public function getProductId(): string;
 
     public function getTaxClass(): ?string;
+
+    public function getUrl(): ?string;
 
     public function getProductData(): ProductData;
 
@@ -70,6 +72,8 @@ interface ProductInterface
     public function setProductId(string $productId): void;
 
     public function setTaxClass(?string $taxClass): void;
+
+    public function setUrl(string $url): void;
 
     public function setProductData(ProductData $productData): void;
 

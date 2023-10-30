@@ -4,83 +4,30 @@ declare(strict_types=1);
 
 namespace Linio\SellerCenter\Service;
 
-use Linio\SellerCenter\Application\Security\Signature;
-use Linio\SellerCenter\Factory\RequestFactory;
 use Linio\SellerCenter\Factory\Xml\Shipment\ShipmentProvidersFactory;
-use Linio\SellerCenter\Formatter\LogMessageFormatter;
 use Linio\SellerCenter\Model\Shipment\ShipmentProvider;
-use Linio\SellerCenter\Response\HandleResponse;
 
 class ShipmentManager extends BaseManager
 {
     /**
      * @return  ShipmentProvider[]
      */
-    public function getShipmentProviders(): array
+    public function getShipmentProviders(bool $debug = true): array
     {
         $action = 'GetShipmentProviders';
 
-        $parameters = clone $this->parameters;
-        $parameters->set(['Action' => $action]);
-        $parameters->set([
-            'Signature' => Signature::generate($parameters, $this->configuration->getKey())->get(),
-        ]);
+        $parameters = $this->makeParametersForAction($action);
 
-        $requestHeaders = $this->generateRequestHeaders();
-        $requestId = $requestHeaders[self::REQUEST_ID_HEADER];
-
-        $request = RequestFactory::make(
+        $builtResponse = $this->executeAction(
+            $action,
+            $parameters,
+            null,
             'GET',
-            $this->configuration->getEndpoint(),
-            $requestHeaders
-        );
-
-        $this->logger->debug(
-            LogMessageFormatter::fromAction($requestId, $action, LogMessageFormatter::TYPE_REQUEST),
-            [
-                'url' => (string) $request->getUri(),
-                'method' => $request->getMethod(),
-                'body' => (string) $request->getBody(),
-                'parameters' => $parameters->all(),
-            ]
-        );
-
-        $response = $this->client->send($request, [
-            'query' => $parameters->all(),
-        ]);
-
-        $body = (string) $response->getBody();
-
-        $this->logger->debug(
-            LogMessageFormatter::fromAction($requestId, $action, LogMessageFormatter::TYPE_RESPONSE),
-            [
-                'body' => $body,
-            ]
-        );
-
-        $builtResponse = HandleResponse::parse($body);
-
-        $this->logger->debug(
-            LogMessageFormatter::fromAction($requestId, $action, LogMessageFormatter::TYPE_BUILT_RESPONSE),
-            [
-                'head' => $builtResponse->getHead()->asXML(),
-                'body' => $builtResponse->getBody()->asXML(),
-            ]
+            $debug
         );
 
         $shipmentProviders = ShipmentProvidersFactory::make($builtResponse->getBody());
 
-        $shipmentProvidersResponse = $shipmentProviders->all();
-
-        $this->logger->info(
-            sprintf(
-                '%d::%s::APIResponse::SellerCenterSdk: %d shipment providers was recovered',
-                $request->getHeaderLine('Request-ID'),
-                $action,
-                count($shipmentProviders->all())
-            )
-        );
-
-        return $shipmentProvidersResponse;
+        return $shipmentProviders->all();
     }
 }

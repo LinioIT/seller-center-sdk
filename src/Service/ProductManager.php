@@ -7,244 +7,81 @@ namespace Linio\SellerCenter\Service;
 use DateTimeInterface;
 use Linio\Component\Util\Json;
 use Linio\SellerCenter\Application\Parameters;
-use Linio\SellerCenter\Application\Security\Signature;
 use Linio\SellerCenter\Contract\ProductFilters;
 use Linio\SellerCenter\Exception\EmptyArgumentException;
-use Linio\SellerCenter\Factory\RequestFactory;
 use Linio\SellerCenter\Factory\Xml\FeedResponseFactory;
 use Linio\SellerCenter\Factory\Xml\Product\ProductsFactory;
-use Linio\SellerCenter\Formatter\LogMessageFormatter;
 use Linio\SellerCenter\Model\Product\Images;
 use Linio\SellerCenter\Model\Product\Product;
 use Linio\SellerCenter\Model\Product\Products;
 use Linio\SellerCenter\Response\FeedResponse;
-use Linio\SellerCenter\Response\HandleResponse;
+use Linio\SellerCenter\Service\Contract\ProductManagerInterface;
 use Linio\SellerCenter\Transformer\Product\ProductsTransformer;
 
-class ProductManager extends BaseManager
+class ProductManager extends BaseManager implements ProductManagerInterface
 {
-    public const DEFAULT_LIMIT = 1000;
-    public const DEFAULT_OFFSET = 0;
-    public const DEFAULT_FILTER = 'all';
-
-    public function productCreate(Products $products): FeedResponse
-    {
-        $action = 'ProductCreate';
-
-        $parameters = clone $this->parameters;
-        $parameters->set(['Action' => $action]);
-        $parameters->set([
-            'Signature' => Signature::generate($parameters, $this->configuration->getKey())->get(),
-        ]);
-
-        $xml = ProductsTransformer::asXmlString($products);
-
-        $requestHeaders = $this->generateRequestHeaders(['Content-type' => 'text/xml; charset=UTF8']);
-        $requestId = $requestHeaders[self::REQUEST_ID_HEADER];
-
-        $request = RequestFactory::make(
-            'POST',
-            $this->configuration->getEndpoint(),
-            $requestHeaders,
-            $xml
+    public function productCreate(
+        Products $products,
+        bool $debug = true
+    ): FeedResponse {
+        return $this->executeProductAction(
+            'ProductCreate',
+            ProductsTransformer::asXmlString($products),
+            $debug
         );
-
-        $this->logger->debug(
-            LogMessageFormatter::fromAction($requestId, $action, LogMessageFormatter::TYPE_REQUEST),
-            [
-                'url' => (string) $request->getUri(),
-                'method' => $request->getMethod(),
-                'body' => (string) $request->getBody(),
-                'parameters' => $parameters->all(),
-            ]
-        );
-
-        $response = $this->client->send($request, [
-            'query' => $parameters->all(),
-        ]);
-
-        $body = (string) $response->getBody();
-
-        $this->logger->debug(
-            LogMessageFormatter::fromAction($requestId, $action, LogMessageFormatter::TYPE_RESPONSE),
-            [
-                'statusCode' => $response->getStatusCode(),
-                'body' => $body,
-            ]
-        );
-
-        $builtResponse = HandleResponse::parse($body);
-
-        $this->logger->debug(
-            LogMessageFormatter::fromAction($requestId, $action, LogMessageFormatter::TYPE_BUILT_RESPONSE),
-            [
-                'head' => $builtResponse->getHead()->asXML(),
-                'body' => $builtResponse->getBody()->asXML(),
-            ]
-        );
-
-        $feedResponse = FeedResponseFactory::make($builtResponse->getHead());
-
-        $this->logger->info(
-            sprintf(
-                '%d::%s::APIResponse::SellerCenterSdk: the product was created',
-                $request->getHeaderLine('Request-ID'),
-                $action
-            )
-        );
-
-        return $feedResponse;
     }
 
-    public function productUpdate(Products $products): FeedResponse
-    {
-        $action = 'ProductUpdate';
-
-        $parameters = clone $this->parameters;
-        $parameters->set(['Action' => $action]);
-        $parameters->set([
-            'Signature' => Signature::generate($parameters, $this->configuration->getKey())->get(),
-        ]);
-
-        $xml = ProductsTransformer::asXmlString($products);
-
-        $requestHeaders = $this->generateRequestHeaders(['Content-type' => 'text/xml; charset=UTF8']);
-        $requestId = $requestHeaders[self::REQUEST_ID_HEADER];
-
-        $request = RequestFactory::make(
-            'POST',
-            $this->configuration->getEndpoint(),
-            $requestHeaders,
-            $xml
+    public function productUpdate(
+        Products $products,
+        bool $debug = true
+    ): FeedResponse {
+        return $this->executeProductAction(
+            'ProductUpdate',
+            ProductsTransformer::asXmlString($products),
+            $debug
         );
-
-        $this->logger->debug(
-            LogMessageFormatter::fromAction($requestId, $action, LogMessageFormatter::TYPE_REQUEST),
-            [
-                'url' => (string) $request->getUri(),
-                'method' => $request->getMethod(),
-                'body' => (string) $request->getBody(),
-                'parameters' => $parameters->all(),
-            ]
-        );
-
-        $response = $this->client->send($request, [
-            'query' => $parameters->all(),
-        ]);
-
-        $body = (string) $response->getBody();
-
-        $this->logger->debug(
-            LogMessageFormatter::fromAction($requestId, $action, LogMessageFormatter::TYPE_RESPONSE),
-            [
-                'statusCode' => $response->getStatusCode(),
-                'body' => $body,
-            ]
-        );
-
-        $builtResponse = HandleResponse::parse($body);
-
-        $this->logger->debug(
-            LogMessageFormatter::fromAction($requestId, $action, LogMessageFormatter::TYPE_BUILT_RESPONSE),
-            [
-                'head' => $builtResponse->getHead()->asXML(),
-                'body' => $builtResponse->getBody()->asXML(),
-            ]
-        );
-
-        $feedResponse = FeedResponseFactory::make($builtResponse->getHead());
-
-        $this->logger->info(
-            sprintf(
-                '%d::%s::APIResponse::SellerCenterSdk: the product was updated',
-                $request->getHeaderLine('Request-ID'),
-                $action
-            )
-        );
-
-        return $feedResponse;
     }
 
-    public function productRemove(Products $products): FeedResponse
-    {
-        $action = 'ProductRemove';
+    public function productRemove(
+        Products $products,
+        bool $debug = true
+    ): FeedResponse {
+        return $this->executeProductAction(
+            'ProductRemove',
+            ProductsTransformer::skusAsXmlString($products),
+            $debug
+        );
+    }
 
-        $parameters = clone $this->parameters;
-        $parameters->set(['Action' => $action]);
-        $parameters->set([
-            'Signature' => Signature::generate($parameters, $this->configuration->getKey())->get(),
-        ]);
+    protected function executeProductAction(
+        string $action,
+        string $xml,
+        bool $debug = true
+    ): FeedResponse {
+        $parameters = $this->makeParametersForAction($action);
 
-        $xml = ProductsTransformer::skusAsXmlString($products);
-
-        $requestHeaders = $this->generateRequestHeaders(['Content-type' => 'text/xml; charset=UTF8']);
-        $requestId = $requestHeaders[self::REQUEST_ID_HEADER];
-        $request = RequestFactory::make(
+        $builtResponse = $this->executeAction(
+            $action,
+            $parameters,
+            null,
             'POST',
-            $this->configuration->getEndpoint(),
-            $requestHeaders,
+            $debug,
             $xml
         );
 
-        $this->logger->debug(
-            LogMessageFormatter::fromAction($requestId, $action, LogMessageFormatter::TYPE_REQUEST),
-            [
-                'url' => (string) $request->getUri(),
-                'method' => $request->getMethod(),
-                'body' => (string) $request->getBody(),
-                'parameters' => $parameters->all(),
-            ]
-        );
-
-        $response = $this->client->send($request, [
-            'query' => $parameters->all(),
-        ]);
-
-        $body = (string) $response->getBody();
-
-        $this->logger->debug(
-            LogMessageFormatter::fromAction($requestId, $action, LogMessageFormatter::TYPE_RESPONSE),
-            [
-                'statusCode' => $response->getStatusCode(),
-                'body' => $body,
-            ]
-        );
-
-        $builtResponse = HandleResponse::parse($body);
-
-        $this->logger->debug(
-            LogMessageFormatter::fromAction($requestId, $action, LogMessageFormatter::TYPE_BUILT_RESPONSE),
-            [
-                'head' => $builtResponse->getHead()->asXML(),
-                'body' => $builtResponse->getBody()->asXML(),
-            ]
-        );
-
-        $feedResponse = FeedResponseFactory::make($builtResponse->getHead());
-
-        $this->logger->info(
-            sprintf(
-                '%d::%s::APIResponse::SellerCenterSdk: the product was removed',
-                $request->getHeaderLine('Request-ID'),
-                $action
-            )
-        );
-
-        return $feedResponse;
+        return FeedResponseFactory::make($builtResponse->getHead());
     }
 
     /**
      * @param mixed[] $productImages
      */
-    public function addImage(array $productImages): FeedResponse
-    {
+    public function addImage(
+        array $productImages,
+        bool $debug = true
+    ): FeedResponse {
         $action = 'Image';
 
-        $parameters = clone $this->parameters;
-        $parameters->set(['Action' => $action]);
-        $parameters->set([
-            'Signature' => Signature::generate($parameters, $this->configuration->getKey())->get(),
-        ]);
+        $parameters = $this->makeParametersForAction($action);
 
         $products = new Products();
 
@@ -259,143 +96,58 @@ class ProductManager extends BaseManager
 
         $xml = ProductsTransformer::imagesAsXmlString($products);
 
-        $requestHeaders = $this->generateRequestHeaders(['Content-type' => 'text/xml; charset=UTF8']);
-        $requestId = $requestHeaders[self::REQUEST_ID_HEADER];
-
-        $request = RequestFactory::make(
+        $builtResponse = $this->executeAction(
+            $action,
+            $parameters,
+            null,
             'POST',
-            $this->configuration->getEndpoint(),
-            $requestHeaders,
+            $debug,
             $xml
         );
 
-        $this->logger->debug(
-            LogMessageFormatter::fromAction($requestId, $action, LogMessageFormatter::TYPE_REQUEST),
-            [
-                'url' => (string) $request->getUri(),
-                'method' => $request->getMethod(),
-                'body' => (string) $request->getBody(),
-                'parameters' => $parameters->all(),
-            ]
-        );
-
-        $response = $this->client->send($request, [
-            'query' => $parameters->all(),
-        ]);
-
-        $body = (string) $response->getBody();
-
-        $this->logger->debug(
-            LogMessageFormatter::fromAction($requestId, $action, LogMessageFormatter::TYPE_RESPONSE),
-            [
-                'statusCode' => $response->getStatusCode(),
-                'body' => $body,
-            ]
-        );
-
-        $builtResponse = HandleResponse::parse($body);
-
-        $this->logger->debug(
-            LogMessageFormatter::fromAction($requestId, $action, LogMessageFormatter::TYPE_BUILT_RESPONSE),
-            [
-                'head' => $builtResponse->getHead()->asXML(),
-                'body' => $builtResponse->getBody()->asXML(),
-            ]
-        );
-
-        $feedResponse = FeedResponseFactory::make($builtResponse->getHead());
-
-        $this->logger->info(
-            sprintf(
-                '%d::%s::APIResponse::SellerCenterSdk: the images was added',
-                $request->getHeaderLine('Request-ID'),
-                $action
-            )
-        );
-
-        return $feedResponse;
+        return FeedResponseFactory::make($builtResponse->getHead());
     }
 
     /**
      * @return mixed[]
      */
-    protected function getProducts(Parameters $parameters): array
-    {
+    public function getProducts(
+        Parameters $parameters,
+        bool $debug = true
+    ): array {
         $action = 'GetProducts';
 
         $parameters->set(['Action' => $action]);
-        $parameters->set([
-            'Signature' => Signature::generate($parameters, $this->configuration->getKey())->get(),
-        ]);
 
-        $requestHeaders = $this->generateRequestHeaders();
-        $requestId = $requestHeaders[self::REQUEST_ID_HEADER];
-
-        $request = RequestFactory::make(
+        $builtResponse = $this->executeAction(
+            $action,
+            $parameters,
+            null,
             'GET',
-            $this->configuration->getEndpoint(),
-            $requestHeaders
-        );
-
-        $this->logger->debug(
-            LogMessageFormatter::fromAction($requestId, $action, LogMessageFormatter::TYPE_REQUEST),
-            [
-                'url' => (string) $request->getUri(),
-                'method' => $request->getMethod(),
-                'body' => (string) $request->getBody(),
-                'parameters' => $parameters->all(),
-            ]
-        );
-
-        $response = $this->client->send($request, [
-            'query' => $parameters->all(),
-        ]);
-
-        $body = (string) $response->getBody();
-
-        $this->logger->debug(
-            LogMessageFormatter::fromAction($requestId, $action, LogMessageFormatter::TYPE_RESPONSE),
-            [
-                'body' => $body,
-            ]
-        );
-
-        $builtResponse = HandleResponse::parse($body);
-
-        $this->logger->debug(
-            LogMessageFormatter::fromAction($requestId, $action, LogMessageFormatter::TYPE_BUILT_RESPONSE),
-            [
-                'head' => $builtResponse->getHead()->asXML(),
-                'body' => $builtResponse->getBody()->asXML(),
-            ]
+            $debug
         );
 
         $products = ProductsFactory::make($builtResponse->getBody(), $this->logger);
 
-        $productsResponse = array_values($products->all());
-
-        $this->logger->info(
-            sprintf(
-                '%d::%s::APIResponse::SellerCenterSdk: %d products was recovered',
-                $request->getHeaderLine('Request-ID'),
-                $action,
-                count($products->all())
-            )
-        );
-
-        return $productsResponse;
+        return array_values($products->all());
     }
 
     /**
      * @return Product[]
      */
-    public function getAllProducts(int $limit = self::DEFAULT_LIMIT, int $offset = self::DEFAULT_OFFSET): array
-    {
+    public function getAllProducts(
+        int $limit = self::DEFAULT_LIMIT,
+        int $offset = self::DEFAULT_OFFSET,
+        bool $debug = true
+    ): array {
         $parameters = clone $this->parameters;
 
         $this->setListDimensions($parameters, $limit, $offset);
 
-        return $this->getProducts($parameters);
+        return $this->getProducts(
+            $parameters,
+            $debug
+        );
     }
 
     /**
@@ -404,7 +156,8 @@ class ProductManager extends BaseManager
     public function getProductsCreatedAfter(
         DateTimeInterface $createdAfter,
         int $limit = self::DEFAULT_LIMIT,
-        int $offset = self::DEFAULT_OFFSET
+        int $offset = self::DEFAULT_OFFSET,
+        bool $debug = true
     ): array {
         $parameters = clone $this->parameters;
 
@@ -414,7 +167,10 @@ class ProductManager extends BaseManager
             ['CreatedAfter' => $createdAfter->format(DATE_ATOM)]
         );
 
-        return $this->getProducts($parameters);
+        return $this->getProducts(
+            $parameters,
+            $debug
+        );
     }
 
     /**
@@ -423,7 +179,8 @@ class ProductManager extends BaseManager
     public function getProductsCreatedBefore(
         DateTimeInterface $createdBefore,
         int $limit = self::DEFAULT_LIMIT,
-        int $offset = self::DEFAULT_OFFSET
+        int $offset = self::DEFAULT_OFFSET,
+        bool $debug = true
     ): array {
         $parameters = clone $this->parameters;
 
@@ -433,7 +190,10 @@ class ProductManager extends BaseManager
             ['CreatedBefore' => $createdBefore->format(DATE_ATOM)]
         );
 
-        return $this->getProducts($parameters);
+        return $this->getProducts(
+            $parameters,
+            $debug
+        );
     }
 
     /**
@@ -442,7 +202,8 @@ class ProductManager extends BaseManager
     public function getProductsUpdatedAfter(
         DateTimeInterface $updatedAfter,
         int $limit = self::DEFAULT_LIMIT,
-        int $offset = self::DEFAULT_LIMIT
+        int $offset = self::DEFAULT_LIMIT,
+        bool $debug = true
     ): array {
         $parameters = clone $this->parameters;
 
@@ -452,7 +213,10 @@ class ProductManager extends BaseManager
             ['UpdatedAfter' => $updatedAfter->format(DATE_ATOM)]
         );
 
-        return $this->getProducts($parameters);
+        return $this->getProducts(
+            $parameters,
+            $debug
+        );
     }
 
     /**
@@ -461,7 +225,8 @@ class ProductManager extends BaseManager
     public function getProductsUpdatedBefore(
         DateTimeInterface $updatedBefore,
         int $limit = self::DEFAULT_LIMIT,
-        int $offset = self::DEFAULT_OFFSET
+        int $offset = self::DEFAULT_OFFSET,
+        bool $debug = true
     ): array {
         $parameters = clone $this->parameters;
 
@@ -471,7 +236,10 @@ class ProductManager extends BaseManager
             ['UpdatedBefore' => $updatedBefore->format(DATE_ATOM)]
         );
 
-        return $this->getProducts($parameters);
+        return $this->getProducts(
+            $parameters,
+            $debug
+        );
     }
 
     /**
@@ -480,7 +248,8 @@ class ProductManager extends BaseManager
     public function searchProducts(
         string $searchValue,
         int $limit = self::DEFAULT_LIMIT,
-        int $offset = self::DEFAULT_OFFSET
+        int $offset = self::DEFAULT_OFFSET,
+        bool $debug = true
     ): array {
         $parameters = clone $this->parameters;
 
@@ -490,7 +259,10 @@ class ProductManager extends BaseManager
             ['Search' => $searchValue]
         );
 
-        return $this->getProducts($parameters);
+        return $this->getProducts(
+            $parameters,
+            $debug
+        );
     }
 
     /**
@@ -499,7 +271,8 @@ class ProductManager extends BaseManager
     public function filterProducts(
         string $filter,
         int $limit = self::DEFAULT_LIMIT,
-        int $offset = self::DEFAULT_OFFSET
+        int $offset = self::DEFAULT_OFFSET,
+        bool $debug = true
     ): array {
         $parameters = clone $this->parameters;
 
@@ -513,7 +286,10 @@ class ProductManager extends BaseManager
             ['Filter' => $filter]
         );
 
-        return $this->getProducts($parameters);
+        return $this->getProducts(
+            $parameters,
+            $debug
+        );
     }
 
     /**
@@ -524,7 +300,8 @@ class ProductManager extends BaseManager
     public function getProductsBySellerSku(
         array $skuSellerList,
         int $limit = self::DEFAULT_LIMIT,
-        int $offset = self::DEFAULT_OFFSET
+        int $offset = self::DEFAULT_OFFSET,
+        bool $debug = true
     ): array {
         $parameters = clone $this->parameters;
 
@@ -538,7 +315,10 @@ class ProductManager extends BaseManager
             ['SkuSellerList' => Json::encode($skuSellerList)]
         );
 
-        return $this->getProducts($parameters);
+        return $this->getProducts(
+            $parameters,
+            $debug
+        );
     }
 
     /**
@@ -555,7 +335,8 @@ class ProductManager extends BaseManager
         int $offset = self::DEFAULT_OFFSET,
         ?array $skuSellerList = null,
         ?DateTimeInterface $updateAfter = null,
-        ?DateTimeInterface $updateBefore = null
+        ?DateTimeInterface $updateBefore = null,
+        bool $debug = true
     ): array {
         $parameters = clone $this->parameters;
 
@@ -592,10 +373,13 @@ class ProductManager extends BaseManager
             $parameters->set(['UpdateBefore' => $updateBefore->format(DATE_ATOM)]);
         }
 
-        return $this->getProducts($parameters);
+        return $this->getProducts(
+            $parameters,
+            $debug
+        );
     }
 
-    protected function setListDimensions(Parameters &$parameters, int $limit, int $offset): void
+    public function setListDimensions(Parameters &$parameters, int $limit, int $offset): void
     {
         $verifiedLimit = $limit >= 1 ? $limit : self::DEFAULT_LIMIT;
         $verifiedOffset = $offset >= 1 ? $offset : self::DEFAULT_OFFSET;

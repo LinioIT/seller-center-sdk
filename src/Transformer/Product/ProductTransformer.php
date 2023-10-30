@@ -10,6 +10,7 @@ use Linio\SellerCenter\Model\Category\Categories;
 use Linio\SellerCenter\Model\Category\Category;
 use Linio\SellerCenter\Model\Product\Contract\ProductInterface;
 use Linio\SellerCenter\Model\Product\GlobalProduct;
+use Linio\SellerCenter\Model\Product\Product;
 use SimpleXMLElement;
 
 class ProductTransformer
@@ -17,9 +18,26 @@ class ProductTransformer
     public static function asXml(SimpleXMLElement &$xml, ProductInterface $product): void
     {
         $body = $xml->addChild('Product');
-        self::addAttributes($body, $product->all());
+
+        $overrideStatus = self::getOverrideStatus($product);
+        self::addAttributes($body, $product->all(), $overrideStatus);
 
         $productDataAttributes = $product->getProductData()->all();
+
+        if ($product instanceof GlobalProduct) {
+            $businessUnits = $product->getBusinessUnits();
+
+            if (!empty($businessUnits)) {
+                $businessUnitsElement = $body->addChild('BusinessUnits');
+                foreach ($businessUnits->all() as $aBusinessUnit) {
+                    $businessUnitElement = $businessUnitsElement->addChild('BusinessUnit');
+                    $businessUnitAttributes = $aBusinessUnit->getAllAttributes();
+                    foreach ($businessUnitAttributes as $attributeKey => $attributeValue) {
+                        $businessUnitElement->addChild((string) $attributeKey, htmlspecialchars((string) $attributeValue));
+                    }
+                }
+            }
+        }
 
         if (empty($productDataAttributes)) {
             return;
@@ -34,29 +52,23 @@ class ProductTransformer
 
             $productData->addChild((string) $attributeKey, htmlspecialchars((string) $attributeValue));
         }
-
-        if ($product instanceof GlobalProduct) {
-            $businessUnits = $product->getBusinessUnits()->all();
-
-            if (!empty($businessUnits)) {
-                $businessUnitsElement = $body->addChild('BusinessUnits');
-                foreach ($businessUnits as $aBusinessUnit) {
-                    $businessUnitElement = $businessUnitsElement->addChild('BusinessUnit');
-                    $businessUnitAttributes = $aBusinessUnit->getAllAttributes();
-                    foreach ($businessUnitAttributes as $attributeKey => $attributeValue) {
-                        $businessUnitElement->addChild((string) $attributeKey, htmlspecialchars((string) $attributeValue));
-                    }
-                }
-            }
-        }
     }
 
     /**
      * @param mixed[] $attributes
+     * @param string[] $overrideAttributes
      */
-    public static function addAttributes(SimpleXMLElement $xml, array $attributes): void
+    public static function addAttributes(SimpleXMLElement $xml, array $attributes, array $overrideAttributes): void
     {
         foreach ($attributes as $attributeName => $attributeValue) {
+            if (in_array($attributeName, $overrideAttributes)) {
+                $xml->addChild(
+                    $attributeName,
+                    $attributeValue ? htmlspecialchars((string) $attributeValue) : ''
+                );
+                continue;
+            }
+
             if ($attributeValue === null) {
                 continue;
             }
@@ -70,6 +82,18 @@ class ProductTransformer
             $encodedValue = htmlspecialchars($adaptedValue);
             $xml->addChild($attributeName, $encodedValue);
         }
+    }
+
+    /**
+     * @return string[]
+     */
+    public static function getOverrideStatus(ProductInterface $product): array
+    {
+        if ($product instanceof Product) {
+            return $product->getOverrideAttributes();
+        }
+
+        return [];
     }
 
     /**

@@ -23,6 +23,9 @@ class OrderItems implements CollectionInterface, JsonSerializable
         return $this->collection[$orderItemId];
     }
 
+    /**
+     * @return OrderItem[]
+     */
     public function all(): array
     {
         return $this->collection;

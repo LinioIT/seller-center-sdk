@@ -33,11 +33,13 @@ class ProductTest extends LinioTestCase
     protected $taxClass = 'IVA exento 0%';
     protected $productId = '123326998';
     protected $productData;
+    protected $overrideAttributes = [];
 
     protected $shopSku = 'HA997TB1EVQQ2LCO-9273602';
     protected $productSin = '4K173432N2D5';
     protected $parentSku = '2145819188aaeu3';
     protected $status = 'inactive';
+    protected $url = 'https://shop-front-pe.linio-staging.com/5573774.html';
     protected $categories;
     protected $salePrice = 4000.00;
     protected $saleStartDate;
@@ -175,6 +177,7 @@ class ProductTest extends LinioTestCase
         $product->setQuantity($this->quantity);
         $product->setAvailable($this->available);
         $product->setMainImage($this->mainImage);
+        $product->setUrl($this->url);
 
         $this->assertInstanceOf(Product::class, $product);
         $this->assertEquals($product->getSellerSku(), $this->sellerSku);
@@ -199,6 +202,9 @@ class ProductTest extends LinioTestCase
         $this->assertEquals($product->getAvailable(), $this->available);
         $this->assertEquals($product->getMainImage(), $this->mainImage);
         $this->assertEquals($product->getImages(), $this->images);
+        $this->assertEquals($product->getUrl(), $this->url);
+        $product->setUrl('');
+        $this->assertEquals($product->getUrl(), null);
     }
 
     public function testItChangesAllMandatoryParameters(): void

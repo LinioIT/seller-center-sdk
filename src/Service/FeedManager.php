@@ -5,159 +5,56 @@ declare(strict_types=1);
 namespace Linio\SellerCenter\Service;
 
 use DateTimeInterface;
-use Linio\SellerCenter\Application\Security\Signature;
-use Linio\SellerCenter\Factory\RequestFactory;
 use Linio\SellerCenter\Factory\Xml\Feed\FeedCountFactory;
 use Linio\SellerCenter\Factory\Xml\Feed\FeedFactory;
 use Linio\SellerCenter\Factory\Xml\Feed\FeedsFactory;
 use Linio\SellerCenter\Factory\Xml\FeedResponseFactory;
-use Linio\SellerCenter\Formatter\LogMessageFormatter;
 use Linio\SellerCenter\Model\Feed\Feed;
 use Linio\SellerCenter\Model\Feed\FeedCount;
 use Linio\SellerCenter\Response\FeedResponse;
-use Linio\SellerCenter\Response\HandleResponse;
-use SimpleXMLElement;
 
 class FeedManager extends BaseManager
 {
-    private const FEED_OFFSET_LIST_ACTION = 'FeedOffsetList';
-    private const FEED_CANCEL_ACTION = 'FeedCancel';
-
-    public function getFeedStatusById(string $id): Feed
-    {
+    public function getFeedStatusById(
+        string $id,
+        bool $debug = true
+    ): Feed {
         $action = 'FeedStatus';
 
-        $parameters = clone $this->parameters;
-        $parameters->set([
-            'Action' => $action,
-            'FeedID' => $id,
-        ]);
-        $parameters->set([
-            'Signature' => Signature::generate($parameters, $this->configuration->getKey())->get(),
-        ]);
+        $parameters = $this->makeParametersForAction($action);
+        $parameters->set(['FeedID' => $id]);
 
-        $requestHeaders = $this->generateRequestHeaders();
-        $requestId = $requestHeaders[self::REQUEST_ID_HEADER];
-
-        $request = RequestFactory::make(
+        $builtResponse = $this->executeAction(
+            $action,
+            $parameters,
+            null,
             'GET',
-            $this->configuration->getEndpoint(),
-            $requestHeaders
+            $debug
         );
 
-        $this->logger->debug(
-            LogMessageFormatter::fromAction($requestId, $action, LogMessageFormatter::TYPE_REQUEST),
-            [
-                'url' => (string) $request->getUri(),
-                'method' => $request->getMethod(),
-                'body' => (string) $request->getBody(),
-                'parameters' => $parameters->all(),
-            ]
-        );
-
-        $response = $this->client->send($request, ['query' => $parameters->all()]);
-
-        $body = (string) $response->getBody();
-
-        $this->logger->debug(
-            LogMessageFormatter::fromAction($requestId, $action, LogMessageFormatter::TYPE_RESPONSE),
-            [
-                'body' => $body,
-            ]
-        );
-
-        $builtResponse = HandleResponse::parse($body);
-
-        $this->logger->debug(
-            LogMessageFormatter::fromAction($requestId, $action, LogMessageFormatter::TYPE_BUILT_RESPONSE),
-            [
-                'head' => $builtResponse->getHead()->asXML(),
-                'body' => $builtResponse->getBody()->asXML(),
-            ]
-        );
-
-        $feedResponse = FeedFactory::make($builtResponse->getBody()->FeedDetail);
-
-        $this->logger->info(
-            sprintf(
-                '%d::%s::APIResponse::SellerCenterSdk: the feed was recovered',
-                $request->getHeaderLine('Request-ID'),
-                $action
-            )
-        );
-
-        return $feedResponse;
+        return FeedFactory::make($builtResponse->getBody()->FeedDetail);
     }
 
     /**
      * @return Feed[]
      */
-    public function getFeedList(): array
+    public function getFeedList(bool $debug = true): array
     {
         $action = 'FeedList';
 
-        $parameters = clone $this->parameters;
-        $parameters->set([
-            'Action' => $action,
-        ]);
-        $parameters->set([
-            'Signature' => Signature::generate($parameters, $this->configuration->getKey())->get(),
-        ]);
+        $parameters = $this->makeParametersForAction($action);
 
-        $requestHeaders = $this->generateRequestHeaders();
-        $requestId = $requestHeaders[self::REQUEST_ID_HEADER];
-
-        $request = RequestFactory::make(
+        $builtResponse = $this->executeAction(
+            $action,
+            $parameters,
+            null,
             'GET',
-            $this->configuration->getEndpoint(),
-            $requestHeaders
-        );
-
-        $this->logger->debug(
-            LogMessageFormatter::fromAction($requestId, $action, LogMessageFormatter::TYPE_REQUEST),
-            [
-                'url' => (string) $request->getUri(),
-                'method' => $request->getMethod(),
-                'body' => (string) $request->getBody(),
-                'parameters' => $parameters->all(),
-            ]
-        );
-
-        $response = $this->client->send($request, ['query' => $parameters->all()]);
-
-        $body = (string) $response->getBody();
-
-        $this->logger->debug(
-            LogMessageFormatter::fromAction($requestId, $action, LogMessageFormatter::TYPE_RESPONSE),
-            [
-                'body' => $body,
-            ]
-        );
-
-        $builtResponse = HandleResponse::parse($body);
-
-        $this->logger->debug(
-            LogMessageFormatter::fromAction($requestId, $action, LogMessageFormatter::TYPE_BUILT_RESPONSE),
-            [
-                'head' => $builtResponse->getHead()->asXML(),
-                'body' => $builtResponse->getBody()->asXML(),
-            ]
+            $debug
         );
 
         $list = FeedsFactory::make($builtResponse->getBody());
 
-        $feedsResponse = array_values($list->all());
-
-        $this->logger->info(
-            sprintf(
-                '%d::%s::APIResponse::SellerCenterSdk: %d feeds was recovered',
-                $request->getHeaderLine('Request-ID'),
-                $action,
-                count($list->all())
-            )
-        );
-
-        return $feedsResponse;
+        return array_values($list->all());
     }
 
     /**
@@ -168,9 +65,11 @@ class FeedManager extends BaseManager
         ?int $pageSize = null,
         ?string $status = null,
         ?DateTimeInterface $createdAfter = null,
-        ?DateTimeInterface $updatedAfter = null
+        ?DateTimeInterface $updatedAfter = null,
+        bool $debug = true
     ): array {
-        $action = self::FEED_OFFSET_LIST_ACTION;
+        $action = 'FeedOffsetList';
+
         $parameters = $this->makeParametersForAction($action);
 
         $formattedCreatedAfter = null;
@@ -181,7 +80,7 @@ class FeedManager extends BaseManager
         }
 
         if ($updatedAfter) {
-            $formattedCreatedAfter = $updatedAfter->format(self::DATE_TIME_FORMAT);
+            $formattedUpdatedAfter = $updatedAfter->format(self::DATE_TIME_FORMAT);
         }
 
         $parameters->set([
@@ -189,124 +88,66 @@ class FeedManager extends BaseManager
             'PageSize' => $pageSize,
             'Status' => $status,
             'CreationDate' => $formattedCreatedAfter,
-            'UpdatedDate' => $formattedCreatedAfter,
+            'UpdatedDate' => $formattedUpdatedAfter,
         ]);
 
         $requestId = $this->generateRequestId();
         $response = $this->executeAction(
             $action,
             $parameters,
-            $requestId
+            $requestId,
+            'GET',
+            $debug
         );
+
         $list = FeedsFactory::make($response->getBody());
 
-        $this->logger->info(sprintf(
-            '%d::%s::APIResponse::SellerCenterSdk: %d feeds was recovered',
-            $requestId,
-            $action,
-            count($list->all())
-        ));
+        if ($debug) {
+            $this->logger->info(sprintf(
+                '%s::%s::APIResponse::SellerCenterSdk: %d feeds was recovered',
+                $requestId,
+                $action,
+                count($list->all())
+            ));
+        }
 
         return array_values($list->all());
     }
 
-    public function getFeedCount(): FeedCount
+    public function getFeedCount(bool $debug = true): FeedCount
     {
         $action = 'FeedCount';
-        $requestId = $this->generateRequestId();
 
-        $response = $this->getResponse($action, $requestId);
-
-        $this->logger->info(
-            sprintf(
-                '%d::%s::APIResponse::SellerCenterSdk: feed count was recovered',
-                $requestId,
-                $action
-            )
-        );
-
-        return FeedCountFactory::make($response);
-    }
-
-    private function getResponse(string $action, string $requestId): SimpleXMLElement
-    {
-        $parameters = clone $this->parameters;
-        $parameters->set([
-            'Action' => $action,
-        ]);
-        $parameters->set([
-            'Signature' => Signature::generate($parameters, $this->configuration->getKey())->get(),
-        ]);
-
-        $requestHeaders = $this->generateRequestHeaders([self::REQUEST_ID_HEADER => $requestId]);
-
-        $request = RequestFactory::make(
-            'GET',
-            $this->configuration->getEndpoint(),
-            $requestHeaders
-        );
-
-        $this->logger->debug(
-            LogMessageFormatter::fromAction($requestId, $action, LogMessageFormatter::TYPE_REQUEST),
-            [
-                'url' => (string) $request->getUri(),
-                'method' => $request->getMethod(),
-                'body' => (string) $request->getBody(),
-                'parameters' => $parameters->all(),
-            ]
-        );
-
-        $response = $this->client->send($request, ['query' => $parameters->all()]);
-
-        $body = (string) $response->getBody();
-
-        $this->logger->debug(
-            LogMessageFormatter::fromAction($requestId, $action, LogMessageFormatter::TYPE_RESPONSE),
-            [
-                'body' => $body,
-            ]
-        );
-
-        $builtResponse = HandleResponse::parse($body);
-
-        $this->logger->debug(
-            LogMessageFormatter::fromAction($requestId, $action, LogMessageFormatter::TYPE_BUILT_RESPONSE),
-            [
-                'head' => $builtResponse->getHead()->asXML(),
-                'body' => $builtResponse->getBody()->asXML(),
-            ]
-        );
-
-        return $builtResponse->getBody();
-    }
-
-    public function feedCancel(string $id): FeedResponse
-    {
-        $action = self::FEED_CANCEL_ACTION;
         $parameters = $this->makeParametersForAction($action);
-        $parameters->set([
-            'FeedID' => $id,
-        ]);
 
-        $requestId = $this->generateRequestId();
+        $builtResponse = $this->executeAction(
+            $action,
+            $parameters,
+            null,
+            'GET',
+            $debug
+        );
+
+        return FeedCountFactory::make($builtResponse->getBody());
+    }
+
+    public function feedCancel(
+        string $id,
+        bool $debug = true
+    ): FeedResponse {
+        $action = 'FeedCancel';
+
+        $parameters = $this->makeParametersForAction($action);
+        $parameters->set(['FeedID' => $id]);
 
         $response = $this->executeAction(
             $action,
             $parameters,
-            $requestId,
-            'POST'
+            null,
+            'POST',
+            $debug
         );
 
-        $feedResponse = FeedResponseFactory::make($response->getHead());
-
-        $this->logger->info(
-            sprintf(
-                '%d::%s::APIResponse::SellerCenterSdk: the feed was cancel',
-                $requestId,
-                $action
-            )
-        );
-
-        return $feedResponse;
+        return FeedResponseFactory::make($response->getHead());
     }
 }

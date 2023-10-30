@@ -5,45 +5,42 @@ declare(strict_types=1);
 namespace Linio\SellerCenter;
 
 use Exception;
-use Linio\SellerCenter\Application\Configuration;
 use Linio\SellerCenter\Model\Brand\Brand;
+use Prophecy\Argument;
+use Prophecy\Prophecy\ObjectProphecy;
+use Psr\Log\LoggerInterface;
 
 class BrandsManagerTest extends LinioTestCase
 {
     use ClientHelper;
 
+    /**
+     * @var ObjectProphecy
+     */
+    protected $logger;
+
+    public function prepareLogTest(bool $debug): void
+    {
+        $this->logger = $this->prophesize(LoggerInterface::class);
+
+        $this->logger->debug(
+            Argument::type('string'),
+            Argument::type('array')
+        )->shouldBeCalled();
+
+        if (!$debug) {
+            $this->logger->debug(
+                Argument::type('string'),
+                Argument::type('array')
+            )->shouldNotBeCalled();
+        }
+    }
+
     public function testItReturnsACollectionOfBrands(): void
     {
-        $body = '<?xml version="1.0" encoding="UTF-8"?>
-                    <SuccessResponse>
-                      <Head>
-                        <RequestId/>
-                        <RequestAction>GetBrands</RequestAction>
-                        <ResponseType>Brands</ResponseType>
-                        <Timestamp>2015-07-01T11:11:11+0000</Timestamp>
-                      </Head>
-                      <Body>
-                        <Brands>
-                          <Brand>
-                            <BrandId>1</BrandId>
-                            <Name>Commodore</Name>
-                            <GlobalIdentifier>commodore</GlobalIdentifier>
-                          </Brand>
-                          <Brand>
-                            <BrandId>2</BrandId>
-                            <Name>Atari</Name>
-                            <GlobalIdentifier/>
-                          </Brand>
-                        </Brands>
-                      </Body>
-                    </SuccessResponse>';
+        $body = $this->getSchema('Brand/BrandsSuccessResponse.xml');
 
-        $client = $this->createClientWithResponse($body);
-
-        $parameters = $this->getParameters();
-        $configuration = new Configuration($parameters['key'], $parameters['username'], $parameters['endpoint'], $parameters['version']);
-
-        $sdkClient = new SellerCenterSdk($configuration, $client);
+        $sdkClient = $this->getSdkClient($body);
 
         $result = $sdkClient->brands()->getBrands();
 
@@ -67,14 +64,28 @@ class BrandsManagerTest extends LinioTestCase
             <Body/>
         </ErrorResponse>';
 
-        $client = $this->createClientWithResponse($body, 400);
-
-        $env = $this->getParameters();
-
-        $configuration = new Configuration($env['key'], $env['username'], $env['endpoint'], $env['version']);
-
-        $sdkClient = new SellerCenterSdk($configuration, $client);
+        $sdkClient = $this->getSdkClient($body, null, 400);
 
         $sdkClient->brands()->getBrands();
+    }
+
+    /**
+     * @dataProvider debugParameter
+     */
+    public function testItLogsDependingOnDebugParamWhenGetBrandsSuccessResponse(bool $debug): void
+    {
+        $body = $this->getSchema('Brand/BrandsSuccessResponse.xml');
+        $this->prepareLogTest($debug);
+        $sdkClient = $this->getSdkClient($body, $this->logger);
+
+        $sdkClient->brands()->getBrands($debug);
+    }
+
+    public function debugParameter()
+    {
+        return [
+            [false],
+            [true],
+        ];
     }
 }

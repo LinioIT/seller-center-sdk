@@ -84,6 +84,11 @@ abstract class BaseProduct implements JsonSerializable
     protected $productData;
 
     /**
+     * @var string
+     */
+    protected $url;
+
+    /**
      * @var Image
      */
     protected $mainImage;
@@ -141,7 +146,7 @@ abstract class BaseProduct implements JsonSerializable
         return $this->name;
     }
 
-    public function getVariation(): string
+    public function getVariation(): ?string
     {
         return $this->variation;
     }
@@ -189,6 +194,15 @@ abstract class BaseProduct implements JsonSerializable
     public function getImages(): Images
     {
         return $this->images;
+    }
+
+    public function getUrl(): ?string
+    {
+        if (empty($this->url)) {
+            return null;
+        }
+
+        return $this->url;
     }
 
     public function setSellerSku(string $sellerSku): void
@@ -264,6 +278,11 @@ abstract class BaseProduct implements JsonSerializable
     public function setMainImage(Image $mainImage): void
     {
         $this->mainImage = $mainImage;
+    }
+
+    public function setUrl(string $url): void
+    {
+        $this->url = $url;
     }
 
     public function attachImages(Images $images): void

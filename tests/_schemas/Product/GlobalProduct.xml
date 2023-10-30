@@ -13,12 +13,17 @@
   <ProductId>%s</ProductId>
   <PrimaryCategory>%s</PrimaryCategory>
   <Categories>TV, Audio y Video,Smart TV</Categories>
+  <Url>%s</Url>
   <QCStatus>%s</QCStatus>
   <MainImage>https://i.linio.com.co/p/4a3e6ac763e2289c2952e0b00fd7b4a5-catalog.jpg</MainImage>
   <Images>
     <Image>https://i.linio.com.co/p/4a3e6ac763e2289c2952e0b00fd7b4a5-catalog.jpg</Image>
     <Image>https://i.linio.com.co/p/4a3e6ac763e2289c2952e0b00fd7b4a6-catalog.jpg</Image>
   </Images>
+  <Color>Beige</Color>
+  <ColorBasico>Beige</ColorBasico>
+  <Size>L</Size>
+  <Talla>XL</Talla>
   <ProductData>
       <ConditionType>%s</ConditionType>
       <PackageHeight>%s</PackageHeight>

@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<SuccessResponse>
+  <Head>
+    <RequestId>%s</RequestId>
+    <RequestAction>SetInvoiceDocument</RequestAction>
+    <ResponseType/>
+    <Timestamp>2022-09-26T08:23:31-0300</Timestamp>
+  </Head>
+  <Body/>
+</SuccessResponse>
