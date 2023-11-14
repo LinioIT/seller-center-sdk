@@ -73,6 +73,9 @@ class OrderFactory
 
         $orderNumber = is_numeric((string) $element->OrderNumber) ? (int) $element->OrderNumber : (string) $element->OrderNumber;
 
+        $shippingType = !empty($element->ShippingType) ? $element->ShippingType : null;
+        $invoiceRequired = !empty($element->InvoiceRequired) ? $element->InvoiceRequired : null;
+
         return Order::fromData(
             (int) $element->OrderId,
             $orderNumber,
@@ -95,6 +98,8 @@ class OrderFactory
             $promisedShippingTime,
             (string) $element->ExtraAttributes,
             $statuses,
+            $invoiceRequired,
+            $shippingType,
             $operatorCode
         );
     }

@@ -55,5 +55,6 @@
         "%s",
         "%s"
     ],
+    "invoiceRequired": true,
     "orderItems": null
 }

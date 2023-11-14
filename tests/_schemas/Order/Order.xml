@@ -57,4 +57,5 @@
     <Status>%s</Status>
   </Statuses>
   <OperatorCode>%s</OperatorCode>
+  <InvoiceRequired>true</InvoiceRequired>
 </Order>
