@@ -35,6 +35,7 @@ class OrderFactory
         'ItemsCount',
         'ExtraAttributes',
         'Statuses',
+        'InvoiceRequired',
     ];
 
     public static function make(SimpleXMLElement $element): Order
@@ -73,6 +74,9 @@ class OrderFactory
 
         $orderNumber = is_numeric((string) $element->OrderNumber) ? (int) $element->OrderNumber : (string) $element->OrderNumber;
 
+        $shippingType = (string) $element->ShippingType ?? null;
+        $invoiceRequired = $element->InvoiceRequired == 'true';
+
         return Order::fromData(
             (int) $element->OrderId,
             $orderNumber,
@@ -95,6 +99,8 @@ class OrderFactory
             $promisedShippingTime,
             (string) $element->ExtraAttributes,
             $statuses,
+            $invoiceRequired,
+            $shippingType,
             $operatorCode
         );
     }

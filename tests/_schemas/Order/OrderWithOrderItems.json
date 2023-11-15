@@ -20,6 +20,8 @@
   "promisedShippingTime": null,
   "extraAttributes": null,
   "statuses": null,
+  "invoiceRequired": null,
+  "shippingType": null,
   "operatorCode": null,
   "orderItems": [
     {

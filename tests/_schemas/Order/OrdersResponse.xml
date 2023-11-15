@@ -65,6 +65,8 @@
           <Status>delivered</Status>
           <Status>shipped</Status>
         </Statuses>
+        <InvoiceRequired>false</InvoiceRequired>
+        <ShippingType>Dropshipping</ShippingType>
       </Order>
       <Order>
         <OrderId>4687808</OrderId>
@@ -123,6 +125,8 @@
               <Status>delivered</Status>
               <Status>canceled</Status>
         </Statuses>
+        <InvoiceRequired>false</InvoiceRequired>
+        <ShippingType>Dropshipping</ShippingType>
       </Order>
     </Orders>
   </Body>

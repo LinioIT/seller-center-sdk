@@ -65,6 +65,8 @@
           <Status>delivered</Status>
           <Status>pending</Status>
         </Statuses>
+        <InvoiceRequired>true</InvoiceRequired>
+        <ShippingType>Dropshipping</ShippingType>
         <OperatorCode>FACL</OperatorCode>
       </Order>
     </Orders>

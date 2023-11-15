@@ -54,6 +54,7 @@
       <ItemsCount>1</ItemsCount>
       <PromisedShippingTime>2018-08-28 16:00:00</PromisedShippingTime>
       <ExtraAttributes/>
+      <InvoiceRequired>true</InvoiceRequired>
       <Statuses>
         <Status>delivered</Status>
       </Statuses>
@@ -111,6 +112,7 @@
       <ItemsCount>1</ItemsCount>
       <PromisedShippingTime>2018-08-28 16:00:00</PromisedShippingTime>
       <ExtraAttributes/>
+      <InvoiceRequired>true</InvoiceRequired>
       <Statuses>
         <Status>delivered</Status>
       </Statuses>
