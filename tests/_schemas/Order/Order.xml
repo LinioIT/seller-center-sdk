@@ -56,6 +56,7 @@
     <Status>%s</Status>
     <Status>%s</Status>
   </Statuses>
-  <OperatorCode>%s</OperatorCode>
   <InvoiceRequired>true</InvoiceRequired>
+  <ShippingType>Dropshipping</ShippingType>
+  <OperatorCode>%s</OperatorCode>
 </Order>
