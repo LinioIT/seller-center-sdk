@@ -20,7 +20,6 @@
   "promisedShippingTime": null,
   "extraAttributes": null,
   "statuses": null,
-  "invoiceRequired": null,
   "businessInvoiceRequired": null,
   "shippingType": null,
   "operatorCode": null,

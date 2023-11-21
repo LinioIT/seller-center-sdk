@@ -49,7 +49,7 @@ class OrderTest extends LinioTestCase
     protected $extraAttributes = 'Extra attributes';
     protected $operatorCode = 'facl';
     protected $shippingType = 'Dropshipping';
-    protected $invoiceRequired = true;
+    protected $businessInvoiceRequired = true;
 
     public function testItReturnsValidOrder(): Order
     {
@@ -182,7 +182,7 @@ class OrderTest extends LinioTestCase
         $expectedJson['extraAttributes'] = $this->extraAttributes;
         $expectedJson['statuses'][0] = $this->statuses[0];
         $expectedJson['statuses'][1] = $this->statuses[1];
-        $expectedJson['invoiceRequired'] = $this->invoiceRequired;
+        $expectedJson['businessInvoiceRequired'] = $this->businessInvoiceRequired;
         $expectedJson['shippingType'] = $this->shippingType;
         $expectedJson['operatorCode'] = $this->operatorCode;
 
