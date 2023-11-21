@@ -128,7 +128,7 @@ class Order implements JsonSerializable
     /**
      * @var bool|null
      */
-    protected $invoiceRequired;
+    protected $businessInvoiceRequired;
 
     /**
      * @var string|null
@@ -161,7 +161,7 @@ class Order implements JsonSerializable
         ?DateTimeInterface $promisedShippingTime,
         ?string $extraAttributes,
         array $statuses,
-        bool $invoiceRequired,
+        ?bool $businessInvoiceRequired,
         ?string $shippingType,
         ?string $operatorCode = null
     ): Order {
@@ -188,7 +188,7 @@ class Order implements JsonSerializable
         $order->promisedShippingTime = $promisedShippingTime;
         $order->extraAttributes = $extraAttributes;
         $order->statuses = $statuses;
-        $order->invoiceRequired = $invoiceRequired;
+        $order->businessInvoiceRequired = $businessInvoiceRequired;
         $order->shippingType = $shippingType;
         $order->operatorCode = $operatorCode;
 
@@ -330,9 +330,9 @@ class Order implements JsonSerializable
         return $this->operatorCode;
     }
 
-    public function getInvoiceRequired(): bool
+    public function getBusinessInvoiceRequired(): ?bool
     {
-        return $this->invoiceRequired;
+        return $this->businessInvoiceRequired;
     }
 
     public function getShippingType(): string
@@ -370,7 +370,7 @@ class Order implements JsonSerializable
         $serialized->extraAttributes = $this->extraAttributes;
         $serialized->statuses = $this->statuses;
         $serialized->orderItems = $this->orderItems;
-        $serialized->invoiceRequired = $this->invoiceRequired;
+        $serialized->businessInvoiceRequired = $this->businessInvoiceRequired;
         $serialized->shippingType = $this->shippingType;
         $serialized->operatorCode = $this->operatorCode;
 
