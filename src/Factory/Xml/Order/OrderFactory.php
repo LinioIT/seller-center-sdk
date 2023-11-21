@@ -35,7 +35,6 @@ class OrderFactory
         'ItemsCount',
         'ExtraAttributes',
         'Statuses',
-        'InvoiceRequired',
     ];
 
     public static function make(SimpleXMLElement $element): Order
