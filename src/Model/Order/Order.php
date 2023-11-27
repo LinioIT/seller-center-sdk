@@ -335,7 +335,7 @@ class Order implements JsonSerializable
         return $this->businessInvoiceRequired;
     }
 
-    public function getShippingType(): string
+    public function getShippingType(): ?string
     {
         return $this->shippingType;
     }
