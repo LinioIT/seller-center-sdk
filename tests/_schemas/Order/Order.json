@@ -55,5 +55,7 @@
         "%s",
         "%s"
     ],
+    "businessInvoiceRequired": null,
+    "shippingType": null,
     "orderItems": null
 }
