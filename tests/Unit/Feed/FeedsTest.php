@@ -8,9 +8,12 @@ use Linio\SellerCenter\Factory\Xml\Feed\FeedsFactory;
 use Linio\SellerCenter\LinioTestCase;
 use Linio\SellerCenter\Model\Feed\Feed;
 use Linio\SellerCenter\Model\Feed\Feeds;
+use Prophecy\PhpUnit\ProphecyTrait;
 
 class FeedsTest extends LinioTestCase
 {
+    use ProphecyTrait;
+
     public function testItReturnsEmptyFeedsArray(): void
     {
         $feeds = new Feeds();

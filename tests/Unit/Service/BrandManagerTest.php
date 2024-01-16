@@ -13,7 +13,7 @@ use Psr\Log\Test\TestLogger;
 use ReflectionClass;
 
 class BrandManagerTest extends LinioTestCase
-{
+{   
     public function testReturnsABrandManager(): void
     {
         $configuration = $this->prophesize(Configuration::class);

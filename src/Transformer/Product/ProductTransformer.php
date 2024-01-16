@@ -96,9 +96,6 @@ class ProductTransformer
         return [];
     }
 
-    /**
-     * @phpstan-ignore-next-line
-     */
     public static function attributeAsString($attribute): ?string
     {
         if (is_object($attribute)) {
@@ -108,9 +105,6 @@ class ProductTransformer
         return (string) $attribute;
     }
 
-    /**
-     * @phpstan-ignore-next-line
-     */
     public static function attributeObjectAsString($attribute): ?string
     {
         $className = get_class($attribute);

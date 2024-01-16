@@ -7,6 +7,7 @@ namespace Linio\SellerCenter\Adapter\Client;
 use Linio\SellerCenter\LinioTestCase;
 use Nyholm\Psr7\Uri;
 use Prophecy\Argument;
+use Prophecy\PhpUnit\ProphecyTrait;
 use Prophecy\Prophecy\ObjectProphecy;
 use Psr\Http\Client\ClientInterface;
 use Psr\Http\Message\RequestInterface;
@@ -14,6 +15,8 @@ use Psr\Http\Message\UriInterface;
 
 class PsrClientAdapterTest extends LinioTestCase
 {
+    use ProphecyTrait;
+
     /**
      * @var ObjectProphecy
      */
