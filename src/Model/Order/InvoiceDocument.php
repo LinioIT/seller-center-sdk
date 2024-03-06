@@ -107,6 +107,11 @@ class InvoiceDocument implements JsonSerializable
         return $this->invoiceDate;
     }
 
+    public function getInvoiceDateString(): string
+    {
+        return $this->invoiceDate->format('Y-m-d');
+    }
+
     public function getInvoiceType(): string
     {
         return $this->invoiceType;
@@ -137,7 +142,7 @@ class InvoiceDocument implements JsonSerializable
 
         $serialized->orderItemIds = $orderItems ?? [];
         $serialized->invoiceNumber = $this->invoiceNumber;
-        $serialized->invoiceDate = $this->invoiceDate->format('Y-m-d');
+        $serialized->invoiceDate = $this->getInvoiceDateString();
         $serialized->invoiceType = $this->invoiceType;
         $serialized->operatorCode = strtoupper($this->operatorCode);
         $serialized->invoiceDocumentFormat = $this->invoiceDocumentFormat;
