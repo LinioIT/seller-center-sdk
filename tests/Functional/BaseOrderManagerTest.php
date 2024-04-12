@@ -97,7 +97,8 @@ class BaseOrderManagerTest extends LinioTestCase
         ?DateTimeImmutable $createdBefore,
         string $sortBy,
         string $sortDirection,
-        string $status
+        string $status,
+        ?string $dateFormat
     ): void {
         $sdkClient = $this->getSdkClient($this->getOrdersResponse());
 
@@ -107,7 +108,8 @@ class BaseOrderManagerTest extends LinioTestCase
             OrderManager::DEFAULT_LIMIT,
             OrderManager::DEFAULT_OFFSET,
             $sortBy,
-            $sortDirection
+            $sortDirection,
+            $dateFormat
         );
 
         $this->assertIsArray($result);
@@ -122,7 +124,8 @@ class BaseOrderManagerTest extends LinioTestCase
         ?DateTimeImmutable $updatedBefore,
         string $sortBy,
         string $sortDirection,
-        string $status
+        string $status,
+        ?string $dateFormat
     ): void {
         $sdkClient = $this->getSdkClient($this->getOrdersResponse());
 
@@ -132,7 +135,8 @@ class BaseOrderManagerTest extends LinioTestCase
             OrderManager::DEFAULT_LIMIT,
             OrderManager::DEFAULT_OFFSET,
             $sortBy,
-            $sortDirection
+            $sortDirection,
+            $dateFormat
         );
 
         $this->assertIsArray($result);
@@ -147,7 +151,8 @@ class BaseOrderManagerTest extends LinioTestCase
         ?DateTimeImmutable $unused,
         string $sortBy,
         string $sortDirection,
-        string $status
+        string $status,
+        ?string $dateFormat
     ): void {
         $sdkClient = $this->getSdkClient($this->getOrdersResponse());
 
@@ -156,7 +161,8 @@ class BaseOrderManagerTest extends LinioTestCase
             OrderManager::DEFAULT_LIMIT,
             OrderManager::DEFAULT_OFFSET,
             $sortBy,
-            $sortDirection
+            $sortDirection,
+            $dateFormat
         );
 
         $this->assertIsArray($result);
@@ -171,7 +177,8 @@ class BaseOrderManagerTest extends LinioTestCase
         ?DateTimeImmutable $unused,
         string $sortBy,
         string $sortDirection,
-        string $status
+        string $status,
+        ?string $dateFormat
     ): void {
         $sdkClient = $this->getSdkClient($this->getOrdersResponse());
 
@@ -180,7 +187,8 @@ class BaseOrderManagerTest extends LinioTestCase
             OrderManager::DEFAULT_LIMIT,
             OrderManager::DEFAULT_OFFSET,
             $sortBy,
-            $sortDirection
+            $sortDirection,
+            $dateFormat
         );
 
         $this->assertIsArray($result);
@@ -195,7 +203,8 @@ class BaseOrderManagerTest extends LinioTestCase
         ?DateTimeImmutable $unused,
         string $sortBy,
         string $sortDirection,
-        string $status
+        string $status,
+        ?string $dateFormat
     ): void {
         $sdkClient = $this->getSdkClient($this->getOrdersResponse());
 
@@ -204,7 +213,8 @@ class BaseOrderManagerTest extends LinioTestCase
             OrderManager::DEFAULT_LIMIT,
             OrderManager::DEFAULT_OFFSET,
             $sortBy,
-            $sortDirection
+            $sortDirection,
+            $dateFormat
         );
 
         $this->assertIsArray($result);
@@ -219,7 +229,8 @@ class BaseOrderManagerTest extends LinioTestCase
         ?DateTimeImmutable $unused,
         string $sortBy,
         string $sortDirection,
-        string $status
+        string $status,
+        ?string $dateFormat
     ): void {
         $sdkClient = $this->getSdkClient($this->getOrdersResponse());
 
@@ -228,7 +239,8 @@ class BaseOrderManagerTest extends LinioTestCase
             OrderManager::DEFAULT_LIMIT,
             OrderManager::DEFAULT_OFFSET,
             $sortBy,
-            $sortDirection
+            $sortDirection,
+            $dateFormat
         );
 
         $this->assertIsArray($result);
@@ -243,7 +255,8 @@ class BaseOrderManagerTest extends LinioTestCase
         ?DateTimeImmutable $unused2,
         string $sortBy,
         string $sortDirection,
-        string $status
+        string $status,
+        ?string $dateFormat
     ): void {
         $sdkClient = $this->getSdkClient($this->getOrdersResponse());
 
@@ -498,6 +511,7 @@ class BaseOrderManagerTest extends LinioTestCase
             $offset,
             $sortBy,
             $sortDirection,
+            null,
             $debug
         );
     }
@@ -535,6 +549,7 @@ class BaseOrderManagerTest extends LinioTestCase
             $offset,
             $sortBy,
             $sortDirection,
+            null,
             $debug
         );
     }
@@ -570,6 +585,7 @@ class BaseOrderManagerTest extends LinioTestCase
             $offset,
             $sortBy,
             $sortDirection,
+            null,
             $debug
         );
     }
@@ -605,6 +621,7 @@ class BaseOrderManagerTest extends LinioTestCase
             $offset,
             $sortBy,
             $sortDirection,
+            null,
             $debug
         );
     }
@@ -640,6 +657,7 @@ class BaseOrderManagerTest extends LinioTestCase
             $offset,
             $sortBy,
             $sortDirection,
+            null,
             $debug
         );
     }
@@ -675,6 +693,7 @@ class BaseOrderManagerTest extends LinioTestCase
             $offset,
             $sortBy,
             $sortDirection,
+            null,
             $debug
         );
     }
@@ -713,6 +732,7 @@ class BaseOrderManagerTest extends LinioTestCase
             $offset,
             $sortBy,
             $sortDirection,
+            null,
             $debug
         );
     }
@@ -784,13 +804,14 @@ class BaseOrderManagerTest extends LinioTestCase
         $date = DateTimeImmutable::createFromFormat('Y-m-d H:i:s', '2018-09-01 00:00:00');
 
         return [
-            [$date, $date, 'created_at', 'ASC', 'pending'],
-            [$date, $date, 'updated_at', 'ASC', 'canceled'],
-            [$date, $date, 'created_at', 'DESC', 'ready_to_ship'],
-            [$date, $date, 'updated_at', 'DESC', 'delivered'],
-            [$date, $date, 'created_at', 'ASC', 'returned'],
-            [$date, $date, 'updated_at', 'DESC', 'shipped'],
-            [$date, $date, 'created_at', 'ASC', 'failed'],
+            [$date, $date, 'created_at', 'ASC', 'pending', null],
+            [$date, $date, 'updated_at', 'ASC', 'canceled', null],
+            [$date, $date, 'created_at', 'DESC', 'ready_to_ship', null],
+            [$date, $date, 'updated_at', 'DESC', 'delivered', null],
+            [$date, $date, 'created_at', 'ASC', 'returned', null],
+            [$date, $date, 'updated_at', 'DESC', 'shipped', null],
+            [$date, $date, 'created_at', 'ASC', 'failed', null],
+            [$date, $date, 'created_at', 'ASC', 'pending', 'Y-m-d\TH:i:s\Z'],
         ];
     }
 

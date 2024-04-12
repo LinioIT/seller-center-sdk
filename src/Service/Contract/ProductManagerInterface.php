@@ -15,6 +15,7 @@ interface ProductManagerInterface
     public const DEFAULT_LIMIT = 1000;
     public const DEFAULT_OFFSET = 0;
     public const DEFAULT_FILTER = 'all';
+    public const DEFAULT_DATE_FORMAT = DATE_ATOM;
 
     public function productUpdate(Products $products, bool $debug = true): FeedResponse;
 
@@ -48,6 +49,7 @@ interface ProductManagerInterface
         DateTimeInterface $createdAfter,
         int $limit = self::DEFAULT_LIMIT,
         int $offset = self::DEFAULT_OFFSET,
+        ?string $dateFormat = null,
         bool $debug = true
     ): array;
 
@@ -58,6 +60,7 @@ interface ProductManagerInterface
         DateTimeInterface $createdBefore,
         int $limit = self::DEFAULT_LIMIT,
         int $offset = self::DEFAULT_OFFSET,
+        ?string $dateFormat = null,
         bool $debug = true
     ): array;
 
@@ -67,7 +70,8 @@ interface ProductManagerInterface
     public function getProductsUpdatedAfter(
         DateTimeInterface $updatedAfter,
         int $limit = self::DEFAULT_LIMIT,
-        int $offset = self::DEFAULT_LIMIT,
+        int $offset = self::DEFAULT_OFFSET,
+        ?string $dateFormat = null,
         bool $debug = true
     ): array;
 
@@ -78,6 +82,7 @@ interface ProductManagerInterface
         DateTimeInterface $updatedBefore,
         int $limit = self::DEFAULT_LIMIT,
         int $offset = self::DEFAULT_OFFSET,
+        ?string $dateFormat = null,
         bool $debug = true
     ): array;
 
@@ -128,6 +133,7 @@ interface ProductManagerInterface
         ?array $skuSellerList = null,
         ?DateTimeInterface $updateAfter = null,
         ?DateTimeInterface $updateBefore = null,
+        ?string $dateFormat = null,
         bool $debug = true
     ): array;
 
