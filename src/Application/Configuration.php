@@ -12,6 +12,8 @@ class Configuration
 
     protected const LANGUAGE = 'PHP';
 
+    protected const SDK = 'FalabellaSDKPHP';
+
     /**
      * @var string
      */
@@ -138,29 +140,14 @@ class Configuration
 
     public function getUserAgent(): ?string
     {
-        $userAgent = sprintf(
-            '%s/%s/%s',
-            $this->getSellerId(),
-            $this->getLanguage(),
-            $this->getLanguageVersion()
+        return sprintf(
+            '%s/%s/%s/%s/%s/%s',
+            $this->getSellerId() ?? '',
+            $this->getLanguage() ?? '',
+            $this->getLanguageVersion() ?? '',
+            $this->getIntegrator() ?? '',
+            $this->getCountry() ?? '',
+            self::SDK
         );
-
-        if (!empty($this->getIntegrator())) {
-            $userAgent = sprintf(
-                '%s/%s',
-                $userAgent,
-                $this->getIntegrator()
-            );
-        }
-
-        if (!empty($this->getCountry())) {
-            $userAgent = sprintf(
-                '%s/%s',
-                $userAgent,
-                $this->getCountry()
-            );
-        }
-
-        return $userAgent;
     }
 }
