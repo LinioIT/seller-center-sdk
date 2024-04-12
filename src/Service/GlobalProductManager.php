@@ -155,14 +155,16 @@ class GlobalProductManager extends BaseManager implements ProductManagerInterfac
         DateTimeInterface $createdAfter,
         int $limit = self::DEFAULT_LIMIT,
         int $offset = self::DEFAULT_OFFSET,
+        ?string $dateFormat = null,
         bool $debug = true
     ): array {
         $parameters = clone $this->parameters;
+        $dateFormat = $dateFormat ?? self::DEFAULT_DATE_FORMAT;
 
         $this->setListDimensions($parameters, $limit, $offset);
 
         $parameters->set(
-            ['CreatedAfter' => $createdAfter->format(DATE_ATOM)]
+            ['CreatedAfter' => $createdAfter->format($dateFormat)]
         );
 
         return $this->getProducts($parameters, $debug);
@@ -175,14 +177,16 @@ class GlobalProductManager extends BaseManager implements ProductManagerInterfac
         DateTimeInterface $createdBefore,
         int $limit = self::DEFAULT_LIMIT,
         int $offset = self::DEFAULT_OFFSET,
+        ?string $dateFormat = null,
         bool $debug = true
     ): array {
         $parameters = clone $this->parameters;
+        $dateFormat = $dateFormat ?? self::DEFAULT_DATE_FORMAT;
 
         $this->setListDimensions($parameters, $limit, $offset);
 
         $parameters->set(
-            ['CreatedBefore' => $createdBefore->format(DATE_ATOM)]
+            ['CreatedBefore' => $createdBefore->format($dateFormat)]
         );
 
         return $this->getProducts($parameters, $debug);
@@ -194,15 +198,17 @@ class GlobalProductManager extends BaseManager implements ProductManagerInterfac
     public function getProductsUpdatedAfter(
         DateTimeInterface $updatedAfter,
         int $limit = self::DEFAULT_LIMIT,
-        int $offset = self::DEFAULT_LIMIT,
+        int $offset = self::DEFAULT_OFFSET,
+        ?string $dateFormat = null,
         bool $debug = true
     ): array {
         $parameters = clone $this->parameters;
+        $dateFormat = $dateFormat ?? self::DEFAULT_DATE_FORMAT;
 
         $this->setListDimensions($parameters, $limit, $offset);
 
         $parameters->set(
-            ['UpdatedAfter' => $updatedAfter->format(DATE_ATOM)]
+            ['UpdatedAfter' => $updatedAfter->format($dateFormat)]
         );
 
         return $this->getProducts($parameters, $debug);
@@ -215,14 +221,16 @@ class GlobalProductManager extends BaseManager implements ProductManagerInterfac
         DateTimeInterface $updatedBefore,
         int $limit = self::DEFAULT_LIMIT,
         int $offset = self::DEFAULT_OFFSET,
+        ?string $dateFormat = null,
         bool $debug = true
     ): array {
         $parameters = clone $this->parameters;
+        $dateFormat = $dateFormat ?? self::DEFAULT_DATE_FORMAT;
 
         $this->setListDimensions($parameters, $limit, $offset);
 
         $parameters->set(
-            ['UpdatedBefore' => $updatedBefore->format(DATE_ATOM)]
+            ['UpdatedBefore' => $updatedBefore->format($dateFormat)]
         );
 
         return $this->getProducts($parameters, $debug);
@@ -313,9 +321,11 @@ class GlobalProductManager extends BaseManager implements ProductManagerInterfac
         ?array $skuSellerList = null,
         ?DateTimeInterface $updateAfter = null,
         ?DateTimeInterface $updateBefore = null,
+        ?string $dateFormat = null,
         bool $debug = true
     ): array {
         $parameters = clone $this->parameters;
+        $dateFormat = $dateFormat ?? self::DEFAULT_DATE_FORMAT;
 
         $this->setListDimensions($parameters, $limit, $offset);
 
@@ -331,11 +341,11 @@ class GlobalProductManager extends BaseManager implements ProductManagerInterfac
         );
 
         if (!empty($createdAfter)) {
-            $parameters->set(['CreatedAfter' => $createdAfter->format(DATE_ATOM)]);
+            $parameters->set(['CreatedAfter' => $createdAfter->format($dateFormat)]);
         }
 
         if (!empty($createdBefore)) {
-            $parameters->set(['CreatedBefore' => $createdBefore->format(DATE_ATOM)]);
+            $parameters->set(['CreatedBefore' => $createdBefore->format($dateFormat)]);
         }
 
         if (!empty($skuSellerList)) {
@@ -343,11 +353,11 @@ class GlobalProductManager extends BaseManager implements ProductManagerInterfac
         }
 
         if (!empty($updateAfter)) {
-            $parameters->set(['UpdateAfter' => $updateAfter->format(DATE_ATOM)]);
+            $parameters->set(['UpdateAfter' => $updateAfter->format($dateFormat)]);
         }
 
         if (!empty($updateBefore)) {
-            $parameters->set(['UpdateBefore' => $updateBefore->format(DATE_ATOM)]);
+            $parameters->set(['UpdateBefore' => $updateBefore->format($dateFormat)]);
         }
 
         return $this->getProducts($parameters, $debug);

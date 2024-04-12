@@ -61,6 +61,7 @@ Provides you the possibility to use the most common parameters in one call.
 | `$skuSellerList` | array | Array of strings representing multiple sellers SKUs | No | - | 
 | `$updatedAfter` |  DateTimeInterface | Filters the products using the specified date. The date provided will be included in the filter. | No | - | 
 | `$updatedBefore` | DateTimeInterface | Filters the products using the specified date. The date provided will be included in the filter. | No | - |
+| `$dateFormat` | string&#124;null | Specify format of date to sent Seller Center | No | null |
 | `$debug` | bool |  Whether it logs or not the request and response log | No | true |
    
 
@@ -127,6 +128,7 @@ Returns the products created after the specified date.
 | `$createdAfter` | DateTimeInterface |  Filters the products using the specified date. | Yes | - | 
 | `$limit` | integer |  The maximum number of products that could be returned | No | 1000 | 
 | `$offset` | integer | Number of products to skip at the beginning of the list. | No | 0 |
+| `$dateFormat` | string&#124;null | Specify format of date to sent Seller Center | No | null |
 | `$debug` | bool |  Whether it logs or not the request and response log | No | true |
 
 
@@ -151,6 +153,7 @@ Returns products created before the specified date.
 | `$createdBefore` | | Filters the products using the specified date | Yes | - |
 | `$limit` | integer |  The maximum number of products that could be returned | No | 1000 | 
 | `$offset` | integer | Number of products to skip at the beginning of the list. | No | 0 |
+| `$dateFormat` | string&#124;null | Specify format of date to sent Seller Center | No | null |
 | `$debug` | bool |  Whether it logs or not the request and response log | No | true |
 
  
@@ -174,6 +177,7 @@ Returns products updated after the specified date.
 | $updatedAfter |  DateTimeInterface | Filters the products using the specified date. The date provided will be included in the filter. | Yes | - |
 | $limit | integer |  The maximum number of products that could be returned | No | 1000 | 
 | $offset | integer | Number of products to skip at the beginning of the list. | No | 0 |
+| `$dateFormat` | string&#124;null | Specify format of date to sent Seller Center | No | null |
 | `$debug` | bool |  Whether it logs or not the request and response log | No | true |
      
  
@@ -197,6 +201,7 @@ Returns products updated before the specified date.
 | $updatedBefore | DateTimeInterface | Filters the products using the specified date. The date provided will be included in the filter. | No | - | 
 | $limit | integer |  The maximum number of products that could be returned | No | 1000 | 
 | $offset | integer | Number of products to skip at the beginning of the list. | No | 0 |
+| `$dateFormat` | string&#124;null | Specify format of date to sent Seller Center | No | null |
 | `$debug` | bool |  Whether it logs or not the request and response log | No | true |
 
 

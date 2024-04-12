@@ -30,6 +30,7 @@ class BaseOrderManager extends BaseManager
     public const DEFAULT_OFFSET = 0;
     public const DEFAULT_SORT_BY = 'created_at';
     public const DEFAULT_SORT_DIRECTION = 'ASC';
+    public const DEFAULT_DATE_FORMAT = 'Y-m-d\TH:i:s';
 
     public function getOrder(
         int $orderId,
@@ -193,16 +194,18 @@ class BaseOrderManager extends BaseManager
         int $offset = self::DEFAULT_OFFSET,
         string $sortBy = self::DEFAULT_SORT_BY,
         string $sortDirection = self::DEFAULT_SORT_DIRECTION,
+        ?string $dateFormat = null,
         bool $debug = true
     ): array {
+        $dateFormat = $dateFormat ?? self::DEFAULT_DATE_FORMAT;
         $parameters = $this->makeParametersForGetOrdersAction();
 
         $this->setListDimensions($parameters, $limit, $offset);
         $this->setSortParametersList($parameters, $sortBy, $sortDirection);
 
         $parameters->set([
-            'CreatedAfter' => $createdAfter->format('Y-m-d\TH:i:s'),
-            'CreatedBefore' => $createdBefore->format('Y-m-d\TH:i:s'),
+            'CreatedAfter' => $createdAfter->format($dateFormat),
+            'CreatedBefore' => $createdBefore->format($dateFormat),
         ]);
 
         return $this->getOrders(
@@ -221,16 +224,18 @@ class BaseOrderManager extends BaseManager
         int $offset = self::DEFAULT_OFFSET,
         string $sortBy = self::DEFAULT_SORT_BY,
         string $sortDirection = self::DEFAULT_SORT_DIRECTION,
+        ?string $dateFormat = null,
         bool $debug = true
     ): array {
         $parameters = $this->makeParametersForGetOrdersAction();
+        $dateFormat = $dateFormat ?? self::DEFAULT_DATE_FORMAT;
 
         $this->setListDimensions($parameters, $limit, $offset);
         $this->setSortParametersList($parameters, $sortBy, $sortDirection);
 
         $parameters->set([
-            'UpdatedAfter' => $updatedAfter->format('Y-m-d\TH:i:s'),
-            'UpdatedBefore' => $updatedBefore->format('Y-m-d\TH:i:s'),
+            'UpdatedAfter' => $updatedAfter->format($dateFormat),
+            'UpdatedBefore' => $updatedBefore->format($dateFormat),
         ]);
 
         return $this->getOrders(
@@ -248,15 +253,17 @@ class BaseOrderManager extends BaseManager
         int $offset = self::DEFAULT_OFFSET,
         string $sortBy = self::DEFAULT_SORT_BY,
         string $sortDirection = self::DEFAULT_SORT_DIRECTION,
+        ?string $dateFormat = null,
         bool $debug = true
     ): array {
         $parameters = $this->makeParametersForGetOrdersAction();
+        $dateFormat = $dateFormat ?? self::DEFAULT_DATE_FORMAT;
 
         $this->setListDimensions($parameters, $limit, $offset);
         $this->setSortParametersList($parameters, $sortBy, $sortDirection);
 
         $parameters->set([
-            'CreatedAfter' => $createdAfter->format('Y-m-d\TH:i:s'),
+            'CreatedAfter' => $createdAfter->format($dateFormat),
         ]);
 
         return $this->getOrders(
@@ -274,15 +281,17 @@ class BaseOrderManager extends BaseManager
         int $offset = self::DEFAULT_OFFSET,
         string $sortBy = self::DEFAULT_SORT_BY,
         string $sortDirection = self::DEFAULT_SORT_DIRECTION,
+        ?string $dateFormat = null,
         bool $debug = true
     ): array {
         $parameters = $this->makeParametersForGetOrdersAction();
+        $dateFormat = $dateFormat ?? self::DEFAULT_DATE_FORMAT;
 
         $this->setListDimensions($parameters, $limit, $offset);
         $this->setSortParametersList($parameters, $sortBy, $sortDirection);
 
         $parameters->set([
-            'CreatedBefore' => $createdBefore->format('Y-m-d\TH:i:s'),
+            'CreatedBefore' => $createdBefore->format($dateFormat),
         ]);
 
         return $this->getOrders(
@@ -300,15 +309,17 @@ class BaseOrderManager extends BaseManager
         int $offset = self::DEFAULT_OFFSET,
         string $sortBy = self::DEFAULT_SORT_BY,
         string $sortDirection = self::DEFAULT_SORT_DIRECTION,
+        ?string $dateFormat = null,
         bool $debug = true
     ): array {
         $parameters = $this->makeParametersForGetOrdersAction();
+        $dateFormat = $dateFormat ?? self::DEFAULT_DATE_FORMAT;
 
         $this->setListDimensions($parameters, $limit, $offset);
         $this->setSortParametersList($parameters, $sortBy, $sortDirection);
 
         $parameters->set([
-            'UpdatedAfter' => $updatedAfter->format('Y-m-d\TH:i:s'),
+            'UpdatedAfter' => $updatedAfter->format($dateFormat),
         ]);
 
         return $this->getOrders(
@@ -326,15 +337,17 @@ class BaseOrderManager extends BaseManager
         int $offset = self::DEFAULT_OFFSET,
         string $sortBy = self::DEFAULT_SORT_BY,
         string $sortDirection = self::DEFAULT_SORT_DIRECTION,
+        ?string $dateFormat = null,
         bool $debug = true
     ): array {
         $parameters = $this->makeParametersForGetOrdersAction();
+        $dateFormat = $dateFormat ?? self::DEFAULT_DATE_FORMAT;
 
         $this->setListDimensions($parameters, $limit, $offset);
         $this->setSortParametersList($parameters, $sortBy, $sortDirection);
 
         $parameters->set([
-            'UpdatedBefore' => $updatedBefore->format('Y-m-d\TH:i:s'),
+            'UpdatedBefore' => $updatedBefore->format($dateFormat),
         ]);
 
         return $this->getOrders(
@@ -386,27 +399,29 @@ class BaseOrderManager extends BaseManager
         int $offset = self::DEFAULT_OFFSET,
         string $sortBy = self::DEFAULT_SORT_BY,
         string $sortDirection = self::DEFAULT_SORT_DIRECTION,
+        ?string $dateFormat = null,
         bool $debug = true
     ): array {
         $parameters = $this->makeParametersForGetOrdersAction();
+        $dateFormat = $dateFormat ?? self::DEFAULT_DATE_FORMAT;
 
         $this->setListDimensions($parameters, $limit, $offset);
         $this->setSortParametersList($parameters, $sortBy, $sortDirection);
 
         if (!empty($createdAfter)) {
-            $parameters->set(['CreatedAfter' => $createdAfter->format('Y-m-d\TH:i:s')]);
+            $parameters->set(['CreatedAfter' => $createdAfter->format($dateFormat)]);
         }
 
         if (!empty($createdBefore)) {
-            $parameters->set(['CreatedBefore' => $createdBefore->format('Y-m-d\TH:i:s')]);
+            $parameters->set(['CreatedBefore' => $createdBefore->format($dateFormat)]);
         }
 
         if (!empty($updatedAfter)) {
-            $parameters->set(['UpdatedAfter' => $updatedAfter->format('Y-m-d\TH:i:s')]);
+            $parameters->set(['UpdatedAfter' => $updatedAfter->format($dateFormat)]);
         }
 
         if (!empty($updatedBefore)) {
-            $parameters->set(['UpdatedBefore' => $updatedBefore->format('Y-m-d\TH:i:s')]);
+            $parameters->set(['UpdatedBefore' => $updatedBefore->format($dateFormat)]);
         }
 
         if (!empty($status) && in_array($status, OrderStatus::STATUS)) {

@@ -82,6 +82,7 @@ This method provides you the possibility to use the most common parameters in on
 | `$offset` | int | Number of orders to skip at the beginning of the list. | No | 0 |
 | `$sortBy` | string | Allows choosing the sorting column. The possible values are created_at and updated_at. | No | created_at |
 | `$sortDirection` | string | Specify the sort type. The possible are values (ASC, DESC). | No | ASC |
+| `$dateFormat` | string&#124;null | Specify format of date to sent Seller Center | No | null |
 | `$debug` | bool |  Whether it logs or not the request and response log | No | true | 
   
 #### Example
@@ -105,6 +106,7 @@ This method returns the orders created between two specified dates.
 | `$offset` | int | Number of orders to skip at the beginning of the list. | No | 0 |
 | `$sortBy` | string | Allows choosing the sorting column. The possible values are created_at and updated_at. | No | created_at |
 | `$sortDirection` | string | Specify the sort type. The possible are values (ASC, DESC). | No | ASC |
+| `$dateFormat` | string&#124;null | Specify format of date to sent Seller Center | No | null |
 | `$debug` | bool |  Whether it logs or not the request and response log | No | true | 
 
 #### Example
@@ -133,6 +135,7 @@ This method returns the orders between the two specified dates.
 | `$offset` | int | Number of orders to skip at the beginning of the list. | No | 0 |
 | `$sortBy` | string | Allows choosing the sorting column. The possible values are created_at and updated_at. | No | created_at |
 | `$sortDirection` | string | Specify the sort type. The possible are values (ASC, DESC). | No | ASC |
+| `$dateFormat` | string&#124;null | Specify format of date to sent Seller Center | No | null |
 | `$debug` | bool |  Whether it logs or not the request and response log | No | true | 
 
 #### Example
@@ -157,6 +160,7 @@ This method returns the orders created after the specified date.
 | `$offset` | int | Number of orders to skip at the beginning of the list. | No | 0 |
 | `$sortBy` | string | Allows choosing the sorting column. The possible values are created_at and updated_at. | No | created_at |
 | `$sortDirection` | string | Specify the sort type. The possible are values (ASC, DESC). | No | ASC |
+| `$dateFormat` | string&#124;null | Specify format of date to sent Seller Center | No | null |
 | `$debug` | bool |  Whether it logs or not the request and response log | No | true | 
 
 #### Example
@@ -183,6 +187,7 @@ This method returns the orders created before the specified date.
 | `$offset` | int | Number of orders to skip at the beginning of the list. | No | 0 |
 | `$sortBy` | string | Allows choosing the sorting column. The possible values are created_at and updated_at. | No | created_at |
 | `$sortDirection` | string | Specify the sort type. The possible are values (ASC, DESC). | No | ASC |
+| `$dateFormat` | string&#124;null | Specify format of date to sent Seller Center | No | null |
 | `$debug` | bool |  Whether it logs or not the request and response log | No | true | 
 
 #### Example
@@ -207,6 +212,7 @@ This method returns the orders updated after the specified date.
 | `$offset` | int | Number of orders to skip at the beginning of the list. | No | 0 |
 | `$sortBy` | string | Allows choosing the sorting column. The possible values are created_at and updated_at. | No | created_at |
 | `$sortDirection` | string | Specify the sort type. The possible are values (ASC, DESC). | No | ASC |
+| `$dateFormat` | string&#124;null | Specify format of date to sent Seller Center | No | null |
 | `$debug` | bool |  Whether it logs or not the request and response log | No | true | 
 
 #### Example
@@ -231,6 +237,7 @@ This method returns the orders updated before the specified date.
 | `$offset` | int | Number of orders to skip at the beginning of the list. | No | 0 |
 | `$sortBy` | string | Allows choosing the sorting column. The possible values are created_at and updated_at. | No | created_at |
 | `$sortDirection` | string | Specify the sort type. The possible are values (ASC, DESC). | No | ASC |
+| `$dateFormat` | string&#124;null | Specify format of date to sent Seller Center | No | null |
 | `$debug` | bool |  Whether it logs or not the request and response log | No | true | 
 
 #### Example
