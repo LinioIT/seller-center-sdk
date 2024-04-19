@@ -18,6 +18,7 @@ use Linio\SellerCenter\Model\Product\Image;
 use Linio\SellerCenter\Model\Product\ProductData;
 use Linio\SellerCenter\Model\Product\Products;
 use Linio\SellerCenter\Response\FeedResponse;
+use Linio\SellerCenter\Service\Contract\ProductManagerInterface;
 use Prophecy\Argument;
 use Prophecy\Prophecy\ObjectProphecy;
 use Psr\Log\LoggerInterface;
@@ -80,49 +81,81 @@ class GlobalProductManagerTest extends LinioTestCase
         $this->assertContainsOnlyInstancesOf(GlobalProduct::class, $result);
     }
 
-    public function testItReturnsACollectionOfProductsCreatedAfterADateTime(): void
+    /**
+     * @dataProvider dateTimeProvider
+     */
+    public function testItReturnsACollectionOfProductsCreatedAfterADateTime(?string $dateFormat): void
     {
         $sdkClient = $this->getSdkClient($this->getSchema('Product/GlobalProductsResponse.xml'));
 
         $createdAfter = DateTimeImmutable::createFromFormat('Y-m-d H:i:s', '2018-09-01 00:00:00');
 
-        $result = $sdkClient->globalProducts()->getProductsCreatedAfter($createdAfter);
+        $result = $sdkClient->globalProducts()->getProductsCreatedAfter(
+            $createdAfter,
+            ProductManagerInterface::DEFAULT_LIMIT,
+            ProductManagerInterface::DEFAULT_OFFSET,
+            $dateFormat
+        );
 
         $this->assertIsArray($result);
         $this->assertContainsOnlyInstancesOf(GlobalProduct::class, $result);
     }
 
-    public function testItReturnsACollectionOfProductsCreatedBeforeADateTime(): void
+    /**
+     * @dataProvider dateTimeProvider
+     */
+    public function testItReturnsACollectionOfProductsCreatedBeforeADateTime(?string $dateFormat): void
     {
         $sdkClient = $this->getSdkClient($this->getSchema('Product/GlobalProductsResponse.xml'));
 
         $createdBefore = DateTimeImmutable::createFromFormat('Y-m-d H:i:s', '2019-01-23 00:00:00');
 
-        $result = $sdkClient->globalProducts()->getProductsCreatedBefore($createdBefore);
+        $result = $sdkClient->globalProducts()->getProductsCreatedBefore(
+            $createdBefore,
+            ProductManagerInterface::DEFAULT_LIMIT,
+            ProductManagerInterface::DEFAULT_OFFSET,
+            $dateFormat
+        );
 
         $this->assertIsArray($result);
         $this->assertContainsOnlyInstancesOf(GlobalProduct::class, $result);
     }
 
-    public function testItReturnsACollectionOfProductsUpdatedAfterADateTime(): void
+    /**
+     * @dataProvider dateTimeProvider
+     */
+    public function testItReturnsACollectionOfProductsUpdatedAfterADateTime(?string $dateFormat): void
     {
         $sdkClient = $this->getSdkClient($this->getSchema('Product/GlobalProductsResponse.xml'));
 
         $updatedAfter = DateTimeImmutable::createFromFormat('Y-m-d H:i:s', '2019-01-23 00:00:00');
 
-        $result = $sdkClient->globalProducts()->getProductsUpdatedAfter($updatedAfter);
+        $result = $sdkClient->globalProducts()->getProductsUpdatedAfter(
+            $updatedAfter,
+            ProductManagerInterface::DEFAULT_LIMIT,
+            ProductManagerInterface::DEFAULT_OFFSET,
+            $dateFormat
+        );
 
         $this->assertIsArray($result);
         $this->assertContainsOnlyInstancesOf(GlobalProduct::class, $result);
     }
 
-    public function testItReturnsACollectionOfProductsUpdatedBeforeADateTime(): void
+    /**
+     * @dataProvider dateTimeProvider
+     */
+    public function testItReturnsACollectionOfProductsUpdatedBeforeADateTime(?string $dateFormat): void
     {
         $sdkClient = $this->getSdkClient($this->getSchema('Product/GlobalProductsResponse.xml'));
 
         $updatedBefore = DateTimeImmutable::createFromFormat('Y-m-d H:i:s', '2019-01-23 00:00:00');
 
-        $result = $sdkClient->globalProducts()->getProductsUpdatedBefore($updatedBefore);
+        $result = $sdkClient->globalProducts()->getProductsUpdatedBefore(
+            $updatedBefore,
+            ProductManagerInterface::DEFAULT_LIMIT,
+            ProductManagerInterface::DEFAULT_OFFSET,
+            $dateFormat
+        );
 
         $this->assertIsArray($result);
         $this->assertContainsOnlyInstancesOf(GlobalProduct::class, $result);
@@ -174,7 +207,10 @@ class GlobalProductManagerTest extends LinioTestCase
         $sdkClient->globalProducts()->getProductsBySellerSku([]);
     }
 
-    public function testItReturnsACollectionOfProductsFromParameters(): void
+    /**
+     * @dataProvider dateTimeProvider
+     */
+    public function testItReturnsACollectionOfProductsFromParameters(?string $dateFormat): void
     {
         $sdkClient = $this->getSdkClient($this->getSchema('Product/GlobalProductsResponse.xml'));
 
@@ -195,7 +231,8 @@ class GlobalProductManagerTest extends LinioTestCase
             0,
             $skuSellerList,
             $updatedAfter,
-            $updatedBefore
+            $updatedBefore,
+            $dateFormat
         );
 
         $this->assertIsArray($result);
@@ -386,6 +423,7 @@ class GlobalProductManagerTest extends LinioTestCase
             DateTimeImmutable::createFromFormat('Y-m-d H:i:s', '2018-09-01 00:00:00'),
             100,
             100,
+            ProductManagerInterface::DEFAULT_DATE_FORMAT,
             $debug
         );
     }
@@ -405,6 +443,7 @@ class GlobalProductManagerTest extends LinioTestCase
             DateTimeImmutable::createFromFormat('Y-m-d H:i:s', '2018-09-01 00:00:00'),
             100,
             100,
+            ProductManagerInterface::DEFAULT_DATE_FORMAT,
             $debug
         );
     }
@@ -424,6 +463,7 @@ class GlobalProductManagerTest extends LinioTestCase
             DateTimeImmutable::createFromFormat('Y-m-d H:i:s', '2018-09-01 00:00:00'),
             100,
             100,
+            ProductManagerInterface::DEFAULT_DATE_FORMAT,
             $debug
         );
     }
@@ -443,6 +483,7 @@ class GlobalProductManagerTest extends LinioTestCase
             DateTimeImmutable::createFromFormat('Y-m-d H:i:s', '2018-09-01 00:00:00'),
             100,
             100,
+            ProductManagerInterface::DEFAULT_DATE_FORMAT,
             $debug
         );
     }
@@ -525,6 +566,7 @@ class GlobalProductManagerTest extends LinioTestCase
             ['test-sku'],
             null,
             null,
+            ProductManagerInterface::DEFAULT_DATE_FORMAT,
             $debug
         );
     }
@@ -677,6 +719,14 @@ class GlobalProductManagerTest extends LinioTestCase
         return [
             [false],
             [true],
+        ];
+    }
+
+    public function dateTimeProvider(): array
+    {
+        return [
+            'defaultFormat' => [null],
+            'anotherFormat' => ['Y-m-d H:i:s'],
         ];
     }
 }
