@@ -21,7 +21,7 @@ class OrderItem implements JsonSerializable
     protected $shopId;
 
     /**
-     * @var int|null
+     * @var string|null
      */
     protected $orderId;
 
@@ -211,7 +211,7 @@ class OrderItem implements JsonSerializable
     final public static function fromOrderItem(
         int $orderItemId,
         int $shopId,
-        int $orderId,
+        string $orderId,
         string $name,
         string $sku,
         string $variation,
@@ -334,7 +334,7 @@ class OrderItem implements JsonSerializable
         return $this->shopId;
     }
 
-    public function getOrderId(): ?int
+    public function getOrderId(): ?string
     {
         return $this->orderId;
     }

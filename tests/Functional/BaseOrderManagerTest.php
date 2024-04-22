@@ -54,7 +54,7 @@ class BaseOrderManagerTest extends LinioTestCase
     {
         $sdkClient = $this->getSdkClient($this->getOrdersResponse('Order/OrderResponse.xml'));
 
-        $orderId = 4687503;
+        $orderId = '4687503';
 
         $result = $sdkClient->orders()->getOrder($orderId);
 
@@ -65,7 +65,7 @@ class BaseOrderManagerTest extends LinioTestCase
     {
         $sdkClient = $this->getSdkClient($this->getOrdersResponse('Order/OrderItemsResponse.xml'));
 
-        $orderId = 6750999;
+        $orderId = '6750999';
 
         $result = $sdkClient->orders()->getOrderItems($orderId);
 
@@ -448,7 +448,7 @@ class BaseOrderManagerTest extends LinioTestCase
         }
 
         $sdkClient->orders()->getOrderItems(
-            1,
+            '1',
             $debug
         );
     }

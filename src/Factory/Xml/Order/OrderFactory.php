@@ -83,7 +83,7 @@ class OrderFactory
             );
 
         return Order::fromData(
-            (int) $element->OrderId,
+            (string) $element->OrderId,
             $orderNumber,
             (string) $element->CustomerFirstName,
             (string) $element->CustomerLastName,

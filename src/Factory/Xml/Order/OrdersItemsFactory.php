@@ -27,7 +27,7 @@ class OrdersItemsFactory
 
             $orderItems = OrderItemsFactory::make($item);
 
-            $order = Order::fromItems((int) $item->OrderId, (int) $item->OrderNumber, $orderItems);
+            $order = Order::fromItems((string) $item->OrderId, (int) $item->OrderNumber, $orderItems);
             $orders->add($order);
         }
 

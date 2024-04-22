@@ -15,7 +15,7 @@ class OrderItemTest extends LinioTestCase
 {
     protected $orderItemId = 6750999;
     protected $shopId = 7208215;
-    protected $orderId = 4758978;
+    protected $orderId = '4758978';
     protected $name = 'MEGIR 5006 RELOJ ACERO INOXIDABLE ROSA';
     protected $sku = 'DJFKLJOEDKLFJ';
     protected $variation = 'Talla Única';

@@ -83,7 +83,7 @@ class OrderItemFactory
         return OrderItem::fromOrderItem(
             (int) $element->OrderItemId,
             (int) $element->ShopId,
-            (int) $element->OrderId,
+            (string) $element->OrderId,
             (string) $element->Name,
             (string) $element->Sku,
             (string) $element->Variation,

@@ -24,7 +24,7 @@ class OrdersTest extends LinioTestCase
 
         $orderList = $orders->all();
 
-        $order = $orders->findByOrderId(4687808);
+        $order = $orders->findByOrderId('4687808');
 
         $this->assertInstanceOf(Orders::class, $orders);
         $this->assertInstanceOf(Order::class, $order);
@@ -44,7 +44,7 @@ class OrdersTest extends LinioTestCase
 
         $orderList = $orders->all();
 
-        $order = $orders->findByOrderId(4687808);
+        $order = $orders->findByOrderId('4687808');
 
         $this->assertInstanceOf(Orders::class, $orders);
         $this->assertInstanceOf(Order::class, $order);
@@ -63,7 +63,7 @@ class OrdersTest extends LinioTestCase
 
         $orders = OrdersFactory::make($simpleXml);
 
-        $order = $orders->findByOrderId(12);
+        $order = $orders->findByOrderId('12');
 
         $this->assertNull($order);
     }

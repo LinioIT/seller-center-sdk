@@ -11,7 +11,7 @@ use stdClass;
 class Order implements JsonSerializable
 {
     /**
-     * @var int
+     * @var string
      */
     protected $orderId;
 
@@ -140,7 +140,7 @@ class Order implements JsonSerializable
      * @param string|int $orderNumber
      */
     public static function fromData(
-        int $orderId,
+        string $orderId,
         $orderNumber,
         ?string $customerFirstName,
         ?string $customerLastName,
@@ -198,7 +198,7 @@ class Order implements JsonSerializable
     /**
      * @param string|int $orderNumber
      */
-    public static function fromItems(int $orderId, $orderNumber, OrderItems $orderItems): Order
+    public static function fromItems(string $orderId, $orderNumber, OrderItems $orderItems): Order
     {
         $order = new self();
 
@@ -209,7 +209,7 @@ class Order implements JsonSerializable
         return $order;
     }
 
-    public function getOrderId(): int
+    public function getOrderId(): string
     {
         return $this->orderId;
     }

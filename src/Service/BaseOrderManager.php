@@ -33,7 +33,7 @@ class BaseOrderManager extends BaseManager
     public const DEFAULT_DATE_FORMAT = 'Y-m-d\TH:i:s';
 
     public function getOrder(
-        int $orderId,
+        string $orderId,
         bool $debug = true
     ): Order {
         $action = 'GetOrder';
@@ -59,7 +59,7 @@ class BaseOrderManager extends BaseManager
      * @return OrderItem[]
      */
     public function getOrderItems(
-        int $orderId,
+        string $orderId,
         bool $debug = true
     ): array {
         $action = 'GetOrderItems';

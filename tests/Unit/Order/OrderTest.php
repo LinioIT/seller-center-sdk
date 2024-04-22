@@ -17,7 +17,7 @@ use Linio\SellerCenter\Model\Order\OrderItems;
 
 class OrderTest extends LinioTestCase
 {
-    protected $orderId = 4632913;
+    protected $orderId = '4632913';
     protected $customerFirstName = 'first_name+4632913';
     protected $customerLastName = 'last_name';
     protected $orderNumber = 204527353;
@@ -191,7 +191,7 @@ class OrderTest extends LinioTestCase
 
     public function testItReturnsAJsonRepresentationWithOrderItems(): void
     {
-        $orderId = 1;
+        $orderId = '1';
         $orderNumber = 1;
         $randomDigit = $this->getFaker()->randomDigitNotNull;
 

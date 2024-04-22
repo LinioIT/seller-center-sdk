@@ -18,7 +18,7 @@ class Orders implements CollectionInterface
         return $this->collection;
     }
 
-    public function findByOrderId(int $orderId): ?Order
+    public function findByOrderId(string $orderId): ?Order
     {
         if (!key_exists($orderId, $this->collection)) {
             return null;
