@@ -143,6 +143,11 @@ class GlobalProduct extends BaseProduct implements JsonSerializable, ProductInte
         return $this->talla;
     }
 
+    public function getContentScore(): ?int
+    {
+        return $this->contentScore;
+    }
+
     public function setQcStatus(string $qcStatus): void
     {
         $this->qcStatus = $qcStatus;
