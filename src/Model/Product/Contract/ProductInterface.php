@@ -47,6 +47,8 @@ interface ProductInterface
 
     public function getImages(): Images;
 
+    public function getContentScore(): ?int;
+
     public function setSellerSku(string $sellerSku): void;
 
     public function setNewSellerSku(string $newSellerSku): void;
@@ -80,6 +82,8 @@ interface ProductInterface
     public function setMainImage(Image $mainImage): void;
 
     public function attachImages(Images $images): void;
+
+    public function setContentScore(?int $contentScore): ?int;
 
     /**
      * @return mixed[]
