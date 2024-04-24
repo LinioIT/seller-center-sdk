@@ -36,6 +36,7 @@
           <Image>http://static.somesite.com/p/image2.jpg</Image>
           <Image>http://static.somesite.com/p/image3.jpg</Image>
         </Images>
+        <ContentScore>26</ContentScore>
         <Description>fdsfdsfds&lt;span&gt;&lt;/span&gt;</Description>
         <TaxClass>IVA 19%</TaxClass>
         <Brand>GENERIC</Brand>
@@ -122,6 +123,7 @@
           <Image>http://static.somesite.com/p/image2.jpg</Image>
           <Image>http://static.somesite.com/p/image3.jpg</Image>
         </Images>
+        <ContentScore>26</ContentScore>
         <Description>fdsfdsfds&lt;span&gt;&lt;/span&gt;</Description>
         <TaxClass>IVA 19%</TaxClass>
         <Brand>GENERIC</Brand>
