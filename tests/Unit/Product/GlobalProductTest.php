@@ -57,6 +57,8 @@ class GlobalProductTest extends LinioTestCase
     protected $mainImage;
     protected $images;
 
+    protected $contentScore = 40;
+
     protected $conditionType = 'Nuevo';
     protected $packageHeight = 3;
     protected $packageWidth = 0;
@@ -124,7 +126,9 @@ class GlobalProductTest extends LinioTestCase
             $this->productId,
             $this->taxClass,
             $this->productData,
-            $this->images
+            $this->images,
+            null,
+            $this->contentScore
         );
 
         $this->assertInstanceOf(GlobalProduct::class, $product);
@@ -138,6 +142,7 @@ class GlobalProductTest extends LinioTestCase
         $this->assertEquals($product->getTaxClass(), $this->taxClass);
         $this->assertEquals($product->getProductData(), $this->productData);
         $this->assertEquals($product->getQcStatus(), null);
+        $this->assertEquals($product->getContentScore(), $this->contentScore);
         $this->assertInstanceOf(Images::class, $product->getImages());
         $this->assertInstanceOf(BusinessUnits::class, $product->getBusinessUnits());
     }

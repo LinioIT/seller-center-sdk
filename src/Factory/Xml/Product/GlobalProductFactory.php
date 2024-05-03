@@ -59,7 +59,8 @@ class GlobalProductFactory
             (string) $element->TaxClass,
             $productData,
             $images ?? null,
-            (string) $element->QCStatus ?? null
+            (string) $element->QCStatus ?? null,
+            (int) $element->ContentScore ?? null
         );
 
         if (!empty($element->ShopSku)) {

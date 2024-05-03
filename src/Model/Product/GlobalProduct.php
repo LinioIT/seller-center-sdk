@@ -44,6 +44,11 @@ class GlobalProduct extends BaseProduct implements JsonSerializable, ProductInte
      */
     protected $talla;
 
+    /**
+     * @var int|null
+     */
+    protected $contentScore;
+
     public function __construct()
     {
         $this->productData = new ProductData();
@@ -65,7 +70,8 @@ class GlobalProduct extends BaseProduct implements JsonSerializable, ProductInte
         ?string $taxClass,
         ProductData $productData,
         ?Images $images = null,
-        ?string $qcStatus = null
+        ?string $qcStatus = null,
+        ?int $contentScore = null
     ): self {
         self::ValidateArguments($sellerSku, $name, $description, $productId);
 
@@ -94,6 +100,10 @@ class GlobalProduct extends BaseProduct implements JsonSerializable, ProductInte
 
         if (!empty($qcStatus)) {
             $product->setQcStatus($qcStatus);
+        }
+
+        if (!empty($contentScore)) {
+            $product->setContentScore($contentScore);
         }
 
         return $product;
@@ -133,6 +143,11 @@ class GlobalProduct extends BaseProduct implements JsonSerializable, ProductInte
         return $this->talla;
     }
 
+    public function getContentScore(): ?int
+    {
+        return $this->contentScore;
+    }
+
     public function setQcStatus(string $qcStatus): void
     {
         $this->qcStatus = $qcStatus;
@@ -161,6 +176,11 @@ class GlobalProduct extends BaseProduct implements JsonSerializable, ProductInte
     public function setTalla(string $talla): void
     {
         $this->talla = $talla;
+    }
+
+    public function setContentScore(int $contentScore): void
+    {
+        $this->contentScore = $contentScore;
     }
 
     /**
