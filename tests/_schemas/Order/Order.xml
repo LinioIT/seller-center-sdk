@@ -52,6 +52,21 @@
   <ItemsCount>%s</ItemsCount>
   <PromisedShippingTime>%s</PromisedShippingTime>
   <ExtraAttributes>%s</ExtraAttributes>
+  <ExtraBillingAttributes>
+       <LegalId/>
+       <FiscalPerson/>
+       <DocumentType/>
+       <ReceiverRegion/>
+       <ReceiverAddress/>
+       <ReceiverPostcode/>
+       <ReceiverLegalName/>
+       <ReceiverMunicipality/>
+       <ReceiverTypeRegimen/>
+       <CustomerVerifierDigit/>
+       <ReceiverLocality/>
+       <ReceiverEmail/>
+       <ReceiverPhonenumber/>
+  </ExtraBillingAttributes>
   <Statuses>
     <Status>%s</Status>
     <Status>%s</Status>

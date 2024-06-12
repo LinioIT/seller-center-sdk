@@ -136,6 +136,11 @@ class Order implements JsonSerializable
     protected $shippingType;
 
     /**
+     * @var ExtraBillingAttributes|null
+     */
+    protected $extraBillingAttributes;
+
+    /**
      * @param string[] $statuses
      * @param string|int $orderNumber
      */
@@ -160,6 +165,7 @@ class Order implements JsonSerializable
         int $itemsCount,
         ?DateTimeInterface $promisedShippingTime,
         ?string $extraAttributes,
+        ?ExtraBillingAttributes $extraBillingAttributes,
         array $statuses,
         ?bool $businessInvoiceRequired,
         ?string $shippingType,
@@ -190,6 +196,7 @@ class Order implements JsonSerializable
         $order->statuses = $statuses;
         $order->businessInvoiceRequired = $businessInvoiceRequired;
         $order->shippingType = $shippingType;
+        $order->extraBillingAttributes = $extraBillingAttributes;
         $order->operatorCode = $operatorCode;
 
         return $order;
@@ -340,6 +347,11 @@ class Order implements JsonSerializable
         return $this->shippingType;
     }
 
+    public function getExtraBillingAttributes(): ?ExtraBillingAttributes
+    {
+        return $this->extraBillingAttributes;
+    }
+
     public function setOrderItems(OrderItems $orderItems): void
     {
         $this->orderItems = $orderItems;
@@ -372,6 +384,7 @@ class Order implements JsonSerializable
         $serialized->orderItems = $this->orderItems;
         $serialized->businessInvoiceRequired = $this->businessInvoiceRequired;
         $serialized->shippingType = $this->shippingType;
+        $serialized->extraBillingAttributes = $this->extraBillingAttributes;
         $serialized->operatorCode = $this->operatorCode;
 
         return $serialized;
