@@ -1,0 +1,15 @@
+{
+    "legalId": "%s",
+    "fiscalPerson": "%s",
+    "documentType": "%s",
+    "receiverRegion": "%s",
+    "receiverAddress": "%s",
+    "receiverPostcode": "%s",
+    "receiverLegalName": "%s",
+    "receiverMunicipality": "%s",
+    "receiverTypeRegimen": "%s",
+    "customerVerifierDigit": "%s",
+    "receiverLocality": "%s",
+    "receiverEmail": "%s",
+    "receiverPhonenumber": "%s"
+}

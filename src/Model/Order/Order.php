@@ -165,11 +165,11 @@ class Order implements JsonSerializable
         int $itemsCount,
         ?DateTimeInterface $promisedShippingTime,
         ?string $extraAttributes,
-        ?ExtraBillingAttributes $extraBillingAttributes,
         array $statuses,
         ?bool $businessInvoiceRequired,
         ?string $shippingType,
-        ?string $operatorCode = null
+        ?string $operatorCode = null,
+        ?ExtraBillingAttributes $extraBillingAttributes
     ): Order {
         $order = new self();
 

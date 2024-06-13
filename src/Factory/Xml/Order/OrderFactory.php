@@ -106,11 +106,11 @@ class OrderFactory
             (int) $element->ItemsCount,
             $promisedShippingTime,
             (string) $element->ExtraAttributes,
-            $extraBillingAttributes,
             $statuses,
             $businessInvoiceRequired,
             $shippingType,
-            $operatorCode
+            $operatorCode,
+            $extraBillingAttributes
         );
     }
 }

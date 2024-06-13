@@ -149,6 +149,11 @@ class ExtraBillingAttributes implements JsonSerializable
         return $this->receiverTypeRegimen;
     }
 
+    public function getReceiverEmail(): ?string
+    {
+        return $this->receiverEmail;
+    }
+
     public function getCustomerVerifierDigit(): ?string
     {
         return $this->customerVerifierDigit;
