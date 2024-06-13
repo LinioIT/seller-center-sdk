@@ -55,6 +55,21 @@
         "%s",
         "%s"
     ],
+    "extraBillingAttributes": {
+        "legalId": null,
+        "fiscalPerson": null,
+        "documentType": null,
+        "receiverRegion": null,
+        "receiverAddress": null,
+        "receiverPostcode": null,
+        "receiverLegalName":null,
+        "receiverMunicipality": null,
+        "receiverTypeRegimen": null,
+        "customerVerifierDigit": null,
+        "receiverLocality": null,
+        "receiverEmail": null,
+        "receiverPhonenumber": null                  
+    },
     "businessInvoiceRequired": null,
     "shippingType": null,
     "orderItems": null

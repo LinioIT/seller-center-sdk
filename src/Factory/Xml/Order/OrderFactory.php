@@ -82,6 +82,9 @@ class OrderFactory
                 : null
             );
 
+        $extraBillingAttributes = !empty($element->ExtraBillingAttributes) ?
+            ExtraBillingAttributesFactory::make($element->ExtraBillingAttributes) : null;
+
         return Order::fromData(
             (int) $element->OrderId,
             $orderNumber,
@@ -106,7 +109,8 @@ class OrderFactory
             $statuses,
             $businessInvoiceRequired,
             $shippingType,
-            $operatorCode
+            $operatorCode,
+            $extraBillingAttributes
         );
     }
 }
