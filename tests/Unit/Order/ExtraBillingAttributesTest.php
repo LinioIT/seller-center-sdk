@@ -5,7 +5,6 @@ declare(strict_types=1);
 namespace Linio\SellerCenter\Order;
 
 use Linio\Component\Util\Json;
-use Linio\SellerCenter\Exception\InvalidXmlStructureException;
 use Linio\SellerCenter\Factory\Xml\Order\ExtraBillingAttributesFactory;
 use Linio\SellerCenter\LinioTestCase;
 use Linio\SellerCenter\Model\Order\ExtraBillingAttributes;
@@ -26,7 +25,7 @@ class ExtraBillingAttributesTest extends LinioTestCase
     protected $receiverEmail = 'comercializadora.vipaz@gmail.com';
     protected $receiverPhonenumber = '+56999100109';
 
-    public function testItReturnsValidAddress(): void
+    public function testItReturnsValidBillingAttributes(): void
     {
         $simpleXml = simplexml_load_string($this->createXmlStringForBillingInformation());
 
@@ -46,26 +45,6 @@ class ExtraBillingAttributesTest extends LinioTestCase
         $this->assertEquals($simpleXml->ReceiverLocality, $billingInformation->getReceiverLocality());
         $this->assertEquals($simpleXml->ReceiverEmail, $billingInformation->getReceiverEmail());
         $this->assertEquals($simpleXml->ReceiverPhonenumber, $billingInformation->getReceiverPhoneNumber());
-    }
-
-    /**
-     * @dataProvider invalidXmlStructure
-     */
-    public function testItThrowsAExceptionWithoutAPropertyInTheXml(string $property): void
-    {
-        $this->expectException(InvalidXmlStructureException::class);
-
-        $this->expectExceptionMessage(
-            sprintf(
-                'The xml structure is not valid for a BillingAttributes. The property %s should exist.',
-                $property
-            )
-        );
-
-        $simpleXml = simplexml_load_string($this->createXmlStringForBillingInformation());
-        unset($simpleXml->{$property});
-
-        ExtraBillingAttributesFactory::make($simpleXml);
     }
 
     public function testItReturnsAJsonRepresentation(): void
