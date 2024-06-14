@@ -169,7 +169,7 @@ class Order implements JsonSerializable
         ?bool $businessInvoiceRequired,
         ?string $shippingType,
         ?string $operatorCode = null,
-        ?ExtraBillingAttributes $extraBillingAttributes
+        ?ExtraBillingAttributes $extraBillingAttributes = null
     ): Order {
         $order = new self();
 
