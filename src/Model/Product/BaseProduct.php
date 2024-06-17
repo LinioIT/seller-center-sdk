@@ -69,7 +69,7 @@ abstract class BaseProduct implements JsonSerializable
     protected $brand;
 
     /**
-     * @var string
+     * @var string|null
      */
     protected $productId;
 
@@ -171,7 +171,7 @@ abstract class BaseProduct implements JsonSerializable
         return $this->brand;
     }
 
-    public function getProductId(): string
+    public function getProductId(): ?string
     {
         return $this->productId;
     }
@@ -313,7 +313,7 @@ abstract class BaseProduct implements JsonSerializable
         return $serialized;
     }
 
-    protected static function ValidateArguments(string $sellerSku, string $name, string $description, string $productId): void
+    protected static function ValidateArguments(string $sellerSku, string $name, string $description): void
     {
         if (empty($sellerSku)) {
             throw new EmptyArgumentException('SellerSku');
@@ -325,9 +325,6 @@ abstract class BaseProduct implements JsonSerializable
 
         if (empty($description)) {
             throw new EmptyArgumentException('Description');
-        }
-        if (empty($productId)) {
-            throw new EmptyArgumentException('ProductId');
         }
     }
 }

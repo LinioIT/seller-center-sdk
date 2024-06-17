@@ -73,7 +73,7 @@ class GlobalProduct extends BaseProduct implements JsonSerializable, ProductInte
         ?string $qcStatus = null,
         ?int $contentScore = null
     ): self {
-        self::ValidateArguments($sellerSku, $name, $description, $productId);
+        self::ValidateArguments($sellerSku, $name, $description);
 
         $product = new static();
 

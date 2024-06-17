@@ -8,12 +8,15 @@ use Exception;
 use GuzzleHttp\ClientInterface;
 use Linio\SellerCenter\LinioTestCase;
 use Prophecy\Argument;
+use Prophecy\PhpUnit\ProphecyTrait;
 use Psr\Http\Client\ClientInterface as PsrClientInterface;
 use Psr\Http\Message\RequestInterface;
 use Psr\Http\Message\ResponseInterface;
 
 class GuzzleClientAdapterTest extends LinioTestCase
 {
+    use ProphecyTrait;
+
     public function testItIsValidatingClass(): void
     {
         $this->expectException(Exception::class);

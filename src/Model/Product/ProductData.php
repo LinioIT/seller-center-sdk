@@ -76,9 +76,6 @@ class ProductData implements JsonSerializable
         return null;
     }
 
-    /**
-     * @phpstan-ignore-next-line
-     */
     public function add(string $name, $value): void
     {
         if (!key_exists($name, $this->attributes)) {

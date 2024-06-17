@@ -14,9 +14,12 @@ use Linio\SellerCenter\Model\Order\Address;
 use Linio\SellerCenter\Model\Order\Order;
 use Linio\SellerCenter\Model\Order\OrderItem;
 use Linio\SellerCenter\Model\Order\OrderItems;
+use Prophecy\PhpUnit\ProphecyTrait;
 
 class OrderTest extends LinioTestCase
 {
+    use ProphecyTrait;
+
     protected $orderId = 4632913;
     protected $customerFirstName = 'first_name+4632913';
     protected $customerLastName = 'last_name';

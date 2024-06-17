@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace Linio\SellerCenter\Model\Product;
 
+use DateTime;
 use DateTimeInterface;
 use JsonSerializable;
 use Linio\SellerCenter\Contract\BusinessUnitOperatorCodes;
@@ -118,6 +119,15 @@ class BusinessUnit implements JsonSerializable, VariationProductInterface, Produ
 
     public function getSalePrice(): ?float
     {
+        $currentDate = new DateTime();
+
+        $start = $this->getSaleStartDate();
+        $end = $this->getSaleEndDate();
+
+        if ($start !== null && $end !== null && ($currentDate < $start || $currentDate >= $end)) {
+            return null;
+        }
+
         return $this->specialPrice;
     }
 
@@ -220,7 +230,7 @@ class BusinessUnit implements JsonSerializable, VariationProductInterface, Produ
 
     public function setSalePrice(?float $specialPrice): void
     {
-        if ($specialPrice < 0 || $specialPrice > $this->price) {
+        if ($specialPrice < 0) {
             throw new InvalidDomainException('SpecialPrice');
         }
         $this->specialPrice = $specialPrice;

@@ -11,9 +11,12 @@ use Linio\SellerCenter\LinioTestCase;
 use Linio\SellerCenter\Model\Category\CategoryAttribute;
 use Linio\SellerCenter\Model\Category\CategoryAttributeOption;
 use Linio\SellerCenter\Model\Category\CategoryAttributeOptions;
+use Prophecy\PhpUnit\ProphecyTrait;
 
 class CategoryAttributeTest extends LinioTestCase
 {
+    use ProphecyTrait;
+
     /**
      * @dataProvider categoryTypesProvider
      */

@@ -145,7 +145,7 @@ class SellerCenterSdk
 
     public function brands(): BrandManager
     {
-        if (empty($this->brands)) {
+        if (!$this->brands instanceof BrandManager) {
             $this->brands = new BrandManager(
                 $this->configuration,
                 $this->client,
@@ -159,7 +159,7 @@ class SellerCenterSdk
 
     public function feeds(): FeedManager
     {
-        if (empty($this->feeds)) {
+        if (!$this->feeds instanceof FeedManager) {
             $this->feeds = new FeedManager(
                 $this->configuration,
                 $this->client,
@@ -173,7 +173,7 @@ class SellerCenterSdk
 
     public function documents(): DocumentManager
     {
-        if (empty($this->documents)) {
+        if (!$this->documents instanceof DocumentManager) {
             $this->documents = new DocumentManager(
                 $this->configuration,
                 $this->client,
@@ -187,7 +187,7 @@ class SellerCenterSdk
 
     public function categories(): CategoryManager
     {
-        if (empty($this->categories)) {
+        if (!$this->categories instanceof CategoryManager) {
             $this->categories = new CategoryManager(
                 $this->configuration,
                 $this->client,
@@ -201,7 +201,7 @@ class SellerCenterSdk
 
     public function products(): ProductManagerInterface
     {
-        if (empty($this->products)) {
+        if (!$this->products instanceof ProductManager) {
             $this->products = new ProductManager(
                 $this->configuration,
                 $this->client,
@@ -229,7 +229,7 @@ class SellerCenterSdk
 
     public function orders(): OrderManager
     {
-        if (empty($this->orders)) {
+        if (!$this->orders instanceof OrderManager) {
             $this->orders = new OrderManager(
                 $this->configuration,
                 $this->client,
@@ -257,7 +257,7 @@ class SellerCenterSdk
 
     public function qualityControl(): QualityControlManager
     {
-        if (empty($this->qualityControl)) {
+        if (!$this->qualityControl instanceof QualityControlManager) {
             $this->qualityControl = new QualityControlManager(
                 $this->configuration,
                 $this->client,
@@ -271,7 +271,7 @@ class SellerCenterSdk
 
     public function webhooks(): WebhookManager
     {
-        if (empty($this->webhooks)) {
+        if (!$this->webhooks instanceof WebhookManager) {
             $this->webhooks = new WebhookManager(
                 $this->configuration,
                 $this->client,
@@ -285,7 +285,7 @@ class SellerCenterSdk
 
     public function shipment(): ShipmentManager
     {
-        if (empty($this->shipment)) {
+        if (!$this->shipment instanceof ShipmentManager) {
             $this->shipment = new ShipmentManager(
                 $this->configuration,
                 $this->client,

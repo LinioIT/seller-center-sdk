@@ -56,7 +56,7 @@ class FeedResponse
 
         $this->requestId = $requestId;
         $this->requestAction = $requestAction;
-        $this->responseType = $responseType ?? null;
+        $this->responseType = $responseType;
         $this->timestamp = $date ? $date : null;
         $this->requestParameters = $requestParameters;
     }

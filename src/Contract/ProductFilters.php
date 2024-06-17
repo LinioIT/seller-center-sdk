@@ -14,6 +14,7 @@ interface ProductFilters
     public const PENDING = 'pending';
     public const REJECTED = 'rejected';
     public const SOLD_OUT = 'sold-out';
+    public const ACTIVE = 'active';
 
     public const FILTERS = [
         self::ALL,
@@ -24,5 +25,6 @@ interface ProductFilters
         self::PENDING,
         self::REJECTED,
         self::SOLD_OUT,
+        self::ACTIVE,
     ];
 }
