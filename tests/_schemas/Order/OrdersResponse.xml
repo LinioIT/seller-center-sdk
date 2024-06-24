@@ -61,6 +61,21 @@
         <ItemsCount>1</ItemsCount>
         <PromisedShippingTime>2018-08-28 16:00:00</PromisedShippingTime>
         <ExtraAttributes/>
+        <ExtraBillingAttributes>
+              <LegalId>77656276-9</LegalId>
+              <FiscalPerson>business</FiscalPerson>
+              <DocumentType>RUT</DocumentType>
+              <ReceiverRegion>METROPOLITANA DE SANTIAGO</ReceiverRegion>
+              <ReceiverAddress>JOSE MANUEL INFANTE 1155, 902 PROVIDENCIA</ReceiverAddress>
+              <ReceiverPostcode>-</ReceiverPostcode>
+              <ReceiverLegalName>COMERCIALIZADORA VIPAZ SPA</ReceiverLegalName>
+              <ReceiverMunicipality>PROVIDENCIA</ReceiverMunicipality>
+              <ReceiverTypeRegimen>475201 - VENTA AL POR MENOR DE ARTÍCULOS DE FERRETERÍA Y MATERIALES DE CONSTRUCCIÓN</ReceiverTypeRegimen>
+              <CustomerVerifierDigit>9</CustomerVerifierDigit>
+              <ReceiverLocality>PROVIDENCIA</ReceiverLocality>
+              <ReceiverEmail>comercializadora.vipaz@gmail.com</ReceiverEmail>
+              <ReceiverPhonenumber>+56999100109</ReceiverPhonenumber>
+        </ExtraBillingAttributes>
         <Statuses>
           <Status>delivered</Status>
           <Status>shipped</Status>

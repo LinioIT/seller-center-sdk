@@ -112,6 +112,21 @@
       <ItemsCount>1</ItemsCount>
       <PromisedShippingTime>2018-08-28 16:00:00</PromisedShippingTime>
       <ExtraAttributes/>
+          <ExtraBillingAttributes>
+          <LegalId/>
+          <FiscalPerson/>
+          <DocumentType/>
+          <ReceiverRegion/>
+          <ReceiverAddress/>
+          <ReceiverPostcode/>
+          <ReceiverLegalName/>
+          <ReceiverMunicipality/>
+          <ReceiverTypeRegimen/>
+          <CustomerVerifierDigit/>
+          <ReceiverLocality/>
+          <ReceiverEmail/>
+          <ReceiverPhonenumber/>
+      </ExtraBillingAttributes>
       <InvoiceRequired>true</InvoiceRequired>
       <Statuses>
         <Status>delivered</Status>

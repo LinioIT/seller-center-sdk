@@ -41,7 +41,19 @@ class OrderTest extends LinioTestCase
     protected $city = 'city';
     protected $postCode = '10117';
     protected $country = 'country';
-
+    protected $legalId = '77656276-9';
+    protected $fiscalPerson = 'business';
+    protected $documentType = 'RUT';
+    protected $receiverRegion = 'METROPOLITANA DE SANTIAGO';
+    protected $receiverAddress = 'JOSE MANUEL INFANTE 1155, 902 PROVIDENCIA';
+    protected $receiverPostcode = '97873';
+    protected $receiverLegalName = 'COMERCIALIZADORA VIPAZ SPA';
+    protected $receiverMunicipality = 'PROVIDENCIA';
+    protected $receiverTypeRegimen = '475201 - VENTA AL POR MENOR DE ARTÍCULOS DE FERRETERÍA Y MATERIALES DE CONSTRUCCIÓN';
+    protected $customerVerifierDigit = '9';
+    protected $receiverLocality = 'PROVIDENCIA';
+    protected $receiverEmail = 'comercializadora.vipaz@gmail.com';
+    protected $receiverPhonenumber = '+56999100109';
     protected $nationalRegistrationNumber = '72201776';
     protected $itemsCount = 1;
     protected $promisedShippingTime = '2018-07-18 23:59:59';
