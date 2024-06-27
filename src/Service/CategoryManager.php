@@ -8,9 +8,11 @@ use Linio\Component\Util\Json;
 use Linio\SellerCenter\Factory\Xml\Category\AttributesSetFactory;
 use Linio\SellerCenter\Factory\Xml\Category\CategoriesFactory;
 use Linio\SellerCenter\Factory\Xml\Category\CategoryAttributesFactory;
+use Linio\SellerCenter\Factory\Xml\Category\CategoryContentScoreRulesFactory;
 use Linio\SellerCenter\Model\Category\AttributeSet;
 use Linio\SellerCenter\Model\Category\Category;
 use Linio\SellerCenter\Model\Category\CategoryAttribute;
+use Linio\SellerCenter\Model\Category\CategoryContentScoreRule;
 
 class CategoryManager extends BaseManager
 {
@@ -92,5 +94,30 @@ class CategoryManager extends BaseManager
         $attributesSet = AttributesSetFactory::make($builtResponse->getBody());
 
         return $attributesSet->all();
+    }
+
+    /**
+     * @return CategoryContentScoreRule[]
+     */
+    public function getCategoryContentScoreRules(
+        int $categoryId,
+        bool $debug = true
+    ): array {
+        $action = 'GetContentScore';
+
+        $parameters = $this->makeParametersForAction($action);
+        $parameters->set(['CategoryId' => $categoryId]);
+
+        $builtResponse = $this->executeAction(
+            $action,
+            $parameters,
+            null,
+            'GET',
+            $debug
+        );
+
+        $categoryContentScoreRules = CategoryContentScoreRulesFactory::make($builtResponse->getBody());
+
+        return $categoryContentScoreRules->all();
     }
 }

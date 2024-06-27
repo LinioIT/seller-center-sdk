@@ -7,6 +7,7 @@ namespace Linio\SellerCenter\Functional;
 use Linio\SellerCenter\ClientHelper;
 use Linio\SellerCenter\LinioTestCase;
 use Linio\SellerCenter\Model\Category\Category;
+use Linio\SellerCenter\Model\Category\CategoryContentScoreRule;
 use Prophecy\Argument;
 use Prophecy\Prophecy\ObjectProphecy;
 use Psr\Log\LoggerInterface;
@@ -67,6 +68,38 @@ class CategoryManagerTest extends LinioTestCase
         $this->assertEquals(603, $child_2->getId());
         $this->assertEquals('SQUARE', $child_2->getGlobalIdentifier());
         $this->assertEquals(2, $child_2->getAttributeSetId());
+    }
+
+    public function testTheCategoryContentScoreRulesWillBeCreatedFromAnXml(): void
+    {
+        $body = $this->getSchema('Category/GetCategoryContentScoreRulesSuccessResponse.xml');
+        $sdk = $this->getSdkClient($body);
+
+        $categoryId = 1;
+
+        $result = $sdk->categories()->getCategoryContentScoreRules($categoryId);
+
+        $this->assertIsArray($result);
+        $this->assertContainsOnlyInstancesOf(CategoryContentScoreRule::class, $result);
+
+        $rules = ['CHARACTER_COUNT', 'WORD_COUNT'];
+        $fields = ['title', 'description'];
+        $scores = [44, 44];
+        $mins = [20, 50];
+        $maxs = [60, null];
+
+        for ($i = 0; $i < 2; $i++) {
+            $categoryContentScoreRule = $result[$i];
+
+            $this->assertEquals($rules[$i], $categoryContentScoreRule->getRule());
+            $this->assertEquals($fields[$i], $categoryContentScoreRule->getField());
+            $this->assertEquals($scores[$i], $categoryContentScoreRule->getScore());
+
+            $config = $categoryContentScoreRule->getConfig();
+
+            $this->assertEquals($mins[$i], $config->getMin());
+            $this->assertEquals($maxs[$i], $config->getMax());
+        }
     }
 
     /**
