@@ -12,7 +12,7 @@ use Linio\SellerCenter\Factory\Xml\Category\CategoryContentScoreRulesFactory;
 use Linio\SellerCenter\Model\Category\AttributeSet;
 use Linio\SellerCenter\Model\Category\Category;
 use Linio\SellerCenter\Model\Category\CategoryAttribute;
-use Linio\SellerCenter\Model\Category\CategoryContentScoreRule;
+use Linio\SellerCenter\Model\Category\CategoryContentScoreRules;
 
 class CategoryManager extends BaseManager
 {
@@ -96,13 +96,10 @@ class CategoryManager extends BaseManager
         return $attributesSet->all();
     }
 
-    /**
-     * @return CategoryContentScoreRule[]
-     */
     public function getCategoryContentScoreRules(
         int $categoryId,
         bool $debug = true
-    ): array {
+    ): CategoryContentScoreRules {
         $action = 'GetContentScore';
 
         $parameters = $this->makeParametersForAction($action);
@@ -116,8 +113,6 @@ class CategoryManager extends BaseManager
             $debug
         );
 
-        $categoryContentScoreRules = CategoryContentScoreRulesFactory::make($builtResponse->getBody());
-
-        return $categoryContentScoreRules->all();
+        return CategoryContentScoreRulesFactory::make($builtResponse->getBody());
     }
 }

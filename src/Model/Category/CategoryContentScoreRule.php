@@ -63,7 +63,7 @@ class CategoryContentScoreRule implements JsonSerializable
         $serialized->rule = $this->rule;
         $serialized->field = $this->field;
         $serialized->score = $this->score;
-        $serialized->config = $this->config;
+        $serialized->config = $this->config->jsonSerialize();
 
         return $serialized;
     }

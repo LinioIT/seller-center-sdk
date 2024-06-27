@@ -8,6 +8,7 @@ use Linio\SellerCenter\ClientHelper;
 use Linio\SellerCenter\LinioTestCase;
 use Linio\SellerCenter\Model\Category\Category;
 use Linio\SellerCenter\Model\Category\CategoryContentScoreRule;
+use Linio\SellerCenter\Model\Category\CategoryContentScoreRules;
 use Prophecy\Argument;
 use Prophecy\Prophecy\ObjectProphecy;
 use Psr\Log\LoggerInterface;
@@ -79,8 +80,8 @@ class CategoryManagerTest extends LinioTestCase
 
         $result = $sdk->categories()->getCategoryContentScoreRules($categoryId);
 
-        $this->assertIsArray($result);
-        $this->assertContainsOnlyInstancesOf(CategoryContentScoreRule::class, $result);
+        $this->assertInstanceOf(CategoryContentScoreRules::class, $result);
+        $this->assertContainsOnlyInstancesOf(CategoryContentScoreRule::class, $result->all());
 
         $rules = ['CHARACTER_COUNT', 'WORD_COUNT'];
         $fields = ['title', 'description'];
@@ -89,7 +90,7 @@ class CategoryManagerTest extends LinioTestCase
         $maxs = [60, null];
 
         for ($i = 0; $i < 2; $i++) {
-            $categoryContentScoreRule = $result[$i];
+            $categoryContentScoreRule = $result->all()[$i];
 
             $this->assertEquals($rules[$i], $categoryContentScoreRule->getRule());
             $this->assertEquals($fields[$i], $categoryContentScoreRule->getField());

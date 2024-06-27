@@ -13,7 +13,7 @@ class CategoryContentScoreRulesFactory
     public static function make(SimpleXMLElement $element): CategoryContentScoreRules
     {
         if (empty($element->CategoryRules->Config)) {
-            throw new InvalidXmlStructureException('CategoryRules', 'Config');
+            throw new InvalidXmlStructureException('CategoryContentScoreRules', 'Config');
         }
 
         $categoryContentScoreRules = new CategoryContentScoreRules();
