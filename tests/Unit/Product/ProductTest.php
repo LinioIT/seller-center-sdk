@@ -459,26 +459,6 @@ class ProductTest extends LinioTestCase
         );
     }
 
-    public function testItThrowsExceptionWhenProductIdIsNull(): void
-    {
-        $this->expectException(EmptyArgumentException::class);
-
-        $this->expectExceptionMessage('The parameter ProductId should not be null.');
-
-        Product::fromBasicData(
-            $this->sellerSku,
-            $this->name,
-            $this->variation,
-            $this->primaryCategory,
-            $this->description,
-            $this->brand,
-            $this->price,
-            '',
-            $this->taxClass,
-            $this->productData
-        );
-    }
-
     /**
      * @dataProvider invalidXmlStructure
      */

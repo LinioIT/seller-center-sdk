@@ -198,6 +198,32 @@ class GlobalProductManagerTest extends LinioTestCase
         $this->assertContainsOnlyInstancesOf(GlobalProduct::class, $result);
     }
 
+    public function testItReturnsACollectionOfProductsBySkuSellerListWithEmptyAttributesTaxclassProductIdAndDescription(): void
+    {
+        $sdkClient = $this->getSdkClient($this->getSchema('Product/GlobalProductResponseEmptyAttr.xml'));
+
+        $skuSellerList = ['testsku-01'];
+
+        $result = $sdkClient->globalProducts()->getProductsBySellerSku($skuSellerList);
+
+        $this->assertIsArray($result);
+        $this->assertContainsOnlyInstancesOf(GlobalProduct::class, $result);
+        $this->assertNotEmpty($result);
+    }
+
+    public function testItReturnsACollectionOfProductsBySkuSellerListWithMissingAttributesTaxclassProductIdAndDescription(): void
+    {
+        $sdkClient = $this->getSdkClient($this->getSchema('Product/GlobalProductResponseMissingAttr.xml'));
+
+        $skuSellerList = ['testsku-01'];
+
+        $result = $sdkClient->globalProducts()->getProductsBySellerSku($skuSellerList);
+
+        $this->assertIsArray($result);
+        $this->assertContainsOnlyInstancesOf(GlobalProduct::class, $result);
+        $this->assertNotEmpty($result);
+    }
+
     public function testItThrowsExceptionWithANullSkuSellerList(): void
     {
         $this->expectException(InvalidArgumentException::class);
