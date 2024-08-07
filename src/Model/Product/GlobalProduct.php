@@ -66,15 +66,50 @@ class GlobalProduct extends BaseProduct implements JsonSerializable, ProductInte
         string $description,
         Brand $brand,
         BusinessUnits $businessUnits,
-        string $productId,
+        ?string $productId,
         ?string $taxClass,
         ProductData $productData,
         ?Images $images = null,
         ?string $qcStatus = null,
         ?int $contentScore = null
     ): self {
-        self::ValidateArguments($sellerSku, $name, $description, $productId);
+        self::ValidateArguments($sellerSku, $name, $description);
 
+        return self::fromMainData(
+            $sellerSku,
+            $name,
+            $variation,
+            $primaryCategory,
+            $description,
+            $brand,
+            $businessUnits,
+            $productId,
+            $taxClass,
+            $productData,
+            $images,
+            $qcStatus,
+            $contentScore
+        );
+    }
+
+    /**
+     * @return static
+     */
+    public static function fromMainData(
+        string $sellerSku,
+        string $name,
+        ?string $variation,
+        Category $primaryCategory,
+        string $description,
+        Brand $brand,
+        BusinessUnits $businessUnits,
+        ?string $productId,
+        ?string $taxClass,
+        ProductData $productData,
+        ?Images $images = null,
+        ?string $qcStatus = null,
+        ?int $contentScore = null
+    ): self {
         $product = new static();
 
         $product->setSellerSku($sellerSku);
@@ -83,8 +118,6 @@ class GlobalProduct extends BaseProduct implements JsonSerializable, ProductInte
         $product->setDescription($description);
         $product->setBrand($brand);
         $product->setBusinessUnits($businessUnits);
-        $product->setProductId($productId);
-        $product->setTaxClass($taxClass);
         $product->setProductData($productData);
 
         $categories = new Categories();
@@ -92,6 +125,14 @@ class GlobalProduct extends BaseProduct implements JsonSerializable, ProductInte
 
         if (!empty($variation)) {
             $product->setVariation($variation);
+        }
+
+        if (!empty($productId)) {
+            $product->setProductId($productId);
+        }
+
+        if (!empty($taxClass)) {
+            $product->setTaxClass($taxClass);
         }
 
         if (!empty($images)) {

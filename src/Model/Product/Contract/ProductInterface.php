@@ -35,7 +35,7 @@ interface ProductInterface
 
     public function getBrand(): Brand;
 
-    public function getProductId(): string;
+    public function getProductId(): ?string;
 
     public function getTaxClass(): ?string;
 
