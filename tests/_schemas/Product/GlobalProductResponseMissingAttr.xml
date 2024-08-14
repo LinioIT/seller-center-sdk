@@ -1,0 +1,51 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<SuccessResponse>
+  <Head>
+    <RequestId />
+    <RequestAction>GetProducts</RequestAction>
+    <ResponseType>Products</ResponseType>
+    <Timestamp>2019-02-05T11:39:11-0300</Timestamp>
+  </Head>
+  <Body>
+    <Products>
+      <Product>
+        <SellerSku>testsku-01</SellerSku>
+        <ShopSku />
+        <Name>PE grabadora</Name>
+        <ColorBasico>Amarillo</ColorBasico>
+        <Color>Amarillo Claro</Color>
+        <Talla>XS</Talla>
+        <ParentSku>PE240724</ParentSku>
+        <Url />
+        <MainImage />
+        <Images />
+        <ContentScore>0</ContentScore>
+        <Brand>2 TOMATOES</Brand>
+        <PrimaryCategory>Gafas de sol</PrimaryCategory>
+        <QCStatus>rejected</QCStatus>
+        <BusinessUnits>
+          <BusinessUnit>
+            <BusinessUnit>Falabella</BusinessUnit>
+            <OperatorCode>facl</OperatorCode>
+            <Price>23100.00</Price>
+            <SpecialPrice />
+            <SpecialFromDate />
+            <SpecialToDate />
+            <Stock>3000</Stock>
+            <Status>active</Status>
+            <IsPublished>0</IsPublished>
+          </BusinessUnit>
+        </BusinessUnits>
+        <ProductData>
+          <ConditionType>Nuevo</ConditionType>
+          <PackageLength>1</PackageLength>
+          <PackageHeight>1</PackageHeight>
+          <PackageWidth>1</PackageWidth>
+          <PackageWeight>1</PackageWeight>
+          <GeneroDeVestuario>Bebé niño</GeneroDeVestuario>
+          <Uso>Antiparras Nieve</Uso>
+        </ProductData>
+      </Product>
+    </Products>
+  </Body>
+</SuccessResponse>

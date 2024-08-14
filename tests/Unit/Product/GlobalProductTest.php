@@ -123,8 +123,8 @@ class GlobalProductTest extends LinioTestCase
             $this->description,
             $this->brand,
             $this->businessUnits,
-            $this->productId,
-            $this->taxClass,
+            null,
+            null,
             $this->productData,
             $this->images,
             null,
@@ -138,8 +138,8 @@ class GlobalProductTest extends LinioTestCase
         $this->assertEquals($product->getPrimaryCategory(), $this->primaryCategory);
         $this->assertEquals($product->getDescription(), $this->description);
         $this->assertEquals($product->getBrand(), $this->brand);
-        $this->assertEquals($product->getProductId(), $this->productId);
-        $this->assertEquals($product->getTaxClass(), $this->taxClass);
+        $this->assertEquals($product->getProductId(), null);
+        $this->assertEquals($product->getTaxClass(), null);
         $this->assertEquals($product->getProductData(), $this->productData);
         $this->assertEquals($product->getQcStatus(), null);
         $this->assertEquals($product->getContentScore(), $this->contentScore);
@@ -339,9 +339,6 @@ class GlobalProductTest extends LinioTestCase
             ['SellerSku'],
             ['Name'],
             ['Brand'],
-            ['Description'],
-            ['TaxClass'],
-            ['ProductId'],
             ['PrimaryCategory'],
             ['ProductData'],
             ['BusinessUnit'],
