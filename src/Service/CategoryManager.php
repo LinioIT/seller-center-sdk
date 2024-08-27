@@ -8,12 +8,16 @@ use Linio\Component\Util\Json;
 use Linio\SellerCenter\Factory\Xml\Category\AttributesSetFactory;
 use Linio\SellerCenter\Factory\Xml\Category\CategoriesFactory;
 use Linio\SellerCenter\Factory\Xml\Category\CategoryAttributesFactory;
+use Linio\SellerCenter\Factory\Xml\Category\CategoryContentScoreRulesFactory;
 use Linio\SellerCenter\Model\Category\AttributeSet;
 use Linio\SellerCenter\Model\Category\Category;
 use Linio\SellerCenter\Model\Category\CategoryAttribute;
+use Linio\SellerCenter\Model\Category\CategoryContentScoreRules;
 
 class CategoryManager extends BaseManager
 {
+    public const GET_RULES_ONLY_DEFAULT_VALUE = true;
+
     /**
      * @return Category[]
      */
@@ -92,5 +96,31 @@ class CategoryManager extends BaseManager
         $attributesSet = AttributesSetFactory::make($builtResponse->getBody());
 
         return $attributesSet->all();
+    }
+
+    public function getCategoryContentScoreRules(
+        int $categoryId,
+        ?bool $getRulesOnly = self::GET_RULES_ONLY_DEFAULT_VALUE,
+        ?string $operator = null,
+        bool $debug = true
+    ): CategoryContentScoreRules {
+        $action = 'GetContentScore';
+
+        $parameters = $this->makeParametersForAction($action);
+        $parameters->set([
+            'CategoryId' => $categoryId,
+            'GetRulesOnly' => $getRulesOnly,
+            'Operator' => $operator,
+        ]);
+
+        $builtResponse = $this->executeAction(
+            $action,
+            $parameters,
+            null,
+            'GET',
+            $debug
+        );
+
+        return CategoryContentScoreRulesFactory::make($builtResponse->getBody());
     }
 }
