@@ -7,6 +7,8 @@ namespace Linio\SellerCenter\Functional;
 use Linio\SellerCenter\ClientHelper;
 use Linio\SellerCenter\LinioTestCase;
 use Linio\SellerCenter\Model\Category\Category;
+use Linio\SellerCenter\Model\Category\CategoryContentScoreRule;
+use Linio\SellerCenter\Model\Category\CategoryContentScoreRules;
 use Prophecy\Argument;
 use Prophecy\Prophecy\ObjectProphecy;
 use Psr\Log\LoggerInterface;
@@ -67,6 +69,64 @@ class CategoryManagerTest extends LinioTestCase
         $this->assertEquals(603, $child_2->getId());
         $this->assertEquals('SQUARE', $child_2->getGlobalIdentifier());
         $this->assertEquals(2, $child_2->getAttributeSetId());
+    }
+
+    /**
+     * @dataProvider parametersProvider
+     */
+    public function testTheCategoryContentScoreRulesWillBeCreatedFromAnXml(?bool $getRulesOnly, ?string $operator): void
+    {
+        $body = $this->getSchema('Category/GetCategoryContentScoreRulesSuccessResponse.xml');
+        $sdk = $this->getSdkClient($body);
+
+        $categoryId = 1;
+
+        $result = $sdk->categories()->getCategoryContentScoreRules($categoryId, $getRulesOnly, $operator);
+
+        $this->assertInstanceOf(CategoryContentScoreRules::class, $result);
+        $this->assertContainsOnlyInstancesOf(CategoryContentScoreRule::class, $result->all());
+
+        $rules = ['CHARACTER_COUNT', 'WORD_COUNT'];
+        $fields = ['title', 'description'];
+        $scores = [44, 44];
+        $mins = [20, 50];
+        $maxs = [60, null];
+
+        for ($i = 0; $i < 2; $i++) {
+            $categoryContentScoreRule = $result->all()[$i];
+
+            $this->assertEquals($rules[$i], $categoryContentScoreRule->getRule());
+            $this->assertEquals($fields[$i], $categoryContentScoreRule->getField());
+            $this->assertEquals($scores[$i], $categoryContentScoreRule->getScore());
+
+            $config = $categoryContentScoreRule->getConfig();
+
+            $this->assertEquals($mins[$i], $config->getMin());
+            $this->assertEquals($maxs[$i], $config->getMax());
+        }
+    }
+
+    public function parametersProvider()
+    {
+        return [
+            'Without optional parameters' => [
+                'getRulesOnly' => null,
+                'operator' => null,
+            ],
+
+            'With first parameter only' => [
+                'getRulesOnly' => true,
+                'operator' => null,
+            ],
+            'With second parameter only' => [
+                'getRulesOnly' => null,
+                'operator' => 'facl',
+            ],
+            'With both parameters' => [
+                'getRulesOnly' => false,
+                'operator' => 'faco',
+            ],
+        ];
     }
 
     /**
