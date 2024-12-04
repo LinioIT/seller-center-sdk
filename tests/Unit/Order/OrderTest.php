@@ -62,6 +62,12 @@ class OrderTest extends LinioTestCase
     protected $operatorCode = 'facl';
     protected $shippingType = 'Dropshipping';
     protected $businessInvoiceRequired = true;
+    protected $grandTotal = 95800.00;
+    protected $productTotal = 95800.00;
+    protected $taxAmount = 15295.00;
+    protected $shippingFeeTotal = 0.00;
+    protected $shippingTax = 0.00;
+    protected $voucher = 0.00;
 
     public function testItReturnsValidOrder(): Order
     {
@@ -197,6 +203,12 @@ class OrderTest extends LinioTestCase
         $expectedJson['businessInvoiceRequired'] = $this->businessInvoiceRequired;
         $expectedJson['shippingType'] = $this->shippingType;
         $expectedJson['operatorCode'] = $this->operatorCode;
+        $expectedJson['grandTotal'] = $this->grandTotal;
+        $expectedJson['productTotal'] = $this->productTotal;
+        $expectedJson['taxAmount'] = $this->taxAmount;
+        $expectedJson['shippingFeeTotal'] = $this->shippingFeeTotal;
+        $expectedJson['shippingTax'] = $this->shippingTax;
+        $expectedJson['voucher'] = $this->voucher;
 
         $this->assertJsonStringEqualsJsonString(Json::encode($expectedJson), Json::encode($order));
     }
@@ -259,7 +271,13 @@ class OrderTest extends LinioTestCase
             $this->extraAttributes,
             $this->statuses[0],
             $this->statuses[1],
-            $this->operatorCode
+            $this->operatorCode,
+            $this->grandTotal,
+            $this->productTotal,
+            $this->taxAmount,
+            $this->shippingFeeTotal,
+            $this->shippingTax,
+            $this->voucher
         );
     }
 

@@ -25,6 +25,7 @@
         <CodCollectableAmount/>
         <ShippingAmount>0.00</ShippingAmount>
         <ShippingServiceCost>7000.00</ShippingServiceCost>
+        <ShippingTax>1330</ShippingTax>
         <VoucherAmount>0</VoucherAmount>
         <VoucherCode/>
         <Status>pending</Status>

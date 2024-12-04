@@ -110,7 +110,13 @@ class OrderFactory
             $businessInvoiceRequired,
             $shippingType,
             $operatorCode,
-            $extraBillingAttributes
+            $extraBillingAttributes,
+            (float) $element->GrandTotal,
+            (float) $element->ProductTotal,
+            (float) $element->TaxAmount,
+            (float) $element->ShippingFeeTotal,
+            (float) $element->ShippingTax,
+            (float) $element->Voucher
         );
     }
 }

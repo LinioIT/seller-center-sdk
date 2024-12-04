@@ -206,6 +206,11 @@ class OrderItem implements JsonSerializable
     protected $message;
 
     /**
+     * @var float|null
+     */
+    protected $shippingTax;
+
+    /**
      * @param mixed[]|null $extraAttributes
      */
     final public static function fromOrderItem(
@@ -245,6 +250,7 @@ class OrderItem implements JsonSerializable
         ?DateTimeImmutable $createdAt,
         ?DateTimeImmutable $updatedAt,
         ?string $returnStatus,
+        ?float $shippingTax = null,
         ?string $salesType = null,
         ?string $imei = null
     ): OrderItem {
@@ -286,6 +292,7 @@ class OrderItem implements JsonSerializable
         $orderItem->createdAt = $createdAt;
         $orderItem->updatedAt = $updatedAt;
         $orderItem->returnStatus = $returnStatus;
+        $orderItem->shippingTax = $shippingTax;
         $orderItem->salesType = $salesType;
         $orderItem->imei = $imei;
 
@@ -522,6 +529,11 @@ class OrderItem implements JsonSerializable
         return !empty($this->imei) ? $this->imei : null;
     }
 
+    public function getShippingTax(): ?float
+    {
+        return $this->shippingTax;
+    }
+
     public function setImei(?string $imei): void
     {
         $this->imei = $imei;
@@ -566,6 +578,7 @@ class OrderItem implements JsonSerializable
         $serialized->createdAt = $this->createdAt;
         $serialized->updatedAt = $this->updatedAt;
         $serialized->returnStatus = $this->returnStatus;
+        $serialized->shippingTax = $this->shippingTax;
         $serialized->salesType = $this->salesType;
         $serialized->imei = $this->imei;
 
