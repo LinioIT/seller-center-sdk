@@ -99,6 +99,12 @@ class OrderTest extends LinioTestCase
         $this->assertEquals((string) $simpleXml->ExtraAttributes, $order->getExtraAttributes());
         $this->assertSame((string) $simpleXml->Statuses->Status[0], $order->getStatuses()[0]);
         $this->assertEquals((string) $simpleXml->OperatorCode, $order->getOperatorCode());
+        $this->assertEquals((string) $simpleXml->GrandTotal, $order->getGrandTotal());
+        $this->assertEquals((string) $simpleXml->ProductTotal, $order->getProductTotal());
+        $this->assertEquals((string) $simpleXml->TaxAmount, $order->getTaxAmount());
+        $this->assertEquals((string) $simpleXml->ShippingFeeTotal, $order->getShippingFeeTotal());
+        $this->assertEquals((string) $simpleXml->ShippingTax, $order->getShippingTax());
+        $this->assertEquals((string) $simpleXml->Voucher, $order->getVoucher());
 
         return $order;
     }
