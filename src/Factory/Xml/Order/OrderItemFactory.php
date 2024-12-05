@@ -50,6 +50,7 @@ class OrderItemFactory
         'CreatedAt',
         'UpdatedAt',
         'ReturnStatus',
+        'ShippingTax',
     ];
     private const REQUIRED_FIELDS_FROM_STATUS = [
         'PurchaseOrderId',

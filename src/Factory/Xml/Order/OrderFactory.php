@@ -35,6 +35,12 @@ class OrderFactory
         'ItemsCount',
         'ExtraAttributes',
         'Statuses',
+        'GrandTotal',
+        'ProductTotal',
+        'TaxAmount',
+        'ShippingFeeTotal',
+        'ShippingTax',
+        'Voucher',
     ];
 
     public static function make(SimpleXMLElement $element): Order
@@ -111,12 +117,12 @@ class OrderFactory
             $shippingType,
             $operatorCode,
             $extraBillingAttributes,
-            (float) $element->GrandTotal,
-            (float) $element->ProductTotal,
-            (float) $element->TaxAmount,
-            (float) $element->ShippingFeeTotal,
-            (float) $element->ShippingTax,
-            (float) $element->Voucher
+            (string) $element->GrandTotal,
+            (string) $element->ProductTotal,
+            (string) $element->TaxAmount,
+            (string) $element->ShippingFeeTotal,
+            (string) $element->ShippingTax,
+            (string) $element->Voucher
         );
     }
 }
