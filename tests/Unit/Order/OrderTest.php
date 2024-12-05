@@ -62,12 +62,12 @@ class OrderTest extends LinioTestCase
     protected $operatorCode = 'facl';
     protected $shippingType = 'Dropshipping';
     protected $businessInvoiceRequired = true;
-    protected $grandTotal = 95800.00;
-    protected $productTotal = 95800.00;
-    protected $taxAmount = 15295.00;
-    protected $shippingFeeTotal = 0.00;
-    protected $shippingTax = 0.00;
-    protected $voucher = 0.00;
+    protected $grandTotal = '95,800.00';
+    protected $productTotal = '95,800.00';
+    protected $taxAmount = '15,295.00';
+    protected $shippingFeeTotal = '0.00';
+    protected $shippingTax = '0.00';
+    protected $voucher = '0.00';
 
     public function testItReturnsValidOrder(): Order
     {
@@ -99,14 +99,19 @@ class OrderTest extends LinioTestCase
         $this->assertEquals((string) $simpleXml->ExtraAttributes, $order->getExtraAttributes());
         $this->assertSame((string) $simpleXml->Statuses->Status[0], $order->getStatuses()[0]);
         $this->assertEquals((string) $simpleXml->OperatorCode, $order->getOperatorCode());
-        $this->assertEquals((string) $simpleXml->GrandTotal, $order->getGrandTotal());
-        $this->assertEquals((string) $simpleXml->ProductTotal, $order->getProductTotal());
-        $this->assertEquals((string) $simpleXml->TaxAmount, $order->getTaxAmount());
-        $this->assertEquals((string) $simpleXml->ShippingFeeTotal, $order->getShippingFeeTotal());
-        $this->assertEquals((string) $simpleXml->ShippingTax, $order->getShippingTax());
-        $this->assertEquals((string) $simpleXml->Voucher, $order->getVoucher());
+        $this->assertEquals($this->stringToFloat((string) $simpleXml->GrandTotal), $order->getGrandTotal());
+        $this->assertEquals($this->stringToFloat((string) $simpleXml->ProductTotal), $order->getProductTotal());
+        $this->assertEquals($this->stringToFloat((string) $simpleXml->TaxAmount), $order->getTaxAmount());
+        $this->assertEquals($this->stringToFloat((string) $simpleXml->ShippingFeeTotal), $order->getShippingFeeTotal());
+        $this->assertEquals($this->stringToFloat((string) $simpleXml->ShippingTax), $order->getShippingTax());
+        $this->assertEquals($this->stringToFloat((string) $simpleXml->Voucher), $order->getVoucher());
 
         return $order;
+    }
+
+    public function stringToFloat(string $value): float
+    {
+        return (float) str_replace(',', '', $value);
     }
 
     /**

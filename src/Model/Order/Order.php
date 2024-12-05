@@ -146,32 +146,32 @@ class Order implements JsonSerializable
      */
 
     /**
-     * @var float|null
+     * @var string|null
      */
     protected $grandTotal;
 
     /**
-     * @var float|null
+     * @var string|null
      */
     protected $productTotal;
 
     /**
-     * @var float|null
+     * @var string|null
      */
     protected $taxAmount;
 
     /**
-     * @var float|null
+     * @var string|null
      */
     protected $shippingFeeTotal;
 
     /**
-     * @var float|null
+     * @var string|null
      */
     protected $shippingTax;
 
     /**
-     * @var float|null
+     * @var string|null
      */
     protected $voucher;
 
@@ -201,12 +201,12 @@ class Order implements JsonSerializable
         ?string $shippingType,
         ?string $operatorCode = null,
         ?ExtraBillingAttributes $extraBillingAttributes = null,
-        ?float $grandTotal = null,
-        ?float $productTotal = null,
-        ?float $taxAmount = null,
-        ?float $shippingFeeTotal = null,
-        ?float $shippingTax = null,
-        ?float $voucher = null
+        ?string $grandTotal = null,
+        ?string $productTotal = null,
+        ?string $taxAmount = null,
+        ?string $shippingFeeTotal = null,
+        ?string $shippingTax = null,
+        ?string $voucher = null
     ): Order {
         $order = new self();
 
@@ -395,39 +395,68 @@ class Order implements JsonSerializable
         return $this->extraBillingAttributes;
     }
 
-    public function getGrandTotal(): ?float
+    public function getGrandTotal(): float
     {
-        return $this->grandTotal;
+        if ($this->grandTotal) {
+            return $this->stringToFloat($this->grandTotal);
+        }
+
+        return 0;
     }
 
-    public function getProductTotal(): ?float
+    public function getProductTotal(): float
     {
-        return $this->productTotal;
+        if ($this->productTotal) {
+            return $this->stringToFloat($this->productTotal);
+        }
+
+        return 0;
     }
 
-    public function getTaxAmount(): ?float
+    public function getTaxAmount(): float
     {
-        return $this->taxAmount;
+        if ($this->taxAmount) {
+            return $this->stringToFloat($this->taxAmount);
+        }
+
+        return 0;
     }
 
-    public function getShippingFeeTotal(): ?float
+    public function getShippingFeeTotal(): float
     {
-        return $this->shippingFeeTotal;
+        if ($this->shippingFeeTotal) {
+            return $this->stringToFloat($this->shippingFeeTotal);
+        }
+
+        return 0;
     }
 
-    public function getShippingTax(): ?float
+    public function getShippingTax(): float
     {
-        return $this->shippingTax;
+        if ($this->shippingTax) {
+            return $this->stringToFloat($this->shippingTax);
+        }
+
+        return 0;
     }
 
-    public function getVoucher(): ?float
+    public function getVoucher(): float
     {
-        return $this->voucher;
+        if ($this->voucher) {
+            return $this->stringToFloat($this->voucher);
+        }
+
+        return 0;
     }
 
     public function setOrderItems(OrderItems $orderItems): void
     {
         $this->orderItems = $orderItems;
+    }
+
+    public function stringToFloat(string $value): float
+    {
+        return (float) str_replace(',', '', $value);
     }
 
     public function jsonSerialize(): stdClass
