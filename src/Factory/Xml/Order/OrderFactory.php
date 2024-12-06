@@ -117,12 +117,17 @@ class OrderFactory
             $shippingType,
             $operatorCode,
             $extraBillingAttributes,
-            (string) $element->GrandTotal,
-            (string) $element->ProductTotal,
-            (string) $element->TaxAmount,
-            (string) $element->ShippingFeeTotal,
-            (string) $element->ShippingTax,
-            (string) $element->Voucher
+            self::stringToFloat((string) $element->GrandTotal),
+            self::stringToFloat((string) $element->ProductTotal),
+            self::stringToFloat((string) $element->TaxAmount),
+            self::stringToFloat((string) $element->ShippingFeeTotal),
+            self::stringToFloat((string) $element->ShippingTax),
+            self::stringToFloat((string) $element->Voucher)
         );
+    }
+
+    public static function stringToFloat(string $value): float
+    {
+        return (float) str_replace(',', '', $value);
     }
 }
