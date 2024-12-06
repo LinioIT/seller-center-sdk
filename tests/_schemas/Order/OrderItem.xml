@@ -36,7 +36,7 @@
   <CreatedAt>2018-10-13 23:08:34</CreatedAt>
   <UpdatedAt>2018-10-14 13:30:50</UpdatedAt>
   <ReturnStatus>%s</ReturnStatus>
-  <SalesType>PURE_MARKETPLACE</SalesType>
+  <ShippingTax>%s</ShippingTax>
   <SalesType>PURE_MARKETPLACE</SalesType>
   <Imei>qwe12eqw165qw4-qw7e89q654</Imei>
 </OrderItem>

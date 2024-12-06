@@ -74,4 +74,10 @@
   <InvoiceRequired>true</InvoiceRequired>
   <ShippingType>Dropshipping</ShippingType>
   <OperatorCode>%s</OperatorCode>
+  <GrandTotal>%s</GrandTotal>
+  <ProductTotal>%s</ProductTotal>
+  <TaxAmount>%s</TaxAmount>
+  <ShippingFeeTotal>%s</ShippingFeeTotal>
+  <ShippingTax>%s</ShippingTax>
+  <Voucher>%s</Voucher>
 </Order>

@@ -45,6 +45,7 @@ class OrderItemTest extends LinioTestCase
     protected $packageId = '1000414030800';
     protected $shippingProviderType = 'express';
     protected $returnStatus = 'approved';
+    protected $shippingTax = 0.00;
 
     public function testItReturnsTheValueWithEachAccessor(): void
     {
@@ -90,6 +91,7 @@ class OrderItemTest extends LinioTestCase
         $this->assertEquals($orderItem->getUpdatedAt(), DateTimeImmutable::createFromFormat('Y-m-d H:i:s', (string) $simpleXml->UpdatedAt));
         $this->assertEquals($orderItem->getReturnStatus(), (string) $simpleXml->ReturnStatus);
         $this->assertEquals($orderItem->getSalesType(), (string) $simpleXml->SalesType);
+        $this->assertEquals($orderItem->getShippingTax(), (float) $simpleXml->ShippingTax);
     }
 
     public function testItReturnsTheNullWithoutAnExtraAttributeTag(): void
@@ -221,6 +223,7 @@ class OrderItemTest extends LinioTestCase
         $expectedJson['createdAt'] = $orderItem->getCreatedAt();
         $expectedJson['updatedAt'] = $orderItem->getUpdatedAt();
         $expectedJson['returnStatus'] = $this->returnStatus;
+        $expectedJson['shippingTax'] = $orderItem->getShippingTax();
 
         $this->assertJsonStringEqualsJsonString(Json::encode($expectedJson), Json::encode($orderItem));
     }
@@ -303,7 +306,8 @@ class OrderItemTest extends LinioTestCase
             $this->purchaseOrderNumber,
             $this->packageId,
             $this->shippingProviderType,
-            $this->returnStatus
+            $this->returnStatus,
+            $this->shippingTax
         );
     }
 }

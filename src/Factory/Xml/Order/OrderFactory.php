@@ -35,6 +35,12 @@ class OrderFactory
         'ItemsCount',
         'ExtraAttributes',
         'Statuses',
+        'GrandTotal',
+        'ProductTotal',
+        'TaxAmount',
+        'ShippingFeeTotal',
+        'ShippingTax',
+        'Voucher',
     ];
 
     public static function make(SimpleXMLElement $element): Order
@@ -110,7 +116,18 @@ class OrderFactory
             $businessInvoiceRequired,
             $shippingType,
             $operatorCode,
-            $extraBillingAttributes
+            $extraBillingAttributes,
+            self::stringToFloat((string) $element->GrandTotal),
+            self::stringToFloat((string) $element->ProductTotal),
+            self::stringToFloat((string) $element->TaxAmount),
+            self::stringToFloat((string) $element->ShippingFeeTotal),
+            self::stringToFloat((string) $element->ShippingTax),
+            self::stringToFloat((string) $element->Voucher)
         );
+    }
+
+    public static function stringToFloat(string $value): float
+    {
+        return (float) str_replace(',', '', $value);
     }
 }

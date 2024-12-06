@@ -25,6 +25,7 @@
         <CodCollectableAmount/>
         <ShippingAmount>0.00</ShippingAmount>
         <ShippingServiceCost>7000.00</ShippingServiceCost>
+        <ShippingTax>1330</ShippingTax>
         <VoucherAmount>0</VoucherAmount>
         <VoucherCode/>
         <Status>pending</Status>
@@ -45,6 +46,7 @@
         <CreatedAt>2018-10-13 23:08:34</CreatedAt>
         <UpdatedAt>2018-10-14 13:30:50</UpdatedAt>
         <ReturnStatus/>
+        <ShippingTax>0.0</ShippingTax>
         <Imei>weqweqwe-123123</Imei>
       </OrderItem>
     </OrderItems>

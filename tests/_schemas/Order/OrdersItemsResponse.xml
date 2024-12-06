@@ -49,6 +49,7 @@
               <CreatedAt>2018-08-27 08:48:20</CreatedAt>
               <UpdatedAt>2018-08-28 17:09:47</UpdatedAt>
               <ReturnStatus/>
+              <ShippingTax>0.0</ShippingTax>
             </OrderItem>
           </OrderItems>
         </Order>
@@ -93,6 +94,7 @@
               <CreatedAt>2018-08-27 11:40:23</CreatedAt>
               <UpdatedAt>2018-08-28 16:09:03</UpdatedAt>
               <ReturnStatus/>
+              <ShippingTax>0.0</ShippingTax>
             </OrderItem>
           </OrderItems>
         </Order>

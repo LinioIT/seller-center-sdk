@@ -24,6 +24,12 @@
   "businessInvoiceRequired": null,
   "shippingType": null,
   "operatorCode": null,
+  "grandTotal": null,
+  "productTotal": null,
+  "taxAmount": null,
+  "shippingFeeTotal": null,
+  "shippingTax": null,
+  "voucher":null,
   "orderItems": [
     {
       "orderItemId": "%d",
@@ -62,6 +68,7 @@
       "createdAt": null,
       "updatedAt": null,
       "returnStatus": null,
+      "shippingTax": null,
       "salesType": null,
       "imei": null
     }

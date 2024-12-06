@@ -72,5 +72,11 @@
     },
     "businessInvoiceRequired": null,
     "shippingType": null,
-    "orderItems": null
+    "orderItems": null,
+    "grandTotal": "%d",
+    "productTotal": "%d",
+    "taxAmount": "%d",
+    "shippingFeeTotal": "%d",
+    "shippingTax": "%d",
+    "voucher": "%d"
 }
