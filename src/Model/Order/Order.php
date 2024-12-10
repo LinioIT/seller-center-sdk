@@ -175,6 +175,10 @@ class Order implements JsonSerializable
      */
     protected $voucher;
 
+    /**
+     * @param string|int $orderNumber
+     * @param string[] $statuses
+     */
     public static function fromData(
         int $orderId,
         $orderNumber,
