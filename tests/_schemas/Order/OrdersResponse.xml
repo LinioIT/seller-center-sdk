@@ -82,6 +82,12 @@
         </Statuses>
         <InvoiceRequired>false</InvoiceRequired>
         <ShippingType>Dropshipping</ShippingType>
+        <GrandTotal>69,190.00</GrandTotal>
+        <ProductTotal>46,200.00</ProductTotal>
+        <TaxAmount>0.00</TaxAmount>
+        <ShippingFeeTotal>22,990.00</ShippingFeeTotal>
+        <ShippingTax>0.00</ShippingTax>
+        <Voucher>0.00</Voucher>
       </Order>
       <Order>
         <OrderId>4687808</OrderId>
@@ -142,6 +148,12 @@
         </Statuses>
         <InvoiceRequired>false</InvoiceRequired>
         <ShippingType>Dropshipping</ShippingType>
+        <GrandTotal>69,190.00</GrandTotal>
+        <ProductTotal>46,200.00</ProductTotal>
+        <TaxAmount>0.00</TaxAmount>
+        <ShippingFeeTotal>22,990.00</ShippingFeeTotal>
+        <ShippingTax>0.00</ShippingTax>
+        <Voucher>0.00</Voucher>
       </Order>
     </Orders>
   </Body>

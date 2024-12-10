@@ -62,6 +62,12 @@ class OrderTest extends LinioTestCase
     protected $operatorCode = 'facl';
     protected $shippingType = 'Dropshipping';
     protected $businessInvoiceRequired = true;
+    protected $grandTotal = 95800;
+    protected $productTotal = 95800;
+    protected $taxAmount = 15295;
+    protected $shippingFeeTotal = 0;
+    protected $shippingTax = 0;
+    protected $voucher = 0;
 
     public function testItReturnsValidOrder(): Order
     {
@@ -93,6 +99,12 @@ class OrderTest extends LinioTestCase
         $this->assertEquals((string) $simpleXml->ExtraAttributes, $order->getExtraAttributes());
         $this->assertSame((string) $simpleXml->Statuses->Status[0], $order->getStatuses()[0]);
         $this->assertEquals((string) $simpleXml->OperatorCode, $order->getOperatorCode());
+        $this->assertEquals((string) $simpleXml->GrandTotal, $order->getGrandTotal());
+        $this->assertEquals((string) $simpleXml->ProductTotal, $order->getProductTotal());
+        $this->assertEquals((string) $simpleXml->TaxAmount, $order->getTaxAmount());
+        $this->assertEquals((string) $simpleXml->ShippingFeeTotal, $order->getShippingFeeTotal());
+        $this->assertEquals((string) $simpleXml->ShippingTax, $order->getShippingTax());
+        $this->assertEquals((string) $simpleXml->Voucher, $order->getVoucher());
 
         return $order;
     }
@@ -197,6 +209,12 @@ class OrderTest extends LinioTestCase
         $expectedJson['businessInvoiceRequired'] = $this->businessInvoiceRequired;
         $expectedJson['shippingType'] = $this->shippingType;
         $expectedJson['operatorCode'] = $this->operatorCode;
+        $expectedJson['grandTotal'] = $this->grandTotal;
+        $expectedJson['productTotal'] = $this->productTotal;
+        $expectedJson['taxAmount'] = $this->taxAmount;
+        $expectedJson['shippingFeeTotal'] = $this->shippingFeeTotal;
+        $expectedJson['shippingTax'] = $this->shippingTax;
+        $expectedJson['voucher'] = $this->voucher;
 
         $this->assertJsonStringEqualsJsonString(Json::encode($expectedJson), Json::encode($order));
     }
@@ -259,7 +277,13 @@ class OrderTest extends LinioTestCase
             $this->extraAttributes,
             $this->statuses[0],
             $this->statuses[1],
-            $this->operatorCode
+            $this->operatorCode,
+            $this->grandTotal,
+            $this->productTotal,
+            $this->taxAmount,
+            $this->shippingFeeTotal,
+            $this->shippingTax,
+            $this->voucher
         );
     }
 

@@ -50,6 +50,7 @@ class OrderItemFactory
         'CreatedAt',
         'UpdatedAt',
         'ReturnStatus',
+        'ShippingTax',
     ];
     private const REQUIRED_FIELDS_FROM_STATUS = [
         'PurchaseOrderId',
@@ -117,6 +118,7 @@ class OrderItemFactory
             $createdAt,
             $updatedAt,
             (string) $element->ReturnStatus,
+            (float) $element->ShippingTax,
             (string) $element->SalesType ?? null,
             (string) $element->Imei ?? null
         );

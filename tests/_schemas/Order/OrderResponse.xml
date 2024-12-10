@@ -83,6 +83,12 @@
         <InvoiceRequired>true</InvoiceRequired>
         <ShippingType>Dropshipping</ShippingType>
         <OperatorCode>FACL</OperatorCode>
+        <GrandTotal>69,190.00</GrandTotal>
+        <ProductTotal>46,200.00</ProductTotal>
+        <TaxAmount>0.00</TaxAmount>
+        <ShippingFeeTotal>22,990.00</ShippingFeeTotal>
+        <ShippingTax>0.00</ShippingTax>
+        <Voucher>0.00</Voucher>
       </Order>
     </Orders>
   </Body>
