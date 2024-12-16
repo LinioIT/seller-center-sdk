@@ -29,7 +29,7 @@ class OrderItemTest extends LinioTestCase
     protected $codCollectableAmount = 12;
     protected $shippingAmount = 0.00;
     protected $shippingServiceCost = 7000.00;
-    protected $voucherAmount = 0;
+    protected $voucherAmount = 13.65;
     protected $voucherCode = 'msxnwinsiqni';
     protected $status = 'pending';
     protected $isProcessable = true;
@@ -70,7 +70,7 @@ class OrderItemTest extends LinioTestCase
         $this->assertEquals($orderItem->getCodCollectableAmount(), (float) $simpleXml->CodCollectableAmount);
         $this->assertEquals($orderItem->getShippingAmount(), (float) $simpleXml->ShippingAmount);
         $this->assertEquals($orderItem->getShippingServiceCost(), (float) $simpleXml->ShippingServiceCost);
-        $this->assertEquals($orderItem->getVoucherAmount(), (int) $simpleXml->VoucherAmount);
+        $this->assertEquals($orderItem->getVoucherAmount(), (float) $simpleXml->VoucherAmount);
         $this->assertEquals($orderItem->getVoucherCode(), (string) $simpleXml->VoucherCode);
         $this->assertEquals($orderItem->getStatus(), (string) $simpleXml->Status);
         $this->assertEquals($orderItem->getIsProcessable(), (int) $simpleXml->IsProcessable);

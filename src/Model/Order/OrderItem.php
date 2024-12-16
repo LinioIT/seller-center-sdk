@@ -91,7 +91,7 @@ class OrderItem implements JsonSerializable
     protected $shippingServiceCost;
 
     /**
-     * @var int|null
+     * @var float|null
      */
     protected $voucherAmount;
 
@@ -230,7 +230,7 @@ class OrderItem implements JsonSerializable
         ?float $codCollectableAmount,
         float $shippingAmount,
         float $shippingServiceCost,
-        int $voucherAmount,
+        float $voucherAmount,
         ?string $voucherCode,
         string $status,
         bool $isProcessable,
@@ -411,7 +411,7 @@ class OrderItem implements JsonSerializable
         return $this->shippingServiceCost;
     }
 
-    public function getVoucherAmount(): ?int
+    public function getVoucherAmount(): ?float
     {
         return $this->voucherAmount;
     }
