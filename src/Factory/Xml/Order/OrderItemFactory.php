@@ -98,7 +98,7 @@ class OrderItemFactory
             (float) $element->CodCollectableAmount,
             (float) $element->ShippingAmount,
             (float) $element->ShippingServiceCost,
-            (int) $element->VoucherAmount,
+            (float) $element->VoucherAmount,
             (string) $element->VoucherCode,
             (string) $element->Status,
             $isProcessable,
