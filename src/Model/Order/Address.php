@@ -20,12 +20,12 @@ class Address implements JsonSerializable
     protected $lastName;
 
     /**
-     * @var int|null
+     * @var string|null
      */
     protected $phone;
 
     /**
-     * @var int|null
+     * @var string|null
      */
     protected $phone2;
 
@@ -87,8 +87,8 @@ class Address implements JsonSerializable
     public function __construct(
         string $firstName,
         string $lastName,
-        int $phone,
-        int $phone2,
+        string $phone,
+        string $phone2,
         string $address,
         string $customerEmail,
         string $city,
@@ -128,12 +128,12 @@ class Address implements JsonSerializable
         return $this->lastName;
     }
 
-    public function getPhone(): ?int
+    public function getPhone(): ?string
     {
         return $this->phone;
     }
 
-    public function getPhone2(): ?int
+    public function getPhone2(): ?string
     {
         return $this->phone2;
     }
