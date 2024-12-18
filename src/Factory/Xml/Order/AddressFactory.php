@@ -36,8 +36,8 @@ class AddressFactory
         return new Address(
             (string) $element->FirstName,
             (string) $element->LastName,
-            (int) $element->Phone,
-            (int) $element->Phone2,
+            (string) $element->Phone,
+            (string) $element->Phone2,
             (string) $element->Address1,
             (string) $element->CustomerEmail,
             (string) $element->City,
