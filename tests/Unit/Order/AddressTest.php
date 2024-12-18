@@ -14,7 +14,7 @@ class AddressTest extends LinioTestCase
 {
     protected $firstName = 'John';
     protected $lastName = 'Doe';
-    protected $phone = 123456789;
+    protected $phone = '123456789';
     protected $address1 = 'address1';
     protected $address2 = 'address2';
     protected $address3 = 'address3';
