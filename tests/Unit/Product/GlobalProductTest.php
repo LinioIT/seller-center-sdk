@@ -147,6 +147,40 @@ class GlobalProductTest extends LinioTestCase
         $this->assertInstanceOf(BusinessUnits::class, $product->getBusinessUnits());
     }
 
+    public function testItUpdatedsAGlobalProductWithNullablesParameters(): void
+    {
+        $product = GlobalProduct::fromBasicDataWithNullableParams(
+            $this->sellerSku,
+            null,
+            $this->variation,
+            $this->primaryCategory,
+            null,
+            $this->brand,
+            $this->businessUnits,
+            null,
+            null,
+            $this->productData,
+            $this->images,
+            null,
+            $this->contentScore
+        );
+
+        $this->assertInstanceOf(GlobalProduct::class, $product);
+        $this->assertEquals($product->getSellerSku(), $this->sellerSku);
+        $this->assertEquals($product->getName(), null);
+        $this->assertEquals($product->getVariation(), $this->variation);
+        $this->assertEquals($product->getPrimaryCategory(), $this->primaryCategory);
+        $this->assertEquals($product->getDescription(), null);
+        $this->assertEquals($product->getBrand(), $this->brand);
+        $this->assertEquals($product->getProductId(), null);
+        $this->assertEquals($product->getTaxClass(), null);
+        $this->assertEquals($product->getProductData(), $this->productData);
+        $this->assertEquals($product->getQcStatus(), null);
+        $this->assertEquals($product->getContentScore(), $this->contentScore);
+        $this->assertInstanceOf(Images::class, $product->getImages());
+        $this->assertInstanceOf(BusinessUnits::class, $product->getBusinessUnits());
+    }
+
     public function testItCreatesAGlobalProductWithMandatoryAndOptionalParameters(): void
     {
         $product = GlobalProduct::fromBasicData(
