@@ -141,7 +141,7 @@ abstract class BaseProduct implements JsonSerializable
         return $this->parentSku;
     }
 
-    public function getName(): string
+    public function getName(): ?string
     {
         return $this->name;
     }
@@ -161,7 +161,7 @@ abstract class BaseProduct implements JsonSerializable
         return $this->categories;
     }
 
-    public function getDescription(): string
+    public function getDescription(): ?string
     {
         return $this->description;
     }
