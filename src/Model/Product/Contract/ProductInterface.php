@@ -23,7 +23,7 @@ interface ProductInterface
 
     public function getParentSku(): ?string;
 
-    public function getName(): string;
+    public function getName(): ?string;
 
     public function getVariation(): ?string;
 
@@ -31,7 +31,7 @@ interface ProductInterface
 
     public function getCategories(): Categories;
 
-    public function getDescription(): string;
+    public function getDescription(): ?string;
 
     public function getBrand(): Brand;
 

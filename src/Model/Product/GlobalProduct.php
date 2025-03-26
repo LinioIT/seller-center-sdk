@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace Linio\SellerCenter\Model\Product;
 
 use JsonSerializable;
+use Linio\SellerCenter\Exception\EmptyArgumentException;
 use Linio\SellerCenter\Model\Brand\Brand;
 use Linio\SellerCenter\Model\Category\Categories;
 use Linio\SellerCenter\Model\Category\Category;
@@ -145,6 +146,74 @@ class GlobalProduct extends BaseProduct implements JsonSerializable, ProductInte
 
         if (!empty($contentScore)) {
             $product->setContentScore($contentScore);
+        }
+
+        return $product;
+    }
+
+    /**
+     * @return static
+     */
+    public static function fromBasicDataWithNullableParams(
+        string $sellerSku,
+        ?string $name,
+        ?string $variation,
+        Category $primaryCategory,
+        ?string $description,
+        Brand $brand,
+        BusinessUnits $businessUnits,
+        ?string $productId,
+        ?string $taxClass,
+        ProductData $productData,
+        ?Images $images = null,
+        ?string $qcStatus = null,
+        ?int $contentScore = null
+    ): self {
+        if (empty($sellerSku)) {
+            throw new EmptyArgumentException('SellerSku');
+        }
+
+        $product = new static();
+
+        $product->setSellerSku($sellerSku);
+        $product->setPrimaryCategory($primaryCategory);
+        $product->setBrand($brand);
+        $product->setBusinessUnits($businessUnits);
+        $product->setProductData($productData);
+
+        $categories = new Categories();
+        $product->setCategories($categories);
+
+        if (!empty($variation)) {
+            $product->setVariation($variation);
+        }
+
+        if (!empty($productId)) {
+            $product->setProductId($productId);
+        }
+
+        if (!empty($taxClass)) {
+            $product->setTaxClass($taxClass);
+        }
+
+        if (!empty($images)) {
+            $product->attachImages($images);
+        }
+
+        if (!empty($qcStatus)) {
+            $product->setQcStatus($qcStatus);
+        }
+
+        if (!empty($contentScore)) {
+            $product->setContentScore($contentScore);
+        }
+
+        if (!empty($name)) {
+            $product->setName($name);
+        }
+
+        if (!empty($description)) {
+            $product->setDescription($description);
         }
 
         return $product;
