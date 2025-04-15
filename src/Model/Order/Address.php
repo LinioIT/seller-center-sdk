@@ -193,6 +193,11 @@ class Address implements JsonSerializable
         return $this->country;
     }
 
+    public function setPostCode(string $postalCode): void
+    {
+        $this->postCode = $postalCode;
+    }
+
     public function jsonSerialize(): stdClass
     {
         $serialized = new stdClass();
