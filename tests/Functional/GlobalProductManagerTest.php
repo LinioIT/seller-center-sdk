@@ -4,9 +4,7 @@ declare(strict_types=1);
 
 namespace Linio\SellerCenter;
 
-use DateTimeImmutable;
-use Exception;
-use InvalidArgumentException;
+use Faker\Generator;
 use Linio\SellerCenter\Application\Parameters;
 use Linio\SellerCenter\Model\Brand\Brand;
 use Linio\SellerCenter\Model\Category\Categories;
@@ -32,10 +30,7 @@ class GlobalProductManagerTest extends LinioTestCase
      */
     protected $globalProducts;
 
-    /**
-     * @var Generator
-     */
-    protected $faker;
+    protected Generator $faker;
 
     /**
      * @var ObjectProphecy
@@ -88,7 +83,7 @@ class GlobalProductManagerTest extends LinioTestCase
     {
         $sdkClient = $this->getSdkClient($this->getSchema('Product/GlobalProductsResponse.xml'));
 
-        $createdAfter = DateTimeImmutable::createFromFormat('Y-m-d H:i:s', '2018-09-01 00:00:00');
+        $createdAfter = \DateTimeImmutable::createFromFormat('Y-m-d H:i:s', '2018-09-01 00:00:00');
 
         $result = $sdkClient->globalProducts()->getProductsCreatedAfter(
             $createdAfter,
@@ -108,7 +103,7 @@ class GlobalProductManagerTest extends LinioTestCase
     {
         $sdkClient = $this->getSdkClient($this->getSchema('Product/GlobalProductsResponse.xml'));
 
-        $createdBefore = DateTimeImmutable::createFromFormat('Y-m-d H:i:s', '2019-01-23 00:00:00');
+        $createdBefore = \DateTimeImmutable::createFromFormat('Y-m-d H:i:s', '2019-01-23 00:00:00');
 
         $result = $sdkClient->globalProducts()->getProductsCreatedBefore(
             $createdBefore,
@@ -128,7 +123,7 @@ class GlobalProductManagerTest extends LinioTestCase
     {
         $sdkClient = $this->getSdkClient($this->getSchema('Product/GlobalProductsResponse.xml'));
 
-        $updatedAfter = DateTimeImmutable::createFromFormat('Y-m-d H:i:s', '2019-01-23 00:00:00');
+        $updatedAfter = \DateTimeImmutable::createFromFormat('Y-m-d H:i:s', '2019-01-23 00:00:00');
 
         $result = $sdkClient->globalProducts()->getProductsUpdatedAfter(
             $updatedAfter,
@@ -148,7 +143,7 @@ class GlobalProductManagerTest extends LinioTestCase
     {
         $sdkClient = $this->getSdkClient($this->getSchema('Product/GlobalProductsResponse.xml'));
 
-        $updatedBefore = DateTimeImmutable::createFromFormat('Y-m-d H:i:s', '2019-01-23 00:00:00');
+        $updatedBefore = \DateTimeImmutable::createFromFormat('Y-m-d H:i:s', '2019-01-23 00:00:00');
 
         $result = $sdkClient->globalProducts()->getProductsUpdatedBefore(
             $updatedBefore,
@@ -226,7 +221,7 @@ class GlobalProductManagerTest extends LinioTestCase
 
     public function testItThrowsExceptionWithANullSkuSellerList(): void
     {
-        $this->expectException(InvalidArgumentException::class);
+        $this->expectException(\InvalidArgumentException::class);
 
         $sdkClient = $this->getSdkClient($this->getSchema('Product/GlobalProductsResponse.xml'));
 
@@ -240,10 +235,10 @@ class GlobalProductManagerTest extends LinioTestCase
     {
         $sdkClient = $this->getSdkClient($this->getSchema('Product/GlobalProductsResponse.xml'));
 
-        $createdBefore = DateTimeImmutable::createFromFormat('Y-m-d H:i:s', '2019-01-23 00:00:00');
-        $createdAfter = DateTimeImmutable::createFromFormat('Y-m-d H:i:s', '2019-01-23 00:00:00');
-        $updatedAfter = DateTimeImmutable::createFromFormat('Y-m-d H:i:s', '2019-01-23 00:00:00');
-        $updatedBefore = DateTimeImmutable::createFromFormat('Y-m-d H:i:s', '2019-01-23 00:00:00');
+        $createdBefore = \DateTimeImmutable::createFromFormat('Y-m-d H:i:s', '2019-01-23 00:00:00');
+        $createdAfter = \DateTimeImmutable::createFromFormat('Y-m-d H:i:s', '2019-01-23 00:00:00');
+        $updatedAfter = \DateTimeImmutable::createFromFormat('Y-m-d H:i:s', '2019-01-23 00:00:00');
+        $updatedBefore = \DateTimeImmutable::createFromFormat('Y-m-d H:i:s', '2019-01-23 00:00:00');
         $filter = 'invalidFilter';
         $search = 'pil';
         $skuSellerList = ['jasku-10001', 'jasku-10002'];
@@ -311,7 +306,7 @@ class GlobalProductManagerTest extends LinioTestCase
      */
     public function testItReturnsErrorResponseException(string $action): void
     {
-        $this->expectException(Exception::class);
+        $this->expectException(\Exception::class);
         $this->expectExceptionMessage('E0125: Test Error');
 
         $body = sprintf(
@@ -446,7 +441,7 @@ class GlobalProductManagerTest extends LinioTestCase
         );
 
         $sdkClient->globalProducts()->getProductsCreatedAfter(
-            DateTimeImmutable::createFromFormat('Y-m-d H:i:s', '2018-09-01 00:00:00'),
+            \DateTimeImmutable::createFromFormat('Y-m-d H:i:s', '2018-09-01 00:00:00'),
             100,
             100,
             ProductManagerInterface::DEFAULT_DATE_FORMAT,
@@ -466,7 +461,7 @@ class GlobalProductManagerTest extends LinioTestCase
         );
 
         $sdkClient->globalProducts()->getProductsCreatedBefore(
-            DateTimeImmutable::createFromFormat('Y-m-d H:i:s', '2018-09-01 00:00:00'),
+            \DateTimeImmutable::createFromFormat('Y-m-d H:i:s', '2018-09-01 00:00:00'),
             100,
             100,
             ProductManagerInterface::DEFAULT_DATE_FORMAT,
@@ -486,7 +481,7 @@ class GlobalProductManagerTest extends LinioTestCase
         );
 
         $sdkClient->globalProducts()->getProductsUpdatedAfter(
-            DateTimeImmutable::createFromFormat('Y-m-d H:i:s', '2018-09-01 00:00:00'),
+            \DateTimeImmutable::createFromFormat('Y-m-d H:i:s', '2018-09-01 00:00:00'),
             100,
             100,
             ProductManagerInterface::DEFAULT_DATE_FORMAT,
@@ -506,7 +501,7 @@ class GlobalProductManagerTest extends LinioTestCase
         );
 
         $sdkClient->globalProducts()->getProductsUpdatedBefore(
-            DateTimeImmutable::createFromFormat('Y-m-d H:i:s', '2018-09-01 00:00:00'),
+            \DateTimeImmutable::createFromFormat('Y-m-d H:i:s', '2018-09-01 00:00:00'),
             100,
             100,
             ProductManagerInterface::DEFAULT_DATE_FORMAT,

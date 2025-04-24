@@ -5,9 +5,8 @@ declare(strict_types=1);
 namespace Linio\SellerCenter\Exception;
 
 use Linio\Component\Util\Json;
-use RuntimeException;
 
-class ErrorJsonResponseException extends RuntimeException
+class ErrorJsonResponseException extends \RuntimeException
 {
     /**
      * @var string

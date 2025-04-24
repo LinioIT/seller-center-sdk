@@ -16,7 +16,7 @@ class DocumentManager extends BaseManager
     public function getDocument(
         string $documentType,
         array $orderItemIds,
-        bool $debug = true
+        bool $debug = true,
     ): Document {
         $action = 'GetDocument';
 

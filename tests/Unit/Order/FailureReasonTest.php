@@ -9,7 +9,6 @@ use Linio\SellerCenter\Exception\InvalidXmlStructureException;
 use Linio\SellerCenter\Factory\Xml\Order\FailureReasonsFactory;
 use Linio\SellerCenter\LinioTestCase;
 use Linio\SellerCenter\Model\Order\FailureReason;
-use SimpleXMLElement;
 
 class FailureReasonTest extends LinioTestCase
 {
@@ -20,7 +19,7 @@ class FailureReasonTest extends LinioTestCase
             ['canceled', 'Wrong address'],
         ];
 
-        $xml = new SimpleXMLElement('<Body><Reasons/></Body>');
+        $xml = new \SimpleXMLElement('<Body><Reasons/></Body>');
 
         foreach ($reasonsData as $reasonData) {
             $reason = $xml->Reasons->addChild('Reason');
@@ -68,7 +67,7 @@ class FailureReasonTest extends LinioTestCase
             ['canceled', 'Wrong address'],
         ];
 
-        $xml = new SimpleXMLElement('<Body><Reasons/></Body>');
+        $xml = new \SimpleXMLElement('<Body><Reasons/></Body>');
 
         foreach ($reasonsData as $reasonData) {
             $reason = $xml->Reasons->addChild('Reason');
@@ -88,7 +87,7 @@ class FailureReasonTest extends LinioTestCase
             ['canceled', 'Wrong address'],
         ];
 
-        $xml = new SimpleXMLElement('<Body><Reasons/></Body>');
+        $xml = new \SimpleXMLElement('<Body><Reasons/></Body>');
 
         foreach ($reasonsData as $reasonData) {
             $reason = $xml->Reasons->addChild('Reason');

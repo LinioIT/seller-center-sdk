@@ -6,11 +6,10 @@ namespace Linio\SellerCenter\Factory\Xml\Product;
 
 use Linio\SellerCenter\Model\Product\Image;
 use Linio\SellerCenter\Model\Product\Images;
-use SimpleXMLElement;
 
 class ImagesFactory
 {
-    public static function make(SimpleXMLElement $element): Images
+    public static function make(\SimpleXMLElement $element): Images
     {
         $images = new Images();
 

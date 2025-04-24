@@ -4,7 +4,6 @@ declare(strict_types=1);
 
 namespace Linio\SellerCenter\Unit\Response;
 
-use DateTime;
 use Linio\SellerCenter\Exception\EmptyArgumentException;
 use Linio\SellerCenter\Factory\Xml\FeedResponseFactory;
 use Linio\SellerCenter\LinioTestCase;
@@ -23,7 +22,7 @@ class FeedResponseTest extends LinioTestCase
         $this->assertEquals($feedResponse->getRequestId(), (string) $xml->Head->RequestId);
         $this->assertEquals($feedResponse->getRequestAction(), (string) $xml->Head->RequestAction);
         $this->assertEquals($feedResponse->getResponseType(), (string) $xml->Head->ResponseType);
-        $this->assertEquals($feedResponse->getTimestamp(), DateTime::createFromFormat("Y-m-d\TH:i:sO", (string) $xml->Head->Timestamp));
+        $this->assertEquals($feedResponse->getTimestamp(), \DateTime::createFromFormat("Y-m-d\TH:i:sO", (string) $xml->Head->Timestamp));
     }
 
     public function testCreatesAFeedFromAnXmlWithRequestParametersField(): void

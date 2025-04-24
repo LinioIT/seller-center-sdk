@@ -4,8 +4,6 @@ declare(strict_types=1);
 
 namespace Linio\SellerCenter\Model\Product;
 
-use DateTimeInterface;
-use JsonSerializable;
 use Linio\SellerCenter\Contract\ProductStatus;
 use Linio\SellerCenter\Exception\InvalidDomainException;
 use Linio\SellerCenter\Model\Brand\Brand;
@@ -13,9 +11,8 @@ use Linio\SellerCenter\Model\Category\Categories;
 use Linio\SellerCenter\Model\Category\Category;
 use Linio\SellerCenter\Model\Product\Contract\ProductInterface;
 use Linio\SellerCenter\Model\Product\Contract\VariationProductInterface;
-use stdClass;
 
-class Product extends BaseProduct implements JsonSerializable, ProductInterface, VariationProductInterface, ProductStatus
+class Product extends BaseProduct implements \JsonSerializable, ProductInterface, VariationProductInterface, ProductStatus
 {
     /**
      * @var string
@@ -33,12 +30,12 @@ class Product extends BaseProduct implements JsonSerializable, ProductInterface,
     protected $salePrice;
 
     /**
-     * @var DateTimeInterface|null
+     * @var \DateTimeInterface|null
      */
     protected $saleStartDate;
 
     /**
-     * @var DateTimeInterface|null
+     * @var \DateTimeInterface|null
      */
     protected $saleEndDate;
 
@@ -81,7 +78,7 @@ class Product extends BaseProduct implements JsonSerializable, ProductInterface,
         ?string $taxClass,
         ProductData $productData,
         ?Images $images = null,
-        ?array $overrideAttributes = []
+        ?array $overrideAttributes = [],
     ): self {
         self::ValidateArguments($sellerSku, $name, $description);
 
@@ -127,7 +124,7 @@ class Product extends BaseProduct implements JsonSerializable, ProductInterface,
         return $this->salePrice;
     }
 
-    public function getSaleStartDate(): ?DateTimeInterface
+    public function getSaleStartDate(): ?\DateTimeInterface
     {
         return $this->saleStartDate;
     }
@@ -141,7 +138,7 @@ class Product extends BaseProduct implements JsonSerializable, ProductInterface,
         return $this->saleStartDate->format('Y-m-d H:i:s');
     }
 
-    public function getSaleEndDate(): ?DateTimeInterface
+    public function getSaleEndDate(): ?\DateTimeInterface
     {
         return $this->saleEndDate;
     }
@@ -191,12 +188,12 @@ class Product extends BaseProduct implements JsonSerializable, ProductInterface,
         }
     }
 
-    public function setSaleStartDate(?DateTimeInterface $saleStartDate): void
+    public function setSaleStartDate(?\DateTimeInterface $saleStartDate): void
     {
         $this->saleStartDate = $saleStartDate;
     }
 
-    public function setSaleEndDate(?DateTimeInterface $saleEndDate): void
+    public function setSaleEndDate(?\DateTimeInterface $saleEndDate): void
     {
         $this->saleEndDate = $saleEndDate;
     }
@@ -257,7 +254,7 @@ class Product extends BaseProduct implements JsonSerializable, ProductInterface,
         ];
     }
 
-    public function jsonSerialize(): stdClass
+    public function jsonSerialize(): \stdClass
     {
         $serialized = parent::jsonSerialize();
         $serialized->status = $this->status;

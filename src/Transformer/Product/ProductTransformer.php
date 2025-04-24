@@ -11,11 +11,10 @@ use Linio\SellerCenter\Model\Category\Category;
 use Linio\SellerCenter\Model\Product\Contract\ProductInterface;
 use Linio\SellerCenter\Model\Product\GlobalProduct;
 use Linio\SellerCenter\Model\Product\Product;
-use SimpleXMLElement;
 
 class ProductTransformer
 {
-    public static function asXml(SimpleXMLElement &$xml, ProductInterface $product): void
+    public static function asXml(\SimpleXMLElement &$xml, ProductInterface $product): void
     {
         $body = $xml->addChild('Product');
 
@@ -58,7 +57,7 @@ class ProductTransformer
      * @param mixed[] $attributes
      * @param string[] $overrideAttributes
      */
-    public static function addAttributes(SimpleXMLElement $xml, array $attributes, array $overrideAttributes): void
+    public static function addAttributes(\SimpleXMLElement $xml, array $attributes, array $overrideAttributes): void
     {
         foreach ($attributes as $attributeName => $attributeValue) {
             if (in_array($attributeName, $overrideAttributes)) {
@@ -130,7 +129,7 @@ class ProductTransformer
                 return $attribute->getName();
         }
 
-        throw new InvalidDomainException($className);
+        throw new InvalidDomainException((string) $className);
     }
 
     /**
@@ -147,13 +146,13 @@ class ProductTransformer
         return implode(',', $categoriesIds);
     }
 
-    public static function skuAsXml(SimpleXMLElement &$xml, ProductInterface $product): void
+    public static function skuAsXml(\SimpleXMLElement &$xml, ProductInterface $product): void
     {
         $body = $xml->addChild('Product');
         $body->addChild('SellerSku', htmlspecialchars($product->getSellerSku()));
     }
 
-    public static function imagesAsXml(SimpleXMLElement $xml, ProductInterface $product): void
+    public static function imagesAsXml(\SimpleXMLElement $xml, ProductInterface $product): void
     {
         $body = $xml->addChild('ProductImage');
 

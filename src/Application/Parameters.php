@@ -4,8 +4,6 @@ declare(strict_types=1);
 
 namespace Linio\SellerCenter\Application;
 
-use DateTimeImmutable;
-
 class Parameters
 {
     /**
@@ -41,7 +39,7 @@ class Parameters
         $parameters = new Parameters();
 
         $parameters->set([
-            'Timestamp' => (new DateTimeImmutable())->format(DATE_ATOM),
+            'Timestamp' => (new \DateTimeImmutable())->format(DATE_ATOM),
             'UserID' => $user,
             'Version' => $version,
             'Format' => $format,
@@ -55,7 +53,7 @@ class Parameters
         $parameters = new Parameters();
 
         $parameters->set([
-            'Timestamp' => (new DateTimeImmutable())->format(DATE_ATOM),
+            'Timestamp' => (new \DateTimeImmutable())->format(DATE_ATOM),
             'UserID' => $configuration->getUser(),
             'Version' => $configuration->getVersion(),
             'Format' => 'XML',

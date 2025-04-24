@@ -6,11 +6,10 @@ namespace Linio\SellerCenter\Factory\Xml\Category;
 
 use Linio\SellerCenter\Exception\InvalidXmlStructureException;
 use Linio\SellerCenter\Model\Category\Category;
-use SimpleXMLElement;
 
 class CategoryFactory
 {
-    public static function make(SimpleXMLElement $xml): Category
+    public static function make(\SimpleXMLElement $xml): Category
     {
         if (!property_exists($xml, 'CategoryId')) {
             throw new InvalidXmlStructureException('Category', 'CategoryId');

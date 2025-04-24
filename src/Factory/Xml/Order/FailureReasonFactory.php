@@ -6,11 +6,10 @@ namespace Linio\SellerCenter\Factory\Xml\Order;
 
 use Linio\SellerCenter\Exception\InvalidXmlStructureException;
 use Linio\SellerCenter\Model\Order\FailureReason;
-use SimpleXMLElement;
 
 class FailureReasonFactory
 {
-    public static function make(SimpleXMLElement $element): FailureReason
+    public static function make(\SimpleXMLElement $element): FailureReason
     {
         if (!property_exists($element, 'Type')) {
             throw new InvalidXmlStructureException('FailureReason', 'Type');

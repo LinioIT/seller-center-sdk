@@ -18,7 +18,7 @@ class WebhookManager extends BaseManager
 {
     public function createWebhook(
         string $callbackUrl,
-        bool $debug = true
+        bool $debug = true,
     ): string {
         $action = 'CreateWebhook';
 
@@ -46,7 +46,7 @@ class WebhookManager extends BaseManager
 
     public function deleteWebhook(
         string $webhookId,
-        bool $debug = true
+        bool $debug = true,
     ): void {
         $action = 'DeleteWebhook';
 
@@ -73,7 +73,7 @@ class WebhookManager extends BaseManager
      */
     protected function getWebhooks(
         Parameters $parameters,
-        bool $debug = true
+        bool $debug = true,
     ): array {
         $action = 'GetWebhooks';
 
@@ -112,7 +112,7 @@ class WebhookManager extends BaseManager
      */
     public function getWebhooksByIds(
         array $webhookIds,
-        bool $debug = true
+        bool $debug = true,
     ): array {
         $parameters = clone $this->parameters;
 

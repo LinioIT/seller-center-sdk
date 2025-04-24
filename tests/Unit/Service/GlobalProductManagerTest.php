@@ -7,13 +7,12 @@ namespace Linio\SellerCenter\Unit\Service;
 use Linio\SellerCenter\Application\Configuration;
 use Linio\SellerCenter\Application\Parameters;
 use Linio\SellerCenter\Contract\ClientInterface;
+use Linio\SellerCenter\LinioTestCase;
 use Linio\SellerCenter\Service\Contract\ProductManagerInterface;
 use Linio\SellerCenter\Service\GlobalProductManager;
-use PHPUnit\Framework\TestCase;
 use Psr\Log\Test\TestLogger;
-use ReflectionClass;
 
-class GlobalProductManagerTest extends TestCase
+class GlobalProductManagerTest extends LinioTestCase
 {
     public function testReturnsAGlobalProductManagerAndProductManagerInterface(): void
     {
@@ -46,7 +45,7 @@ class GlobalProductManagerTest extends TestCase
             $logger->reveal()
         );
         $this->assertInstanceOf(ProductManagerInterface::class, $globalProductManager);
-        $reflectionClass = new ReflectionClass(GlobalProductManager::class);
+        $reflectionClass = new \ReflectionClass(GlobalProductManager::class);
         $property = $reflectionClass->getProperty('logger');
         $property->setAccessible(true);
 

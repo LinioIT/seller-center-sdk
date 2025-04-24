@@ -4,12 +4,10 @@ declare(strict_types=1);
 
 namespace Linio\SellerCenter\Model\Product;
 
-use JsonSerializable;
 use Linio\SellerCenter\Contract\ProductConditionTypes;
 use Linio\SellerCenter\Exception\InvalidDomainException;
-use stdClass;
 
-class ProductData implements JsonSerializable
+class ProductData implements \JsonSerializable
 {
     public const FEED_CONDITION_TYPE = 'ConditionType';
     public const FEED_PACKAGE_WEIGHT = 'PackageWeight';
@@ -28,7 +26,7 @@ class ProductData implements JsonSerializable
         ?float $packageHeight = null,
         ?float $packageWidth = null,
         ?float $packageLength = null,
-        ?float $packageWeight = null
+        ?float $packageWeight = null,
     ) {
         if (!empty($conditionType)) {
             $this->validateConditionType($conditionType);
@@ -86,9 +84,9 @@ class ProductData implements JsonSerializable
         }
     }
 
-    public function jsonSerialize(): stdClass
+    public function jsonSerialize(): \stdClass
     {
-        $serialized = new stdClass();
+        $serialized = new \stdClass();
         foreach ($this->attributes as $attribute => $value) {
             $serialized->$attribute = $value;
         }

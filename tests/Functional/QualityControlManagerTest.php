@@ -4,7 +4,6 @@ declare(strict_types=1);
 
 namespace Linio\SellerCenter;
 
-use InvalidArgumentException;
 use Linio\SellerCenter\Model\QualityControl\QualityControl;
 use Prophecy\Argument;
 use Prophecy\Prophecy\ObjectProphecy;
@@ -67,7 +66,7 @@ class QualityControlManagerTest extends LinioTestCase
 
     public function testItThrowsExceptionWithANullSkuSellerList(): void
     {
-        $this->expectException(InvalidArgumentException::class);
+        $this->expectException(\InvalidArgumentException::class);
 
         $sdkClient = $this->getSdkClient($this->getSchema('QcStatus/QcStatusSuccessResponse.xml'));
 

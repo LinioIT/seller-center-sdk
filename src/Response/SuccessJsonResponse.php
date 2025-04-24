@@ -8,9 +8,9 @@ use Linio\Component\Util\Json;
 
 class SuccessJsonResponse
 {
-    const EMPTY_MESSAGE = 'Empty message';
-    const MESSAGE_KEY = 'message';
-    const DATA_KEY = 'data';
+    public const EMPTY_MESSAGE = 'Empty message';
+    public const MESSAGE_KEY = 'message';
+    public const DATA_KEY = 'data';
 
     /**
      * @var string

@@ -1,6 +1,7 @@
-FROM php:7.2-cli
+FROM php:8.2-cli
 
-RUN pecl install xdebug-3.1.5 \
+# Install Xdebug
+RUN pecl install xdebug-3.2.2 \
     && docker-php-ext-enable xdebug
 
 # Install unzip for composer dependencies
@@ -11,7 +12,8 @@ RUN apt-get update \
 ENV COMPOSER_ALLOW_SUPERUSER 1
 ENV COMPOSER_HOME /root/.composer
 
-COPY --from=composer:1.10.10 /usr/bin/composer /usr/bin/composer
+# Use a Composer version compatible with PHP 8.2
+COPY --from=composer:2.6 /usr/bin/composer /usr/bin/composer
 
 WORKDIR /application
 

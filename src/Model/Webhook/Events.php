@@ -4,10 +4,9 @@ declare(strict_types=1);
 
 namespace Linio\SellerCenter\Model\Webhook;
 
-use JsonSerializable;
 use Linio\SellerCenter\Contract\CollectionInterface;
 
-class Events implements CollectionInterface, JsonSerializable
+class Events implements CollectionInterface, \JsonSerializable
 {
     /**
      * @var Event[]

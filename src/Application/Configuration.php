@@ -74,7 +74,7 @@ class Configuration
         ?string $language = self::LANGUAGE,
         ?string $languageVersion = null,
         ?string $integrator = null,
-        ?string $country = null
+        ?string $country = null,
     ) {
         $this->key = $key;
         $this->username = $username;

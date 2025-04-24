@@ -10,8 +10,6 @@ use Linio\SellerCenter\Contract\ClientInterface;
 use Linio\SellerCenter\LinioTestCase;
 use Linio\SellerCenter\Service\QualityControlManager;
 use Psr\Log\Test\TestLogger;
-use ReflectionClass;
-use ReflectionMethod;
 
 class QualityControlManagerTest extends LinioTestCase
 {
@@ -40,7 +38,7 @@ class QualityControlManagerTest extends LinioTestCase
 
         $qcManager = new QualityControlManager($configuration->reveal(), $client->reveal(), $parameters->reveal(), $logger->reveal());
 
-        $reflectionClass = new ReflectionClass(QualityControlManager::class);
+        $reflectionClass = new \ReflectionClass(QualityControlManager::class);
         $property = $reflectionClass->getProperty('logger');
         $property->setAccessible(true);
 
@@ -56,7 +54,7 @@ class QualityControlManagerTest extends LinioTestCase
     {
         $config = $this->getParameters();
 
-        $method = new ReflectionMethod(QualityControlManager::class, 'setListDimensions');
+        $method = new \ReflectionMethod(QualityControlManager::class, 'setListDimensions');
         $method->setAccessible(true);
 
         $configuration = $this->prophesize(Configuration::class);

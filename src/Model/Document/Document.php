@@ -4,14 +4,12 @@ declare(strict_types=1);
 
 namespace Linio\SellerCenter\Model\Document;
 
-use JsonSerializable;
 use Linio\SellerCenter\Contract\DocumentInterface;
 use Linio\SellerCenter\Exception\InvalidDocumentTypeException;
 use Linio\SellerCenter\Exception\InvalidFileException;
 use Linio\SellerCenter\Exception\InvalidMimeTypeException;
-use stdClass;
 
-class Document implements JsonSerializable
+class Document implements \JsonSerializable
 {
     /**
      * @var string
@@ -62,9 +60,9 @@ class Document implements JsonSerializable
         return $this->file;
     }
 
-    public function jsonSerialize(): stdClass
+    public function jsonSerialize(): \stdClass
     {
-        $serialized = new stdClass();
+        $serialized = new \stdClass();
         $serialized->documentType = $this->documentType;
         $serialized->mimeType = $this->mimeType;
         $serialized->file = $this->file;

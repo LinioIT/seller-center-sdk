@@ -5,11 +5,10 @@ declare(strict_types=1);
 namespace Linio\SellerCenter\Factory\Xml\Seller;
 
 use Linio\SellerCenter\Model\Seller\Statistic;
-use SimpleXMLElement;
 
 class StatisticsFactory
 {
-    public static function make(SimpleXMLElement $xml): Statistic
+    public static function make(\SimpleXMLElement $xml): Statistic
     {
         $statistics = Statistic::build();
 

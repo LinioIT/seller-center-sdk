@@ -4,11 +4,9 @@ declare(strict_types=1);
 
 namespace Linio\SellerCenter\Model\QualityControl;
 
-use JsonSerializable;
 use Linio\SellerCenter\Exception\EmptyArgumentException;
-use stdClass;
 
-class QualityControl implements JsonSerializable
+class QualityControl implements \JsonSerializable
 {
     /**
      * @var string
@@ -66,9 +64,9 @@ class QualityControl implements JsonSerializable
         return $this->reason;
     }
 
-    public function jsonSerialize(): stdClass
+    public function jsonSerialize(): \stdClass
     {
-        $serialized = new stdClass();
+        $serialized = new \stdClass();
         $serialized->sellerSku = $this->sellerSku;
         $serialized->status = $this->status;
         $serialized->dataChanged = $this->dataChanged;

@@ -5,13 +5,12 @@ declare(strict_types=1);
 namespace Linio\SellerCenter\Transformer\Product;
 
 use Linio\SellerCenter\Model\Product\Products;
-use SimpleXMLElement;
 
 class ProductsTransformer
 {
-    public static function asXml(Products $products): SimpleXMLElement
+    public static function asXml(Products $products): \SimpleXMLElement
     {
-        $xml = new SimpleXMLElement('<Request/>');
+        $xml = new \SimpleXMLElement('<Request/>');
 
         foreach ($products->all() as $product) {
             ProductTransformer::asXml($xml, $product);
@@ -22,7 +21,7 @@ class ProductsTransformer
 
     public static function asXmlString(Products $products): string
     {
-        $xml = new SimpleXMLElement('<Request/>');
+        $xml = new \SimpleXMLElement('<Request/>');
 
         foreach ($products->all() as $product) {
             ProductTransformer::asXml($xml, $product);
@@ -31,9 +30,9 @@ class ProductsTransformer
         return (string) $xml->asXML();
     }
 
-    public static function skusAsXml(Products $products): SimpleXMLElement
+    public static function skusAsXml(Products $products): \SimpleXMLElement
     {
-        $xml = new SimpleXMLElement('<Request/>');
+        $xml = new \SimpleXMLElement('<Request/>');
 
         foreach ($products->all() as $product) {
             ProductTransformer::skuAsXml($xml, $product);
@@ -44,7 +43,7 @@ class ProductsTransformer
 
     public static function skusAsXmlString(Products $products): string
     {
-        $xml = new SimpleXMLElement('<Request/>');
+        $xml = new \SimpleXMLElement('<Request/>');
 
         foreach ($products->all() as $product) {
             ProductTransformer::skuAsXml($xml, $product);
@@ -53,9 +52,9 @@ class ProductsTransformer
         return (string) $xml->asXML();
     }
 
-    public static function imagesAsXml(Products $products): SimpleXMLElement
+    public static function imagesAsXml(Products $products): \SimpleXMLElement
     {
-        $xml = new SimpleXMLElement('<Resquest/>');
+        $xml = new \SimpleXMLElement('<Resquest/>');
 
         foreach ($products->all() as $product) {
             ProductTransformer::imagesAsXml($xml, $product);
@@ -66,7 +65,7 @@ class ProductsTransformer
 
     public static function imagesAsXmlString(Products $products): string
     {
-        $xml = new SimpleXMLElement('<Resquest/>');
+        $xml = new \SimpleXMLElement('<Resquest/>');
 
         foreach ($products->all() as $product) {
             ProductTransformer::imagesAsXml($xml, $product);

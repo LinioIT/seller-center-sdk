@@ -10,7 +10,6 @@ use Linio\SellerCenter\Factory\Xml\Webhook\WebhookFactory;
 use Linio\SellerCenter\LinioTestCase;
 use Linio\SellerCenter\Model\Webhook\Events;
 use Linio\SellerCenter\Model\Webhook\Webhook;
-use SimpleXMLElement;
 
 class WebhookTest extends LinioTestCase
 {
@@ -42,7 +41,7 @@ class WebhookTest extends LinioTestCase
             $event3
         );
 
-        $webhook = WebhookFactory::make(new SimpleXMLElement($xml));
+        $webhook = WebhookFactory::make(new \SimpleXMLElement($xml));
 
         $this->assertInstanceOf(Webhook::class, $webhook);
         $this->assertEquals($webhook->getWebhookId(), $webhookId);
@@ -66,7 +65,7 @@ class WebhookTest extends LinioTestCase
                     </Events>
                </Webhook>';
 
-        WebhookFactory::make(new SimpleXMLElement($xml));
+        WebhookFactory::make(new \SimpleXMLElement($xml));
     }
 
     public function testItThrowsAnExceptionWithoutACallbackUrlInTheXml(): void
@@ -83,7 +82,7 @@ class WebhookTest extends LinioTestCase
                     </Events>
                </Webhook>';
 
-        WebhookFactory::make(new SimpleXMLElement($xml));
+        WebhookFactory::make(new \SimpleXMLElement($xml));
     }
 
     public function testItThrowsAnExceptionWithoutAWebhookSourceInTheXml(): void
@@ -100,7 +99,7 @@ class WebhookTest extends LinioTestCase
                     </Events>
                </Webhook>';
 
-        WebhookFactory::make(new SimpleXMLElement($xml));
+        WebhookFactory::make(new \SimpleXMLElement($xml));
     }
 
     public function testItThrowsAnExceptionWithoutAnEventsInTheXml(): void
@@ -115,7 +114,7 @@ class WebhookTest extends LinioTestCase
                     <WebhookSource>web</WebhookSource>
                </Webhook>';
 
-        WebhookFactory::make(new SimpleXMLElement($xml));
+        WebhookFactory::make(new \SimpleXMLElement($xml));
     }
 
     public function testItReturnsAJsonRepresentation(): void

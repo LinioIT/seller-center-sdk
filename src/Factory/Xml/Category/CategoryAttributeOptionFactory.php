@@ -6,11 +6,10 @@ namespace Linio\SellerCenter\Factory\Xml\Category;
 
 use Linio\SellerCenter\Exception\InvalidXmlStructureException;
 use Linio\SellerCenter\Model\Category\CategoryAttributeOption;
-use SimpleXMLElement;
 
 class CategoryAttributeOptionFactory
 {
-    public static function make(SimpleXMLElement $xml): CategoryAttributeOption
+    public static function make(\SimpleXMLElement $xml): CategoryAttributeOption
     {
         if (!property_exists($xml, 'GlobalIdentifier')) {
             throw new InvalidXmlStructureException('Option', 'GlobalIdentifier');

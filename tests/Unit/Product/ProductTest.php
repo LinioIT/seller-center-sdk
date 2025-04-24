@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace Linio\SellerCenter\Unit\Product;
 
-use DateTimeImmutable;
+use Faker\Generator;
 use Linio\Component\Util\Json;
 use Linio\SellerCenter\Exception\EmptyArgumentException;
 use Linio\SellerCenter\Exception\InvalidDomainException;
@@ -18,12 +18,11 @@ use Linio\SellerCenter\Model\Product\Image;
 use Linio\SellerCenter\Model\Product\Images;
 use Linio\SellerCenter\Model\Product\Product;
 use Linio\SellerCenter\Model\Product\ProductData;
-use SimpleXMLElement;
 
 class ProductTest extends LinioTestCase
 {
     protected $sellerSku = '2145819109aaeu7';
-    protected $newSellerSku = null;
+    protected $newSellerSku;
     protected $name = 'Magic Product';
     protected $variation = 'XL';
     protected $primaryCategory;
@@ -56,7 +55,7 @@ class ProductTest extends LinioTestCase
     protected $packageWeight = 6;
 
     protected $product;
-    protected $faker;
+    protected Generator $faker;
 
     public function setUp(): void
     {
@@ -86,8 +85,8 @@ class ProductTest extends LinioTestCase
         $this->categories->add(Category::fromId($this->faker->randomNumber));
         $this->categories->add(Category::fromId($this->faker->randomNumber));
 
-        $this->saleStartDate = DateTimeImmutable::createFromFormat(DATE_ATOM, '2013-09-03T11:31:23+00:00');
-        $this->saleEndDate = DateTimeImmutable::createFromFormat(DATE_ATOM, '2013-10-03T11:31:23+00:00');
+        $this->saleStartDate = \DateTimeImmutable::createFromFormat(DATE_ATOM, '2013-09-03T11:31:23+00:00');
+        $this->saleEndDate = \DateTimeImmutable::createFromFormat(DATE_ATOM, '2013-10-03T11:31:23+00:00');
 
         $this->mainImage = new Image($this->faker->imageUrl($width = 640, $height = 480));
 
@@ -132,7 +131,7 @@ class ProductTest extends LinioTestCase
     {
         $xml = $this->createXmlStringForAProduct();
 
-        $product = ProductFactory::make(new SimpleXMLElement($xml));
+        $product = ProductFactory::make(new \SimpleXMLElement($xml));
 
         $this->assertInstanceOf(Product::class, $product);
         $this->assertEquals($product->getSellerSku(), $this->sellerSku);
@@ -259,7 +258,7 @@ class ProductTest extends LinioTestCase
     {
         $sXml = $this->createXmlStringForAProduct();
 
-        $xml = new SimpleXMLElement($sXml);
+        $xml = new \SimpleXMLElement($sXml);
 
         $product = ProductFactory::make($xml);
 
@@ -306,7 +305,7 @@ class ProductTest extends LinioTestCase
         float $price,
         float $salePrice,
         float $expectedPrice,
-        ?float $expectedSalePrice
+        ?float $expectedSalePrice,
     ): void {
         $product = Product::fromBasicData(
             $this->sellerSku,
@@ -335,7 +334,7 @@ class ProductTest extends LinioTestCase
         int $quantity,
         int $available,
         int $expectedQuantity,
-        int $expectedAvailable
+        int $expectedAvailable,
     ): void {
         $product = Product::fromBasicData(
             $this->sellerSku,
@@ -466,7 +465,7 @@ class ProductTest extends LinioTestCase
     {
         $xmlString = $this->createXmlStringForAProduct();
 
-        $xml = new SimpleXMLElement($xmlString);
+        $xml = new \SimpleXMLElement($xmlString);
 
         $this->expectException(InvalidXmlStructureException::class);
 

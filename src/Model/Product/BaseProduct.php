@@ -4,14 +4,12 @@ declare(strict_types=1);
 
 namespace Linio\SellerCenter\Model\Product;
 
-use JsonSerializable;
 use Linio\SellerCenter\Exception\EmptyArgumentException;
 use Linio\SellerCenter\Model\Brand\Brand;
 use Linio\SellerCenter\Model\Category\Categories;
 use Linio\SellerCenter\Model\Category\Category;
-use stdClass;
 
-abstract class BaseProduct implements JsonSerializable
+abstract class BaseProduct implements \JsonSerializable
 {
     /**
      * @var string
@@ -21,7 +19,7 @@ abstract class BaseProduct implements JsonSerializable
     /**
      * @var string|null
      */
-    protected $newSellerSku = null;
+    protected $newSellerSku;
 
     /**
      * @var string|null
@@ -290,9 +288,9 @@ abstract class BaseProduct implements JsonSerializable
         $this->images = $images;
     }
 
-    public function jsonSerialize(): stdClass
+    public function jsonSerialize(): \stdClass
     {
-        $serialized = new stdClass();
+        $serialized = new \stdClass();
         $serialized->name = $this->name;
         $serialized->sellerSku = $this->sellerSku;
         $serialized->newSellerSku = $this->newSellerSku;

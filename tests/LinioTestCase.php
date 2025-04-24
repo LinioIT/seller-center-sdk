@@ -9,12 +9,15 @@ use Faker\Generator;
 use Linio\Component\Util\Json;
 use Linio\SellerCenter\Application\Configuration;
 use PHPUnit\Framework\TestCase;
+use Prophecy\PhpUnit\ProphecyTrait;
 use Prophecy\Prophecy\ObjectProphecy;
-use RuntimeException;
 
 class LinioTestCase extends TestCase
 {
     use ClientHelper;
+    use ProphecyTrait;
+
+    protected Generator $faker;
 
     public function getFaker(): Generator
     {
@@ -40,7 +43,7 @@ class LinioTestCase extends TestCase
         $appData = getenv($appName);
 
         if (!$appData) {
-            throw new RuntimeException(sprintf('"%s" is not a valid app environment', $appName));
+            throw new \RuntimeException(sprintf('"%s" is not a valid app environment', $appName));
         }
 
         return Json::decode($appData);
@@ -55,7 +58,7 @@ class LinioTestCase extends TestCase
         string $body,
         ?ObjectProphecy $logger = null,
         int $statusCode = 200,
-        ?string $extraResponse = null
+        ?string $extraResponse = null,
     ): SellerCenterSdk {
         $client = $this->createClientWithResponse($body, $statusCode, $extraResponse);
 

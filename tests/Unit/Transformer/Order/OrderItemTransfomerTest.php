@@ -7,20 +7,19 @@ namespace Linio\SellerCenter\Transformer\Order;
 use Linio\SellerCenter\Factory\Xml\Order\OrderItemFactory;
 use Linio\SellerCenter\LinioTestCase;
 use Linio\SellerCenter\Order\OrderItemTest;
-use SimpleXMLElement;
 
 class OrderItemTransfomerTest extends LinioTestCase
 {
     public function testItCreatesOrderItemImeiAsXML(): void
     {
-        $orderItemTest = new OrderItemTest();
+        $orderItemTest = new OrderItemTest('');
         $simpleXml = simplexml_load_string($orderItemTest->createXmlStringForOrderItems());
 
         $orderItem = OrderItemFactory::make($simpleXml);
 
         $orderItem->setImei('weqweqwe-123123');
 
-        $xml = new SimpleXMLElement('<Request/>');
+        $xml = new \SimpleXMLElement('<Request/>');
         OrderItemTransformer::orderItemImeiAsXml($xml, $orderItem);
 
         $expectedXml = $this->getSchema('Order/SetImeiRequest.xml');
@@ -29,14 +28,14 @@ class OrderItemTransfomerTest extends LinioTestCase
 
     public function testItCreatesOrderItemImeiAsXMLWithoutNullProperties(): void
     {
-        $orderItemTest = new OrderItemTest();
+        $orderItemTest = new OrderItemTest('');
         $simpleXml = simplexml_load_string($orderItemTest->createXmlStringForOrderItems());
 
         $orderItem = OrderItemFactory::make($simpleXml);
 
         $orderItem->setImei(null);
 
-        $xml = new SimpleXMLElement('<Request/>');
+        $xml = new \SimpleXMLElement('<Request/>');
         OrderItemTransformer::orderItemImeiAsXml($xml, $orderItem);
 
         $expectedXml = $this->getSchema('Order/SetImeiRequest.xml');

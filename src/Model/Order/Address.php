@@ -4,10 +4,7 @@ declare(strict_types=1);
 
 namespace Linio\SellerCenter\Model\Order;
 
-use JsonSerializable;
-use stdClass;
-
-class Address implements JsonSerializable
+class Address implements \JsonSerializable
 {
     /**
      * @var string|null
@@ -96,10 +93,10 @@ class Address implements JsonSerializable
         string $region,
         string $postCode,
         string $country,
-        string $address2 = null,
-        string $address3 = null,
-        string $address4 = null,
-        string $address5 = null
+        ?string $address2 = null,
+        ?string $address3 = null,
+        ?string $address4 = null,
+        ?string $address5 = null,
     ) {
         $this->firstName = !empty($firstName) ? $firstName : null;
         $this->lastName = !empty($lastName) ? $lastName : null;
@@ -200,7 +197,7 @@ class Address implements JsonSerializable
 
     public function jsonSerialize(): stdClass
     {
-        $serialized = new stdClass();
+        $serialized = new \stdClass();
         $serialized->firstName = $this->firstName;
         $serialized->lastName = $this->lastName;
         $serialized->phone = $this->phone;

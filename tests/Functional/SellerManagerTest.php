@@ -4,7 +4,6 @@ declare(strict_types=1);
 
 namespace Linio\SellerCenter;
 
-use Exception;
 use Linio\SellerCenter\Model\Seller\Statistic;
 use Prophecy\Argument;
 use Prophecy\Prophecy\ObjectProphecy;
@@ -47,7 +46,7 @@ class SellerManagerTest extends LinioTestCase
 
     public function testItThrowsAnExceptionWhenTheResponseIsAnError(): void
     {
-        $this->expectException(Exception::class);
+        $this->expectException(\Exception::class);
         $this->expectExceptionMessage('E0125: Test Error');
 
         $body = $this->getSchema('Response/ErrorResponse.xml');

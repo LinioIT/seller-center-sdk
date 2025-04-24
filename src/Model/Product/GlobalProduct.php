@@ -11,9 +11,8 @@ use Linio\SellerCenter\Model\Category\Categories;
 use Linio\SellerCenter\Model\Category\Category;
 use Linio\SellerCenter\Model\Product\Contract\FashionInterface;
 use Linio\SellerCenter\Model\Product\Contract\ProductInterface;
-use stdClass;
 
-class GlobalProduct extends BaseProduct implements JsonSerializable, ProductInterface, FashionInterface
+class GlobalProduct extends BaseProduct implements \JsonSerializable, ProductInterface, FashionInterface
 {
     /**
      * @var BusinessUnits
@@ -72,7 +71,7 @@ class GlobalProduct extends BaseProduct implements JsonSerializable, ProductInte
         ProductData $productData,
         ?Images $images = null,
         ?string $qcStatus = null,
-        ?int $contentScore = null
+        ?int $contentScore = null,
     ): self {
         self::ValidateArguments($sellerSku, $name, $description);
 
@@ -109,7 +108,7 @@ class GlobalProduct extends BaseProduct implements JsonSerializable, ProductInte
         ProductData $productData,
         ?Images $images = null,
         ?string $qcStatus = null,
-        ?int $contentScore = null
+        ?int $contentScore = null,
     ): self {
         $product = new static();
 
@@ -317,7 +316,7 @@ class GlobalProduct extends BaseProduct implements JsonSerializable, ProductInte
         ];
     }
 
-    public function jsonSerialize(): stdClass
+    public function jsonSerialize(): \stdClass
     {
         $serialized = parent::jsonSerialize();
 

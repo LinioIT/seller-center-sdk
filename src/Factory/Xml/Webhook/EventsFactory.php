@@ -6,11 +6,10 @@ namespace Linio\SellerCenter\Factory\Xml\Webhook;
 
 use Linio\SellerCenter\Model\Webhook\Event;
 use Linio\SellerCenter\Model\Webhook\Events;
-use SimpleXMLElement;
 
 class EventsFactory
 {
-    public static function makeFromWebhook(SimpleXMLElement $element): Events
+    public static function makeFromWebhook(\SimpleXMLElement $element): Events
     {
         $events = new Events();
 
@@ -26,7 +25,7 @@ class EventsFactory
         return $events;
     }
 
-    public static function make(SimpleXMLElement $element): Events
+    public static function make(\SimpleXMLElement $element): Events
     {
         $events = new Events();
 

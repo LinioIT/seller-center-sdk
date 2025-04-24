@@ -4,7 +4,6 @@ declare(strict_types=1);
 
 namespace Linio\SellerCenter\Model;
 
-use DateTime;
 use Linio\Component\Util\Json;
 use Linio\SellerCenter\Exception\InvalidInvoiceDocumentFormatException;
 use Linio\SellerCenter\Exception\InvalidInvoiceTypeException;
@@ -27,7 +26,7 @@ class InvoiceDocumentTest extends LinioTestCase
     private $invoiceNumber = '123123';
 
     /**
-     * @var DateTime
+     * @var \DateTime
      */
     private $invoiceDate;
 
@@ -63,7 +62,7 @@ class InvoiceDocumentTest extends LinioTestCase
 
     protected function setUp(): void
     {
-        $this->invoiceDate = new DateTime('2023/06/15');
+        $this->invoiceDate = new \DateTime('2023/06/15');
         $orderItems = new OrderItems();
         $this->orderItem = OrderItem::fromStatus(21, 123123, '123123', 'packageID123');
         $orderItems->add($this->orderItem);
@@ -118,7 +117,7 @@ class InvoiceDocumentTest extends LinioTestCase
         string $invoiceType,
         string $operatorCode,
         string $invoiceDocumentBase64,
-        string $invoiceDocumentFormat
+        string $invoiceDocumentFormat,
     ): void {
         $this->expectException($excepcion);
         $this->expectExceptionMessage($messageException);

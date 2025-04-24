@@ -6,11 +6,10 @@ namespace Linio\SellerCenter\Factory\Xml\Webhook;
 
 use Linio\SellerCenter\Exception\InvalidXmlStructureException;
 use Linio\SellerCenter\Model\Webhook\Webhook;
-use SimpleXMLElement;
 
 class WebhookFactory
 {
-    public static function make(SimpleXMLElement $element): Webhook
+    public static function make(\SimpleXMLElement $element): Webhook
     {
         if (!property_exists($element, 'WebhookId')) {
             throw new InvalidXmlStructureException('Webhook', 'WebhookId');

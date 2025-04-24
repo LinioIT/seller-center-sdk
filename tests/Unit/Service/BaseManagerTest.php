@@ -112,19 +112,19 @@ class BaseManagerTest extends LinioTestCase
             ->debug(
                 Argument::that(
                     function (string $message) {
-                        return str_contains($message, 'requestId') &&
-                            str_contains($message, 'FooAction');
+                        return str_contains($message, 'requestId')
+                            && str_contains($message, 'FooAction');
                     }
                 ),
                 Argument::that(
                     function (array $context) {
-                        return in_array('application/json', $context['request']['headers']['Content-type']) &&
-                            in_array('baz/extrapath', $context['request']) &&
-                            in_array('requestId', $context['request']['headers']['Request-ID']) &&
-                            in_array('service', $context['request']['headers']['Service']) &&
-                            in_array('bar', $context['request']['headers']['UserID']) &&
-                            in_array('FooAction', $context['request']['headers']['Action']) &&
-                            key_exists('Signature', $context['request']['headers']);
+                        return in_array('application/json', $context['request']['headers']['Content-type'])
+                            && in_array('baz/extrapath', $context['request'])
+                            && in_array('requestId', $context['request']['headers']['Request-ID'])
+                            && in_array('service', $context['request']['headers']['Service'])
+                            && in_array('bar', $context['request']['headers']['UserID'])
+                            && in_array('FooAction', $context['request']['headers']['Action'])
+                            && key_exists('Signature', $context['request']['headers']);
                     }
                 )
             )

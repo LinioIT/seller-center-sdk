@@ -11,7 +11,6 @@ use Linio\SellerCenter\Exception\InvalidXmlStructureException;
 use Linio\SellerCenter\Factory\Xml\Brand\BrandFactory;
 use Linio\SellerCenter\LinioTestCase;
 use Linio\SellerCenter\Model\Brand\Brand;
-use SimpleXMLElement;
 
 class BrandTest extends LinioTestCase
 {
@@ -58,7 +57,7 @@ class BrandTest extends LinioTestCase
 
         $this->expectExceptionMessage('The xml structure is not valid for a Brand. The property BrandId should exist.');
 
-        $simpleXml = new SimpleXMLElement('<Brand>
+        $simpleXml = new \SimpleXMLElement('<Brand>
                             <Name>Name</Name>
                             <GlobalIdentifier>GI</GlobalIdentifier>
                             </Brand>');
@@ -71,7 +70,7 @@ class BrandTest extends LinioTestCase
 
         $this->expectExceptionMessage('The xml structure is not valid for a Brand. The property Name should exist.');
 
-        $simpleXml = new SimpleXMLElement('<Brand>
+        $simpleXml = new \SimpleXMLElement('<Brand>
                             <BrandId>1</BrandId>
                             <GlobalIdentifier>GI</GlobalIdentifier></Brand>');
         BrandFactory::make($simpleXml);
@@ -83,7 +82,7 @@ class BrandTest extends LinioTestCase
 
         $this->expectExceptionMessage('The xml structure is not valid for a Brand. The property GlobalIdentifier should exist.');
 
-        $simpleXml = new SimpleXMLElement('<Brand>
+        $simpleXml = new \SimpleXMLElement('<Brand>
                             <BrandId>1</BrandId>
                             <Name>Name</Name>
                             </Brand>');

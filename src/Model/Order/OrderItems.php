@@ -4,10 +4,9 @@ declare(strict_types=1);
 
 namespace Linio\SellerCenter\Model\Order;
 
-use JsonSerializable;
 use Linio\SellerCenter\Contract\CollectionInterface;
 
-class OrderItems implements CollectionInterface, JsonSerializable
+class OrderItems implements CollectionInterface, \JsonSerializable
 {
     /**
      * @var OrderItem[]

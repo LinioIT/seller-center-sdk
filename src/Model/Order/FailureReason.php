@@ -4,10 +4,7 @@ declare(strict_types=1);
 
 namespace Linio\SellerCenter\Model\Order;
 
-use JsonSerializable;
-use stdClass;
-
-class FailureReason implements JsonSerializable
+class FailureReason implements \JsonSerializable
 {
     /**
      * @var string
@@ -35,9 +32,9 @@ class FailureReason implements JsonSerializable
         return $this->name;
     }
 
-    public function jsonSerialize(): stdClass
+    public function jsonSerialize(): \stdClass
     {
-        $serialized = new stdClass();
+        $serialized = new \stdClass();
         $serialized->type = $this->type;
         $serialized->name = $this->name;
 

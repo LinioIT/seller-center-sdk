@@ -4,11 +4,9 @@ declare(strict_types=1);
 
 namespace Linio\SellerCenter\Factory\Xml\Order;
 
-use DateTimeImmutable;
 use Linio\Component\Util\Json;
 use Linio\SellerCenter\Model\Order\OrderItem;
 use Linio\SellerCenter\Validator\XmlStructureValidator;
-use SimpleXMLElement;
 
 class OrderItemFactory
 {
@@ -63,22 +61,22 @@ class OrderItemFactory
         'Status',
     ];
 
-    public static function make(SimpleXMLElement $element): OrderItem
+    public static function make(\SimpleXMLElement $element): OrderItem
     {
         XmlStructureValidator::validateStructure($element, self::XML_MODEL, self::REQUIRED_FIELDS);
 
         $isProcessable = !empty($element->IsProcessable);
         $isDigital = !empty($element->IsDigital);
 
-        $dateTime = DateTimeImmutable::createFromFormat('Y-m-d H:i:s', (string) $element->PromisedShippingTime);
+        $dateTime = \DateTimeImmutable::createFromFormat('Y-m-d H:i:s', (string) $element->PromisedShippingTime);
         $promisedShippingTime = !empty($dateTime) ? $dateTime : null;
 
         $extraAttributes = Json::decode((string) $element->ExtraAttributes);
 
-        $dateTime = DateTimeImmutable::createFromFormat('Y-m-d H:i:s', (string) $element->CreatedAt);
+        $dateTime = \DateTimeImmutable::createFromFormat('Y-m-d H:i:s', (string) $element->CreatedAt);
         $createdAt = !empty($dateTime) ? $dateTime : null;
 
-        $dateTime = DateTimeImmutable::createFromFormat('Y-m-d H:i:s', (string) $element->UpdatedAt);
+        $dateTime = \DateTimeImmutable::createFromFormat('Y-m-d H:i:s', (string) $element->UpdatedAt);
         $updatedAt = !empty($dateTime) ? $dateTime : null;
 
         return OrderItem::fromOrderItem(
@@ -119,12 +117,12 @@ class OrderItemFactory
             $updatedAt,
             (string) $element->ReturnStatus,
             (float) $element->ShippingTax,
-            (string) $element->SalesType ?? null,
-            (string) $element->Imei ?? null
+            isset($element->SalesType) ? (string) $element->SalesType : null,
+            isset($element->Imei) ? (string) $element->Imei : null
         );
     }
 
-    public static function makeFromStatus(SimpleXMLElement $element): OrderItem
+    public static function makeFromStatus(\SimpleXMLElement $element): OrderItem
     {
         XmlStructureValidator::validateStructure($element, self::XML_MODEL, self::REQUIRED_FIELDS_FROM_STATUS);
 
@@ -139,7 +137,7 @@ class OrderItemFactory
         );
     }
 
-    public static function makeFromImeiStatus(SimpleXMLElement $element): OrderItem
+    public static function makeFromImeiStatus(\SimpleXMLElement $element): OrderItem
     {
         XmlStructureValidator::validateStructure($element, self::XML_MODEL, self::REQUIRED_FIELDS_FROM_IMEI_STATUS);
 

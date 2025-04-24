@@ -4,10 +4,7 @@ declare(strict_types=1);
 
 namespace Linio\SellerCenter\Exception;
 
-use RuntimeException;
-use SimpleXMLElement;
-
-class ErrorResponseException extends RuntimeException
+class ErrorResponseException extends \RuntimeException
 {
     /**
      * @var string
@@ -19,12 +16,12 @@ class ErrorResponseException extends RuntimeException
      */
     protected $type;
 
-    public function __construct(SimpleXMLElement $error)
+    public function __construct(\SimpleXMLElement $error)
     {
-        $message = (string) $error->Head->ErrorMessage ?? null;
-        $code = (int) $error->Head->ErrorCode ?? null;
-        $this->type = (string) $error->Head->ErrorType ?? null;
-        $this->action = (string) $error->Head->RequestAction ?? null;
+        $message = (string) ($error->Head->ErrorMessage ?? '');
+        $code = (int) ($error->Head->ErrorCode ?? 0);
+        $this->type = (string) ($error->Head->ErrorType ?? '');
+        $this->action = (string) ($error->Head->RequestAction ?? '');
 
         parent::__construct($message, $code, null);
     }

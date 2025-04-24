@@ -15,7 +15,7 @@ trait ClientHelper
         string $body,
         int $statusCode = 200,
         ?string $extraResponseBody = null,
-        int $extraStatusCode = 200
+        int $extraStatusCode = 200,
     ) {
         $response = $this->prophesize(ResponseInterface::class);
         $response

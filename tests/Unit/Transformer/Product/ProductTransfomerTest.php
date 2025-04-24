@@ -16,8 +16,6 @@ use Linio\SellerCenter\Model\Product\Image;
 use Linio\SellerCenter\Model\Product\Images;
 use Linio\SellerCenter\Model\Product\Product;
 use Linio\SellerCenter\Model\Product\ProductData;
-use SimpleXMLElement;
-use stdClass;
 
 class ProductTransfomerTest extends LinioTestCase
 {
@@ -40,7 +38,7 @@ class ProductTransfomerTest extends LinioTestCase
             $productData
         );
 
-        $xml = new SimpleXMLElement('<Products/>');
+        $xml = new \SimpleXMLElement('<Products/>');
         ProductTransformer::asXml($xml, $product);
 
         $expectedXml = $this->getSchema('Product/ProductSpecialChars.xml');
@@ -57,7 +55,7 @@ class ProductTransfomerTest extends LinioTestCase
         $product = Product::fromSku('SKU');
         $product->attachImages($images);
 
-        $xml = new SimpleXMLElement('<Request/>');
+        $xml = new \SimpleXMLElement('<Request/>');
         ProductTransformer::imagesAsXml($xml, $product);
 
         $expectedXml = '
@@ -78,7 +76,7 @@ class ProductTransfomerTest extends LinioTestCase
      */
     public function testItCreatesProductXMLFashionAttributes(GlobalProduct $product, string $expectedXml): void
     {
-        $xml = new SimpleXMLElement('<Request/>');
+        $xml = new \SimpleXMLElement('<Request/>');
         ProductTransformer::asXml($xml, $product);
 
         $this->assertXmlStringEqualsXmlString($expectedXml, $xml->asXML());
@@ -109,7 +107,7 @@ class ProductTransfomerTest extends LinioTestCase
             new ProductData('Nuevo', 1, 1, 1, 1)
         );
 
-        $xml = new SimpleXMLElement('<Request/>');
+        $xml = new \SimpleXMLElement('<Request/>');
         ProductTransformer::asXml($xml, $product);
         $expectedXml = $this->getSchema('Product/GlobalProductEmptySpecialPrice.xml');
         $this->assertXmlStringEqualsXmlString($expectedXml, $xml->asXML());
@@ -117,7 +115,7 @@ class ProductTransfomerTest extends LinioTestCase
 
     public function testItAddsAttributesIgnoringTheNullValues(): void
     {
-        $xml = new SimpleXMLElement('<Root />');
+        $xml = new \SimpleXMLElement('<Root />');
 
         $attributes = [
             'Main' => null,
@@ -135,7 +133,7 @@ class ProductTransfomerTest extends LinioTestCase
 
     public function testItAddsNullValuesIfExistInOverrideAttributesForCommonProducts(): void
     {
-        $xml = new SimpleXMLElement('<Root />');
+        $xml = new \SimpleXMLElement('<Root />');
 
         $attributes = [
             'Main' => null,
@@ -177,7 +175,7 @@ class ProductTransfomerTest extends LinioTestCase
      */
     public function testItTransformsAttributeObjectAsString($object, $expectedResult): void
     {
-        if ($object instanceof stdClass) {
+        if ($object instanceof \stdClass) {
             $this->expectException(InvalidDomainException::class);
         }
 
@@ -196,7 +194,7 @@ class ProductTransfomerTest extends LinioTestCase
             [new Categories(), null],
             [$categories, '222,333'],
             [Brand::fromName('Linio'), 'Linio'],
-            [new stdClass(), null],
+            [new \stdClass(), null],
         ];
     }
 
