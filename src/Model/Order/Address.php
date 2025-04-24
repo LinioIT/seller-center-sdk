@@ -195,7 +195,7 @@ class Address implements \JsonSerializable
         $this->postCode = $postalCode;
     }
 
-    public function jsonSerialize(): stdClass
+    public function jsonSerialize(): \stdClass
     {
         $serialized = new \stdClass();
         $serialized->firstName = $this->firstName;

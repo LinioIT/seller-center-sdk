@@ -4,7 +4,6 @@ declare(strict_types=1);
 
 namespace Linio\SellerCenter\Model\Product;
 
-use JsonSerializable;
 use Linio\SellerCenter\Exception\EmptyArgumentException;
 use Linio\SellerCenter\Model\Brand\Brand;
 use Linio\SellerCenter\Model\Category\Categories;
@@ -166,7 +165,7 @@ class GlobalProduct extends BaseProduct implements \JsonSerializable, ProductInt
         ProductData $productData,
         ?Images $images = null,
         ?string $qcStatus = null,
-        ?int $contentScore = null
+        ?int $contentScore = null,
     ): self {
         if (empty($sellerSku)) {
             throw new EmptyArgumentException('SellerSku');
