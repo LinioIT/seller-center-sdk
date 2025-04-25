@@ -95,7 +95,7 @@ class BaseManager
 
         $response = $this->generateRequest(false, $parameters, $request);
 
-        $body = (string) $response->getBody();
+        $body = $response->getBody()->__toString();
         $builtResponse = HandleResponse::parse($body);
 
         if ($debug) {

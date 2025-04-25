@@ -15,6 +15,7 @@ use Prophecy\Argument;
 use Prophecy\Prophecy\ObjectProphecy;
 use Psr\Http\Message\RequestInterface;
 use Psr\Http\Message\ResponseInterface;
+use Psr\Http\Message\StreamInterface;
 use Psr\Log\LoggerInterface;
 
 class BaseManagerTest extends LinioTestCase
@@ -85,7 +86,10 @@ class BaseManagerTest extends LinioTestCase
     public function testItExecutesAction(): void
     {
         $response = $this->prophesize(ResponseInterface::class);
-        $response->getBody()->shouldBeCalled()->willReturn($this->getRawSuccessResponse());
+        $bodyStrem = $this->prophesize(StreamInterface::class);
+        $response->getBody()->shouldBeCalled()->willReturn($bodyStrem->reveal());
+        $bodyStrem->__toString()
+            ->willReturn($this->getRawSuccessResponse());
 
         $this->loggerStub
             ->debug(Argument::type('string'), Argument::type('array'))
@@ -106,7 +110,11 @@ class BaseManagerTest extends LinioTestCase
     public function testItExecutesJsonAction(): void
     {
         $response = $this->prophesize(ResponseInterface::class);
-        $response->getBody()->shouldBeCalled()->willReturn($this->getJsonSuccessResponse());
+        $bodyStrem = $this->prophesize(StreamInterface::class);
+
+        $response->getBody()->shouldBeCalled()->willReturn($bodyStrem->reveal());
+        $bodyStrem->__toString()
+            ->willReturn($this->getJsonSuccessResponse());
 
         $this->loggerStub
             ->debug(
