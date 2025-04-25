@@ -5,11 +5,10 @@ declare(strict_types=1);
 namespace Linio\SellerCenter\Factory\Xml\Order;
 
 use Linio\SellerCenter\Model\Order\ExtraBillingAttributes;
-use SimpleXMLElement;
 
 class ExtraBillingAttributesFactory
 {
-    public static function make(SimpleXMLElement $element): ExtraBillingAttributes
+    public static function make(\SimpleXMLElement $element): ExtraBillingAttributes
     {
         return new ExtraBillingAttributes(
             (string) $element->LegalId,

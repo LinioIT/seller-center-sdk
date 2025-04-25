@@ -12,13 +12,12 @@ use Linio\SellerCenter\Model\Order\Order;
 use Linio\SellerCenter\Model\Order\OrderItem;
 use Linio\SellerCenter\Model\Order\OrderItems;
 use Linio\SellerCenter\Model\Order\Orders;
-use SimpleXMLElement;
 
 class OrdersTest extends LinioTestCase
 {
     public function testItReturnsACollectionOfOrders(): void
     {
-        $simpleXml = new SimpleXMLElement($this->getOrderResponse());
+        $simpleXml = new \SimpleXMLElement($this->getOrderResponse());
 
         $orders = OrdersFactory::make($simpleXml);
 
@@ -38,7 +37,7 @@ class OrdersTest extends LinioTestCase
 
     public function testItReturnsACollectionOfOrderItems(): void
     {
-        $simpleXml = new SimpleXMLElement($this->getOrderResponse('Order/OrdersItems.xml'));
+        $simpleXml = new \SimpleXMLElement($this->getOrderResponse('Order/OrdersItems.xml'));
 
         $orders = OrdersItemsFactory::make($simpleXml);
 
@@ -59,7 +58,7 @@ class OrdersTest extends LinioTestCase
 
     public function testItReturnNullWithAInvalidOrderId(): void
     {
-        $simpleXml = new SimpleXMLElement($this->getOrderResponse());
+        $simpleXml = new \SimpleXMLElement($this->getOrderResponse());
 
         $orders = OrdersFactory::make($simpleXml);
 
@@ -82,7 +81,7 @@ class OrdersTest extends LinioTestCase
             )
         );
 
-        $simpleXml = new SimpleXMLElement($this->getOrderResponse('Order/OrdersItems.xml'));
+        $simpleXml = new \SimpleXMLElement($this->getOrderResponse('Order/OrdersItems.xml'));
 
         unset($simpleXml->Orders->Order->{$property});
 

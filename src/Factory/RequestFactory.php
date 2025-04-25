@@ -16,7 +16,7 @@ class RequestFactory
         string $method,
         string $uri,
         array $headers = [],
-        string $body = null
+        ?string $body = null,
     ): RequestInterface {
         $request = Psr17FactoryDiscovery::findRequestFactory()->createRequest($method, $uri);
 

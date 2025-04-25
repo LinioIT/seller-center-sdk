@@ -4,10 +4,9 @@ declare(strict_types=1);
 
 namespace Linio\SellerCenter\Model\Category;
 
-use JsonSerializable;
 use Linio\SellerCenter\Contract\CollectionInterface;
 
-class CategoryAttributeOptions implements CollectionInterface, JsonSerializable
+class CategoryAttributeOptions implements CollectionInterface, \JsonSerializable
 {
     /**
      * @var CategoryAttributeOption[]

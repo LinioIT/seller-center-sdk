@@ -6,11 +6,10 @@ namespace Linio\SellerCenter\Factory\Xml\Category;
 
 use Linio\SellerCenter\Exception\InvalidXmlStructureException;
 use Linio\SellerCenter\Model\Category\AttributeSets;
-use SimpleXMLElement;
 
 class AttributesSetFactory
 {
-    public static function make(SimpleXMLElement $element): AttributeSets
+    public static function make(\SimpleXMLElement $element): AttributeSets
     {
         if (empty($element->AttributeSets->AttributeSet)) {
             throw new InvalidXmlStructureException('AttributeSets', 'AttributeSet');

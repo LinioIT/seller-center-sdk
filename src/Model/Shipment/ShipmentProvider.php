@@ -4,10 +4,7 @@ declare(strict_types=1);
 
 namespace Linio\SellerCenter\Model\Shipment;
 
-use JsonSerializable;
-use stdClass;
-
-class ShipmentProvider implements JsonSerializable
+class ShipmentProvider implements \JsonSerializable
 {
     /**
      * @var string
@@ -66,7 +63,7 @@ class ShipmentProvider implements JsonSerializable
         ?string $trackingCodeExample = null,
         ?string $trackingUrl = null,
         ?string $trackingCodeSetOnStep = null,
-        ?array $enabledDeliveryOptions = []
+        ?array $enabledDeliveryOptions = [],
     ) {
         $this->name = $name;
         $this->default = $default;
@@ -127,9 +124,9 @@ class ShipmentProvider implements JsonSerializable
         return $this->enabledDeliveryOptions;
     }
 
-    public function jsonSerialize()
+    public function jsonSerialize(): \stdClass
     {
-        $serialized = new stdClass();
+        $serialized = new \stdClass();
         $serialized->name = $this->name;
         $serialized->default = $this->default;
         $serialized->apiIntegration = $this->apiIntegration;

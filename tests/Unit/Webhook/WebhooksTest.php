@@ -48,7 +48,7 @@ class WebhooksTest extends LinioTestCase
         $xmlWebhook = $response->Body->Webhooks->Webhook[0];
 
         $this->assertInstanceOf(Webhooks::class, $webhooks);
-        $this->assertInstanceOf(WebHook::class, $webhook);
+        $this->assertInstanceOf(Webhook::class, $webhook);
         $this->assertEquals($webhook->getWebhookId(), $xmlWebhook->WebhookId);
     }
 

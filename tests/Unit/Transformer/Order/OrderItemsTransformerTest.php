@@ -7,7 +7,7 @@ namespace Linio\SellerCenter\Transformer\Order;
 use Linio\SellerCenter\Factory\Xml\Order\OrderItemsFactory;
 use Linio\SellerCenter\LinioTestCase;
 
-class OrderItemsTransfomerTest extends LinioTestCase
+class OrderItemsTransformerTest extends LinioTestCase
 {
     public function testTransformsAOrderItemsArrayIntoAnXmlRepresentation(): void
     {

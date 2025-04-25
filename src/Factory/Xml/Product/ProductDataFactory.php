@@ -6,7 +6,6 @@ namespace Linio\SellerCenter\Factory\Xml\Product;
 
 use Linio\SellerCenter\Model\Product\ProductData;
 use Linio\SellerCenter\Validator\XmlStructureValidator;
-use SimpleXMLElement;
 
 class ProductDataFactory
 {
@@ -18,7 +17,7 @@ class ProductDataFactory
         'PackageWeight',
     ];
 
-    public static function make(SimpleXMLElement $element): ProductData
+    public static function make(\SimpleXMLElement $element): ProductData
     {
         XmlStructureValidator::validateStructure($element, self::XML_MODEL, self::REQUIRED_FIELDS);
         $productData = new ProductData(

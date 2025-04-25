@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace Linio\SellerCenter\Product;
 
-use DateTimeImmutable;
+use Faker\Generator;
 use Linio\SellerCenter\Factory\Xml\Product\ProductsFactory;
 use Linio\SellerCenter\LinioTestCase;
 use Linio\SellerCenter\Model\Brand\Brand;
@@ -22,7 +22,7 @@ class ProductsTest extends LinioTestCase
      * @var Products
      */
     protected $products;
-    protected $faker;
+    protected Generator $faker;
 
     public function setUp(): void
     {
@@ -51,8 +51,8 @@ class ProductsTest extends LinioTestCase
         $product->setCategories($categories);
         $product->setParentSku('91230ej8913he89');
         $product->setSalePrice(5888.00);
-        $product->setSaleStartDate(DateTimeImmutable::createFromFormat(DATE_ATOM, '2013-09-03T11:31:23+00:00'));
-        $product->setSaleEndDate(DateTimeImmutable::createFromFormat(DATE_ATOM, '2013-10-03T11:31:23+00:00'));
+        $product->setSaleStartDate(\DateTimeImmutable::createFromFormat(DATE_ATOM, '2013-09-03T11:31:23+00:00'));
+        $product->setSaleEndDate(\DateTimeImmutable::createFromFormat(DATE_ATOM, '2013-10-03T11:31:23+00:00'));
         $product->setQuantity(10);
 
         $product->getImages()->addMany([
@@ -129,7 +129,7 @@ class ProductsTest extends LinioTestCase
             $categoriesIds[] = $secondaryCategory->getId();
         }
 
-        $this->assertContains(implode(',', $categoriesIds), $xml->Product->Categories);
+        $this->assertEquals(implode(',', $categoriesIds), $xml->Product->Categories);
         $this->assertEquals($product->getDescription(), $xml->Product->Description);
         $this->assertEquals($product->getBrand()->getName(), $xml->Product->Brand);
         $this->assertEquals($product->getPrice(), (float) $xml->Product->Price);
@@ -174,7 +174,7 @@ class ProductsTest extends LinioTestCase
         $this->assertCount(3, $images);
 
         foreach ($images as $key => $image) {
-            $this->assertContains($image->getUrl(), (string) $xml->ProductImage->Images->Image[$key]);
+            $this->assertEquals($image->getUrl(), (string) $xml->ProductImage->Images->Image[$key]);
         }
     }
 

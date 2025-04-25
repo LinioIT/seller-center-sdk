@@ -4,12 +4,10 @@ declare(strict_types=1);
 
 namespace Linio\SellerCenter\Factory\Xml\Order;
 
-use DateTimeImmutable;
 use Linio\SellerCenter\Contract\BusinessUnitOperatorCodes;
 use Linio\SellerCenter\Exception\InvalidDomainException;
 use Linio\SellerCenter\Model\Order\Order;
 use Linio\SellerCenter\Validator\XmlStructureValidator;
-use SimpleXMLElement;
 
 class OrderFactory
 {
@@ -43,26 +41,26 @@ class OrderFactory
         'Voucher',
     ];
 
-    public static function make(SimpleXMLElement $element): Order
+    public static function make(\SimpleXMLElement $element): Order
     {
         XmlStructureValidator::validateStructure($element, self::XML_MODEL, self::REQUIRED_FIELDS);
 
         $giftOption = !empty($element->GiftOption);
 
-        $dateTime = DateTimeImmutable::createFromFormat('Y-m-d H:i:s', (string) $element->CreatedAt);
+        $dateTime = \DateTimeImmutable::createFromFormat('Y-m-d H:i:s', (string) $element->CreatedAt);
         $createdAt = !empty($dateTime) ? $dateTime : null;
 
-        $dateTime = DateTimeImmutable::createFromFormat('Y-m-d H:i:s', (string) $element->UpdatedAt);
+        $dateTime = \DateTimeImmutable::createFromFormat('Y-m-d H:i:s', (string) $element->UpdatedAt);
         $updatedAt = !empty($dateTime) ? $dateTime : null;
 
-        $dateTime = DateTimeImmutable::createFromFormat('Y-m-d H:i:s', (string) $element->AddressUpdatedAt);
+        $dateTime = \DateTimeImmutable::createFromFormat('Y-m-d H:i:s', (string) $element->AddressUpdatedAt);
         $addressUpdatedAt = !empty($dateTime) ? $dateTime : null;
 
         $addressBilling = AddressFactory::make($element->AddressBilling);
 
         $addressShipping = AddressFactory::make($element->AddressShipping);
 
-        $dateTime = DateTimeImmutable::createFromFormat('Y-m-d H:i:s', (string) $element->PromisedShippingTime);
+        $dateTime = \DateTimeImmutable::createFromFormat('Y-m-d H:i:s', (string) $element->PromisedShippingTime);
         $promisedShippingTime = !empty($dateTime) ? $dateTime : null;
 
         $nationalRegistrationNumber = !empty($element->NationalRegistrationNumber) ? (string) $element->NationalRegistrationNumber : null;
@@ -72,7 +70,7 @@ class OrderFactory
             array_push($statuses, (string) $status);
         }
 
-        $operatorCode = (string) $element->OperatorCode ?? null;
+        $operatorCode = (string) ($element->OperatorCode ?? '');
         if (!empty($operatorCode) && !in_array(strtolower($operatorCode), BusinessUnitOperatorCodes::OPERATOR_CODES)) {
             throw new InvalidDomainException('OperatorCode');
         }

@@ -3,6 +3,8 @@ vendor/
 infection.log
 .php_cs
 .php_cs.cache
+.php-cs-fixer.cache
+.phpunit.result.cache
 phpunit.xml
 .idea/
 .phpstan.neon

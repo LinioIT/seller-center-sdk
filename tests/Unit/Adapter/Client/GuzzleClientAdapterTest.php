@@ -4,7 +4,6 @@ declare(strict_types=1);
 
 namespace Linio\SellerCenter\Adapter\Client;
 
-use Exception;
 use GuzzleHttp\ClientInterface;
 use Linio\SellerCenter\LinioTestCase;
 use Prophecy\Argument;
@@ -16,7 +15,7 @@ class GuzzleClientAdapterTest extends LinioTestCase
 {
     public function testItIsValidatingClass(): void
     {
-        $this->expectException(Exception::class);
+        $this->expectException(\Exception::class);
 
         $client = $this->prophesize(PsrClientInterface::class);
         new GuzzleClientAdapter($client->reveal());

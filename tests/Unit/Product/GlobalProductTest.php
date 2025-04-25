@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace Linio\SellerCenter\Unit\Product;
 
-use DateTimeImmutable;
+use Faker\Generator;
 use Linio\Component\Util\Json;
 use Linio\SellerCenter\Exception\InvalidXmlStructureException;
 use Linio\SellerCenter\Factory\Xml\Product\GlobalProductFactory;
@@ -18,12 +18,11 @@ use Linio\SellerCenter\Model\Product\GlobalProduct;
 use Linio\SellerCenter\Model\Product\Image;
 use Linio\SellerCenter\Model\Product\Images;
 use Linio\SellerCenter\Model\Product\ProductData;
-use SimpleXMLElement;
 
 class GlobalProductTest extends LinioTestCase
 {
     protected $sellerSku = '21458191097';
-    protected $newSellerSku = null;
+    protected $newSellerSku;
     protected $name = 'Magic Product';
     protected $variation = 'XL';
     protected $primaryCategory;
@@ -66,7 +65,7 @@ class GlobalProductTest extends LinioTestCase
     protected $packageWeight = 6;
 
     protected $product;
-    protected $faker;
+    protected Generator $faker;
 
     public function setUp(): void
     {
@@ -100,8 +99,8 @@ class GlobalProductTest extends LinioTestCase
         $this->categories->add(Category::fromId($this->faker->randomNumber));
         $this->categories->add(Category::fromId($this->faker->randomNumber));
 
-        $this->saleStartDate = DateTimeImmutable::createFromFormat(DATE_ATOM, '2013-09-03T11:31:23+00:00');
-        $this->saleEndDate = DateTimeImmutable::createFromFormat(DATE_ATOM, '2013-10-03T11:31:23+00:00');
+        $this->saleStartDate = \DateTimeImmutable::createFromFormat(DATE_ATOM, '2013-09-03T11:31:23+00:00');
+        $this->saleEndDate = \DateTimeImmutable::createFromFormat(DATE_ATOM, '2013-10-03T11:31:23+00:00');
 
         $this->mainImage = new Image($this->faker->imageUrl($width = 640, $height = 480));
 
@@ -238,7 +237,7 @@ class GlobalProductTest extends LinioTestCase
      */
     public function testItMakesAProductFromXml(string $xmlGlobalProduct, bool $hasFashionAttr): void
     {
-        $xml = new SimpleXMLElement($xmlGlobalProduct);
+        $xml = new \SimpleXMLElement($xmlGlobalProduct);
 
         $product = GlobalProductFactory::make($xml);
 
@@ -340,7 +339,7 @@ class GlobalProductTest extends LinioTestCase
             )
         );
 
-        $xml = new SimpleXMLElement($xmlString);
+        $xml = new \SimpleXMLElement($xmlString);
         if ($property == 'BusinessUnit') {
             unset($xml->BusinessUnits->{$property});
         } else {
@@ -362,7 +361,7 @@ class GlobalProductTest extends LinioTestCase
             )
         );
 
-        $xml = new SimpleXMLElement($xmlString);
+        $xml = new \SimpleXMLElement($xmlString);
 
         GlobalProductFactory::make($xml);
     }

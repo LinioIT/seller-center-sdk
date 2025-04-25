@@ -4,15 +4,12 @@ declare(strict_types=1);
 
 namespace Linio\SellerCenter\Model\Product;
 
-use DateTimeInterface;
-use JsonSerializable;
 use Linio\SellerCenter\Contract\BusinessUnitOperatorCodes;
 use Linio\SellerCenter\Contract\ProductStatus;
 use Linio\SellerCenter\Exception\InvalidDomainException;
 use Linio\SellerCenter\Model\Product\Contract\VariationProductInterface;
-use stdClass;
 
-class BusinessUnit implements JsonSerializable, VariationProductInterface, ProductStatus
+class BusinessUnit implements \JsonSerializable, VariationProductInterface, ProductStatus
 {
     public const FEED_BUSINESS_UNIT = 'BusinessUnit';
     public const FEED_OPERATOR_CODE = 'OperatorCode';
@@ -45,12 +42,12 @@ class BusinessUnit implements JsonSerializable, VariationProductInterface, Produ
     protected $specialPrice;
 
     /**
-     * @var DateTimeInterface|null
+     * @var \DateTimeInterface|null
      */
     protected $specialFromDate;
 
     /**
-     * @var DateTimeInterface|null
+     * @var \DateTimeInterface|null
      */
     protected $specialToDate;
 
@@ -85,9 +82,9 @@ class BusinessUnit implements JsonSerializable, VariationProductInterface, Produ
         ?int $isPublished = null,
         ?string $businessUnit = null,
         ?float $specialPrice = null,
-        ?DateTimeInterface $specialFromDate = null,
-        ?DateTimeInterface $specialToDate = null,
-        ?array $overrideAttributes = []
+        ?\DateTimeInterface $specialFromDate = null,
+        ?\DateTimeInterface $specialToDate = null,
+        ?array $overrideAttributes = [],
     ) {
         $this->setOperatorCode($operatorCode);
         $this->setPrice($price);
@@ -121,7 +118,7 @@ class BusinessUnit implements JsonSerializable, VariationProductInterface, Produ
         return $this->specialPrice;
     }
 
-    public function getSaleStartDate(): ?DateTimeInterface
+    public function getSaleStartDate(): ?\DateTimeInterface
     {
         return $this->specialFromDate;
     }
@@ -135,7 +132,7 @@ class BusinessUnit implements JsonSerializable, VariationProductInterface, Produ
         return $this->specialFromDate->format('Y-m-d H:i:s');
     }
 
-    public function getSaleEndDate(): ?DateTimeInterface
+    public function getSaleEndDate(): ?\DateTimeInterface
     {
         return $this->specialToDate;
     }
@@ -226,12 +223,12 @@ class BusinessUnit implements JsonSerializable, VariationProductInterface, Produ
         $this->specialPrice = $specialPrice;
     }
 
-    public function setSaleStartDate(?DateTimeInterface $specialFromDate): void
+    public function setSaleStartDate(?\DateTimeInterface $specialFromDate): void
     {
         $this->specialFromDate = $specialFromDate;
     }
 
-    public function setSaleEndDate(?DateTimeInterface $specialToDate): void
+    public function setSaleEndDate(?\DateTimeInterface $specialToDate): void
     {
         $this->specialToDate = $specialToDate;
     }
@@ -274,9 +271,9 @@ class BusinessUnit implements JsonSerializable, VariationProductInterface, Produ
         $this->isPublished = $isPublished;
     }
 
-    public function jsonSerialize(): stdClass
+    public function jsonSerialize(): \stdClass
     {
-        $serialized = new stdClass();
+        $serialized = new \stdClass();
         $serialized->businessUnit = $this->businessUnit ?? '';
         $serialized->operatorCode = $this->operatorCode;
         $serialized->price = $this->price;

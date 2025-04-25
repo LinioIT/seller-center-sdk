@@ -17,7 +17,7 @@ use Linio\SellerCenter\Response\SuccessResponse;
 
 class GlobalOrderManager extends BaseOrderManager
 {
-    const ALLOWED_INVOICE_TYPE = [
+    public const ALLOWED_INVOICE_TYPE = [
         'BOLETA',
         'NOTA_DE_CREDITO',
     ];
@@ -29,7 +29,7 @@ class GlobalOrderManager extends BaseOrderManager
         array $orderItemIds,
         string $invoiceNumber,
         ?string $invoiceDocumentLink,
-        bool $debug = true
+        bool $debug = true,
     ): SuccessResponse {
         $action = 'SetInvoiceNumber';
 
@@ -61,7 +61,7 @@ class GlobalOrderManager extends BaseOrderManager
         string $invoiceNumber,
         string $invoiceType,
         string $invoiceDocument,
-        bool $debug = true
+        bool $debug = true,
     ): FeedResponse {
         $upperInvoiceType = strtoupper($invoiceType);
 
@@ -93,7 +93,7 @@ class GlobalOrderManager extends BaseOrderManager
 
     public function uploadInvoiceDocument(
         InvoiceDocument $invoiceDocument,
-        bool $debug = true
+        bool $debug = true,
     ): SuccessJsonResponse {
         $action = 'SetInvoicePDF';
         $path = '/v1/marketplace-sellers/invoice/pdf';
@@ -123,7 +123,7 @@ class GlobalOrderManager extends BaseOrderManager
         array $orderItemIds,
         string $deliveryType,
         ?string $packageId = null,
-        bool $debug = true
+        bool $debug = true,
     ): array {
         $action = 'SetStatusToReadyToShip';
 
@@ -159,7 +159,7 @@ class GlobalOrderManager extends BaseOrderManager
     public function setStatusToPackedByMarketplace(
         array $orderItemIds,
         string $deliveryType,
-        bool $debug = true
+        bool $debug = true,
     ): array {
         $action = 'SetStatusToPackedByMarketplace';
 

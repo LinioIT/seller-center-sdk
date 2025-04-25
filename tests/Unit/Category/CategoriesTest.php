@@ -9,7 +9,6 @@ use Linio\SellerCenter\Factory\Xml\Category\CategoriesFactory;
 use Linio\SellerCenter\LinioTestCase;
 use Linio\SellerCenter\Model\Category\Categories;
 use Linio\SellerCenter\Model\Category\Category;
-use SimpleXMLElement;
 
 class CategoriesTest extends LinioTestCase
 {
@@ -71,7 +70,7 @@ class CategoriesTest extends LinioTestCase
         $this->expectException(InvalidXmlStructureException::class);
         $this->expectExceptionMessage('The xml structure is not valid for a Categories. The property Category should exist.');
 
-        CategoriesFactory::make(new SimpleXMLElement('<xml></xml>'));
+        CategoriesFactory::make(new \SimpleXMLElement('<xml></xml>'));
     }
 
     public function testItLoadsACategoryWithoutChildren(): void

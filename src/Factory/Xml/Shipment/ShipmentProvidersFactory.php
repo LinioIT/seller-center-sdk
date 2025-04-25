@@ -5,11 +5,10 @@ declare(strict_types=1);
 namespace Linio\SellerCenter\Factory\Xml\Shipment;
 
 use Linio\SellerCenter\Model\Shipment\ShipmentProviders;
-use SimpleXMLElement;
 
 class ShipmentProvidersFactory
 {
-    public static function make(SimpleXMLElement $element): ShipmentProviders
+    public static function make(\SimpleXMLElement $element): ShipmentProviders
     {
         $shipmentProviders = new ShipmentProviders();
 

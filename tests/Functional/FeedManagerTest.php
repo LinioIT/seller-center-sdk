@@ -4,7 +4,6 @@ declare(strict_types=1);
 
 namespace Linio\SellerCenter;
 
-use DateTimeImmutable;
 use Linio\SellerCenter\Exception\ErrorResponseException;
 use Linio\SellerCenter\Exception\InvalidXmlStructureException;
 use Linio\SellerCenter\Model\Feed\Feed;
@@ -14,7 +13,6 @@ use Linio\SellerCenter\Response\FeedResponse;
 use Prophecy\Argument;
 use Prophecy\Prophecy\ObjectProphecy;
 use Psr\Log\LoggerInterface;
-use stdClass;
 
 class FeedManagerTest extends LinioTestCase
 {
@@ -68,8 +66,8 @@ class FeedManagerTest extends LinioTestCase
             1,
             1,
             'processing',
-            new DateTimeImmutable(),
-            new DateTimeImmutable()
+            new \DateTimeImmutable(),
+            new \DateTimeImmutable()
         );
 
         $this->assertContainsOnlyInstancesOf(Feed::class, $feeds);
@@ -124,8 +122,8 @@ class FeedManagerTest extends LinioTestCase
 
         $this->assertEquals('Finished', $feed->getStatus());
         $this->assertEquals((string) $sxml->Body->FeedDetail->Action, $feed->getAction());
-        $this->assertInstanceOf(DateTimeImmutable::class, $feed->getCreationDate());
-        $this->assertInstanceOf(DateTimeImmutable::class, $feed->getUpdatedDate());
+        $this->assertInstanceOf(\DateTimeImmutable::class, $feed->getCreationDate());
+        $this->assertInstanceOf(\DateTimeImmutable::class, $feed->getUpdatedDate());
         $this->assertEquals('1232', $feed->getTotalRecords());
         $this->assertEquals('1190', $feed->getProcessedRecords());
         $this->assertEquals('114', $feed->getFailedRecords());
@@ -178,7 +176,7 @@ class FeedManagerTest extends LinioTestCase
 
     /**
      * @param Feed[] $feeds
-     * @param stdClass[] $expectedFeeds
+     * @param \stdClass[] $expectedFeeds
      */
     private function assertFeeds(array $feeds, array $expectedFeeds): void
     {

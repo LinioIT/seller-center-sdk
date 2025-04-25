@@ -9,7 +9,6 @@ use Linio\SellerCenter\Exception\EmptyXmlException;
 use Linio\SellerCenter\Exception\ErrorJsonResponseException;
 use Linio\SellerCenter\Exception\ErrorResponseException;
 use Linio\SellerCenter\Exception\InvalidJsonException;
-use Linio\SellerCenter\Exception\InvalidXmlException;
 use Linio\SellerCenter\LinioTestCase;
 
 class HandleResponseTest extends LinioTestCase
@@ -27,7 +26,7 @@ class HandleResponseTest extends LinioTestCase
 
     public function testItThrowAnExceptionWithAnInvalidXml(): void
     {
-        $this->expectException(InvalidXmlException::class);
+        $this->expectException(EmptyXmlException::class);
 
         $response = 'invalid-xml';
 

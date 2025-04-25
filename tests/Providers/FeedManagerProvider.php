@@ -4,13 +4,11 @@ declare(strict_types=1);
 
 namespace Linio\SellerCenter;
 
-use stdClass;
-
 class FeedManagerProvider
 {
     public function xmlTypesProvider(): array
     {
-        $feedManager = new FeedManagerTest();
+        $feedManager = new FeedManagerTest('');
 
         return [
             ['productUpdate' => $feedManager->getSchema('Feed/FeedProductUpdate.xml')],
@@ -32,10 +30,10 @@ class FeedManagerProvider
         return $result;
     }
 
-    private function pendingFeed(): stdClass
+    private function pendingFeed(): \stdClass
     {
-        $feedManager = new FeedManagerTest();
-        $feedData = new stdClass();
+        $feedManager = new FeedManagerTest('');
+        $feedData = new \stdClass();
         $feedData->id = $feedManager->getFaker()->uuid;
         $feedData->status = 'Queued';
         $feedData->action = 'ProductUpdate';

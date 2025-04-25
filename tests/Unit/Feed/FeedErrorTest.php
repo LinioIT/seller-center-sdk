@@ -10,7 +10,6 @@ use Linio\SellerCenter\Exception\InvalidXmlStructureException;
 use Linio\SellerCenter\Factory\Xml\Feed\FeedErrorFactory;
 use Linio\SellerCenter\LinioTestCase;
 use Linio\SellerCenter\Model\Feed\FeedError;
-use SimpleXMLElement;
 
 class FeedErrorTest extends LinioTestCase
 {
@@ -26,7 +25,7 @@ class FeedErrorTest extends LinioTestCase
                      <SellerSku>' . $sellerSku . '</SellerSku>
                 </Error>';
 
-        $element = new SimpleXMLElement($xml);
+        $element = new \SimpleXMLElement($xml);
         $feedError = FeedErrorFactory::make($element);
 
         $this->assertInstanceOf(FeedError::class, $feedError);
@@ -46,7 +45,7 @@ class FeedErrorTest extends LinioTestCase
                      <SellerSku>9786077351993</SellerSku>
                 </Error>';
 
-        $element = new SimpleXMLElement($xml);
+        $element = new \SimpleXMLElement($xml);
         FeedErrorFactory::make($element);
     }
 
@@ -60,7 +59,7 @@ class FeedErrorTest extends LinioTestCase
                      <SellerSku>9786077351993</SellerSku>
                 </Error>';
 
-        $element = new SimpleXMLElement($xml);
+        $element = new \SimpleXMLElement($xml);
         FeedErrorFactory::make($element);
     }
 
@@ -74,7 +73,7 @@ class FeedErrorTest extends LinioTestCase
                      <Message>Negative value is not allowed</Message>
                 </Error>';
 
-        $element = new SimpleXMLElement($xml);
+        $element = new \SimpleXMLElement($xml);
         FeedErrorFactory::make($element);
     }
 

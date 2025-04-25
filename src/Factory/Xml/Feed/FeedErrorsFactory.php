@@ -5,11 +5,10 @@ declare(strict_types=1);
 namespace Linio\SellerCenter\Factory\Xml\Feed;
 
 use Linio\SellerCenter\Model\Feed\FeedErrors;
-use SimpleXMLElement;
 
 class FeedErrorsFactory
 {
-    public static function make(SimpleXMLElement $xml): FeedErrors
+    public static function make(\SimpleXMLElement $xml): FeedErrors
     {
         $feedErrors = new FeedErrors();
 

@@ -10,7 +10,6 @@ use Linio\SellerCenter\Contract\ClientInterface;
 use Linio\SellerCenter\LinioTestCase;
 use Linio\SellerCenter\Service\CategoryManager;
 use Psr\Log\Test\TestLogger;
-use ReflectionClass;
 
 class CategoryManagerTest extends LinioTestCase
 {
@@ -39,7 +38,7 @@ class CategoryManagerTest extends LinioTestCase
 
         $categoryManager = new CategoryManager($configuration->reveal(), $client->reveal(), $parameters->reveal(), $logger->reveal());
 
-        $reflectionClass = new ReflectionClass(CategoryManager::class);
+        $reflectionClass = new \ReflectionClass(CategoryManager::class);
         $property = $reflectionClass->getProperty('logger');
         $property->setAccessible(true);
 

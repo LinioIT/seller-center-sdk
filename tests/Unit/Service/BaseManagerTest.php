@@ -15,6 +15,7 @@ use Prophecy\Argument;
 use Prophecy\Prophecy\ObjectProphecy;
 use Psr\Http\Message\RequestInterface;
 use Psr\Http\Message\ResponseInterface;
+use Psr\Http\Message\StreamInterface;
 use Psr\Log\LoggerInterface;
 
 class BaseManagerTest extends LinioTestCase
@@ -85,7 +86,10 @@ class BaseManagerTest extends LinioTestCase
     public function testItExecutesAction(): void
     {
         $response = $this->prophesize(ResponseInterface::class);
-        $response->getBody()->shouldBeCalled()->willReturn($this->getRawSuccessResponse());
+        $bodyStrem = $this->prophesize(StreamInterface::class);
+        $response->getBody()->shouldBeCalled()->willReturn($bodyStrem->reveal());
+        $bodyStrem->__toString()
+            ->willReturn($this->getRawSuccessResponse());
 
         $this->loggerStub
             ->debug(Argument::type('string'), Argument::type('array'))
@@ -106,25 +110,29 @@ class BaseManagerTest extends LinioTestCase
     public function testItExecutesJsonAction(): void
     {
         $response = $this->prophesize(ResponseInterface::class);
-        $response->getBody()->shouldBeCalled()->willReturn($this->getJsonSuccessResponse());
+        $bodyStrem = $this->prophesize(StreamInterface::class);
+
+        $response->getBody()->shouldBeCalled()->willReturn($bodyStrem->reveal());
+        $bodyStrem->__toString()
+            ->willReturn($this->getJsonSuccessResponse());
 
         $this->loggerStub
             ->debug(
                 Argument::that(
                     function (string $message) {
-                        return str_contains($message, 'requestId') &&
-                            str_contains($message, 'FooAction');
+                        return str_contains($message, 'requestId')
+                            && str_contains($message, 'FooAction');
                     }
                 ),
                 Argument::that(
                     function (array $context) {
-                        return in_array('application/json', $context['request']['headers']['Content-type']) &&
-                            in_array('baz/extrapath', $context['request']) &&
-                            in_array('requestId', $context['request']['headers']['Request-ID']) &&
-                            in_array('service', $context['request']['headers']['Service']) &&
-                            in_array('bar', $context['request']['headers']['UserID']) &&
-                            in_array('FooAction', $context['request']['headers']['Action']) &&
-                            key_exists('Signature', $context['request']['headers']);
+                        return in_array('application/json', $context['request']['headers']['Content-type'])
+                            && in_array('baz/extrapath', $context['request'])
+                            && in_array('requestId', $context['request']['headers']['Request-ID'])
+                            && in_array('service', $context['request']['headers']['Service'])
+                            && in_array('bar', $context['request']['headers']['UserID'])
+                            && in_array('FooAction', $context['request']['headers']['Action'])
+                            && key_exists('Signature', $context['request']['headers']);
                     }
                 )
             )

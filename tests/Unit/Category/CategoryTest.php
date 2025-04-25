@@ -9,7 +9,6 @@ use Linio\SellerCenter\Exception\InvalidXmlStructureException;
 use Linio\SellerCenter\Factory\Xml\Category\CategoryFactory;
 use Linio\SellerCenter\LinioTestCase;
 use Linio\SellerCenter\Model\Category\Category;
-use SimpleXMLElement;
 
 class CategoryTest extends LinioTestCase
 {
@@ -73,7 +72,7 @@ class CategoryTest extends LinioTestCase
                     <AttributeSetId>1</AttributeSetId>
                 </Category>';
 
-        CategoryFactory::make(new SimpleXMLElement($xml));
+        CategoryFactory::make(new \SimpleXMLElement($xml));
     }
 
     public function testThrowsAExceptionWithoutANameInTheXml(): void
@@ -88,7 +87,7 @@ class CategoryTest extends LinioTestCase
                     <AttributeSetId>1</AttributeSetId>
                 </Category>';
 
-        CategoryFactory::make(new SimpleXMLElement($xml));
+        CategoryFactory::make(new \SimpleXMLElement($xml));
     }
 
     public function testThrowsAExceptionWithoutAGlobalIdentifierInTheXml(): void
@@ -103,7 +102,7 @@ class CategoryTest extends LinioTestCase
                     <AttributeSetId>1</AttributeSetId>
                 </Category>';
 
-        CategoryFactory::make(new SimpleXMLElement($xml));
+        CategoryFactory::make(new \SimpleXMLElement($xml));
     }
 
     public function testItReturnsAJsonRepresentation(): void

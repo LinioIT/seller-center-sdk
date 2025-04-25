@@ -4,10 +4,8 @@ declare(strict_types=1);
 
 namespace Linio\SellerCenter\Factory\Xml\Product;
 
-use DateTimeImmutable;
 use Linio\SellerCenter\Model\Product\BusinessUnit;
 use Linio\SellerCenter\Validator\XmlStructureValidator;
-use SimpleXMLElement;
 
 class BusinessUnitFactory
 {
@@ -20,7 +18,7 @@ class BusinessUnitFactory
         'IsPublished',
     ];
 
-    public static function make(SimpleXMLElement $element): BusinessUnit
+    public static function make(\SimpleXMLElement $element): BusinessUnit
     {
         XmlStructureValidator::validateStructure($element, self::XML_MODEL, self::REQUIRED_FIELDS);
 
@@ -41,7 +39,7 @@ class BusinessUnitFactory
         }
 
         if (!empty($element->SpecialFromDate)) {
-            $saleStartDate = DateTimeImmutable::createFromFormat('Y-m-d H:i:s', (string) $element->SpecialFromDate);
+            $saleStartDate = \DateTimeImmutable::createFromFormat('Y-m-d H:i:s', (string) $element->SpecialFromDate);
 
             if ($saleStartDate) {
                 $businessUnit->setSaleStartDate($saleStartDate);
@@ -49,7 +47,7 @@ class BusinessUnitFactory
         }
 
         if (!empty($element->SpecialToDate)) {
-            $saleEndDate = DateTimeImmutable::createFromFormat('Y-m-d H:i:s', (string) $element->SpecialToDate);
+            $saleEndDate = \DateTimeImmutable::createFromFormat('Y-m-d H:i:s', (string) $element->SpecialToDate);
 
             if ($saleEndDate) {
                 $businessUnit->setSaleEndDate($saleEndDate);

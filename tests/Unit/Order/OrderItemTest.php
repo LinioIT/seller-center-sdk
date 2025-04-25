@@ -4,7 +4,6 @@ declare(strict_types=1);
 
 namespace Linio\SellerCenter\Order;
 
-use DateTimeImmutable;
 use Linio\Component\Util\Json;
 use Linio\SellerCenter\Exception\InvalidXmlStructureException;
 use Linio\SellerCenter\Factory\Xml\Order\OrderItemFactory;
@@ -84,11 +83,11 @@ class OrderItemTest extends LinioTestCase
         $this->assertEquals($orderItem->getPurchaseOrderId(), (int) $simpleXml->PurchaseOrderId);
         $this->assertEquals($orderItem->getPurchaseOrderNumber(), (string) $simpleXml->PurchaseOrderNumber);
         $this->assertEquals($orderItem->getPackageId(), (string) $simpleXml->PackageId);
-        $this->assertEquals($orderItem->getPromisedShippingTime(), DateTimeImmutable::createFromFormat('Y-m-d H:i:s', (string) $simpleXml->PromisedShippingTime));
+        $this->assertEquals($orderItem->getPromisedShippingTime(), \DateTimeImmutable::createFromFormat('Y-m-d H:i:s', (string) $simpleXml->PromisedShippingTime));
         $this->assertEquals($orderItem->getExtraAttributes(), Json::decode((string) $simpleXml->ExtraAttributes));
         $this->assertEquals($orderItem->getShippingProviderType(), (string) $simpleXml->ShippingProviderType);
-        $this->assertEquals($orderItem->getCreatedAt(), DateTimeImmutable::createFromFormat('Y-m-d H:i:s', (string) $simpleXml->CreatedAt));
-        $this->assertEquals($orderItem->getUpdatedAt(), DateTimeImmutable::createFromFormat('Y-m-d H:i:s', (string) $simpleXml->UpdatedAt));
+        $this->assertEquals($orderItem->getCreatedAt(), \DateTimeImmutable::createFromFormat('Y-m-d H:i:s', (string) $simpleXml->CreatedAt));
+        $this->assertEquals($orderItem->getUpdatedAt(), \DateTimeImmutable::createFromFormat('Y-m-d H:i:s', (string) $simpleXml->UpdatedAt));
         $this->assertEquals($orderItem->getReturnStatus(), (string) $simpleXml->ReturnStatus);
         $this->assertEquals($orderItem->getSalesType(), (string) $simpleXml->SalesType);
         $this->assertEquals($orderItem->getShippingTax(), (float) $simpleXml->ShippingTax);

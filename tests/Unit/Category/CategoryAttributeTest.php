@@ -30,7 +30,7 @@ class CategoryAttributeTest extends LinioTestCase
         $inputType,
         $attributeType,
         $exampleValue,
-        $maxLength
+        $maxLength,
     ): void {
         $xml = sprintf(
             '<Attribute>
@@ -151,7 +151,7 @@ class CategoryAttributeTest extends LinioTestCase
         $inputType,
         $attributeType,
         $exampleValue,
-        $maxLength
+        $maxLength,
     ): void {
         $xml = sprintf(
             '<Attribute>
@@ -622,7 +622,7 @@ class CategoryAttributeTest extends LinioTestCase
      */
     public function testMaxLengthCases(
         $maxLength,
-        $expected
+        $expected,
     ): void {
         $xml = sprintf(
             '<Attribute>

@@ -45,7 +45,7 @@ class CategoryManager extends BaseManager
      */
     public function getCategoryAttributes(
         int $categoryId,
-        bool $debug = true
+        bool $debug = true,
     ): array {
         $action = 'GetCategoryAttributes';
 
@@ -72,7 +72,7 @@ class CategoryManager extends BaseManager
      */
     public function getCategoriesByAttributesSet(
         ?array $attributesSetIds,
-        bool $debug = true
+        bool $debug = true,
     ): array {
         $action = 'GetCategoriesByAttributeSet';
         $attributesSetValue = 0;
@@ -102,7 +102,7 @@ class CategoryManager extends BaseManager
         int $categoryId,
         ?bool $getRulesOnly = self::GET_RULES_ONLY_DEFAULT_VALUE,
         ?string $operator = null,
-        bool $debug = true
+        bool $debug = true,
     ): CategoryContentScoreRules {
         $action = 'GetContentScore';
 

@@ -4,10 +4,7 @@ declare(strict_types=1);
 
 namespace Linio\SellerCenter\Model\Feed;
 
-use JsonSerializable;
-use stdClass;
-
-class FeedCount implements JsonSerializable
+class FeedCount implements \JsonSerializable
 {
     /**
      * @var int
@@ -39,7 +36,7 @@ class FeedCount implements JsonSerializable
         int $queued,
         int $processing,
         int $finished,
-        int $canceled
+        int $canceled,
     ) {
         $this->total = $total;
         $this->queued = $queued;
@@ -73,9 +70,9 @@ class FeedCount implements JsonSerializable
         return $this->canceled;
     }
 
-    public function jsonSerialize(): stdClass
+    public function jsonSerialize(): \stdClass
     {
-        $serialized = new stdClass();
+        $serialized = new \stdClass();
         $serialized->total = $this->total;
         $serialized->queued = $this->queued;
         $serialized->processing = $this->processing;

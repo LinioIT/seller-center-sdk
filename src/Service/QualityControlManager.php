@@ -20,7 +20,7 @@ class QualityControlManager extends BaseManager
      */
     protected function getQcStatus(
         Parameters $parameters,
-        bool $debug = true
+        bool $debug = true,
     ): array {
         $builtResponse = $this->executeAction(
             'GetQcStatus',
@@ -41,7 +41,7 @@ class QualityControlManager extends BaseManager
     public function getAllQcStatus(
         int $limit = self::DEFAULT_LIMIT,
         int $offset = self::DEFAULT_OFFSET,
-        bool $debug = true
+        bool $debug = true,
     ): array {
         $parameters = $this->makeParametersForGetQcStatusAction();
 
@@ -62,7 +62,7 @@ class QualityControlManager extends BaseManager
         array $skuSellerList = [],
         int $limit = self::DEFAULT_LIMIT,
         int $offset = self::DEFAULT_OFFSET,
-        bool $debug = true
+        bool $debug = true,
     ): array {
         $parameters = $this->makeParametersForGetQcStatusAction();
 

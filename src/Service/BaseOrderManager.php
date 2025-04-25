@@ -4,7 +4,6 @@ declare(strict_types=1);
 
 namespace Linio\SellerCenter\Service;
 
-use DateTimeInterface;
 use Linio\Component\Util\Json;
 use Linio\SellerCenter\Application\Parameters;
 use Linio\SellerCenter\Contract\OrderSortDirections;
@@ -34,7 +33,7 @@ class BaseOrderManager extends BaseManager
 
     public function getOrder(
         int $orderId,
-        bool $debug = true
+        bool $debug = true,
     ): Order {
         $action = 'GetOrder';
 
@@ -60,7 +59,7 @@ class BaseOrderManager extends BaseManager
      */
     public function getOrderItems(
         int $orderId,
-        bool $debug = true
+        bool $debug = true,
     ): array {
         $action = 'GetOrderItems';
 
@@ -105,7 +104,7 @@ class BaseOrderManager extends BaseManager
      */
     public function getMultipleOrderItems(
         array $orderIdList,
-        bool $debug = true
+        bool $debug = true,
     ): array {
         $action = 'GetMultipleOrderItems';
 
@@ -152,7 +151,7 @@ class BaseOrderManager extends BaseManager
      */
     protected function getOrders(
         Parameters $parameters,
-        bool $debug = true
+        bool $debug = true,
     ): array {
         $action = 'GetOrders';
 
@@ -188,14 +187,14 @@ class BaseOrderManager extends BaseManager
      * @return Order[]
      */
     public function getOrdersCreatedBetween(
-        DateTimeInterface $createdAfter,
-        DateTimeInterface $createdBefore,
+        \DateTimeInterface $createdAfter,
+        \DateTimeInterface $createdBefore,
         int $limit = self::DEFAULT_LIMIT,
         int $offset = self::DEFAULT_OFFSET,
         string $sortBy = self::DEFAULT_SORT_BY,
         string $sortDirection = self::DEFAULT_SORT_DIRECTION,
         ?string $dateFormat = null,
-        bool $debug = true
+        bool $debug = true,
     ): array {
         $dateFormat = $dateFormat ?? self::DEFAULT_DATE_FORMAT;
         $parameters = $this->makeParametersForGetOrdersAction();
@@ -218,14 +217,14 @@ class BaseOrderManager extends BaseManager
      * @return Order[]
      */
     public function getOrdersUpdatedBetween(
-        DateTimeInterface $updatedAfter,
-        DateTimeInterface $updatedBefore,
+        \DateTimeInterface $updatedAfter,
+        \DateTimeInterface $updatedBefore,
         int $limit = self::DEFAULT_LIMIT,
         int $offset = self::DEFAULT_OFFSET,
         string $sortBy = self::DEFAULT_SORT_BY,
         string $sortDirection = self::DEFAULT_SORT_DIRECTION,
         ?string $dateFormat = null,
-        bool $debug = true
+        bool $debug = true,
     ): array {
         $parameters = $this->makeParametersForGetOrdersAction();
         $dateFormat = $dateFormat ?? self::DEFAULT_DATE_FORMAT;
@@ -248,13 +247,13 @@ class BaseOrderManager extends BaseManager
      * @return Order[]
      */
     public function getOrdersCreatedAfter(
-        DateTimeInterface $createdAfter,
+        \DateTimeInterface $createdAfter,
         int $limit = self::DEFAULT_LIMIT,
         int $offset = self::DEFAULT_OFFSET,
         string $sortBy = self::DEFAULT_SORT_BY,
         string $sortDirection = self::DEFAULT_SORT_DIRECTION,
         ?string $dateFormat = null,
-        bool $debug = true
+        bool $debug = true,
     ): array {
         $parameters = $this->makeParametersForGetOrdersAction();
         $dateFormat = $dateFormat ?? self::DEFAULT_DATE_FORMAT;
@@ -276,13 +275,13 @@ class BaseOrderManager extends BaseManager
      * @return Order[]
      */
     public function getOrdersCreatedBefore(
-        DateTimeInterface $createdBefore,
+        \DateTimeInterface $createdBefore,
         int $limit = self::DEFAULT_LIMIT,
         int $offset = self::DEFAULT_OFFSET,
         string $sortBy = self::DEFAULT_SORT_BY,
         string $sortDirection = self::DEFAULT_SORT_DIRECTION,
         ?string $dateFormat = null,
-        bool $debug = true
+        bool $debug = true,
     ): array {
         $parameters = $this->makeParametersForGetOrdersAction();
         $dateFormat = $dateFormat ?? self::DEFAULT_DATE_FORMAT;
@@ -304,13 +303,13 @@ class BaseOrderManager extends BaseManager
      * @return Order[]
      */
     public function getOrdersUpdatedAfter(
-        DateTimeInterface $updatedAfter,
+        \DateTimeInterface $updatedAfter,
         int $limit = self::DEFAULT_LIMIT,
         int $offset = self::DEFAULT_OFFSET,
         string $sortBy = self::DEFAULT_SORT_BY,
         string $sortDirection = self::DEFAULT_SORT_DIRECTION,
         ?string $dateFormat = null,
-        bool $debug = true
+        bool $debug = true,
     ): array {
         $parameters = $this->makeParametersForGetOrdersAction();
         $dateFormat = $dateFormat ?? self::DEFAULT_DATE_FORMAT;
@@ -332,13 +331,13 @@ class BaseOrderManager extends BaseManager
      * @return Order[]
      */
     public function getOrdersUpdatedBefore(
-        DateTimeInterface $updatedBefore,
+        \DateTimeInterface $updatedBefore,
         int $limit = self::DEFAULT_LIMIT,
         int $offset = self::DEFAULT_OFFSET,
         string $sortBy = self::DEFAULT_SORT_BY,
         string $sortDirection = self::DEFAULT_SORT_DIRECTION,
         ?string $dateFormat = null,
-        bool $debug = true
+        bool $debug = true,
     ): array {
         $parameters = $this->makeParametersForGetOrdersAction();
         $dateFormat = $dateFormat ?? self::DEFAULT_DATE_FORMAT;
@@ -365,7 +364,7 @@ class BaseOrderManager extends BaseManager
         int $offset = self::DEFAULT_OFFSET,
         string $sortBy = self::DEFAULT_SORT_BY,
         string $sortDirection = self::DEFAULT_SORT_DIRECTION,
-        bool $debug = true
+        bool $debug = true,
     ): array {
         $parameters = $this->makeParametersForGetOrdersAction();
 
@@ -390,17 +389,17 @@ class BaseOrderManager extends BaseManager
      * @return Order[]
      */
     public function getOrdersFromParameters(
-        ?DateTimeInterface $createdAfter = null,
-        ?DateTimeInterface $createdBefore = null,
-        ?DateTimeInterface $updatedAfter = null,
-        ?DateTimeInterface $updatedBefore = null,
+        ?\DateTimeInterface $createdAfter = null,
+        ?\DateTimeInterface $createdBefore = null,
+        ?\DateTimeInterface $updatedAfter = null,
+        ?\DateTimeInterface $updatedBefore = null,
         ?string $status = null,
         int $limit = self::DEFAULT_LIMIT,
         int $offset = self::DEFAULT_OFFSET,
         string $sortBy = self::DEFAULT_SORT_BY,
         string $sortDirection = self::DEFAULT_SORT_DIRECTION,
         ?string $dateFormat = null,
-        bool $debug = true
+        bool $debug = true,
     ): array {
         $parameters = $this->makeParametersForGetOrdersAction();
         $dateFormat = $dateFormat ?? self::DEFAULT_DATE_FORMAT;
@@ -437,7 +436,7 @@ class BaseOrderManager extends BaseManager
     public function getTrackingCode(
         string $packageId,
         string $shippingProvider,
-        bool $debug = true
+        bool $debug = true,
     ): TrackingCode {
         $action = 'GetTrackingCode';
 
@@ -462,8 +461,8 @@ class BaseOrderManager extends BaseManager
     public function setStatusToCanceled(
         int $orderItemId,
         string $reason,
-        string $reasonDetail = null,
-        bool $debug = true
+        ?string $reasonDetail = null,
+        bool $debug = true,
     ): SuccessResponse {
         $action = 'SetStatusToCanceled';
 

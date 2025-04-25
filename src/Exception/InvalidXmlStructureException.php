@@ -4,9 +4,7 @@ declare(strict_types=1);
 
 namespace Linio\SellerCenter\Exception;
 
-use RuntimeException;
-
-class InvalidXmlStructureException extends RuntimeException
+class InvalidXmlStructureException extends \RuntimeException
 {
     public function __construct(string $model, string $tag)
     {

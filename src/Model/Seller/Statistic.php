@@ -4,10 +4,7 @@ declare(strict_types=1);
 
 namespace Linio\SellerCenter\Model\Seller;
 
-use JsonSerializable;
-use stdClass;
-
-class Statistic implements JsonSerializable
+class Statistic implements \JsonSerializable
 {
     /**
      * @var mixed[]
@@ -65,9 +62,9 @@ class Statistic implements JsonSerializable
         $this->orderStatistics[$key] = $value;
     }
 
-    public function jsonSerialize(): stdClass
+    public function jsonSerialize(): \stdClass
     {
-        $serialized = new stdClass();
+        $serialized = new \stdClass();
         $serialized->productStatistics = $this->productStatistics;
         $serialized->orderStatistics = $this->orderStatistics;
 

@@ -10,7 +10,6 @@ use Linio\SellerCenter\Exception\InvalidXmlStructureException;
 use Linio\SellerCenter\Factory\Xml\QualityControl\QualityControlFactory;
 use Linio\SellerCenter\LinioTestCase;
 use Linio\SellerCenter\Model\QualityControl\QualityControl;
-use SimpleXMLElement;
 
 class QualityControlTest extends LinioTestCase
 {
@@ -66,7 +65,7 @@ class QualityControlTest extends LinioTestCase
                     <Reason>Price Not Reasonable; Image Corrupt</Reason>
                 </QualityControlEndpointFactory>';
 
-        QualityControlFactory::make(new SimpleXMLElement($xml));
+        QualityControlFactory::make(new \SimpleXMLElement($xml));
     }
 
     public function testItThrowsAExceptionWithoutAStatusInTheXml(): void
@@ -81,7 +80,7 @@ class QualityControlTest extends LinioTestCase
                     <Reason>Price Not Reasonable; Image Corrupt</Reason>
                 </QualityControlEndpointFactory>';
 
-        QualityControlFactory::make(new SimpleXMLElement($xml));
+        QualityControlFactory::make(new \SimpleXMLElement($xml));
     }
 
     public function testItReturnsAJsonRepresentation(): void

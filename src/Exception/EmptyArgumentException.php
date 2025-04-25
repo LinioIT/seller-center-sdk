@@ -4,9 +4,7 @@ declare(strict_types=1);
 
 namespace Linio\SellerCenter\Exception;
 
-use InvalidArgumentException;
-
-class EmptyArgumentException extends InvalidArgumentException
+class EmptyArgumentException extends \InvalidArgumentException
 {
     public function __construct(string $parameter)
     {

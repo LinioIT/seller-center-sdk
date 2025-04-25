@@ -4,7 +4,6 @@ declare(strict_types=1);
 
 namespace Linio\SellerCenter;
 
-use Exception;
 use Linio\SellerCenter\Model\Document\Document;
 use Prophecy\Argument;
 use Prophecy\Prophecy\ObjectProphecy;
@@ -48,7 +47,7 @@ class DocumentsManagerTest extends LinioTestCase
 
     public function testItThrowsAnExceptionWhenTheResponseIsAnError(): void
     {
-        $this->expectException(Exception::class);
+        $this->expectException(\Exception::class);
         $this->expectExceptionMessage('E020: "65758123" Invalid Order Item ID');
 
         $body = '<?xml version="1.0" encoding="UTF-8"?>

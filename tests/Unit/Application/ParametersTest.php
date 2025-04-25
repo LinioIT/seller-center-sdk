@@ -4,7 +4,6 @@ declare(strict_types=1);
 
 namespace Linio\SellerCenter\Application;
 
-use DateTime;
 use Linio\SellerCenter\LinioTestCase;
 
 class ParametersTest extends LinioTestCase
@@ -46,9 +45,9 @@ class ParametersTest extends LinioTestCase
         $basics = $parameters->all();
 
         $date = date_create_from_format(DATE_ATOM, $basics['Timestamp']);
-        $now = new DateTime();
+        $now = new \DateTime();
 
-        $this->assertInstanceOf(Datetime::class, $date);
+        $this->assertInstanceOf(\DateTime::class, $date);
         $this->assertEquals($now->format('Y-m-d'), $date->format('Y-m-d'));
         $this->assertEquals('user', $basics['UserID']);
         $this->assertEquals('version', $basics['Version']);
@@ -62,9 +61,9 @@ class ParametersTest extends LinioTestCase
         $basics = $parameters->all();
 
         $date = date_create_from_format(DATE_ATOM, $basics['Timestamp']);
-        $now = new DateTime();
+        $now = new \DateTime();
 
-        $this->assertInstanceOf(Datetime::class, $date);
+        $this->assertInstanceOf(\DateTime::class, $date);
         $this->assertEquals($now->format('Y-m-d'), $date->format('Y-m-d'));
         $this->assertEquals('user', $basics['UserID']);
         $this->assertEquals('version', $basics['Version']);

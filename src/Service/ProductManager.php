@@ -4,7 +4,6 @@ declare(strict_types=1);
 
 namespace Linio\SellerCenter\Service;
 
-use DateTimeInterface;
 use Linio\Component\Util\Json;
 use Linio\SellerCenter\Application\Parameters;
 use Linio\SellerCenter\Contract\ProductFilters;
@@ -22,7 +21,7 @@ class ProductManager extends BaseManager implements ProductManagerInterface
 {
     public function productCreate(
         Products $products,
-        bool $debug = true
+        bool $debug = true,
     ): FeedResponse {
         return $this->executeProductAction(
             'ProductCreate',
@@ -33,7 +32,7 @@ class ProductManager extends BaseManager implements ProductManagerInterface
 
     public function productUpdate(
         Products $products,
-        bool $debug = true
+        bool $debug = true,
     ): FeedResponse {
         return $this->executeProductAction(
             'ProductUpdate',
@@ -44,7 +43,7 @@ class ProductManager extends BaseManager implements ProductManagerInterface
 
     public function productRemove(
         Products $products,
-        bool $debug = true
+        bool $debug = true,
     ): FeedResponse {
         return $this->executeProductAction(
             'ProductRemove',
@@ -56,7 +55,7 @@ class ProductManager extends BaseManager implements ProductManagerInterface
     protected function executeProductAction(
         string $action,
         string $xml,
-        bool $debug = true
+        bool $debug = true,
     ): FeedResponse {
         $parameters = $this->makeParametersForAction($action);
 
@@ -77,7 +76,7 @@ class ProductManager extends BaseManager implements ProductManagerInterface
      */
     public function addImage(
         array $productImages,
-        bool $debug = true
+        bool $debug = true,
     ): FeedResponse {
         $action = 'Image';
 
@@ -113,7 +112,7 @@ class ProductManager extends BaseManager implements ProductManagerInterface
      */
     public function getProducts(
         Parameters $parameters,
-        bool $debug = true
+        bool $debug = true,
     ): array {
         $action = 'GetProducts';
 
@@ -138,7 +137,7 @@ class ProductManager extends BaseManager implements ProductManagerInterface
     public function getAllProducts(
         int $limit = self::DEFAULT_LIMIT,
         int $offset = self::DEFAULT_OFFSET,
-        bool $debug = true
+        bool $debug = true,
     ): array {
         $parameters = clone $this->parameters;
 
@@ -154,11 +153,11 @@ class ProductManager extends BaseManager implements ProductManagerInterface
      * @return Product[]
      */
     public function getProductsCreatedAfter(
-        DateTimeInterface $createdAfter,
+        \DateTimeInterface $createdAfter,
         int $limit = self::DEFAULT_LIMIT,
         int $offset = self::DEFAULT_OFFSET,
         ?string $dateFormat = null,
-        bool $debug = true
+        bool $debug = true,
     ): array {
         $parameters = clone $this->parameters;
         $dateFormat = $dateFormat ?? self::DEFAULT_DATE_FORMAT;
@@ -179,11 +178,11 @@ class ProductManager extends BaseManager implements ProductManagerInterface
      * @return Product[]
      */
     public function getProductsCreatedBefore(
-        DateTimeInterface $createdBefore,
+        \DateTimeInterface $createdBefore,
         int $limit = self::DEFAULT_LIMIT,
         int $offset = self::DEFAULT_OFFSET,
         ?string $dateFormat = null,
-        bool $debug = true
+        bool $debug = true,
     ): array {
         $parameters = clone $this->parameters;
         $dateFormat = $dateFormat ?? self::DEFAULT_DATE_FORMAT;
@@ -204,11 +203,11 @@ class ProductManager extends BaseManager implements ProductManagerInterface
      * @return Product[]
      */
     public function getProductsUpdatedAfter(
-        DateTimeInterface $updatedAfter,
+        \DateTimeInterface $updatedAfter,
         int $limit = self::DEFAULT_LIMIT,
         int $offset = self::DEFAULT_OFFSET,
         ?string $dateFormat = null,
-        bool $debug = true
+        bool $debug = true,
     ): array {
         $parameters = clone $this->parameters;
         $dateFormat = $dateFormat ?? self::DEFAULT_DATE_FORMAT;
@@ -229,11 +228,11 @@ class ProductManager extends BaseManager implements ProductManagerInterface
      * @return Product[]
      */
     public function getProductsUpdatedBefore(
-        DateTimeInterface $updatedBefore,
+        \DateTimeInterface $updatedBefore,
         int $limit = self::DEFAULT_LIMIT,
         int $offset = self::DEFAULT_OFFSET,
         ?string $dateFormat = null,
-        bool $debug = true
+        bool $debug = true,
     ): array {
         $parameters = clone $this->parameters;
         $dateFormat = $dateFormat ?? self::DEFAULT_DATE_FORMAT;
@@ -257,7 +256,7 @@ class ProductManager extends BaseManager implements ProductManagerInterface
         string $searchValue,
         int $limit = self::DEFAULT_LIMIT,
         int $offset = self::DEFAULT_OFFSET,
-        bool $debug = true
+        bool $debug = true,
     ): array {
         $parameters = clone $this->parameters;
 
@@ -280,7 +279,7 @@ class ProductManager extends BaseManager implements ProductManagerInterface
         string $filter,
         int $limit = self::DEFAULT_LIMIT,
         int $offset = self::DEFAULT_OFFSET,
-        bool $debug = true
+        bool $debug = true,
     ): array {
         $parameters = clone $this->parameters;
 
@@ -309,7 +308,7 @@ class ProductManager extends BaseManager implements ProductManagerInterface
         array $skuSellerList,
         int $limit = self::DEFAULT_LIMIT,
         int $offset = self::DEFAULT_OFFSET,
-        bool $debug = true
+        bool $debug = true,
     ): array {
         $parameters = clone $this->parameters;
 
@@ -335,17 +334,17 @@ class ProductManager extends BaseManager implements ProductManagerInterface
      * @return Product[]
      */
     public function getProductsFromParameters(
-        ?DateTimeInterface $createdAfter = null,
-        ?DateTimeInterface $createdBefore = null,
+        ?\DateTimeInterface $createdAfter = null,
+        ?\DateTimeInterface $createdBefore = null,
         ?string $search = null,
         string $filter = self::DEFAULT_FILTER,
         int $limit = self::DEFAULT_LIMIT,
         int $offset = self::DEFAULT_OFFSET,
         ?array $skuSellerList = null,
-        ?DateTimeInterface $updateAfter = null,
-        ?DateTimeInterface $updateBefore = null,
+        ?\DateTimeInterface $updateAfter = null,
+        ?\DateTimeInterface $updateBefore = null,
         ?string $dateFormat = null,
-        bool $debug = true
+        bool $debug = true,
     ): array {
         $parameters = clone $this->parameters;
         $dateFormat = $dateFormat ?? self::DEFAULT_DATE_FORMAT;

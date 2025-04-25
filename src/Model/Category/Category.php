@@ -4,10 +4,7 @@ declare(strict_types=1);
 
 namespace Linio\SellerCenter\Model\Category;
 
-use JsonSerializable;
-use stdClass;
-
-class Category implements JsonSerializable
+class Category implements \JsonSerializable
 {
     /**
      * @var int|null
@@ -47,7 +44,7 @@ class Category implements JsonSerializable
         string $name,
         string $globalIdentifier,
         ?int $attributeSetId = null,
-        array $children = null
+        ?array $children = null,
     ): self {
         $category = new self();
 
@@ -116,9 +113,9 @@ class Category implements JsonSerializable
         return $this->children;
     }
 
-    public function jsonSerialize(): stdClass
+    public function jsonSerialize(): \stdClass
     {
-        $serialized = new stdClass();
+        $serialized = new \stdClass();
         $serialized->categoryId = $this->categoryId;
         $serialized->name = $this->name;
         $serialized->globalIdentifier = $this->globalIdentifier;

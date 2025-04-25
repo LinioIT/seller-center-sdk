@@ -4,7 +4,6 @@ declare(strict_types=1);
 
 namespace Linio\SellerCenter\Unit;
 
-use Exception;
 use Linio\Component\Util\Json;
 use Linio\SellerCenter\Exception\EmptyArgumentException;
 use Linio\SellerCenter\Factory\Xml\Feed\FeedFactory;
@@ -140,7 +139,7 @@ class FeedTest extends LinioTestCase
 
     public function testItThrowsExceptionIfResponseIsEmpty(): void
     {
-        $this->expectException(Exception::class);
+        $this->expectException(\Exception::class);
         $this->expectExceptionMessage('The xml structure is not valid for a Feed. The property Feed should exist.');
 
         $simplexml = simplexml_load_string('<xml></xml>');

@@ -9,7 +9,6 @@ use Linio\SellerCenter\Exception\InvalidXmlStructureException;
 use Linio\SellerCenter\Factory\Xml\Feed\FeedCountFactory;
 use Linio\SellerCenter\LinioTestCase;
 use Linio\SellerCenter\Model\Feed\FeedCount;
-use SimpleXMLElement;
 
 class FeedCountTest extends LinioTestCase
 {
@@ -98,8 +97,8 @@ class FeedCountTest extends LinioTestCase
         int $queued = 0,
         int $processing = 0,
         int $finished = 0,
-        int $canceled = 0
-    ): SimpleXMLElement {
+        int $canceled = 0,
+    ): \SimpleXMLElement {
         $xmlSchema = sprintf(
             $this->getSchema('Feed/FeedCount.xml'),
             $total,

@@ -4,11 +4,7 @@ declare(strict_types=1);
 
 namespace Linio\SellerCenter\Model\Order;
 
-use DateTimeInterface;
-use JsonSerializable;
-use stdClass;
-
-class Order implements JsonSerializable
+class Order implements \JsonSerializable
 {
     /**
      * @var int
@@ -66,17 +62,17 @@ class Order implements JsonSerializable
     protected $voucherCode;
 
     /**
-     * @var DateTimeInterface|null
+     * @var \DateTimeInterface|null
      */
     protected $createdAt;
 
     /**
-     * @var DateTimeInterface|null
+     * @var \DateTimeInterface|null
      */
     protected $updatedAt;
 
     /**
-     * @var DateTimeInterface|null
+     * @var \DateTimeInterface|null
      */
     protected $addressUpdatedAt;
 
@@ -101,7 +97,7 @@ class Order implements JsonSerializable
     protected $itemsCount;
 
     /**
-     * @var DateTimeInterface|null
+     * @var \DateTimeInterface|null
      */
     protected $promisedShippingTime;
 
@@ -191,26 +187,26 @@ class Order implements JsonSerializable
         bool $giftOption,
         string $giftMessage,
         string $voucherCode,
-        ?DateTimeInterface $createdAt,
-        ?DateTimeInterface $updatedAt,
-        ?DateTimeInterface $addressUpdatedAt,
+        ?\DateTimeInterface $createdAt,
+        ?\DateTimeInterface $updatedAt,
+        ?\DateTimeInterface $addressUpdatedAt,
         Address $addressBilling,
         Address $addressShipping,
         ?string $nationalRegistrationNumber,
         int $itemsCount,
-        ?DateTimeInterface $promisedShippingTime,
+        ?\DateTimeInterface $promisedShippingTime,
         ?string $extraAttributes,
         array $statuses,
         ?bool $businessInvoiceRequired,
         ?string $shippingType,
         ?string $operatorCode = null,
         ?ExtraBillingAttributes $extraBillingAttributes = null,
-        float $grandTotal,
-        float $productTotal,
-        float $taxAmount,
-        float $shippingFeeTotal,
-        float $shippingTax,
-        float $voucher
+        ?float $grandTotal = null,
+        ?float $productTotal = null,
+        ?float $taxAmount = null,
+        ?float $shippingFeeTotal = null,
+        ?float $shippingTax = null,
+        ?float $voucher = null,
     ): Order {
         $order = new self();
 
@@ -321,17 +317,17 @@ class Order implements JsonSerializable
         return $this->voucherCode;
     }
 
-    public function getCreatedAt(): ?DateTimeInterface
+    public function getCreatedAt(): ?\DateTimeInterface
     {
         return $this->createdAt;
     }
 
-    public function getUpdatedAt(): ?DateTimeInterface
+    public function getUpdatedAt(): ?\DateTimeInterface
     {
         return $this->updatedAt;
     }
 
-    public function getAddressUpdatedAt(): ?DateTimeInterface
+    public function getAddressUpdatedAt(): ?\DateTimeInterface
     {
         return $this->addressUpdatedAt;
     }
@@ -356,7 +352,7 @@ class Order implements JsonSerializable
         return $this->itemsCount;
     }
 
-    public function getPromisedShippingTime(): ?DateTimeInterface
+    public function getPromisedShippingTime(): ?\DateTimeInterface
     {
         return $this->promisedShippingTime;
     }
@@ -439,9 +435,9 @@ class Order implements JsonSerializable
         return (float) str_replace(',', '', $value);
     }
 
-    public function jsonSerialize(): stdClass
+    public function jsonSerialize(): \stdClass
     {
-        $serialized = new stdClass();
+        $serialized = new \stdClass();
         $serialized->orderId = $this->orderId;
         $serialized->customerFirstName = $this->customerFirstName;
         $serialized->customerLastName = $this->customerLastName;

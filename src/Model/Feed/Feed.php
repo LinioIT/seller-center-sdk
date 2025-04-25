@@ -4,12 +4,9 @@ declare(strict_types=1);
 
 namespace Linio\SellerCenter\Model\Feed;
 
-use DateTimeImmutable;
-use JsonSerializable;
 use Linio\SellerCenter\Exception\EmptyArgumentException;
-use stdClass;
 
-class Feed implements JsonSerializable
+class Feed implements \JsonSerializable
 {
     /**
      * @var string
@@ -27,14 +24,14 @@ class Feed implements JsonSerializable
     protected $action;
 
     /**
-     * @var DateTimeImmutable|null
+     * @var \DateTimeImmutable|null
      */
-    protected $creation = null;
+    protected $creation;
 
     /**
-     * @var DateTimeImmutable|null
+     * @var \DateTimeImmutable|null
      */
-    protected $updated = null;
+    protected $updated;
 
     /**
      * @var string|null
@@ -59,17 +56,17 @@ class Feed implements JsonSerializable
     /**
      * @var FeedErrors
      */
-    protected $errors = null;
+    protected $errors;
 
     /**
      * @var FeedWarnings
      */
-    protected $warnings = null;
+    protected $warnings;
 
     /**
      * @var FailureReports|null
      */
-    protected $failureReports = null;
+    protected $failureReports;
 
     public function __construct(
         string $id,
@@ -83,7 +80,7 @@ class Feed implements JsonSerializable
         ?int $failedRecords = null,
         ?FeedErrors $errors = null,
         ?FeedWarnings $warnings = null,
-        ?FailureReports $failureReports = null
+        ?FailureReports $failureReports = null,
     ) {
         if (empty($id)) {
             throw new EmptyArgumentException('Id');
@@ -98,11 +95,11 @@ class Feed implements JsonSerializable
         $this->action = $action;
 
         if ($creation) {
-            $this->creation = DateTimeImmutable::createFromFormat('Y-m-d H:i:s', $creation) ?: null;
+            $this->creation = \DateTimeImmutable::createFromFormat('Y-m-d H:i:s', $creation) ?: null;
         }
 
         if ($updated) {
-            $this->updated = DateTimeImmutable::createFromFormat('Y-m-d H:i:s', $updated) ?: null;
+            $this->updated = \DateTimeImmutable::createFromFormat('Y-m-d H:i:s', $updated) ?: null;
         }
 
         $this->source = $source;
@@ -114,11 +111,11 @@ class Feed implements JsonSerializable
         $this->failureReports = $failureReports;
 
         if (!empty($creation)) {
-            $this->creation = DateTimeImmutable::createFromFormat('Y-m-d H:i:s', $creation) ?: null;
+            $this->creation = \DateTimeImmutable::createFromFormat('Y-m-d H:i:s', $creation) ?: null;
         }
 
         if (!empty($updated)) {
-            $this->updated = DateTimeImmutable::createFromFormat('Y-m-d H:i:s', $updated) ?: null;
+            $this->updated = \DateTimeImmutable::createFromFormat('Y-m-d H:i:s', $updated) ?: null;
         }
     }
 
@@ -142,7 +139,7 @@ class Feed implements JsonSerializable
         return $this->action;
     }
 
-    public function getCreationDate(): ?DateTimeImmutable
+    public function getCreationDate(): ?\DateTimeImmutable
     {
         if (!$this->creation) {
             return null;
@@ -151,7 +148,7 @@ class Feed implements JsonSerializable
         return $this->creation;
     }
 
-    public function getUpdatedDate(): ?DateTimeImmutable
+    public function getUpdatedDate(): ?\DateTimeImmutable
     {
         if (!$this->updated) {
             return null;
@@ -190,9 +187,9 @@ class Feed implements JsonSerializable
         return $this->failureReports;
     }
 
-    public function jsonSerialize(): stdClass
+    public function jsonSerialize(): \stdClass
     {
-        $serialized = new stdClass();
+        $serialized = new \stdClass();
         $serialized->id = $this->id;
         $serialized->status = $this->status;
         $serialized->action = $this->action;

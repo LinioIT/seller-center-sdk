@@ -8,7 +8,7 @@ use Linio\SellerCenter\Contract\BusinessUnitOperatorCodes;
 
 class InvalidOperatorCodeException extends InvalidArgumentValueException
 {
-    const OPERATOR_FIELD = 'operator code';
+    public const OPERATOR_FIELD = 'operator code';
 
     public function __construct()
     {

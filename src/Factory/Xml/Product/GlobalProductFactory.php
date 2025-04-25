@@ -11,7 +11,6 @@ use Linio\SellerCenter\Model\Category\Category;
 use Linio\SellerCenter\Model\Product\GlobalProduct;
 use Linio\SellerCenter\Model\Product\Image;
 use Linio\SellerCenter\Validator\XmlStructureValidator;
-use SimpleXMLElement;
 
 class GlobalProductFactory
 {
@@ -24,7 +23,7 @@ class GlobalProductFactory
         'ProductData',
     ];
 
-    public static function make(SimpleXMLElement $element): GlobalProduct
+    public static function make(\SimpleXMLElement $element): GlobalProduct
     {
         XmlStructureValidator::validateStructure($element, self::XML_MODEL, self::REQUIRED_FIELDS);
 
@@ -47,7 +46,7 @@ class GlobalProductFactory
         $product = GlobalProduct::fromMainData(
             (string) $element->SellerSku,
             (string) $element->Name,
-            (string) $element->Variation ?? null,
+            isset($element->Variation) ? (string) $element->Variation : null,
             $primaryCategory,
             (string) $element->Description,
             $brand,
@@ -56,8 +55,8 @@ class GlobalProductFactory
             (string) $element->TaxClass,
             $productData,
             $images ?? null,
-            (string) $element->QCStatus ?? null,
-            (int) $element->ContentScore ?? null
+            isset($element->QCStatus) ? (string) $element->QCStatus : null,
+            isset($element->ContentScore) ? (int) $element->ContentScore : null
         );
 
         if (!empty($element->ShopSku)) {

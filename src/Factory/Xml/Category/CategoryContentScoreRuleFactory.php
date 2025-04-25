@@ -6,11 +6,10 @@ namespace Linio\SellerCenter\Factory\Xml\Category;
 
 use Linio\SellerCenter\Exception\InvalidXmlStructureException;
 use Linio\SellerCenter\Model\Category\CategoryContentScoreRule;
-use SimpleXMLElement;
 
 class CategoryContentScoreRuleFactory
 {
-    public static function make(SimpleXMLElement $element): CategoryContentScoreRule
+    public static function make(\SimpleXMLElement $element): CategoryContentScoreRule
     {
         if (!property_exists($element, 'Rule')) {
             throw new InvalidXmlStructureException('CategoryContentScoreRule', 'Rule');

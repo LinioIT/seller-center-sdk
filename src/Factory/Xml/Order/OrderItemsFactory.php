@@ -6,11 +6,10 @@ namespace Linio\SellerCenter\Factory\Xml\Order;
 
 use Linio\SellerCenter\Model\Order\OrderItem;
 use Linio\SellerCenter\Model\Order\OrderItems;
-use SimpleXMLElement;
 
 class OrderItemsFactory
 {
-    public static function make(SimpleXMLElement $xml): OrderItems
+    public static function make(\SimpleXMLElement $xml): OrderItems
     {
         $orderItems = new OrderItems();
 
@@ -22,7 +21,7 @@ class OrderItemsFactory
         return $orderItems;
     }
 
-    public static function makeFromStatus(SimpleXMLElement $element): OrderItems
+    public static function makeFromStatus(\SimpleXMLElement $element): OrderItems
     {
         $orderItems = new OrderItems();
         foreach ($element->OrderItems->OrderItem as $item) {
@@ -36,7 +35,7 @@ class OrderItemsFactory
     /**
      * @return OrderItem[]
      */
-    public static function makeFromImeiStatus(SimpleXMLElement $element): array
+    public static function makeFromImeiStatus(\SimpleXMLElement $element): array
     {
         $orderItems = new OrderItems();
         foreach ($element->OrderItem as $item) {

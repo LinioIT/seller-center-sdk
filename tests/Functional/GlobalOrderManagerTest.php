@@ -4,7 +4,6 @@ declare(strict_types=1);
 
 namespace Linio\SellerCenter;
 
-use DateTime;
 use Linio\SellerCenter\Exception\InvalidDomainException;
 use Linio\SellerCenter\Model\Order\InvoiceDocument;
 use Linio\SellerCenter\Model\Order\OrderItem;
@@ -72,7 +71,7 @@ class GlobalOrderManagerTest extends LinioTestCase
 
         $invoiceDocument = new InvoiceDocument(
             '13123',
-            new DateTime(),
+            new \DateTime(),
             'BOLETA',
             'FACL',
             'qwertyuiopasdfghjklzxcvbnm',

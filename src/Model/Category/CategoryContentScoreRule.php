@@ -4,10 +4,7 @@ declare(strict_types=1);
 
 namespace Linio\SellerCenter\Model\Category;
 
-use JsonSerializable;
-use stdClass;
-
-class CategoryContentScoreRule implements JsonSerializable
+class CategoryContentScoreRule implements \JsonSerializable
 {
     /**
      * @var string
@@ -29,7 +26,7 @@ class CategoryContentScoreRule implements JsonSerializable
      */
     protected $config;
 
-    public function __construct(string $rule, string $field, int $score = null, ?CategoryContentScoreRuleConfig $config = null)
+    public function __construct(string $rule, string $field, ?int $score = null, ?CategoryContentScoreRuleConfig $config = null)
     {
         $this->rule = $rule;
         $this->field = $field;
@@ -57,9 +54,9 @@ class CategoryContentScoreRule implements JsonSerializable
         return $this->config;
     }
 
-    public function jsonSerialize(): stdClass
+    public function jsonSerialize(): \stdClass
     {
-        $serialized = new stdClass();
+        $serialized = new \stdClass();
         $serialized->rule = $this->rule;
         $serialized->field = $this->field;
         $serialized->score = $this->score;
