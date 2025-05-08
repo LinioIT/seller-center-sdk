@@ -100,13 +100,7 @@ class ProductTransformer
                 continue;
             }
 
-            $adaptedValue = self::attributeAsString($attributeValue);
-
-            if ($adaptedValue === null) {
-                continue;
-            }
-
-            $encodedValue = htmlspecialchars($adaptedValue);
+            $encodedValue = htmlspecialchars($attributeValue);
             $xml->addChild($attributeName, $encodedValue);
         }
     }

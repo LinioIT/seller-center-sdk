@@ -153,7 +153,6 @@ class GlobalProduct extends BaseProduct implements JsonSerializable, ProductInte
         }
 
         if (!empty($variationAtributes)) {
-            dd('no aqi');
             $product->setVariationAttributes($variationAtributes);
         }
 
@@ -176,7 +175,8 @@ class GlobalProduct extends BaseProduct implements JsonSerializable, ProductInte
         ProductData $productData,
         ?Images $images = null,
         ?string $qcStatus = null,
-        ?int $contentScore = null
+        ?int $contentScore = null,
+        ?VariationAttributes $variationAttributes = null
     ): self {
         if (empty($sellerSku)) {
             throw new EmptyArgumentException('SellerSku');
@@ -223,6 +223,10 @@ class GlobalProduct extends BaseProduct implements JsonSerializable, ProductInte
 
         if (!empty($description)) {
             $product->setDescription($description);
+        }
+
+        if (!empty($variationAtributes)) {
+            $product->setVariationAttributes($variationAtributes);
         }
 
         return $product;

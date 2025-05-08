@@ -4,10 +4,7 @@ declare(strict_types=1);
 
 namespace Linio\SellerCenter\Model\Product;
 
-use JsonSerializable;
-use stdClass;
-
-class VariationAttributes implements JsonSerializable
+class VariationAttributes
 {
     /**
      * @var mixed[]
@@ -42,15 +39,5 @@ class VariationAttributes implements JsonSerializable
         if (!key_exists($name, $this->variationAttributes)) {
             $this->variationAttributes[$name] = $value;
         }
-    }
-
-    public function jsonSerialize(): stdClass
-    {
-        $serialized = new stdClass();
-        foreach ($this->variationAttributes as $attribute => $value) {
-            $serialized->$attribute = $value;
-        }
-
-        return $serialized;
     }
 }
