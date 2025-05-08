@@ -67,8 +67,8 @@ class GlobalProductManagerTest extends LinioTestCase
 
         $this->globalProducts = new Products();
 
-        $this->globalProducts->add($this->primaryProduct(true));
-        $this->globalProducts->add($this->secondProduct(true));
+        $this->globalProducts->add($this->primaryProduct());
+        $this->globalProducts->add($this->secondProduct());
     }
 
     public function testItReturnsACollectionOfProducts(): void

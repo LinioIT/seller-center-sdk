@@ -37,6 +37,12 @@ class ProductTransformer
                     }
                 }
             }
+
+            $variationAttributes = $product->getVariationAttributes() ? $product->getVariationAttributes()->all() : null;
+
+            if (!empty($variationAttributes)) {
+                self::addVariationAttributes($body, $variationAttributes);
+            }
         }
 
         if (empty($productDataAttributes)) {
@@ -69,6 +75,27 @@ class ProductTransformer
                 continue;
             }
 
+            if ($attributeValue === null) {
+                continue;
+            }
+
+            $adaptedValue = self::attributeAsString($attributeValue);
+
+            if ($adaptedValue === null) {
+                continue;
+            }
+
+            $encodedValue = htmlspecialchars($adaptedValue);
+            $xml->addChild($attributeName, $encodedValue);
+        }
+    }
+
+    /**
+     * @param mixed[] $variationAttributes
+     */
+    public static function addVariationAttributes(SimpleXMLElement $xml, array $variationAttributes): void
+    {
+        foreach ($variationAttributes as $attributeName => $attributeValue) {
             if ($attributeValue === null) {
                 continue;
             }
