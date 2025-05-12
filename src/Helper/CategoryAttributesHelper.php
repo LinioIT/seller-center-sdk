@@ -27,7 +27,7 @@ final class CategoryAttributesHelper
         return $variationAttributesNames;
     }
 
-    private static function isVariationAttribute(CategoryAttribute $categoryAttribute): bool
+    public static function isVariationAttribute(CategoryAttribute $categoryAttribute): bool
     {
         return $categoryAttribute->getGroupName() === self::VARIATION_STRING
                 && !$categoryAttribute->isGlobalAttribute()
