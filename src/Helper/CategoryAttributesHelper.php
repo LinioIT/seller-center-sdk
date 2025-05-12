@@ -20,7 +20,7 @@ final class CategoryAttributesHelper
         $variationAttributesNames = [];
         foreach ($categoryAttributes as $attribute) {
             if (self::isVariationAttribute($attribute)) {
-                $variationAttributesNames[] = $attribute->getFeedName();
+                $variationAttributesNames[] = lcfirst($attribute->getFeedName());
             }
         }
 
