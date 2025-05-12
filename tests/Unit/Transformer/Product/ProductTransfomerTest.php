@@ -16,6 +16,7 @@ use Linio\SellerCenter\Model\Product\Image;
 use Linio\SellerCenter\Model\Product\Images;
 use Linio\SellerCenter\Model\Product\Product;
 use Linio\SellerCenter\Model\Product\ProductData;
+use Linio\SellerCenter\Model\Product\VariationAttributes;
 use SimpleXMLElement;
 use stdClass;
 
@@ -112,6 +113,84 @@ class ProductTransfomerTest extends LinioTestCase
         $xml = new SimpleXMLElement('<Request/>');
         ProductTransformer::asXml($xml, $product);
         $expectedXml = $this->getSchema('Product/GlobalProductEmptySpecialPrice.xml');
+        $this->assertXmlStringEqualsXmlString($expectedXml, $xml->asXML());
+    }
+
+    public function testItCreatesProductXMLWithVariationAttributes(): void
+    {
+        $businessUnits = new BusinessUnits();
+        $businessUnit = new BusinessUnit(
+            'facl',
+            1299.00,
+            100,
+            'active'
+        );
+
+        $businessUnits->add($businessUnit);
+        $variationAttributes = new VariationAttributes();
+
+        $variationAttributes->add('ColorBasicoVariation', 'Green');
+        $variationAttributes->add('TallaBicicleta', 'L');
+
+        $product = GlobalProduct::fromBasicData(
+            '21458191097',
+            'Magic Global Product',
+            'XL',
+            Category::fromId(123),
+            'This is a bold product.',
+            Brand::fromName('Samsung'),
+            $businessUnits,
+            '123326998',
+            null,
+            new ProductData('Nuevo', 1, 1, 1, 1),
+            null,
+            null,
+            null,
+            $variationAttributes
+        );
+
+        $xml = new SimpleXMLElement('<Request/>');
+        ProductTransformer::asXml($xml, $product);
+        $expectedXml = $this->getSchema('Product/GlobalProductWithVariationAttributes.xml');
+        $this->assertXmlStringEqualsXmlString($expectedXml, $xml->asXML());
+    }
+
+    public function testItCreatesProductXMLWithVariationAttributesAndSkippingThoseWithNullValues(): void
+    {
+        $businessUnits = new BusinessUnits();
+        $businessUnit = new BusinessUnit(
+            'facl',
+            1299.00,
+            100,
+            'active'
+        );
+
+        $businessUnits->add($businessUnit);
+        $variationAttributes = new VariationAttributes();
+
+        $variationAttributes->add('ColorBasicoVariation', 'Green');
+        $variationAttributes->add('TallaBicicleta', null);
+
+        $product = GlobalProduct::fromBasicData(
+            '21458191097',
+            'Magic Global Product',
+            'XL',
+            Category::fromId(123),
+            'This is a bold product.',
+            Brand::fromName('Samsung'),
+            $businessUnits,
+            '123326998',
+            null,
+            new ProductData('Nuevo', 1, 1, 1, 1),
+            null,
+            null,
+            null,
+            $variationAttributes
+        );
+
+        $xml = new SimpleXMLElement('<Request/>');
+        ProductTransformer::asXml($xml, $product);
+        $expectedXml = $this->getSchema('Product/GlobalProductWithVariationAttributesAndAttributeWithNullValue.xml');
         $this->assertXmlStringEqualsXmlString($expectedXml, $xml->asXML());
     }
 
