@@ -20,14 +20,14 @@ final class CategoryAttributesHelper
         $variationAttributesNames = [];
         foreach ($categoryAttributes as $attribute) {
             if (self::isVariationAttribute($attribute)) {
-                $variationAttributesNames[] = $attribute->getFeedName();
+                $variationAttributesNames[] = lcfirst($attribute->getFeedName());
             }
         }
 
         return $variationAttributesNames;
     }
 
-    private static function isVariationAttribute(CategoryAttribute $categoryAttribute): bool
+    public static function isVariationAttribute(CategoryAttribute $categoryAttribute): bool
     {
         return $categoryAttribute->getGroupName() === self::VARIATION_STRING
                 && !$categoryAttribute->isGlobalAttribute()

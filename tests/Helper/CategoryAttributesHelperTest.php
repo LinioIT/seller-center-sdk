@@ -31,7 +31,7 @@ final class CategoryAttributesHelperTest extends LinioTestCase
 
         $result = CategoryAttributesHelper::getCategoryAttributesFeedNames($attributes);
 
-        $this->assertEquals(['Color', 'Size'], $result);
+        $this->assertEquals(['color', 'size'], $result);
     }
 
     public function testItSkipsGlobalVariationAttributes(): void
@@ -43,7 +43,7 @@ final class CategoryAttributesHelperTest extends LinioTestCase
 
         $result = CategoryAttributesHelper::getCategoryAttributesFeedNames($attributes);
 
-        $this->assertEquals(['Size'], $result);
+        $this->assertEquals(['size'], $result);
     }
 
     private function createCategoryAttribute(string $feedName, string $groupName, bool $isGlobalAttribute): CategoryAttribute
