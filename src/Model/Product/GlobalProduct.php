@@ -225,8 +225,8 @@ class GlobalProduct extends BaseProduct implements JsonSerializable, ProductInte
             $product->setDescription($description);
         }
 
-        if (!empty($variationAtributes)) {
-            $product->setVariationAttributes($variationAtributes);
+        if (!empty($variationAttributes)) {
+            $product->setVariationAttributes($variationAttributes);
         }
 
         return $product;
