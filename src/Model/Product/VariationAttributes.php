@@ -4,9 +4,10 @@ declare(strict_types=1);
 
 namespace Linio\SellerCenter\Model\Product;
 
+use JsonSerializable;
 use stdClass;
 
-class VariationAttributes
+class VariationAttributes implements JsonSerializable
 {
     /**
      * @var mixed[]
