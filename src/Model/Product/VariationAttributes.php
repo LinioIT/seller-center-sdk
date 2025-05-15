@@ -4,6 +4,8 @@ declare(strict_types=1);
 
 namespace Linio\SellerCenter\Model\Product;
 
+use stdClass;
+
 class VariationAttributes
 {
     /**
@@ -39,5 +41,15 @@ class VariationAttributes
         if (!key_exists($name, $this->variationAttributes)) {
             $this->variationAttributes[$name] = $value;
         }
+    }
+
+    public function jsonSerialize(): stdClass
+    {
+        $serialized = new stdClass();
+        foreach ($this->variationAttributes as $attribute => $value) {
+            $serialized->$attribute = $value;
+        }
+
+        return $serialized;
     }
 }
