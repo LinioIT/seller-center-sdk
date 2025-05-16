@@ -24,7 +24,7 @@ class VariationAttributes implements JsonSerializable
     {
         foreach ($attributes as $key => $value) {
             foreach ($attributes as $key => $value) {
-                if (!is_string($key) || !is_string($value)) {
+                if (!is_string($key)) {
                     throw new \InvalidArgumentException(self::ERROR_INVALID_KEY_VALUE);
                 }
 
