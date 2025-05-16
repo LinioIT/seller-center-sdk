@@ -70,5 +70,8 @@
       "isPublished":0
     }
   ],
-  "qcStatus":"approved"
+  "qcStatus":"approved",
+  "variationAttributes": {
+      "color" : "Green"
+  }
 }

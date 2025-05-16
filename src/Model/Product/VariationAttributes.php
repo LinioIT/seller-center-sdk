@@ -15,6 +15,16 @@ class VariationAttributes implements JsonSerializable
     protected $variationAttributes = [];
 
     /**
+     * @param mixed[] $attributes
+     */
+    public function __construct(array $attributes = [])
+    {
+        foreach ($attributes as $key => $value) {
+            $this->variationAttributes[$key] = $value;
+        }
+    }
+
+    /**
      * @return mixed[]
      */
     public function all(): array
