@@ -332,9 +332,9 @@ class GlobalProductTest extends LinioTestCase
         $expectedJson['images'][0]['url'] = $this->images->all()[0]->getUrl();
         $expectedJson['images'][1]['url'] = $this->images->all()[1]->getUrl();
         $expectedJson['images'][2]['url'] = $this->images->all()[2]->getUrl();
-        $expectedJson['variationAttributes']['color'] = $this->variationAttributes->getVariationAttribute('color');
-        $expectedJson['variationAttributes']['colorBasico'] = $this->variationAttributes->getVariationAttribute('colorBasico');
-        $expectedJson['variationAttributes']['talla'] = $this->variationAttributes->getVariationAttribute('talla');
+        $expectedJson['variationAttributes']['Color'] = $this->variationAttributes->getVariationAttribute('Color');
+        $expectedJson['variationAttributes']['ColorBasico'] = $this->variationAttributes->getVariationAttribute('ColorBasico');
+        $expectedJson['variationAttributes']['Talla'] = $this->variationAttributes->getVariationAttribute('Talla');
 
         $this->assertJsonStringEqualsJsonString(Json::encode($expectedJson), Json::encode($product));
     }

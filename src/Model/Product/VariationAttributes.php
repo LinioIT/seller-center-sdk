@@ -20,7 +20,7 @@ class VariationAttributes implements JsonSerializable
     public function __construct(array $attributes = [])
     {
         foreach ($attributes as $key => $value) {
-            $this->variationAttributes[$key] = $value;
+            $this->variationAttributes[ucfirst($key)] = $value;
         }
     }
 
@@ -50,7 +50,7 @@ class VariationAttributes implements JsonSerializable
     public function add(string $name, $value): void
     {
         if (!key_exists($name, $this->variationAttributes)) {
-            $this->variationAttributes[$name] = $value;
+            $this->variationAttributes[ucfirst($name)] = $value;
         }
     }
 
