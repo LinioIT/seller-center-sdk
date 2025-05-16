@@ -340,6 +340,7 @@ class GlobalProduct extends BaseProduct implements JsonSerializable, ProductInte
         $serialized->colorBasico = $this->colorBasico;
         $serialized->size = $this->size;
         $serialized->talla = $this->talla;
+        $serialized->variationAttributes = $this->variationAttributes;
 
         return $serialized;
     }

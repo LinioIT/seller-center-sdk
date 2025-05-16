@@ -18,6 +18,7 @@ use Linio\SellerCenter\Model\Product\GlobalProduct;
 use Linio\SellerCenter\Model\Product\Image;
 use Linio\SellerCenter\Model\Product\Images;
 use Linio\SellerCenter\Model\Product\ProductData;
+use Linio\SellerCenter\Model\Product\VariationAttributes;
 use SimpleXMLElement;
 
 class GlobalProductTest extends LinioTestCase
@@ -67,6 +68,7 @@ class GlobalProductTest extends LinioTestCase
 
     protected $product;
     protected $faker;
+    protected $variationAttributes;
 
     public function setUp(): void
     {
@@ -85,6 +87,12 @@ class GlobalProductTest extends LinioTestCase
             $this->packageLength,
             $this->packageWeight
         );
+
+        $this->variationAttributes = new VariationAttributes([
+            'color' => $this->color,
+            'colorBasico' => $this->colorBasico,
+            'talla' => $this->talla,
+        ]);
 
         $this->businessUnits = new BusinessUnits();
         $businessUnit = new BusinessUnit(
@@ -298,7 +306,11 @@ class GlobalProductTest extends LinioTestCase
             $this->businessUnits,
             $this->productId,
             $this->taxClass,
-            $this->productData
+            $this->productData,
+            null,
+            null,
+            null,
+            $this->variationAttributes
         );
 
         $product->setShopSku($this->shopSku);
@@ -320,6 +332,9 @@ class GlobalProductTest extends LinioTestCase
         $expectedJson['images'][0]['url'] = $this->images->all()[0]->getUrl();
         $expectedJson['images'][1]['url'] = $this->images->all()[1]->getUrl();
         $expectedJson['images'][2]['url'] = $this->images->all()[2]->getUrl();
+        $expectedJson['variationAttributes']['Color'] = $this->variationAttributes->getVariationAttribute('Color');
+        $expectedJson['variationAttributes']['ColorBasico'] = $this->variationAttributes->getVariationAttribute('ColorBasico');
+        $expectedJson['variationAttributes']['Talla'] = $this->variationAttributes->getVariationAttribute('Talla');
 
         $this->assertJsonStringEqualsJsonString(Json::encode($expectedJson), Json::encode($product));
     }
