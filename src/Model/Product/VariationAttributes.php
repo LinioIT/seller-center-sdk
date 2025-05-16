@@ -14,13 +14,22 @@ class VariationAttributes implements JsonSerializable
      */
     protected $variationAttributes = [];
 
+    private const ERROR_INVALID_KEY_VALUE = 'Both keys and values must be strings.';
+    private const ERROR_INVALID_VALUE = 'The value must be a string and not empty.';
+
     /**
      * @param mixed[] $attributes
      */
     public function __construct(array $attributes = [])
     {
         foreach ($attributes as $key => $value) {
-            $this->variationAttributes[ucfirst($key)] = $value;
+            foreach ($attributes as $key => $value) {
+                if (!is_string($key) || !is_string($value)) {
+                    throw new \InvalidArgumentException(self::ERROR_INVALID_KEY_VALUE);
+                }
+
+                $this->variationAttributes[ucfirst($key)] = $value;
+            }
         }
     }
 
@@ -32,22 +41,16 @@ class VariationAttributes implements JsonSerializable
         return $this->variationAttributes;
     }
 
-    /**
-     * @return mixed|null
-     */
-    public function getVariationAttribute(string $attribute)
+    public function getVariationAttribute(string $attribute): ?string
     {
         if (key_exists($attribute, $this->variationAttributes)) {
-            return $this->variationAttributes[$attribute];
+            return $this->variationAttributes[$attribute] ?? null;
         }
 
         return null;
     }
 
-    /**
-     * @phpstan-ignore-next-line
-     */
-    public function add(string $name, $value): void
+    public function add(string $name, ?string $value): void
     {
         if (!key_exists($name, $this->variationAttributes)) {
             $this->variationAttributes[ucfirst($name)] = $value;
