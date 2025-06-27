@@ -72,7 +72,7 @@ class Product extends BaseProduct implements JsonSerializable, ProductInterface,
     public static function fromBasicData(
         string $sellerSku,
         string $name,
-        string $variation,
+        ?string $variation,
         Category $primaryCategory,
         string $description,
         Brand $brand,
