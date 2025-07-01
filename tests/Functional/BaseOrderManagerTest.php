@@ -304,7 +304,8 @@ class BaseOrderManagerTest extends LinioTestCase
         ?DateTimeImmutable $updatedBefore,
         string $sortBy,
         string $sortDirection,
-        string $status
+        string $status,
+        ?string $shippingType = null
     ): void {
         $sdkClient = $this->getSdkClient($this->getOrdersResponse());
 
@@ -317,7 +318,9 @@ class BaseOrderManagerTest extends LinioTestCase
             OrderManager::DEFAULT_LIMIT,
             OrderManager::DEFAULT_OFFSET,
             $sortBy,
-            $sortDirection
+            $sortDirection,
+            null,
+            $shippingType
         );
 
         $this->assertIsArray($result);
@@ -733,6 +736,7 @@ class BaseOrderManagerTest extends LinioTestCase
             $sortBy,
             $sortDirection,
             null,
+            null,
             $debug
         );
     }
@@ -820,13 +824,21 @@ class BaseOrderManagerTest extends LinioTestCase
         $date = DateTimeImmutable::createFromFormat('Y-m-d H:i:s', '2018-09-01 00:00:00');
 
         return [
-            [$date, $date, $date, $date, 'created_at', 'ASC', 'pending'],
-            [null, $date, null, $date, 'updated_at', 'ASC', 'canceled'],
-            [$date, null, $date, null, 'invalid', 'DESC', 'ready_to_ship'],
-            [$date, $date, null, null, 'updated_at', 'invalid', 'delivered'],
-            [null, $date, $date, null, 'created_at', 'ASC', 'returned'],
-            [$date, null, null, $date, 'invalid', 'invalid', 'shipped'],
-            [null, null, null, null, 'created_at', 'ASC', 'failed'],
+            [$date, $date, $date, $date, 'created_at', 'ASC', 'pending', null],
+            [$date, $date, $date, $date, 'updated_at', 'ASC', 'canceled', null],
+            [$date, $date, $date, $date, 'created_at', 'DESC', 'ready_to_ship', null],
+            [$date, $date, $date, $date, 'updated_at', 'DESC', 'delivered', null],
+            [$date, $date, $date, $date, 'created_at', 'ASC', 'returned', null],
+            [$date, $date, $date, $date, 'updated_at', 'DESC', 'shipped', null],
+            [$date, $date, $date, $date, 'created_at', 'ASC', 'failed', null],
+            [null, $date, null, $date, 'updated_at', 'ASC', 'canceled', null],
+            [$date, null, $date, null, 'invalid', 'DESC', 'ready_to_ship', null],
+            [$date, $date, null, null, 'updated_at', 'invalid', 'delivered', null],
+            [null, $date, $date, null, 'created_at', 'ASC', 'returned', null],
+            [$date, null, null, $date, 'invalid', 'invalid', 'shipped', null],
+            [null, null, null, null, 'created_at', 'ASC', 'failed', null],
+            [null, null, null, null, 'created_at', 'ASC', 'pending', 'dropshipping'],
+            [null, null, null, null, 'created_at', 'ASC', 'pending', 'own_warehouse'],
         ];
     }
 
