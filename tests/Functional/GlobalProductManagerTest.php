@@ -627,7 +627,7 @@ class GlobalProductManagerTest extends LinioTestCase
             $this->logger
         );
 
-        $result = $sdkClient->globalProducts()->getStockByFacilityId([], 'GSC-123457', 1000, 0, $debug);
+        $result = $sdkClient->globalProducts()->getStockByFacilityId(['1234'], 'GSC-123457', 1000, 0, $debug);
 
         $this->assertContainsOnlyInstancesOf(ProductStock::class, $result);
     }
@@ -644,11 +644,12 @@ class GlobalProductManagerTest extends LinioTestCase
             $this->logger
         );
 
-        $result = $sdkClient->globalProducts()->getStockByFacilityId([], 'GSC-123457', 1000, 0, $debug);
+        $result = $sdkClient->globalProducts()->getStockByWarehouseId(['1234'], 'GSC-123457', 1000, 0, $debug);
 
         $this->assertContainsOnlyInstancesOf(ProductStock::class, $result);
     }
 
+    
     public function filters(): array
     {
         return [

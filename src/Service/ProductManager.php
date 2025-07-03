@@ -457,7 +457,7 @@ class ProductManager extends BaseManager implements ProductManagerInterface
         $this->setListDimensions($parameters, $limit, $offset);
 
         if (!empty($sellerSkuList)) {
-            $parameters->set(['SellerSku' => $sellerSkuList]);
+            $parameters->set(['SellerSku' => Json::encode($sellerSkuList)]);
         }
 
         if (!empty($sellerWarehouseId)) {
@@ -496,7 +496,7 @@ class ProductManager extends BaseManager implements ProductManagerInterface
         $this->setListDimensions($parameters, $limit, $offset);
 
         if (!empty($sellerSkuList)) {
-            $parameters->set(['SellerSku' => $sellerSkuList]);
+            $parameters->set(['SellerSku' => Json::encode($sellerSkuList)]);
         }
 
         if (!empty($facilityId)) {

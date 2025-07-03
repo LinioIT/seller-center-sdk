@@ -15,6 +15,7 @@ use Linio\SellerCenter\Model\Product\Image;
 use Linio\SellerCenter\Model\Product\Product;
 use Linio\SellerCenter\Model\Product\ProductData;
 use Linio\SellerCenter\Model\Product\Products;
+use Linio\SellerCenter\Model\Product\ProductStock;
 use Linio\SellerCenter\Response\FeedResponse;
 use Linio\SellerCenter\Service\Contract\ProductManagerInterface;
 use Prophecy\Argument;
@@ -691,6 +692,57 @@ class ProductManagerTest extends LinioTestCase
                 ],
             ],
         ];
+    }
+
+        /**
+     * @dataProvider debugParameter
+     */
+    public function testItGetsStock(bool $debug): void
+    {
+        $this->prepareLogTest($debug);
+
+        $sdkClient = $this->getSdkClient(
+            $this->getSchema('Product/ProductsStock.xml'),
+            $this->logger
+        );
+
+        $result = $sdkClient->products()->getStock(['TEST-1234', 'TEST-123', 'TEST-12345'], 100, 0, $debug);
+
+        $this->assertContainsOnlyInstancesOf(ProductStock::class, $result);
+    }
+
+    /**
+     * @dataProvider debugParameter
+     */
+    public function testItGetsStockByFacilityId(bool $debug): void
+    {
+        $this->prepareLogTest($debug);
+
+        $sdkClient = $this->getSdkClient(
+            $this->getSchema('Product/ProductsStock.xml'),
+            $this->logger
+        );
+
+        $result = $sdkClient->products()->getStockByFacilityId(['1234'], 'GSC-123457', 1000, 0, $debug);
+
+        $this->assertContainsOnlyInstancesOf(ProductStock::class, $result);
+    }
+
+    /**
+     * @dataProvider debugParameter
+     */
+    public function testItGetsStockByWarehouseId(bool $debug): void
+    {
+        $this->prepareLogTest($debug);
+
+        $sdkClient = $this->getSdkClient(
+            $this->getSchema('Product/ProductsStock.xml'),
+            $this->logger
+        );
+
+        $result = $sdkClient->products()->getStockByWarehouseId(['1234'], 'GSC-123457', 1000, 0, $debug);
+
+        $this->assertContainsOnlyInstancesOf(ProductStock::class, $result);
     }
 
     public function debugParameter()
