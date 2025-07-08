@@ -159,7 +159,7 @@ interface ProductManagerInterface
      */
     public function getStockByWarehouseId(
         array $sellerSkuList = [],
-        ?string $sellerWarehouseId = null,
+        string $sellerWarehouseId,
         int $limit = self::DEFAULT_LIMIT,
         int $offset = self::DEFAULT_OFFSET,
         bool $debug = true
@@ -172,7 +172,7 @@ interface ProductManagerInterface
      */
     public function getStockByFacilityId(
         array $sellerSkuList = [],
-        ?string $facilityId = null,
+        string $facilityId,
         int $limit = self::DEFAULT_LIMIT,
         int $offset = self::DEFAULT_OFFSET,
         bool $debug = true

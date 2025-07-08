@@ -445,7 +445,7 @@ class ProductManager extends BaseManager implements ProductManagerInterface
      */
     public function getStockByWarehouseId(
         array $sellerSkuList = [],
-        ?string $sellerWarehouseId = null,
+        string $sellerWarehouseId,
         int $limit = self::DEFAULT_LIMIT,
         int $offset = self::DEFAULT_OFFSET,
         bool $debug = true
@@ -484,7 +484,7 @@ class ProductManager extends BaseManager implements ProductManagerInterface
      */
     public function getStockByFacilityId(
         array $sellerSkuList = [],
-        ?string $facilityId = null,
+        string $facilityId,
         int $limit = self::DEFAULT_LIMIT,
         int $offset = self::DEFAULT_OFFSET,
         bool $debug = true
@@ -492,6 +492,8 @@ class ProductManager extends BaseManager implements ProductManagerInterface
         $action = 'GetStock';
 
         $parameters = $this->makeParametersForAction($action);
+                    $parameters->set(['FacilityId' => $facilityId]);
+
 
         $this->setListDimensions($parameters, $limit, $offset);
 
