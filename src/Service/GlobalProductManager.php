@@ -406,7 +406,7 @@ class GlobalProductManager extends BaseManager implements ProductManagerInterfac
      */
     public function getStockByWarehouseId(
         array $sellerSkuList = [],
-    ?string $sellerWarehouseId,
+        string $sellerWarehouseId,
         int $limit = self::DEFAULT_LIMIT,
         int $offset = self::DEFAULT_OFFSET,
         bool $debug = true
