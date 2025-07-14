@@ -7,7 +7,6 @@ namespace Linio\SellerCenter\Unit\Product;
 use DateTimeImmutable;
 use Linio\Component\Util\Json;
 use Linio\SellerCenter\Contract\BusinessUnitOperatorCodes;
-use Linio\SellerCenter\Exception\InvalidDomainException;
 use Linio\SellerCenter\Exception\InvalidXmlStructureException;
 use Linio\SellerCenter\Factory\Xml\Product\BusinessUnitFactory;
 use Linio\SellerCenter\LinioTestCase;
@@ -208,31 +207,16 @@ class BusinessUnitTest extends LinioTestCase
         $this->assertEquals($businessUnit->getSaleEndDateString(), $this->specialToDate->format('Y-m-d H:i:s'));
     }
 
-    /**
-     * @dataProvider invalidParameters
-     */
-    public function testItThrowsExceptionWhenParameterIsIncorrect(
-        $parameter,
-        $operatorCode,
-        $price,
-        $stock,
-        $status,
-        $isPublished,
-        $businessUnit,
-        $specialPrice
-    ): void {
-        $this->expectException(InvalidDomainException::class);
-        $this->expectExceptionMessage(sprintf('The parameter %s is invalid.', $parameter));
-
+    public function testSupportNegativeStock(): void
+    {
         $businessUnit = new BusinessUnit(
-            $operatorCode,
-            $price,
-            $stock,
-            $status,
-            $isPublished,
-            $businessUnit,
-            $specialPrice
+            BusinessUnitOperatorCodes::COUNTRY_OPERATOR[$this->countryCode],
+            null,
+            -1,
+            $this->status
         );
+
+        $this->assertEquals($businessUnit->getStock(), -1);
     }
 
     public function testItReturnsAJsonRepresentation(): void
