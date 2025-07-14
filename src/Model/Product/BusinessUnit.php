@@ -238,9 +238,6 @@ class BusinessUnit implements JsonSerializable, VariationProductInterface, Produ
 
     public function setStock(?int $stock): void
     {
-        if ($stock !== null && $stock < 0) {
-            throw new InvalidDomainException('Stock');
-        }
         $this->stock = $stock;
     }
 
