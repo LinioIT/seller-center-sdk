@@ -14,7 +14,7 @@ class ProductsStock implements CollectionInterface
     protected $collection = [];
 
     /**
-     * @var ProductStock[]
+     * @return ProductStock[]
      */
     public function all(): array
     {
