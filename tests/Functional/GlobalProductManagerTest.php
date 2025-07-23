@@ -649,7 +649,6 @@ class GlobalProductManagerTest extends LinioTestCase
         $this->assertContainsOnlyInstancesOf(ProductStock::class, $result);
     }
 
-    
     public function filters(): array
     {
         return [

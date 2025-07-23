@@ -694,7 +694,7 @@ class ProductManagerTest extends LinioTestCase
         ];
     }
 
-        /**
+    /**
      * @dataProvider debugParameter
      */
     public function testItGetsStock(bool $debug): void

@@ -10,22 +10,22 @@ use stdClass;
 class ProductStock implements JsonSerializable
 {
     /**
-     * @var string $sellerSku
+     * @var string
      */
     protected $sellerSku;
 
     /**
-     * @var string $facilityId
+     * @var string
      */
     protected $facilityId;
 
     /**
-     * @var string $sellerWarehouseId
+     * @var string
      */
     protected $sellerWarehouseId;
 
     /**
-     * @var int $quantity
+     * @var int
      */
     protected $quantity;
 
