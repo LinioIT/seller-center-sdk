@@ -492,8 +492,7 @@ class ProductManager extends BaseManager implements ProductManagerInterface
         $action = 'GetStock';
 
         $parameters = $this->makeParametersForAction($action);
-                    $parameters->set(['FacilityId' => $facilityId]);
-
+        $parameters->set(['FacilityId' => $facilityId]);
 
         $this->setListDimensions($parameters, $limit, $offset);
 
