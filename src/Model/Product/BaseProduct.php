@@ -44,7 +44,7 @@ abstract class BaseProduct implements JsonSerializable
     protected $name;
 
     /**
-     * @var string
+     * @var string|null
      */
     protected $variation;
 
@@ -245,7 +245,7 @@ abstract class BaseProduct implements JsonSerializable
         $this->name = $name;
     }
 
-    public function setVariation(string $variation): void
+    public function setVariation(?string $variation): void
     {
         $this->variation = $variation;
     }
