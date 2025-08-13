@@ -161,7 +161,7 @@ class GlobalProductTest extends LinioTestCase
             $this->sellerSku,
             null,
             $this->variation,
-            $this->primaryCategory,
+            null,
             null,
             $this->brand,
             $this->businessUnits,
@@ -177,7 +177,7 @@ class GlobalProductTest extends LinioTestCase
         $this->assertEquals($product->getSellerSku(), $this->sellerSku);
         $this->assertEquals($product->getName(), null);
         $this->assertEquals($product->getVariation(), $this->variation);
-        $this->assertEquals($product->getPrimaryCategory(), $this->primaryCategory);
+        $this->assertEquals($product->getPrimaryCategory(), null);
         $this->assertEquals($product->getDescription(), null);
         $this->assertEquals($product->getBrand(), $this->brand);
         $this->assertEquals($product->getProductId(), null);
