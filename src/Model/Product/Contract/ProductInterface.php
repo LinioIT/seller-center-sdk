@@ -27,7 +27,7 @@ interface ProductInterface
 
     public function getVariation(): ?string;
 
-    public function getPrimaryCategory(): Category;
+    public function getPrimaryCategory(): ?Category;
 
     public function getCategories(): Categories;
 

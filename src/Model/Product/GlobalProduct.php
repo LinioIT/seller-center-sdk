@@ -166,7 +166,7 @@ class GlobalProduct extends BaseProduct implements JsonSerializable, ProductInte
         string $sellerSku,
         ?string $name,
         ?string $variation,
-        Category $primaryCategory,
+        ?Category $primaryCategory,
         ?string $description,
         Brand $brand,
         BusinessUnits $businessUnits,
@@ -185,13 +185,16 @@ class GlobalProduct extends BaseProduct implements JsonSerializable, ProductInte
         $product = new static();
 
         $product->setSellerSku($sellerSku);
-        $product->setPrimaryCategory($primaryCategory);
         $product->setBrand($brand);
         $product->setBusinessUnits($businessUnits);
         $product->setProductData($productData);
 
         $categories = new Categories();
         $product->setCategories($categories);
+
+        if (!empty($primaryCategory)) {
+            $product->setPrimaryCategory($primaryCategory);
+        }
 
         if (!empty($variation)) {
             $product->setVariation($variation);
