@@ -29,7 +29,7 @@ class ProductStock implements JsonSerializable
      */
     protected $sellerWarehouseId;
 
-    public function __construct(string $sellerSku, int $quantity, ?string $facilityId, ?string $sellerWarehouseId)
+    public function __construct(string $sellerSku, int $quantity, ?string $facilityId = null, ?string $sellerWarehouseId = null)
     {
         $this->sellerSku = $sellerSku;
         $this->quantity = $quantity;
