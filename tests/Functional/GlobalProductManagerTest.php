@@ -17,6 +17,7 @@ use Linio\SellerCenter\Model\Product\GlobalProduct;
 use Linio\SellerCenter\Model\Product\Image;
 use Linio\SellerCenter\Model\Product\ProductData;
 use Linio\SellerCenter\Model\Product\Products;
+use Linio\SellerCenter\Model\Product\ProductsStock;
 use Linio\SellerCenter\Model\Product\ProductStock;
 use Linio\SellerCenter\Response\FeedResponse;
 use Linio\SellerCenter\Service\Contract\ProductManagerInterface;
@@ -647,6 +648,23 @@ class GlobalProductManagerTest extends LinioTestCase
         $result = $sdkClient->globalProducts()->getStockByWarehouseId(['1234'], 'GSC-123457', 1000, 0, $debug);
 
         $this->assertContainsOnlyInstancesOf(ProductStock::class, $result);
+    }
+
+    public function testItUpdateStock(): void
+    {
+        $sdkClient = $this->getSdkClient(
+            $this->getSchema('Product/ProductsStock.xml'),
+            $this->logger
+        );
+
+        $productsStock = new ProductsStock();
+        $productsStock->add(new ProductStock('TEST-1234', 10, 'GSC-123445', null));
+        $productsStock->add(new ProductStock('TEST-1235', 20, null, 'GSC-123457'));
+        $productsStock->add(new ProductStock('TEST-1236', 20, null, null));
+
+        $result = $sdkClient->globalProducts()->updateStock($productsStock, true);
+
+        $this->assertInstanceOf(FeedResponse::class, $result);
     }
 
     public function filters(): array
