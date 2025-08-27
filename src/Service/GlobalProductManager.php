@@ -77,6 +77,25 @@ class GlobalProductManager extends BaseManager implements ProductManagerInterfac
         return FeedResponseFactory::make($builtResponse->getHead());
     }
 
+    protected function executeStockAction(
+        string $action,
+        string $xml,
+        bool $debug = true
+    ): FeedResponse {
+        $parameters = $this->makeParametersForAction($action);
+
+        $builtResponse = $this->executeAction(
+            $action,
+            $parameters,
+            null,
+            'POST',
+            $debug,
+            $xml
+        );
+
+        return FeedResponseFactory::makeForStock($builtResponse);
+    }
+
     /**
      * @param mixed[] $productImages
      */
@@ -483,7 +502,7 @@ class GlobalProductManager extends BaseManager implements ProductManagerInterfac
         ProductsStock $productsStock,
         bool $debug = true
     ): FeedResponse {
-        return $this->executeProductAction(
+        return $this->executeStockAction(
             'UpdateStock',
             StocksTransformer::asXmlString($productsStock),
             $debug

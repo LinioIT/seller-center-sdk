@@ -653,7 +653,7 @@ class GlobalProductManagerTest extends LinioTestCase
     public function testItUpdateStock(): void
     {
         $sdkClient = $this->getSdkClient(
-            $this->getSchema('Product/ProductsStock.xml'),
+            $this->getSchema('Product/UpdateStockResponse.xml'),
             $this->logger
         );
 
