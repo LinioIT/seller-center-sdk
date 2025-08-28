@@ -27,6 +27,8 @@ class BaseManager
     protected const CONTENT_TYPE_HEADER = 'Content-type';
     protected const CONTENT_TYPE_HEADER_VALUE = 'text/xml; charset=UTF8';
     protected const CONTENT_TYPE_HEADER_VALUE_ALT = 'application/json';
+    protected const VERSION_HEADER = 'Version';
+    protected const DEFAULT_VERSION = '1.0';
 
     /**
      * @var LoggerInterface
@@ -81,10 +83,11 @@ class BaseManager
         ?string $requestId,
         string $httpMethod = 'GET',
         bool $debug = true,
-        ?string $body = null
+        ?string $body = null,
+        ?string $version = self::DEFAULT_VERSION
     ): SuccessResponse {
         $requestHeaders = $this->generateRequestHeaders(
-            [self::REQUEST_ID_HEADER => $requestId ?? $this->generateRequestId()]
+            [self::REQUEST_ID_HEADER => $requestId ?? $this->generateRequestId(), self::VERSION_HEADER => $version]
         );
 
         $request = RequestFactory::make(
@@ -224,7 +227,7 @@ class BaseManager
     }
 
     /**
-     * @param string[] $customHeader
+     * @param mixed[] $customHeader
      *
      * @return mixed[]
      */
@@ -241,7 +244,7 @@ class BaseManager
 
         if ($useHeaderParams) {
             $headerComplete['UserID'] = $this->configuration->getUser();
-            $headerComplete['Version'] = $this->configuration->getVersion();
+            $headerComplete['Version'] = $customHeader['Version'] ?? self::DEFAULT_VERSION;
             $headerComplete['Format'] = $isXml ? 'XML' : 'JSON';
             $headerComplete['Timestamp'] = (new DateTimeImmutable())->format(DATE_ATOM);
             $headerComplete['Action'] = $action;

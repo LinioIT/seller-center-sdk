@@ -1,0 +1,140 @@
+<?php
+
+declare(strict_types=1);
+
+namespace Linio\SellerCenter\Factory\Xml\V2\Order;
+
+use DateTimeImmutable;
+use Linio\SellerCenter\Contract\BusinessUnitOperatorCodes;
+use Linio\SellerCenter\Exception\InvalidDomainException;
+use Linio\SellerCenter\Factory\Xml\Order\AddressFactory;
+use Linio\SellerCenter\Factory\Xml\Order\ExtraBillingAttributesFactory;
+use Linio\SellerCenter\V2\Factory\Xml\Warehouse\WarehouseFactory;
+use Linio\SellerCenter\V2\Model\Order\Order;
+use Linio\SellerCenter\Validator\XmlStructureValidator;
+use SimpleXMLElement;
+
+class OrderFactory
+{
+    private const XML_MODEL = 'Order';
+    private const REQUIRED_FIELDS = [
+        'OrderId',
+        'CustomerFirstName',
+        'CustomerLastName',
+        'OrderNumber',
+        'PaymentMethod',
+        'Remarks',
+        'DeliveryInfo',
+        'Price',
+        'GiftOption',
+        'GiftMessage',
+        'VoucherCode',
+        'CreatedAt',
+        'UpdatedAt',
+        'AddressUpdatedAt',
+        'AddressBilling',
+        'AddressShipping',
+        'PromisedShippingTime',
+        'ItemsCount',
+        'ExtraAttributes',
+        'Statuses',
+        'GrandTotal',
+        'ProductTotal',
+        'TaxAmount',
+        'ShippingFeeTotal',
+        'ShippingTax',
+        'Voucher',
+        'Warehouse',
+    ];
+
+    public static function make(SimpleXMLElement $element): Order
+    {
+        XmlStructureValidator::validateStructure($element, self::XML_MODEL, self::REQUIRED_FIELDS);
+
+        $giftOption = !empty($element->GiftOption);
+
+        $dateTime = DateTimeImmutable::createFromFormat('Y-m-d H:i:s', (string) $element->CreatedAt);
+        $createdAt = !empty($dateTime) ? $dateTime : null;
+
+        $dateTime = DateTimeImmutable::createFromFormat('Y-m-d H:i:s', (string) $element->UpdatedAt);
+        $updatedAt = !empty($dateTime) ? $dateTime : null;
+
+        $dateTime = DateTimeImmutable::createFromFormat('Y-m-d H:i:s', (string) $element->AddressUpdatedAt);
+        $addressUpdatedAt = !empty($dateTime) ? $dateTime : null;
+
+        $addressBilling = AddressFactory::make($element->AddressBilling);
+
+        $addressShipping = AddressFactory::make($element->AddressShipping);
+
+        $dateTime = DateTimeImmutable::createFromFormat('Y-m-d H:i:s', (string) $element->PromisedShippingTime);
+        $promisedShippingTime = !empty($dateTime) ? $dateTime : null;
+
+        $nationalRegistrationNumber = !empty($element->NationalRegistrationNumber) ? (string) $element->NationalRegistrationNumber : null;
+
+        $statuses = [];
+        foreach ($element->Statuses->Status as $status) {
+            array_push($statuses, (string) $status);
+        }
+
+        $operatorCode = (string) $element->OperatorCode ?? null;
+        if (!empty($operatorCode) && !in_array(strtolower($operatorCode), BusinessUnitOperatorCodes::OPERATOR_CODES)) {
+            throw new InvalidDomainException('OperatorCode');
+        }
+
+        $orderNumber = is_numeric((string) $element->OrderNumber) ? (int) $element->OrderNumber : (string) $element->OrderNumber;
+
+        $shippingType = isset($element->ShippingType) ? (string) $element->ShippingType : null;
+        $businessInvoiceRequired = !empty($element->BusinessInvoiceRequired)
+            ? ($element->BusinessInvoiceRequired == 'true')
+            : (
+                !empty($element->InvoiceRequired)
+                ? ($element->InvoiceRequired == 'true')
+                : null
+            );
+
+        $extraBillingAttributes = !empty($element->ExtraBillingAttributes) ?
+            ExtraBillingAttributesFactory::make($element->ExtraBillingAttributes) : null;
+
+        $warehouse = WarehouseFactory::make($element->Warehouse);
+
+        return Order::fromData(
+            (int) $element->OrderId,
+            $orderNumber,
+            (string) $element->CustomerFirstName,
+            (string) $element->CustomerLastName,
+            (string) $element->PaymentMethod,
+            (string) $element->Remarks,
+            (string) $element->DeliveryInfo,
+            (float) $element->Price,
+            $giftOption,
+            (string) $element->GiftMessage,
+            (string) $element->VoucherCode,
+            $createdAt,
+            $updatedAt,
+            $addressUpdatedAt,
+            $addressBilling,
+            $addressShipping,
+            $nationalRegistrationNumber,
+            (int) $element->ItemsCount,
+            $promisedShippingTime,
+            (string) $element->ExtraAttributes,
+            $statuses,
+            $businessInvoiceRequired,
+            $shippingType,
+            $operatorCode,
+            $extraBillingAttributes,
+            self::stringToFloat((string) $element->GrandTotal),
+            self::stringToFloat((string) $element->ProductTotal),
+            self::stringToFloat((string) $element->TaxAmount),
+            self::stringToFloat((string) $element->ShippingFeeTotal),
+            self::stringToFloat((string) $element->ShippingTax),
+            self::stringToFloat((string) $element->Voucher),
+            $warehouse
+        );
+    }
+
+    public static function stringToFloat(string $value): float
+    {
+        return (float) str_replace(',', '', $value);
+    }
+}
