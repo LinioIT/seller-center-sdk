@@ -62,12 +62,18 @@ class BaseManager
         $this->logger = $logger;
     }
 
-    public function makeParametersForAction(string $actionName): Parameters
+    public function makeParametersForAction(string $actionName, ?string $version = null): Parameters
     {
         $parameters = clone $this->parameters;
         $parameters->set([
             'Action' => $actionName,
         ]);
+
+        if ($version) {
+            $parameters->set([
+                'Version' => $version,
+            ]);
+        }
 
         return $parameters;
     }
@@ -83,11 +89,10 @@ class BaseManager
         ?string $requestId,
         string $httpMethod = 'GET',
         bool $debug = true,
-        ?string $body = null,
-        ?string $version = self::DEFAULT_VERSION
+        ?string $body = null
     ): SuccessResponse {
         $requestHeaders = $this->generateRequestHeaders(
-            [self::REQUEST_ID_HEADER => $requestId ?? $this->generateRequestId(), self::VERSION_HEADER => $version]
+            [self::REQUEST_ID_HEADER => $requestId ?? $this->generateRequestId()]
         );
 
         $request = RequestFactory::make(
@@ -244,7 +249,7 @@ class BaseManager
 
         if ($useHeaderParams) {
             $headerComplete['UserID'] = $this->configuration->getUser();
-            $headerComplete['Version'] = $customHeader['Version'] ?? self::DEFAULT_VERSION;
+            $headerComplete['Version'] = $this->configuration->getVersion();
             $headerComplete['Format'] = $isXml ? 'XML' : 'JSON';
             $headerComplete['Timestamp'] = (new DateTimeImmutable())->format(DATE_ATOM);
             $headerComplete['Action'] = $action;

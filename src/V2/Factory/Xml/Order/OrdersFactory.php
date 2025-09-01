@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace Linio\SellerCenter\Factory\Xml\V2\Order;
+namespace Linio\SellerCenter\V2\Factory\Xml\Order;
 
 use Linio\SellerCenter\V2\Model\Order\Orders;
 use SimpleXMLElement;

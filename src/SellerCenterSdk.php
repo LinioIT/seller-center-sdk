@@ -24,6 +24,7 @@ use Linio\SellerCenter\Service\QualityControlManager;
 use Linio\SellerCenter\Service\SellerManager;
 use Linio\SellerCenter\Service\ShipmentManager;
 use Linio\SellerCenter\Service\WebhookManager;
+use Linio\SellerCenter\V2\Service\OrderManager as OrderManagerV2;
 use Psr\Log\LoggerInterface;
 use Psr\Log\NullLogger;
 
@@ -63,6 +64,11 @@ class SellerCenterSdk
      * @var GlobalOrderManager
      */
     protected $globalOrders;
+
+    /**
+     * @var OrderManagerV2
+     */
+    protected $ordersV2;
 
     /**
      * @var WebhookManager
@@ -253,6 +259,20 @@ class SellerCenterSdk
         }
 
         return $this->globalOrders;
+    }
+
+    public function ordersV2(): OrderManagerV2
+    {
+        if (empty($this->ordersV2)) {
+            $this->ordersV2 = new OrderManagerV2(
+                $this->configuration,
+                $this->client,
+                $this->parameters,
+                $this->logger
+            );
+        }
+
+        return $this->ordersV2;
     }
 
     public function qualityControl(): QualityControlManager
