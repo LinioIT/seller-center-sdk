@@ -8,6 +8,7 @@ use DateTimeInterface;
 use Linio\SellerCenter\Application\Parameters;
 use Linio\SellerCenter\Model\Product\Contract\ProductInterface;
 use Linio\SellerCenter\Model\Product\Products;
+use Linio\SellerCenter\Model\Product\ProductsStock;
 use Linio\SellerCenter\Model\Product\ProductStock;
 use Linio\SellerCenter\Response\FeedResponse;
 
@@ -177,4 +178,9 @@ interface ProductManagerInterface
         int $offset = self::DEFAULT_OFFSET,
         bool $debug = true
     ): array;
+
+    public function updateStock(
+        ProductsStock $productsStock,
+        bool $debug = true
+    ): FeedResponse;
 }

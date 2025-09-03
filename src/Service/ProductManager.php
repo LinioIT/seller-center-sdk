@@ -15,10 +15,12 @@ use Linio\SellerCenter\Factory\Xml\Product\ProductsStockFactory;
 use Linio\SellerCenter\Model\Product\Images;
 use Linio\SellerCenter\Model\Product\Product;
 use Linio\SellerCenter\Model\Product\Products;
+use Linio\SellerCenter\Model\Product\ProductsStock;
 use Linio\SellerCenter\Model\Product\ProductStock;
 use Linio\SellerCenter\Response\FeedResponse;
 use Linio\SellerCenter\Service\Contract\ProductManagerInterface;
 use Linio\SellerCenter\Transformer\Product\ProductsTransformer;
+use Linio\SellerCenter\Transformer\Product\StocksTransformer;
 
 class ProductManager extends BaseManager implements ProductManagerInterface
 {
@@ -515,5 +517,16 @@ class ProductManager extends BaseManager implements ProductManagerInterface
         $stockOfProducts = ProductsStockFactory::make($builtResponse->getBody());
 
         return array_values($stockOfProducts->all());
+    }
+
+    public function updateStock(
+        ProductsStock $productsStock,
+        bool $debug = true
+    ): FeedResponse {
+        return $this->executeProductAction(
+            'UpdateStock',
+            StocksTransformer::asXmlString($productsStock),
+            $debug
+        );
     }
 }
