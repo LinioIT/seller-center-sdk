@@ -4,21 +4,21 @@ declare(strict_types=1);
 
 namespace Linio\SellerCenter\V2\Factory\Xml\Warehouse;
 
-use Linio\SellerCenter\Exception\InvalidXmlStructureException;
 use Linio\SellerCenter\V2\Model\Warehouse\Warehouse;
+use Linio\SellerCenter\Validator\XmlStructureValidator;
 use SimpleXMLElement;
 
 class WarehouseFactory
 {
+    private const XML_MODEL = 'Warehouse';
+    private const REQUIRED_FIELDS = [
+        'FacilityId',
+        'SellerWarehouseId',
+    ];
+
     public static function make(SimpleXMLElement $xml): Warehouse
     {
-        if (!property_exists($xml, 'FacilityId')) {
-            throw new InvalidXmlStructureException('Warehouse', 'FacilityId');
-        }
-
-        if (!property_exists($xml, 'SellerWarehouseId')) {
-            throw new InvalidXmlStructureException('Warehouse', 'SellerWarehouseId');
-        }
+        XmlStructureValidator::validateStructure($xml, self::XML_MODEL, self::REQUIRED_FIELDS);
 
         $id = (string) $xml->FacilityId;
         $status = (string) $xml->SellerWarehouseId;

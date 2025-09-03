@@ -5,20 +5,15 @@ declare(strict_types=1);
 namespace Linio\SellerCenter\V2\Functional;
 
 use DateTime;
-use Exception;
 use DateTimeImmutable;
-use Prophecy\Argument;
-use Psr\Log\LoggerInterface;
 use Linio\SellerCenter\ClientHelper;
+use Linio\SellerCenter\Exception\InvalidDomainException;
 use Linio\SellerCenter\LinioTestCase;
-use Prophecy\Prophecy\ObjectProphecy;
 use Linio\SellerCenter\V2\Model\Order\Order;
 use Linio\SellerCenter\V2\Service\OrderManager;
-use Linio\SellerCenter\Application\Configuration;
-use Linio\SellerCenter\Model\Order\FailureReason;
-use Linio\SellerCenter\Exception\EmptyArgumentException;
-use Linio\SellerCenter\Exception\ErrorResponseException;
-use Linio\SellerCenter\Exception\InvalidDomainException;
+use Prophecy\Argument;
+use Prophecy\Prophecy\ObjectProphecy;
+use Psr\Log\LoggerInterface;
 
 class OrderManagerTest extends LinioTestCase
 {

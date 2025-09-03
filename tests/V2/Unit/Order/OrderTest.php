@@ -8,11 +8,10 @@ use DateTimeImmutable;
 use Linio\Component\Util\Json;
 use Linio\SellerCenter\Exception\InvalidDomainException;
 use Linio\SellerCenter\Exception\InvalidXmlStructureException;
-use Linio\SellerCenter\V2\Factory\Xml\Order\OrderFactory;
 use Linio\SellerCenter\LinioTestCase;
 use Linio\SellerCenter\Model\Order\Address;
+use Linio\SellerCenter\V2\Factory\Xml\Order\OrderFactory;
 use Linio\SellerCenter\V2\Model\Order\Order;
-
 
 class OrderTest extends LinioTestCase
 {

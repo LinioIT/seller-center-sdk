@@ -4,9 +4,8 @@ declare(strict_types=1);
 
 namespace Linio\SellerCenter\V2\Order;
 
-use Linio\SellerCenter\Exception\InvalidXmlStructureException;
-use Linio\SellerCenter\V2\Factory\Xml\Order\OrdersFactory;
 use Linio\SellerCenter\LinioTestCase;
+use Linio\SellerCenter\V2\Factory\Xml\Order\OrdersFactory;
 use Linio\SellerCenter\V2\Model\Order\Order;
 use Linio\SellerCenter\V2\Model\Order\Orders;
 use SimpleXMLElement;

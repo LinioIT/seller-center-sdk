@@ -260,20 +260,6 @@ class Order implements JsonSerializable
         return $order;
     }
 
-    /**
-     * @param string|int $orderNumber
-     */
-    public static function fromItems(int $orderId, $orderNumber, OrderItems $orderItems): Order
-    {
-        $order = new self();
-
-        $order->orderId = $orderId;
-        $order->orderNumber = is_numeric($orderNumber) ? (int) $orderNumber : (string) $orderNumber;
-        $order->orderItems = $orderItems;
-
-        return $order;
-    }
-
     public function getOrderId(): int
     {
         return $this->orderId;
