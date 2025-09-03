@@ -18,10 +18,10 @@ use Linio\SellerCenter\V2\Model\Order\Order;
 
 class OrderManager extends BaseManager
 {
-    private const DEFAULT_LIMIT = 1000;
-    private const DEFAULT_OFFSET = 0;
-    private const DEFAULT_SORT_BY = 'created_at';
-    private const DEFAULT_SORT_DIRECTION = 'ASC';
+    public const DEFAULT_LIMIT = 1000;
+    public const DEFAULT_OFFSET = 0;
+    public const DEFAULT_SORT_BY = 'created_at';
+    public const DEFAULT_SORT_DIRECTION = 'ASC';
     private const DEFAULT_DATE_FORMAT = 'Y-m-d\TH:i:s';
     private const VERSION_2 = '2.0';
 
