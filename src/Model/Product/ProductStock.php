@@ -15,21 +15,21 @@ class ProductStock implements JsonSerializable
     protected $sellerSku;
 
     /**
-     * @var string
-     */
-    protected $facilityId;
-
-    /**
-     * @var string
-     */
-    protected $sellerWarehouseId;
-
-    /**
      * @var int
      */
     protected $quantity;
 
-    public function __construct(string $sellerSku, int $quantity, string $facilityId, string $sellerWarehouseId)
+    /**
+     * @var string|null
+     */
+    protected $facilityId;
+
+    /**
+     * @var string|null
+     */
+    protected $sellerWarehouseId;
+
+    public function __construct(string $sellerSku, int $quantity, ?string $facilityId = null, ?string $sellerWarehouseId = null)
     {
         $this->sellerSku = $sellerSku;
         $this->quantity = $quantity;
@@ -47,12 +47,12 @@ class ProductStock implements JsonSerializable
         return $this->quantity;
     }
 
-    public function getFacilityId(): string
+    public function getFacilityId(): ?string
     {
         return $this->facilityId;
     }
 
-    public function getSellerWarehouseId(): string
+    public function getSellerWarehouseId(): ?string
     {
         return $this->sellerWarehouseId;
     }
