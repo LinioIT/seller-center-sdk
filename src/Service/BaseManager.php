@@ -27,6 +27,8 @@ class BaseManager
     protected const CONTENT_TYPE_HEADER = 'Content-type';
     protected const CONTENT_TYPE_HEADER_VALUE = 'text/xml; charset=UTF8';
     protected const CONTENT_TYPE_HEADER_VALUE_ALT = 'application/json';
+    protected const VERSION_HEADER = 'Version';
+    protected const DEFAULT_VERSION = '1.0';
 
     /**
      * @var LoggerInterface
@@ -60,12 +62,18 @@ class BaseManager
         $this->logger = $logger;
     }
 
-    public function makeParametersForAction(string $actionName): Parameters
+    public function makeParametersForAction(string $actionName, ?string $version = null): Parameters
     {
         $parameters = clone $this->parameters;
         $parameters->set([
             'Action' => $actionName,
         ]);
+
+        if ($version) {
+            $parameters->set([
+                'Version' => $version,
+            ]);
+        }
 
         return $parameters;
     }
@@ -224,7 +232,7 @@ class BaseManager
     }
 
     /**
-     * @param string[] $customHeader
+     * @param mixed[] $customHeader
      *
      * @return mixed[]
      */

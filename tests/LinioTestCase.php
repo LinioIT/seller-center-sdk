@@ -51,6 +51,11 @@ class LinioTestCase extends TestCase
         return file_get_contents(__DIR__ . '/_schemas/' . $schema);
     }
 
+    public function getSchemaV2(string $schema): string
+    {
+        return file_get_contents(__DIR__ . '/V2/_schemas/' . $schema);
+    }
+
     public function getSdkClient(
         string $body,
         ?ObjectProphecy $logger = null,
