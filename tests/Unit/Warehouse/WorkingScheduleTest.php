@@ -65,9 +65,9 @@ class WorkingScheduleTest extends LinioTestCase
     public function testItReturnsAJsonRepresentation(): void
     {
         $shiftHours = new ShiftHours('08:00 AM', '08:00 PM');
-        $workingSchedule = new WorkingSchedule('lunes', $shiftHours);
+        $workingSchedule = new WorkingSchedule('monday', $shiftHours);
         $expectedResult = [
-            'day' => 'lunes',
+            'day' => 'monday',
             'shiftHours' => [
                 'openingHour' => '08:00 AM',
                 'closingHour' => '08:00 PM',
