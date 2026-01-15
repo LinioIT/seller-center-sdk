@@ -1,0 +1,75 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<SuccessResponse>
+    <Head>
+        <RequestId/>
+        <RequestAction>GetWarehouse</RequestAction>
+        <ResponseType>Warehouses</ResponseType>
+        <Timestamp>2026-01-07T11:59:01-0300</Timestamp>
+    </Head>
+    <Body>
+        <Warehouses>
+            <Warehouse>
+                <name>FBY Seller test 1 D3</name>
+                <sellerWarehouseId>FByS1D</sellerWarehouseId>
+                <facilityId>SD-SCE8788720B3799</facilityId>
+                <warehouseType>only_shipments</warehouseType>
+                <isFbf>true</isFbf>
+                <isDefault>false</isDefault>
+                <isPickupStore>true</isPickupStore>
+                <isEnabled>true</isEnabled>
+                <updatedAt>2026-01-02T12:21:52.068Z</updatedAt>
+                <updatedBy>test@falabella.cl</updatedBy>
+                <address>
+                    <addressLine1>Choapa River, Coquimbo, Chile</addressLine1>
+                    <addressLine2>Local 32</addressLine2>
+                    <addressLine3/>
+                    <municipal>Illapel</municipal>
+                    <city>Choapa</city>
+                    <state>Coquimbo</state>
+                    <postcode>1930000</postcode>
+                    <countryCode>CL</countryCode>
+                    <email>test@falabella.cl</email>
+                    <name>nametest</name>
+                    <contacts>
+                        <contacts>
+                            <type>Phone</type>
+                            <value>999999999</value>
+                            <typeDescription>Default warehouse phone number</typeDescription>
+                        </contacts>
+                    </contacts>
+                    <latitude>-31.7714099</latitude>
+                    <longitude>-71.0538148</longitude>
+                    <cityCode/>
+                    <stateCode/>
+                    <country>Chile</country>
+                    <contactAddress2Code>04201</contactAddress2Code>
+                    <phone>999999999</phone>
+                </address>
+                <nodeId/>
+                <zoneAvailable>false</zoneAvailable>
+                <zoneUpdatedAt>2022-06-23T06:01:04.639Z</zoneUpdatedAt>
+                <workingSchedule>
+                    <workingSchedule>
+                        <day>monday</day>
+                        <shiftHours>
+                            <shiftHours>
+                                <openingHour>08:00 AM</openingHour>
+                                <closingHour>08:00 PM</closingHour>
+                            </shiftHours>
+                        </shiftHours>
+                    </workingSchedule>
+                    <workingSchedule>
+                        <day>tuesday</day>
+                        <shiftHours>
+                            <shiftHours>
+                                <openingHour>09:00 AM</openingHour>
+                                <closingHour>06:00 PM</closingHour>
+                            </shiftHours>
+                        </shiftHours>
+                    </workingSchedule>
+                </workingSchedule>
+            </Warehouse>
+        </Warehouses>
+    </Body>
+</SuccessResponse>
