@@ -126,7 +126,7 @@ class WarehouseManagerTest extends LinioTestCase
             $this->assertEquals('FBY Seller test 1 D3', $warehouse->getName());
             $this->assertEquals('FByS1D', $warehouse->getSellerWarehouseId());
             $this->assertEquals('only_shipments', $warehouse->getWarehouseType());
-            $this->assertEquals('meenal.gangrade@falabella.cl', $warehouse->getUpdatedBy());
+            $this->assertEquals('test@falabella.cl', $warehouse->getUpdatedBy());
             $this->assertTrue($warehouse->isPickupStore());
             $this->assertTrue($warehouse->isFbf());
             $this->assertFalse($warehouse->isDefault());
