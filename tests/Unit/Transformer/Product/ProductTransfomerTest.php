@@ -232,18 +232,11 @@ class ProductTransfomerTest extends LinioTestCase
         $this->assertEquals('Bar', (string) $children[1]);
     }
 
-    public function testItRemovesEmojisFromHtmlText(): void
+    public function testItSanitizeHtmlAndWrapInCDataFromHtmlText(): void
     {
-        $result = ProductTransformer::removeTagsFromHtmlText('Oferta especial 😀 con envio gratis 🚚');
+        $result = ProductTransformer::sanitizeHtmlAndWrapInCData('<p><strong>Good quality, great price!</strong></p><p><strong>hola</strong></p>');
 
-        $this->assertSame('<![CDATA[Oferta especial  con envio gratis]]>', $result);
-    }
-
-    public function testItReturnsEmptyStringWhenOnlyEmojiContentExists(): void
-    {
-        $result = ProductTransformer::removeTagsFromHtmlText('😀🚚');
-
-        $this->assertSame('', $result);
+        $this->assertSame('<![CDATA[<p><strong>Good quality, great price!</strong></p><p><strong>hola</strong></p>]]>', $result);
     }
 
     /**
