@@ -56,8 +56,49 @@ class ProductTransformer
                 $attributeValue = implode(',', $attributeValue);
             }
 
+            if (strtolower((string) $attributeKey) === 'description') {
+                $value = self::sanitizeHtmlAndWrapInCData((string) $attributeValue);
+                $productData->addChild((string) $attributeKey, $value);
+                continue;
+            }
+
             $productData->addChild((string) $attributeKey, htmlspecialchars((string) $attributeValue));
         }
+    }
+
+    public static function sanitizeHtmlAndWrapInCData(string $html): string
+    {
+        $cleanText = self::removeUnwantedHtmlTags($html);
+
+        return self::wrapInCData($cleanText);
+    }
+
+    public static function removeUnwantedHtmlTags(string $html): string
+    {
+        $decodedText = html_entity_decode($html);
+
+        $regexFilters = [
+            'doctype' => '/<!DOCTYPE html>/i',
+            'meta' => '/<meta\b[^>]*\/?>/',
+            'link' => '/<link\b[^>]*\/?>/',
+            'head' => '/<head\b[^>]*>.*?<\/head>/i',
+            'style' => '/<style\b[^>]*>.*?<\/style>/i',
+            'script' => '/<script\b[^>]*>.*?<\/script>/i',
+            'iframe' => '/<iframe\b[^>]*>.*?<\/iframe>/i',
+            'section' => '/<\/?section\b[^>]*>/i',
+            'a' => '/<a\b[^>]*>.*?<\/a>/i',
+        ];
+
+        return trim((string) preg_replace($regexFilters, '', $decodedText));
+    }
+
+    public static function wrapInCData(string $content): string
+    {
+        if ($content === '') {
+            return '';
+        }
+
+        return sprintf('<![CDATA[%s]]>', $content);
     }
 
     /**

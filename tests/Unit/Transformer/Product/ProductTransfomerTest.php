@@ -232,6 +232,13 @@ class ProductTransfomerTest extends LinioTestCase
         $this->assertEquals('Bar', (string) $children[1]);
     }
 
+    public function testItSanitizeHtmlAndWrapInCDataFromHtmlText(): void
+    {
+        $result = ProductTransformer::sanitizeHtmlAndWrapInCData('<p><strong>Good quality, great price!</strong></p><p><strong>hola</strong></p>');
+
+        $this->assertSame('<![CDATA[<p><strong>Good quality, great price!</strong></p><p><strong>hola</strong></p>]]>', $result);
+    }
+
     /**
      * @dataProvider transformedTypesToString
      */
