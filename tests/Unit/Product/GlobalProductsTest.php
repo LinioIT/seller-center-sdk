@@ -141,7 +141,7 @@ class GlobalProductsTest extends LinioTestCase
         }
 
         $this->assertContains(implode(',', $categoriesIds), $xml->Product->Categories);
-        $this->assertEquals($product->getDescription(), $xml->Product->Description);
+        $this->assertEquals(sprintf('<![CDATA[%s]]>', $product->getDescription()), (string) $xml->Product->Description);
         $this->assertEquals($product->getBrand()->getName(), $xml->Product->Brand);
         $this->assertEquals($product->getProductId(), $xml->Product->ProductId);
         $this->assertEquals($product->getTaxClass(), $xml->Product->TaxClass);
