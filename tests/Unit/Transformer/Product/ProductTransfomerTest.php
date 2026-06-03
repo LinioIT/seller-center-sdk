@@ -33,7 +33,7 @@ class ProductTransfomerTest extends LinioTestCase
             'Black Leather bagskasd',
             'M',
             Category::fromId(7080),
-            '<p>Womens black <b>leather & bag</b>, with ample space. Can be worn over the shoulder, or remove straps to carry in your hand.asdasd</p>',
+            '<p>Womens black <b>leather and bag</b>, with ample space. Can be worn over the shoulder, or remove straps to carry in your hand.asdasd</p>',
             Brand::fromName('Apple'),
             30000,
             '123456783',

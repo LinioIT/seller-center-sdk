@@ -56,12 +56,6 @@ class ProductTransformer
                 $attributeValue = implode(',', $attributeValue);
             }
 
-            if (strtolower((string) $attributeKey) === 'description') {
-                $value = self::sanitizeHtmlAndWrapInCData((string) $attributeValue);
-                $productData->addChild((string) $attributeKey, $value);
-                continue;
-            }
-
             $productData->addChild((string) $attributeKey, htmlspecialchars((string) $attributeValue));
         }
     }
@@ -108,6 +102,12 @@ class ProductTransformer
     public static function addAttributes(SimpleXMLElement $xml, array $attributes, array $overrideAttributes): void
     {
         foreach ($attributes as $attributeName => $attributeValue) {
+            if (strtolower((string) $attributeName) === 'description') {
+                $value = self::sanitizeHtmlAndWrapInCData((string) $attributeValue);
+                $xml->addChild((string) $attributeName, $value);
+                continue;
+            }
+
             if (in_array($attributeName, $overrideAttributes)) {
                 $xml->addChild(
                     $attributeName,
