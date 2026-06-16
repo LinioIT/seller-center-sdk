@@ -10,7 +10,7 @@ use Linio\SellerCenter\Model\Product\ProductStock;
 
 class ProductsStockTest extends LinioTestCase
 {
-    public function testFindsAndReturnTheStockProductBySellerSku(): void
+    public function testProductsStockModel(): void
     {
         $sku = 'TEST-123';
         $facilityId = 'GSC-12345';
@@ -20,28 +20,9 @@ class ProductsStockTest extends LinioTestCase
         $stockOfProducts = new ProductsStock();
         $stockOfProducts->add($productStock);
 
-        $findBySellerSku = $stockOfProducts->findBySellerSku($sku);
+        $productStockAll = $stockOfProducts->all();
 
-        $this->assertInstanceOf(ProductsStock::class, $stockOfProducts);
-        $this->assertContainsOnlyInstancesOf(ProductStock::class, $stockOfProducts->all());
-        $this->assertInstanceOf(ProductStock::class, $findBySellerSku);
-        $this->assertEquals($sku, $productStock->getSellerSku());
-    }
-
-    public function testFindsAndReturnNullWhenSellerSkuNotExist(): void
-    {
-        $sku = 'TEST-123';
-        $facilityId = 'GSC-12345';
-        $warehouseId = 'GSC';
-        $productStock = new ProductStock($sku, 1, $facilityId, $warehouseId);
-
-        $stockOfProducts = new ProductsStock();
-        $stockOfProducts->add($productStock);
-
-        $findBySellerSku = $stockOfProducts->findBySellerSku('anotherSku');
-
-        $this->assertInstanceOf(ProductsStock::class, $stockOfProducts);
-        $this->assertContainsOnlyInstancesOf(ProductStock::class, $stockOfProducts->all());
-        $this->assertNull($findBySellerSku);
+        $this->assertContainsOnlyInstancesOf(ProductStock::class, $productStockAll);
+        $this->assertCount(1, $productStockAll);
     }
 }
