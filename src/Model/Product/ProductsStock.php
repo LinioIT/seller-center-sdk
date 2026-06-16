@@ -23,15 +23,6 @@ class ProductsStock implements CollectionInterface
 
     public function add(ProductStock $productStock): void
     {
-        $this->collection[$productStock->getSellerSku()] = $productStock;
-    }
-
-    public function findBySellerSku(string $sellerSku): ?ProductStock
-    {
-        if (!key_exists($sellerSku, $this->collection)) {
-            return null;
-        }
-
-        return $this->collection[$sellerSku];
+        $this->collection[] = $productStock;
     }
 }

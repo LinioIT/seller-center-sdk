@@ -9,7 +9,7 @@ use Linio\SellerCenter\V2\Factory\Xml\Warehouse\WarehouseFactory;
 use Linio\SellerCenter\V2\Model\Warehouse\Warehouse;
 use PHPUnit\Framework\TestCase;
 
-class WarehouseTest extends TestCase
+class OrderWarehouseTest extends TestCase
 {
     public function testItReturnsValidWarehouse(): void
     {

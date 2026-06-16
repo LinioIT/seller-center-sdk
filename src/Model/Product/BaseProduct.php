@@ -156,7 +156,7 @@ abstract class BaseProduct implements JsonSerializable
         return $this->variation;
     }
 
-    public function getPrimaryCategory(): ?Category
+    public function getPrimaryCategory(): Category
     {
         return $this->primaryCategory;
     }

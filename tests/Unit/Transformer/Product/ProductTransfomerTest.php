@@ -33,7 +33,7 @@ class ProductTransfomerTest extends LinioTestCase
             'Black Leather bagskasd',
             'M',
             Category::fromId(7080),
-            '<p>Womens black <b>leather & bag</b>, with ample space. Can be worn over the shoulder, or remove straps to carry in your hand.asdasd</p>',
+            '<p>Womens black <b>leather and bag</b>, with ample space. Can be worn over the shoulder, or remove straps to carry in your hand.asdasd</p>',
             Brand::fromName('Apple'),
             30000,
             '123456783',
@@ -230,6 +230,13 @@ class ProductTransfomerTest extends LinioTestCase
         $this->assertEmpty((string) $children[0]);
         $this->assertEquals('Foo', $children[1]->getName());
         $this->assertEquals('Bar', (string) $children[1]);
+    }
+
+    public function testItSanitizeHtmlAndWrapInCDataFromHtmlText(): void
+    {
+        $result = ProductTransformer::sanitizeHtmlAndWrapInCData('<p><strong>Good quality, great price!</strong></p><p><strong>hola</strong></p>');
+
+        $this->assertSame('<![CDATA[<p><strong>Good quality, great price!</strong></p><p><strong>hola</strong></p>]]>', $result);
     }
 
     /**
