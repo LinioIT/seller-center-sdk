@@ -103,6 +103,10 @@ class ProductTransformer
     {
         foreach ($attributes as $attributeName => $attributeValue) {
             if (strtolower((string) $attributeName) === 'description') {
+                if ($attributeValue === null || $attributeValue === '') {
+                    continue;
+                }
+
                 $value = self::sanitizeHtmlAndWrapInCData((string) $attributeValue);
                 $xml->addChild((string) $attributeName, $value);
                 continue;
