@@ -105,7 +105,35 @@ class BaseManager
         $response = $this->generateRequest(false, $parameters, $request);
 
         $body = (string) $response->getBody();
-        $builtResponse = HandleResponse::parse($body);
+
+        try {
+            $builtResponse = HandleResponse::parse($body);
+
+            HandleResponse::validate($body);
+        } catch (\Throwable $e) {
+            $this->logger->error(
+                LogMessageFormatter::fromAction(
+                    $requestHeaders[self::REQUEST_ID_HEADER],
+                    $action,
+                    LogMessageFormatter::TYPE_REQUEST
+                ),
+                [
+                    'exception' => [
+                        'class' => get_class($e),
+                        'message' => $e->getMessage(),
+                        'code' => $e->getCode(),
+                    ],
+                    'request' => [
+                        'action' => $action,
+                        'parameters' => $parameters->all(),
+                        'body' => (string) $request->getBody(),
+                    ],
+                    'response_preview' => substr($body, 0, 5000),
+                ]
+            );
+
+            throw $e;
+        }
 
         if ($debug) {
             $this->logRequest(
@@ -119,8 +147,6 @@ class BaseManager
                 ]
             );
         }
-
-        HandleResponse::validate($body);
 
         return $builtResponse;
     }
