@@ -130,7 +130,7 @@ class ProductsTest extends LinioTestCase
         }
 
         $this->assertContains(implode(',', $categoriesIds), $xml->Product->Categories);
-        $this->assertEquals(sprintf('<![CDATA[%s]]>', $product->getDescription()), (string) $xml->Product->Description);
+        $this->assertEquals($product->getDescription(), (string) $xml->Product->Description);
         $this->assertEquals($product->getBrand()->getName(), $xml->Product->Brand);
         $this->assertEquals($product->getPrice(), (float) $xml->Product->Price);
         $this->assertEquals($product->getProductId(), $xml->Product->ProductId);

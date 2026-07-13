@@ -106,9 +106,8 @@ class ProductTransformer
                 if ($attributeValue === null || $attributeValue === '') {
                     continue;
                 }
-
                 $value = self::sanitizeHtmlAndWrapInCData((string) $attributeValue);
-                $xml->addChild((string) $attributeName, $value);
+                self::addChildWithCData($xml, (string) $attributeName, $value);
                 continue;
             }
 
@@ -133,6 +132,23 @@ class ProductTransformer
             $encodedValue = htmlspecialchars($adaptedValue);
             $xml->addChild($attributeName, $encodedValue);
         }
+    }
+
+    private static function addChildWithCData(SimpleXMLElement $xml, string $name, string $value): void
+    {
+        $simpleXmlChild = $xml->addChild($name);
+        $domNode = dom_import_simplexml($simpleXmlChild);
+
+        $cleanValue = preg_replace('/^<!\[CDATA\[(.*)\]\]>$/s', '$1', $value) ?? $value;
+        $cleanValue = str_replace(']]>', ']]]]><![CDATA[>', $cleanValue);
+
+        if ($domNode === false || $domNode->ownerDocument === null) {
+            $simpleXmlChild[0] = htmlspecialchars($cleanValue);
+
+            return;
+        }
+
+        $domNode->appendChild($domNode->ownerDocument->createCDATASection($cleanValue));
     }
 
     /**
