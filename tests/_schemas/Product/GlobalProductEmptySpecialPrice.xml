@@ -4,7 +4,7 @@
 	<SellerSku>21458191097</SellerSku>
 	<Name>Magic Global Product</Name>
 	<PrimaryCategory>123</PrimaryCategory>
-	<Description>&lt;![CDATA[This is a bold product.]]&gt;</Description>
+	<Description><![CDATA[This is a bold product.]]></Description>
 	<Brand>Samsung</Brand>
 	<ProductId>123326998</ProductId>
 	<Variation>XL</Variation>
