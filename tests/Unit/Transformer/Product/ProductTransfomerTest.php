@@ -74,6 +74,44 @@ class ProductTransfomerTest extends LinioTestCase
         $this->assertXmlStringEqualsXmlString($expectedXml, $xml->asXML());
     }
 
+    public function testItCreatesDescriptionAsRealCDataWithoutXmlWarnings(): void
+    {
+        $description = '<p><span>Learn & Grow</span></p>';
+        $productData = new ProductData('Nuevo', 1, 1, 1, 1);
+
+        $product = Product::fromBasicData(
+            'BLACK_BAG_TEST',
+            'Black Leather bagskasd',
+            'M',
+            Category::fromId(7080),
+            $description,
+            Brand::fromName('Apple'),
+            30000,
+            '123456783',
+            'IVA 19%',
+            $productData
+        );
+
+        $warnings = [];
+        set_error_handler(static function (int $severity, string $message) use (&$warnings): bool {
+            $warnings[] = $message;
+
+            return true;
+        });
+
+        $xml = new SimpleXMLElement('<Request/>');
+        ProductTransformer::asXml($xml, $product);
+        restore_error_handler();
+
+        $xmlString = $xml->asXML();
+
+        $this->assertSame([], array_values(array_filter($warnings, static function (string $warning): bool {
+            return str_contains($warning, 'SimpleXMLElement::addChild(): unterminated entity reference');
+        })));
+        $this->assertStringContainsString('<![CDATA[<p><span>Learn & Grow</span></p>]]>', $xmlString);
+        $this->assertStringNotContainsString('&amp;', $xmlString);
+    }
+
     /**
      * @dataProvider productXMLForFashionAttrProvider
      */
