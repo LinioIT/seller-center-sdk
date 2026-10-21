@@ -4,9 +4,9 @@ declare(strict_types=1);
 
 namespace Linio\SellerCenter\Unit\Webhook;
 
-use Linio\Component\Util\Json;
 use Linio\SellerCenter\Exception\InvalidXmlStructureException;
 use Linio\SellerCenter\Factory\Xml\Webhook\WebhookFactory;
+use Linio\SellerCenter\Helper\Json;
 use Linio\SellerCenter\LinioTestCase;
 use Linio\SellerCenter\Model\Webhook\Events;
 use Linio\SellerCenter\Model\Webhook\Webhook;

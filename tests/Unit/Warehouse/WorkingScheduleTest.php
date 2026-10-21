@@ -4,9 +4,9 @@ declare(strict_types=1);
 
 namespace Linio\SellerCenter\Model;
 
-use Linio\Component\Util\Json;
 use Linio\SellerCenter\Factory\Xml\Warehouse\ShiftHoursFactory;
 use Linio\SellerCenter\Factory\Xml\Warehouse\WorkingSchedulesFactory;
+use Linio\SellerCenter\Helper\Json;
 use Linio\SellerCenter\LinioTestCase;
 use Linio\SellerCenter\Model\Warehouse\ShiftHours;
 use Linio\SellerCenter\Model\Warehouse\WorkingSchedule;

@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace Linio\SellerCenter\Factory\Json;
 
-use Linio\Component\Util\Json;
+use Linio\SellerCenter\Helper\Json;
 use Linio\SellerCenter\Model\Webhook\Event;
 use Linio\SellerCenter\Model\Webhook\EventCallback;
 

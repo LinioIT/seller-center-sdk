@@ -4,10 +4,10 @@ declare(strict_types=1);
 
 namespace Linio\SellerCenter\Model;
 
-use Linio\Component\Util\Json;
 use Linio\SellerCenter\Exception\InvalidInvoiceDocumentFormatException;
 use Linio\SellerCenter\Exception\InvalidInvoiceTypeException;
 use Linio\SellerCenter\Exception\InvalidOperatorCodeException;
+use Linio\SellerCenter\Helper\Json;
 use Linio\SellerCenter\LinioTestCase;
 use Linio\SellerCenter\Model\Order\InvoiceDocument;
 use Linio\SellerCenter\Model\Order\OrderItem;

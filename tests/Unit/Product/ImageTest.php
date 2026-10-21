@@ -5,9 +5,9 @@ declare(strict_types=1);
 namespace Linio\SellerCenter\Product;
 
 use Faker\Generator;
-use Linio\Component\Util\Json;
 use Linio\SellerCenter\Exception\InvalidUrlException;
 use Linio\SellerCenter\Factory\Xml\Product\ImagesFactory;
+use Linio\SellerCenter\Helper\Json;
 use Linio\SellerCenter\LinioTestCase;
 use Linio\SellerCenter\Model\Product\Image;
 

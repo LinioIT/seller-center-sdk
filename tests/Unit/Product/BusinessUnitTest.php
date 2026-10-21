@@ -4,11 +4,11 @@ declare(strict_types=1);
 
 namespace Linio\SellerCenter\Unit\Product;
 
-use Linio\Component\Util\Json;
 use Linio\SellerCenter\Contract\BusinessUnitOperatorCodes;
 use Linio\SellerCenter\Exception\InvalidDomainException;
 use Linio\SellerCenter\Exception\InvalidXmlStructureException;
 use Linio\SellerCenter\Factory\Xml\Product\BusinessUnitFactory;
+use Linio\SellerCenter\Helper\Json;
 use Linio\SellerCenter\LinioTestCase;
 use Linio\SellerCenter\Model\Product\BusinessUnit;
 

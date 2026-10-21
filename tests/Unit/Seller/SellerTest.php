@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace Linio\SellerCenter\Factory\Xml\Seller;
 
-use Linio\Component\Util\Json;
+use Linio\SellerCenter\Helper\Json;
 use Linio\SellerCenter\LinioTestCase;
 use Linio\SellerCenter\Model\Seller\Seller;
 

@@ -4,13 +4,13 @@ declare(strict_types=1);
 
 namespace Linio\SellerCenter\Service;
 
-use Linio\Component\Util\Json;
 use Linio\SellerCenter\Application\Parameters;
 use Linio\SellerCenter\Contract\ProductFilters;
 use Linio\SellerCenter\Exception\EmptyArgumentException;
 use Linio\SellerCenter\Factory\Xml\FeedResponseFactory;
 use Linio\SellerCenter\Factory\Xml\Product\ProductsFactory;
 use Linio\SellerCenter\Factory\Xml\Product\ProductsStockFactory;
+use Linio\SellerCenter\Helper\Json;
 use Linio\SellerCenter\Model\Product\Images;
 use Linio\SellerCenter\Model\Product\Product;
 use Linio\SellerCenter\Model\Product\Products;

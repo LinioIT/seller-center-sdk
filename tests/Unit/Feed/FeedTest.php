@@ -4,9 +4,9 @@ declare(strict_types=1);
 
 namespace Linio\SellerCenter\Unit;
 
-use Linio\Component\Util\Json;
 use Linio\SellerCenter\Exception\EmptyArgumentException;
 use Linio\SellerCenter\Factory\Xml\Feed\FeedFactory;
+use Linio\SellerCenter\Helper\Json;
 use Linio\SellerCenter\LinioTestCase;
 use Linio\SellerCenter\Model\Feed\Feed;
 use Linio\SellerCenter\Model\Feed\FeedError;

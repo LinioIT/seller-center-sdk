@@ -6,8 +6,8 @@ namespace Linio\SellerCenter;
 
 use Faker;
 use Faker\Generator;
-use Linio\Component\Util\Json;
 use Linio\SellerCenter\Application\Configuration;
+use Linio\SellerCenter\Helper\Json;
 use PHPUnit\Framework\TestCase;
 use Prophecy\PhpUnit\ProphecyTrait;
 use Prophecy\Prophecy\ObjectProphecy;

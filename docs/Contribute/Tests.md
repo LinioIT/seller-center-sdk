@@ -74,6 +74,12 @@ We will be using an alias for executing the development commands.
 
 > `dcli composer install`
 
+`symfony/var-dumper` is pinned to `7.4.21` in `require-dev`. The other Symfony
+components are locked to their latest available `7.4` releases up to `7.4.21`,
+without `conflict` constraints. `composer install` preserves these versions;
+`composer update` may change the transitive versions. Symfony Contracts and
+Polyfills use independent version numbers.
+
 Running tests
 -------------
 
@@ -97,3 +103,11 @@ To run specific unit test you can use --filter option:
 PHPUnit data providers must be public static methods. Return input data from
 providers and build fixtures that depend on the test instance inside the test
 method, after `setUp()` has run.
+
+### JSON compatibility
+
+JSON encoding and decoding use `Linio\SellerCenter\Helper\Json`, backed by PHP's
+native JSON extension, without `linio/util`. The helper preserves associative
+arrays, default escaping, `LogicException` error messages and the previous
+empty-input behavior (including decoding `''` and `'0'` as `null`). Its regression
+tests are in `tests/Helper/JsonTest.php`.

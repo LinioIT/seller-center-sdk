@@ -5,11 +5,11 @@ declare(strict_types=1);
 namespace Linio\SellerCenter\Unit\Product;
 
 use Faker\Generator;
-use Linio\Component\Util\Json;
 use Linio\SellerCenter\Exception\EmptyArgumentException;
 use Linio\SellerCenter\Exception\InvalidDomainException;
 use Linio\SellerCenter\Exception\InvalidXmlStructureException;
 use Linio\SellerCenter\Factory\Xml\Product\ProductFactory;
+use Linio\SellerCenter\Helper\Json;
 use Linio\SellerCenter\LinioTestCase;
 use Linio\SellerCenter\Model\Brand\Brand;
 use Linio\SellerCenter\Model\Category\Categories;

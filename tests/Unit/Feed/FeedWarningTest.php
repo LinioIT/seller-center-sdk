@@ -4,10 +4,10 @@ declare(strict_types=1);
 
 namespace Linio\SellerCenter\Feed;
 
-use Linio\Component\Util\Json;
 use Linio\SellerCenter\Exception\EmptyArgumentException;
 use Linio\SellerCenter\Exception\InvalidXmlStructureException;
 use Linio\SellerCenter\Factory\Xml\Feed\FeedWarningFactory;
+use Linio\SellerCenter\Helper\Json;
 use Linio\SellerCenter\LinioTestCase;
 use Linio\SellerCenter\Model\Feed\FeedWarning;
 

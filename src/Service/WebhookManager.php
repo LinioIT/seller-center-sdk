@@ -4,12 +4,12 @@ declare(strict_types=1);
 
 namespace Linio\SellerCenter\Service;
 
-use Linio\Component\Util\Json;
 use Linio\SellerCenter\Application\Parameters;
 use Linio\SellerCenter\Exception\EmptyArgumentException;
 use Linio\SellerCenter\Exception\InvalidUrlException;
 use Linio\SellerCenter\Factory\Xml\Webhook\EventsFactory;
 use Linio\SellerCenter\Factory\Xml\Webhook\WebhooksFactory;
+use Linio\SellerCenter\Helper\Json;
 use Linio\SellerCenter\Model\Webhook\Event;
 use Linio\SellerCenter\Model\Webhook\Webhook;
 use Linio\SellerCenter\Transformer\Webhook\WebhookTransformer;

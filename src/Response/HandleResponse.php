@@ -4,7 +4,6 @@ declare(strict_types=1);
 
 namespace Linio\SellerCenter\Response;
 
-use Linio\Component\Util\Json as JsonFormatter;
 use Linio\SellerCenter\Application\ResponseStatus;
 use Linio\SellerCenter\Exception\EmptyJsonException;
 use Linio\SellerCenter\Exception\EmptyXmlException;
@@ -12,6 +11,7 @@ use Linio\SellerCenter\Exception\ErrorJsonResponseException;
 use Linio\SellerCenter\Exception\ErrorResponseException;
 use Linio\SellerCenter\Exception\InvalidJsonException;
 use Linio\SellerCenter\Exception\InvalidXmlException;
+use Linio\SellerCenter\Helper\Json as JsonFormatter;
 
 class HandleResponse
 {

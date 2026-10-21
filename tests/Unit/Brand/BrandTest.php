@@ -4,11 +4,11 @@ declare(strict_types=1);
 
 namespace Linio\SellerCenter\Brand\Brand;
 
-use Linio\Component\Util\Json;
 use Linio\SellerCenter\Exception\InvalidBrandIdException;
 use Linio\SellerCenter\Exception\InvalidBrandNameException;
 use Linio\SellerCenter\Exception\InvalidXmlStructureException;
 use Linio\SellerCenter\Factory\Xml\Brand\BrandFactory;
+use Linio\SellerCenter\Helper\Json;
 use Linio\SellerCenter\LinioTestCase;
 use Linio\SellerCenter\Model\Brand\Brand;
 

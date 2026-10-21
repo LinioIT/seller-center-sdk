@@ -4,8 +4,8 @@ declare(strict_types=1);
 
 namespace Linio\SellerCenter\Service;
 
-use Linio\Component\Util\Json;
 use Linio\SellerCenter\Factory\Xml\Document\DocumentFactory;
+use Linio\SellerCenter\Helper\Json;
 use Linio\SellerCenter\Model\Document\Document;
 
 class DocumentManager extends BaseManager

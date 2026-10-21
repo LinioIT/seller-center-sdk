@@ -4,7 +4,6 @@ declare(strict_types=1);
 
 namespace Linio\SellerCenter\Service;
 
-use Linio\Component\Util\Json;
 use Linio\SellerCenter\Application\Parameters;
 use Linio\SellerCenter\Contract\OrderSortDirections;
 use Linio\SellerCenter\Contract\OrderSortFilters;
@@ -18,6 +17,7 @@ use Linio\SellerCenter\Factory\Xml\Order\OrderItemsFactory;
 use Linio\SellerCenter\Factory\Xml\Order\OrdersFactory;
 use Linio\SellerCenter\Factory\Xml\Order\OrdersItemsFactory;
 use Linio\SellerCenter\Factory\Xml\Order\TrackingCodeFactory;
+use Linio\SellerCenter\Helper\Json;
 use Linio\SellerCenter\Model\Order\FailureReason;
 use Linio\SellerCenter\Model\Order\Order;
 use Linio\SellerCenter\Model\Order\OrderItem;

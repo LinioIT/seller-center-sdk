@@ -4,11 +4,11 @@ declare(strict_types=1);
 
 namespace Linio\SellerCenter\Service;
 
-use Linio\Component\Util\Json;
 use Linio\SellerCenter\Factory\Xml\Category\AttributesSetFactory;
 use Linio\SellerCenter\Factory\Xml\Category\CategoriesFactory;
 use Linio\SellerCenter\Factory\Xml\Category\CategoryAttributesFactory;
 use Linio\SellerCenter\Factory\Xml\Category\CategoryContentScoreRulesFactory;
+use Linio\SellerCenter\Helper\Json;
 use Linio\SellerCenter\Model\Category\AttributeSet;
 use Linio\SellerCenter\Model\Category\Category;
 use Linio\SellerCenter\Model\Category\CategoryAttribute;

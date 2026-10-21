@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace Linio\SellerCenter\Response;
 
-use Linio\Component\Util\Json;
+use Linio\SellerCenter\Helper\Json;
 
 class SuccessJsonResponse
 {

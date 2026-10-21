@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace Linio\SellerCenter\Factory\Xml\Order;
 
-use Linio\Component\Util\Json;
+use Linio\SellerCenter\Helper\Json;
 use Linio\SellerCenter\Model\Order\OrderItem;
 use Linio\SellerCenter\Validator\XmlStructureValidator;
 
