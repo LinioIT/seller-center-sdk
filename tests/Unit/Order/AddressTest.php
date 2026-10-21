@@ -119,7 +119,7 @@ class AddressTest extends LinioTestCase
         );
     }
 
-    public function invalidXmlStructure(): array
+    public static function invalidXmlStructure(): array
     {
         return [
             ['FirstName'],

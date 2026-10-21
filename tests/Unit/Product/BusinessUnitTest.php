@@ -290,7 +290,7 @@ class BusinessUnitTest extends LinioTestCase
         BusinessUnitFactory::make($xml);
     }
 
-    public function invalidXmlStructure(): array
+    public static function invalidXmlStructure(): array
     {
         return [
             ['IsPublished'],
@@ -301,14 +301,14 @@ class BusinessUnitTest extends LinioTestCase
         ];
     }
 
-    public function invalidParameters(): array
+    public static function invalidParameters(): array
     {
         return [
-            ['SpecialPrice', $this->operatorCode, $this->price, $this->stock, $this->status, $this->isPublished, $this->businessUnit, -1000],
-            ['Status', $this->operatorCode, $this->price, $this->stock, 'Unavailable', $this->isPublished, $this->businessUnit, $this->specialPrice],
-            ['Stock', $this->operatorCode, $this->price, -1, $this->status, $this->isPublished, $this->businessUnit, $this->specialPrice],
-            ['Price', $this->operatorCode, -1, $this->stock, $this->status, $this->isPublished, $this->businessUnit, $this->specialPrice],
-            ['OperatorCode', 'sope', $this->price, $this->stock, $this->status, $this->isPublished, $this->businessUnit, $this->specialPrice],
+            ['SpecialPrice', 'facl', 12990.00, 4, 'active', 1, 'Falabella', -1000],
+            ['Status', 'facl', 12990.00, 4, 'Unavailable', 1, 'Falabella', 12000.00],
+            ['Stock', 'facl', 12990.00, -1, 'active', 1, 'Falabella', 12000.00],
+            ['Price', 'facl', -1, 4, 'active', 1, 'Falabella', 12000.00],
+            ['OperatorCode', 'sope', 12990.00, 4, 'active', 1, 'Falabella', 12000.00],
         ];
     }
 }

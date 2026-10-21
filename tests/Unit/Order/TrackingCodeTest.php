@@ -63,7 +63,7 @@ class TrackingCodeTest extends LinioTestCase
         $this->assertJsonStringEqualsJsonString(Json::encode($expectedJson), Json::encode($address));
     }
 
-    public function invalidXmlStructure(): array
+    public static function invalidXmlStructure(): array
     {
         return [
             ['DispatchId'],

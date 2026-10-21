@@ -70,7 +70,7 @@ class SellerManagerTest extends LinioTestCase
         $sdkClient->seller()->getStatistics($debug);
     }
 
-    public function debugParameter()
+    public static function debugParameter()
     {
         return [
             [false],

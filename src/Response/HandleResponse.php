@@ -55,10 +55,15 @@ class HandleResponse
      */
     public static function getXml(string $data): \SimpleXMLElement
     {
+        $useInternalErrors = libxml_use_internal_errors(true);
+
         try {
             $xml = simplexml_load_string($data);
         } catch (\Exception $e) {
             throw new InvalidXmlException();
+        } finally {
+            libxml_clear_errors();
+            libxml_use_internal_errors($useInternalErrors);
         }
 
         if (empty($xml)) {

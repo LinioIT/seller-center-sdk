@@ -7,6 +7,8 @@ namespace Linio\SellerCenter\Service\Contract;
 use Linio\SellerCenter\Application\Parameters;
 use Linio\SellerCenter\Model\Product\Contract\ProductInterface;
 use Linio\SellerCenter\Model\Product\Products;
+use Linio\SellerCenter\Model\Product\ProductsStock;
+use Linio\SellerCenter\Model\Product\ProductStock;
 use Linio\SellerCenter\Response\FeedResponse;
 
 interface ProductManagerInterface
@@ -137,4 +139,47 @@ interface ProductManagerInterface
     ): array;
 
     public function setListDimensions(Parameters &$parameters, int $limit, int $offset): void;
+
+    /**
+     * @param string[] $sellerSkuList
+     *
+     * @return ProductStock[]
+     */
+    public function getStock(
+        array $sellerSkuList = [],
+        int $limit = self::DEFAULT_LIMIT,
+        int $offset = self::DEFAULT_OFFSET,
+        bool $debug = true,
+    ): array;
+
+    /**
+     * @param string[] $sellerSkuList
+     *
+     * @return ProductStock[]
+     */
+    public function getStockByWarehouseId(
+        array $sellerSkuList,
+        string $sellerWarehouseId,
+        int $limit = self::DEFAULT_LIMIT,
+        int $offset = self::DEFAULT_OFFSET,
+        bool $debug = true,
+    ): array;
+
+    /**
+     * @param string[] $sellerSkuList
+     *
+     * @return ProductStock[]
+     */
+    public function getStockByFacilityId(
+        array $sellerSkuList,
+        string $facilityId,
+        int $limit = self::DEFAULT_LIMIT,
+        int $offset = self::DEFAULT_OFFSET,
+        bool $debug = true,
+    ): array;
+
+    public function updateStock(
+        ProductsStock $productsStock,
+        bool $debug = true,
+    ): FeedResponse;
 }

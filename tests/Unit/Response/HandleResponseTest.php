@@ -44,6 +44,39 @@ class HandleResponseTest extends LinioTestCase
         HandleResponse::validate($response);
     }
 
+    /**
+     * @dataProvider xmlErrorHandling
+     */
+    public function testItRestoresLibxmlErrorHandling(string $xml, bool $useInternalErrors, bool $invalid): void
+    {
+        $previous = libxml_use_internal_errors($useInternalErrors);
+
+        try {
+            if ($invalid) {
+                $this->expectException(EmptyXmlException::class);
+            }
+
+            try {
+                HandleResponse::getXml($xml);
+            } finally {
+                $this->assertSame($useInternalErrors, libxml_use_internal_errors());
+                $this->assertSame([], libxml_get_errors());
+            }
+        } finally {
+            libxml_use_internal_errors($previous);
+        }
+    }
+
+    public static function xmlErrorHandling(): array
+    {
+        return [
+            ['<xml><Test>test</Test></xml>', false, false],
+            ['<xml><Test>test</Test></xml>', true, false],
+            ['invalid-xml', false, true],
+            ['invalid-xml', true, true],
+        ];
+    }
+
     public function testItThrowAnExceptionWithAnErrorResponse(): void
     {
         $this->expectException(ErrorResponseException::class);

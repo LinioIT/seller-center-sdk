@@ -219,7 +219,7 @@ class ProductDataTest extends TestCase
         $this->assertJsonStringEqualsJsonString($expectedJson, Json::encode($productData));
     }
 
-    public function invalidPackageMeasures(): array
+    public static function invalidPackageMeasures(): array
     {
         return [
             [-1],

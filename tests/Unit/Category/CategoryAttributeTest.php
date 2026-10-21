@@ -84,7 +84,7 @@ class CategoryAttributeTest extends LinioTestCase
         $this->assertEquals($maxLength, $result->getMaxLength());
     }
 
-    public function categoryTypesProvider()
+    public static function categoryTypesProvider()
     {
         return [
             [
@@ -662,7 +662,7 @@ class CategoryAttributeTest extends LinioTestCase
         $this->assertEquals($expected, $result->getMaxLength());
     }
 
-    public function maxLengthTypesProvider()
+    public static function maxLengthTypesProvider()
     {
         return [
             ['maxLength' => 15, 'expected' => 15],

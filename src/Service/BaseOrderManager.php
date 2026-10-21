@@ -9,6 +9,7 @@ use Linio\SellerCenter\Application\Parameters;
 use Linio\SellerCenter\Contract\OrderSortDirections;
 use Linio\SellerCenter\Contract\OrderSortFilters;
 use Linio\SellerCenter\Contract\OrderStatus;
+use Linio\SellerCenter\Contract\ShippingTypeFilters;
 use Linio\SellerCenter\Exception\EmptyArgumentException;
 use Linio\SellerCenter\Exception\InvalidDomainException;
 use Linio\SellerCenter\Factory\Xml\Order\FailureReasonsFactory;
@@ -399,6 +400,7 @@ class BaseOrderManager extends BaseManager
         string $sortBy = self::DEFAULT_SORT_BY,
         string $sortDirection = self::DEFAULT_SORT_DIRECTION,
         ?string $dateFormat = null,
+        ?string $shippingType = null,
         bool $debug = true,
     ): array {
         $parameters = $this->makeParametersForGetOrdersAction();
@@ -425,6 +427,10 @@ class BaseOrderManager extends BaseManager
 
         if (!empty($status) && in_array($status, OrderStatus::STATUS)) {
             $parameters->set(['Status' => $status]);
+        }
+
+        if (!empty($shippingType) && in_array($shippingType, ShippingTypeFilters::SHIPPING_TYPES)) {
+            $parameters->set(['ShippingType' => $shippingType]);
         }
 
         return $this->getOrders(

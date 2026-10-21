@@ -74,7 +74,7 @@ class QualityControlManagerTest extends LinioTestCase
         $this->assertSame($expected->all(), $parameters->all());
     }
 
-    public function parametersProvider(): array
+    public static function parametersProvider(): array
     {
         return [
             [0, 0, QualityControlManager::DEFAULT_LIMIT, QualityControlManager::DEFAULT_OFFSET],

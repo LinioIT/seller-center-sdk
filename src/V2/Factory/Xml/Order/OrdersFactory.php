@@ -1,0 +1,22 @@
+<?php
+
+declare(strict_types=1);
+
+namespace Linio\SellerCenter\V2\Factory\Xml\Order;
+
+use Linio\SellerCenter\V2\Model\Order\Orders;
+
+class OrdersFactory
+{
+    public static function make(\SimpleXMLElement $xml): Orders
+    {
+        $orders = new Orders();
+
+        foreach ($xml->Orders->Order as $item) {
+            $order = OrderFactory::make($item);
+            $orders->add($order);
+        }
+
+        return $orders;
+    }
+}

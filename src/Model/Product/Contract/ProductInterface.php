@@ -27,7 +27,7 @@ interface ProductInterface
 
     public function getVariation(): ?string;
 
-    public function getPrimaryCategory(): Category;
+    public function getPrimaryCategory(): ?Category;
 
     public function getCategories(): Categories;
 
@@ -59,7 +59,7 @@ interface ProductInterface
 
     public function setName(string $name): void;
 
-    public function setVariation(string $variation): void;
+    public function setVariation(?string $variation): void;
 
     public function setPrimaryCategory(Category $primaryCategory): void;
 

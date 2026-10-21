@@ -115,11 +115,11 @@ class FeedTest extends LinioTestCase
         $this->assertEquals($file, $failureReports->getFile());
     }
 
-    public function feedRandomData()
+    public static function feedRandomData()
     {
-        $faker = $this->getFaker();
+        $faker = \Faker\Factory::create();
 
-        $id = $this->getFaker()->uuid;
+        $id = $faker->uuid;
         $status = 'Finished';
         $action = 'ProductUpdate';
         $created = $faker->dateTime()->format('Y-m-d H:i:s');

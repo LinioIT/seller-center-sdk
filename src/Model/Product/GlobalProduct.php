@@ -52,6 +52,7 @@ class GlobalProduct extends BaseProduct implements \JsonSerializable, ProductInt
     {
         $this->productData = new ProductData();
         $this->images = new Images();
+        $this->variationAttributes = new VariationAttributes();
     }
 
     /**
@@ -71,6 +72,7 @@ class GlobalProduct extends BaseProduct implements \JsonSerializable, ProductInt
         ?Images $images = null,
         ?string $qcStatus = null,
         ?int $contentScore = null,
+        ?VariationAttributes $variationAttributes = null,
     ): self {
         self::ValidateArguments($sellerSku, $name, $description);
 
@@ -87,7 +89,8 @@ class GlobalProduct extends BaseProduct implements \JsonSerializable, ProductInt
             $productData,
             $images,
             $qcStatus,
-            $contentScore
+            $contentScore,
+            $variationAttributes
         );
     }
 
@@ -108,6 +111,7 @@ class GlobalProduct extends BaseProduct implements \JsonSerializable, ProductInt
         ?Images $images = null,
         ?string $qcStatus = null,
         ?int $contentScore = null,
+        ?VariationAttributes $variationAtributes = null,
     ): self {
         $product = new static();
 
@@ -146,6 +150,10 @@ class GlobalProduct extends BaseProduct implements \JsonSerializable, ProductInt
             $product->setContentScore($contentScore);
         }
 
+        if (!empty($variationAtributes)) {
+            $product->setVariationAttributes($variationAtributes);
+        }
+
         return $product;
     }
 
@@ -156,7 +164,7 @@ class GlobalProduct extends BaseProduct implements \JsonSerializable, ProductInt
         string $sellerSku,
         ?string $name,
         ?string $variation,
-        Category $primaryCategory,
+        ?Category $primaryCategory,
         ?string $description,
         Brand $brand,
         BusinessUnits $businessUnits,
@@ -166,6 +174,7 @@ class GlobalProduct extends BaseProduct implements \JsonSerializable, ProductInt
         ?Images $images = null,
         ?string $qcStatus = null,
         ?int $contentScore = null,
+        ?VariationAttributes $variationAttributes = null,
     ): self {
         if (empty($sellerSku)) {
             throw new EmptyArgumentException('SellerSku');
@@ -174,13 +183,16 @@ class GlobalProduct extends BaseProduct implements \JsonSerializable, ProductInt
         $product = new static();
 
         $product->setSellerSku($sellerSku);
-        $product->setPrimaryCategory($primaryCategory);
         $product->setBrand($brand);
         $product->setBusinessUnits($businessUnits);
         $product->setProductData($productData);
 
         $categories = new Categories();
         $product->setCategories($categories);
+
+        if (!empty($primaryCategory)) {
+            $product->setPrimaryCategory($primaryCategory);
+        }
 
         if (!empty($variation)) {
             $product->setVariation($variation);
@@ -212,6 +224,10 @@ class GlobalProduct extends BaseProduct implements \JsonSerializable, ProductInt
 
         if (!empty($description)) {
             $product->setDescription($description);
+        }
+
+        if (!empty($variationAttributes)) {
+            $product->setVariationAttributes($variationAttributes);
         }
 
         return $product;
@@ -325,6 +341,7 @@ class GlobalProduct extends BaseProduct implements \JsonSerializable, ProductInt
         $serialized->colorBasico = $this->colorBasico;
         $serialized->size = $this->size;
         $serialized->talla = $this->talla;
+        $serialized->variationAttributes = $this->variationAttributes;
 
         return $serialized;
     }

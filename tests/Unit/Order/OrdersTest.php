@@ -93,7 +93,7 @@ class OrdersTest extends LinioTestCase
         return $this->getSchema($schema);
     }
 
-    public function simpleXmlElementsWithoutAParameter(): array
+    public static function simpleXmlElementsWithoutAParameter(): array
     {
         return [
             ['OrderId'],

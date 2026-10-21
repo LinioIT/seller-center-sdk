@@ -222,7 +222,7 @@ class OrderManagerTest extends LinioTestCase
         return $this->getSchema($schema);
     }
 
-    public function debugParameter()
+    public static function debugParameter()
     {
         return [
             [false],

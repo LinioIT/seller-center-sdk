@@ -1,4 +1,3 @@
-version: '3.7'
 services:
   php-cs-fixer:
     image: linio/seller-center-sdk:latest

@@ -18,6 +18,7 @@ use Linio\SellerCenter\Model\Product\GlobalProduct;
 use Linio\SellerCenter\Model\Product\Image;
 use Linio\SellerCenter\Model\Product\Images;
 use Linio\SellerCenter\Model\Product\ProductData;
+use Linio\SellerCenter\Model\Product\VariationAttributes;
 
 class GlobalProductTest extends LinioTestCase
 {
@@ -66,6 +67,7 @@ class GlobalProductTest extends LinioTestCase
 
     protected $product;
     protected Generator $faker;
+    protected $variationAttributes;
 
     public function setUp(): void
     {
@@ -84,6 +86,12 @@ class GlobalProductTest extends LinioTestCase
             $this->packageLength,
             $this->packageWeight
         );
+
+        $this->variationAttributes = new VariationAttributes([
+            'color' => $this->color,
+            'colorBasico' => $this->colorBasico,
+            'talla' => $this->talla,
+        ]);
 
         $this->businessUnits = new BusinessUnits();
         $businessUnit = new BusinessUnit(
@@ -152,7 +160,7 @@ class GlobalProductTest extends LinioTestCase
             $this->sellerSku,
             null,
             $this->variation,
-            $this->primaryCategory,
+            null,
             null,
             $this->brand,
             $this->businessUnits,
@@ -168,7 +176,7 @@ class GlobalProductTest extends LinioTestCase
         $this->assertEquals($product->getSellerSku(), $this->sellerSku);
         $this->assertEquals($product->getName(), null);
         $this->assertEquals($product->getVariation(), $this->variation);
-        $this->assertEquals($product->getPrimaryCategory(), $this->primaryCategory);
+        $this->assertEquals($product->all()['PrimaryCategory'], null);
         $this->assertEquals($product->getDescription(), null);
         $this->assertEquals($product->getBrand(), $this->brand);
         $this->assertEquals($product->getProductId(), null);
@@ -235,8 +243,9 @@ class GlobalProductTest extends LinioTestCase
     /**
      * @dataProvider xmlGlobalProductProvider
      */
-    public function testItMakesAProductFromXml(string $xmlGlobalProduct, bool $hasFashionAttr): void
+    public function testItMakesAProductFromXml(bool $hasFashionAttr): void
     {
+        $xmlGlobalProduct = $this->createXmlStringForAGlobalProductWithFashion($hasFashionAttr);
         $xml = new \SimpleXMLElement($xmlGlobalProduct);
 
         $product = GlobalProductFactory::make($xml);
@@ -297,7 +306,11 @@ class GlobalProductTest extends LinioTestCase
             $this->businessUnits,
             $this->productId,
             $this->taxClass,
-            $this->productData
+            $this->productData,
+            null,
+            null,
+            null,
+            $this->variationAttributes
         );
 
         $product->setShopSku($this->shopSku);
@@ -319,6 +332,9 @@ class GlobalProductTest extends LinioTestCase
         $expectedJson['images'][0]['url'] = $this->images->all()[0]->getUrl();
         $expectedJson['images'][1]['url'] = $this->images->all()[1]->getUrl();
         $expectedJson['images'][2]['url'] = $this->images->all()[2]->getUrl();
+        $expectedJson['variationAttributes']['Color'] = $this->variationAttributes->getVariationAttribute('Color');
+        $expectedJson['variationAttributes']['ColorBasico'] = $this->variationAttributes->getVariationAttribute('ColorBasico');
+        $expectedJson['variationAttributes']['Talla'] = $this->variationAttributes->getVariationAttribute('Talla');
 
         $this->assertJsonStringEqualsJsonString(Json::encode($expectedJson), Json::encode($product));
     }
@@ -366,7 +382,7 @@ class GlobalProductTest extends LinioTestCase
         GlobalProductFactory::make($xml);
     }
 
-    public function invalidXmlStructure(): array
+    public static function invalidXmlStructure(): array
     {
         return [
             ['SellerSku'],
@@ -452,15 +468,13 @@ class GlobalProductTest extends LinioTestCase
     /**
      * @return mixed[]
      */
-    public function xmlGlobalProductProvider(): array
+    public static function xmlGlobalProductProvider(): array
     {
         return [
             'with variation without fashion data' => [
-                $this->createXmlStringForAGlobalProductWithFashion(false),
                 false,
             ],
             'without variation with fashion data' => [
-                $this->createXmlStringForAGlobalProductWithFashion(true),
                 true,
             ],
         ];

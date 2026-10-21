@@ -83,7 +83,7 @@ class ParametersTest extends LinioTestCase
         $this->assertEquals('XML', $basics['Format']);
     }
 
-    public function configurationProvider(): array
+    public static function configurationProvider(): array
     {
         return [
             'default case' => [

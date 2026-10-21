@@ -273,7 +273,7 @@ class GlobalOrderManagerTest extends LinioTestCase
         );
     }
 
-    public function debugParameter()
+    public static function debugParameter()
     {
         return [
             [false],

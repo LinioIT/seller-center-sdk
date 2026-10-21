@@ -286,7 +286,7 @@ class OrderTest extends LinioTestCase
         );
     }
 
-    public function invalidXmlStructure(): array
+    public static function invalidXmlStructure(): array
     {
         return [
             ['OrderId'],
@@ -312,7 +312,7 @@ class OrderTest extends LinioTestCase
         ];
     }
 
-    public function dataVariations(): array
+    public static function dataVariations(): array
     {
         return [
             ['orderNumber'],

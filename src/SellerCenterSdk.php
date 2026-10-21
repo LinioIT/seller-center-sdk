@@ -24,7 +24,9 @@ use Linio\SellerCenter\Service\ProductManager;
 use Linio\SellerCenter\Service\QualityControlManager;
 use Linio\SellerCenter\Service\SellerManager;
 use Linio\SellerCenter\Service\ShipmentManager;
+use Linio\SellerCenter\Service\WarehouseManager;
 use Linio\SellerCenter\Service\WebhookManager;
+use Linio\SellerCenter\V2\Service\OrderManager as OrderManagerV2;
 use Psr\Http\Client\ClientInterface as PsrClientInterface;
 use Psr\Log\LoggerInterface;
 use Psr\Log\NullLogger;
@@ -48,6 +50,8 @@ class SellerCenterSdk
     protected ?ShipmentManager $shipment;
     protected ?SellerManager $seller;
     protected ?GlobalSellerManager $globalSeller;
+    protected ?OrderManagerV2 $ordersV2;
+    protected ?WarehouseManager $warehouses;
 
     /**
      * @param GuzzleClientInterface|PsrClientInterface|null $client
@@ -190,6 +194,20 @@ class SellerCenterSdk
         return $this->globalOrders;
     }
 
+    public function ordersV2(): OrderManagerV2
+    {
+        if (empty($this->ordersV2)) {
+            $this->ordersV2 = new OrderManagerV2(
+                $this->configuration,
+                $this->client,
+                $this->parameters,
+                $this->logger
+            );
+        }
+
+        return $this->ordersV2;
+    }
+
     public function qualityControl(): QualityControlManager
     {
         if (!isset($this->qualityControl)) {
@@ -258,5 +276,19 @@ class SellerCenterSdk
         }
 
         return $this->globalSeller;
+    }
+
+    public function warehouses(): WarehouseManager
+    {
+        if (empty($this->warehouses)) {
+            $this->warehouses = new WarehouseManager(
+                $this->configuration,
+                $this->client,
+                $this->parameters,
+                $this->logger
+            );
+        }
+
+        return $this->warehouses;
     }
 }

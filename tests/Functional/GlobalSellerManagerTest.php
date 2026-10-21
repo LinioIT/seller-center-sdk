@@ -70,7 +70,7 @@ class GlobalSellerManagerTest extends LinioTestCase
         $sdkClient->globalSeller()->getSellerByUser($debug);
     }
 
-    public function debugParameter()
+    public static function debugParameter()
     {
         return [
             [false],

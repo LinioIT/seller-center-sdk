@@ -10,12 +10,16 @@ use Linio\SellerCenter\Contract\ProductFilters;
 use Linio\SellerCenter\Exception\EmptyArgumentException;
 use Linio\SellerCenter\Factory\Xml\FeedResponseFactory;
 use Linio\SellerCenter\Factory\Xml\Product\ProductsFactory;
+use Linio\SellerCenter\Factory\Xml\Product\ProductsStockFactory;
 use Linio\SellerCenter\Model\Product\Images;
 use Linio\SellerCenter\Model\Product\Product;
 use Linio\SellerCenter\Model\Product\Products;
+use Linio\SellerCenter\Model\Product\ProductsStock;
+use Linio\SellerCenter\Model\Product\ProductStock;
 use Linio\SellerCenter\Response\FeedResponse;
 use Linio\SellerCenter\Service\Contract\ProductManagerInterface;
 use Linio\SellerCenter\Transformer\Product\ProductsTransformer;
+use Linio\SellerCenter\Transformer\Product\StocksTransformer;
 
 class ProductManager extends BaseManager implements ProductManagerInterface
 {
@@ -398,6 +402,130 @@ class ProductManager extends BaseManager implements ProductManagerInterface
                 'Limit' => $verifiedLimit,
                 'Offset' => $verifiedOffset,
             ]
+        );
+    }
+
+    /**
+     * @param string[] $sellerSkuList
+     *
+     * @return ProductStock[]
+     */
+    public function getStock(
+        array $sellerSkuList = [],
+        int $limit = self::DEFAULT_LIMIT,
+        int $offset = self::DEFAULT_OFFSET,
+        bool $debug = true,
+    ): array {
+        $action = 'GetStock';
+
+        $parameters = $this->makeParametersForAction($action);
+
+        $this->setListDimensions($parameters, $limit, $offset);
+
+        if (!empty($sellerSkuList)) {
+            $parameters->set(['SellerSku' => Json::encode($sellerSkuList)]);
+        }
+
+        $builtResponse = $this->executeAction(
+            $action,
+            $parameters,
+            null,
+            'GET',
+            $debug
+        );
+
+        $stockOfProducts = ProductsStockFactory::make($builtResponse->getBody());
+
+        return array_values($stockOfProducts->all());
+    }
+
+    /**
+     * @param string[] $sellerSkuList
+     *
+     * @return ProductStock[]
+     */
+    public function getStockByWarehouseId(
+        array $sellerSkuList,
+        string $sellerWarehouseId,
+        int $limit = self::DEFAULT_LIMIT,
+        int $offset = self::DEFAULT_OFFSET,
+        bool $debug = true,
+    ): array {
+        $action = 'GetStock';
+
+        $parameters = $this->makeParametersForAction($action);
+
+        $this->setListDimensions($parameters, $limit, $offset);
+
+        if (!empty($sellerSkuList)) {
+            $parameters->set(['SellerSku' => Json::encode($sellerSkuList)]);
+        }
+
+        if (!empty($sellerWarehouseId)) {
+            $parameters->set(['SellerWarehouseId' => $sellerWarehouseId]);
+        }
+
+        $builtResponse = $this->executeAction(
+            $action,
+            $parameters,
+            null,
+            'GET',
+            $debug
+        );
+
+        $stockOfProducts = ProductsStockFactory::make($builtResponse->getBody());
+
+        return array_values($stockOfProducts->all());
+    }
+
+    /**
+     * @param string[] $sellerSkuList
+     *
+     * @return ProductStock[]
+     */
+    public function getStockByFacilityId(
+        array $sellerSkuList,
+        string $facilityId,
+        int $limit = self::DEFAULT_LIMIT,
+        int $offset = self::DEFAULT_OFFSET,
+        bool $debug = true,
+    ): array {
+        $action = 'GetStock';
+
+        $parameters = $this->makeParametersForAction($action);
+        $parameters->set(['FacilityId' => $facilityId]);
+
+        $this->setListDimensions($parameters, $limit, $offset);
+
+        if (!empty($sellerSkuList)) {
+            $parameters->set(['SellerSku' => Json::encode($sellerSkuList)]);
+        }
+
+        if (!empty($facilityId)) {
+            $parameters->set(['FacilityId' => $facilityId]);
+        }
+
+        $builtResponse = $this->executeAction(
+            $action,
+            $parameters,
+            null,
+            'GET',
+            $debug
+        );
+
+        $stockOfProducts = ProductsStockFactory::make($builtResponse->getBody());
+
+        return array_values($stockOfProducts->all());
+    }
+
+    public function updateStock(
+        ProductsStock $productsStock,
+        bool $debug = true,
+    ): FeedResponse {
+        return $this->executeProductAction(
+            'UpdateStock',
+            StocksTransformer::asXmlString($productsStock),
+            $debug
         );
     }
 }

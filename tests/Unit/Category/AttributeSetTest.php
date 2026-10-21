@@ -155,7 +155,7 @@ class AttributeSetTest extends LinioTestCase
         $xml = simplexml_load_string($success);
         $attributeSets = AttributeSetFactory::make($xml);
 
-        $result = $$attributeSets->all();
+        $result = $attributeSets->all();
         $this->assertNotEmpty($result);
         $this->assertContainsOnlyInstancesOf(AttributeSet::class, $result);
     }

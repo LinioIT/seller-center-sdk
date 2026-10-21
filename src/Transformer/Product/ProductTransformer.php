@@ -36,6 +36,12 @@ class ProductTransformer
                     }
                 }
             }
+
+            $variationAttributes = $product->getVariationAttributes() ? $product->getVariationAttributes()->all() : null;
+
+            if (!empty($variationAttributes)) {
+                self::addVariationAttributes($body, $variationAttributes);
+            }
         }
 
         if (empty($productDataAttributes)) {
@@ -53,6 +59,41 @@ class ProductTransformer
         }
     }
 
+    public static function sanitizeHtmlAndWrapInCData(string $html): string
+    {
+        $cleanText = self::removeUnwantedHtmlTags($html);
+
+        return self::wrapInCData($cleanText);
+    }
+
+    public static function removeUnwantedHtmlTags(string $html): string
+    {
+        $decodedText = html_entity_decode($html);
+
+        $regexFilters = [
+            'doctype' => '/<!DOCTYPE html>/i',
+            'meta' => '/<meta\b[^>]*\/?>/',
+            'link' => '/<link\b[^>]*\/?>/',
+            'head' => '/<head\b[^>]*>.*?<\/head>/i',
+            'style' => '/<style\b[^>]*>.*?<\/style>/i',
+            'script' => '/<script\b[^>]*>.*?<\/script>/i',
+            'iframe' => '/<iframe\b[^>]*>.*?<\/iframe>/i',
+            'section' => '/<\/?section\b[^>]*>/i',
+            'a' => '/<a\b[^>]*>.*?<\/a>/i',
+        ];
+
+        return trim((string) preg_replace($regexFilters, '', $decodedText));
+    }
+
+    public static function wrapInCData(string $content): string
+    {
+        if ($content === '') {
+            return '';
+        }
+
+        return sprintf('<![CDATA[%s]]>', $content);
+    }
+
     /**
      * @param mixed[] $attributes
      * @param string[] $overrideAttributes
@@ -60,6 +101,15 @@ class ProductTransformer
     public static function addAttributes(\SimpleXMLElement $xml, array $attributes, array $overrideAttributes): void
     {
         foreach ($attributes as $attributeName => $attributeValue) {
+            if (strtolower((string) $attributeName) === 'description') {
+                if ($attributeValue === null || $attributeValue === '') {
+                    continue;
+                }
+                $value = self::sanitizeHtmlAndWrapInCData((string) $attributeValue);
+                self::addChildWithCData($xml, (string) $attributeName, $value);
+                continue;
+            }
+
             if (in_array($attributeName, $overrideAttributes)) {
                 $xml->addChild(
                     $attributeName,
@@ -79,6 +129,36 @@ class ProductTransformer
             }
 
             $encodedValue = htmlspecialchars($adaptedValue);
+            $xml->addChild($attributeName, $encodedValue);
+        }
+    }
+
+    private static function addChildWithCData(\SimpleXMLElement $xml, string $name, string $value): void
+    {
+        $simpleXmlChild = $xml->addChild($name);
+        $domNode = dom_import_simplexml($simpleXmlChild);
+
+        $cleanValue = preg_replace('/^<!\[CDATA\[(.*)\]\]>$/s', '$1', $value) ?? $value;
+        $cleanValue = str_replace(']]>', ']]]]><![CDATA[>', $cleanValue);
+
+        if ($domNode->ownerDocument === null) {
+            throw new \RuntimeException('Unable to create CDATA without an XML document.');
+        }
+
+        $domNode->appendChild($domNode->ownerDocument->createCDATASection($cleanValue));
+    }
+
+    /**
+     * @param mixed[] $variationAttributes
+     */
+    public static function addVariationAttributes(\SimpleXMLElement $xml, array $variationAttributes): void
+    {
+        foreach ($variationAttributes as $attributeName => $attributeValue) {
+            if ($attributeValue === null) {
+                continue;
+            }
+
+            $encodedValue = htmlspecialchars($attributeValue);
             $xml->addChild($attributeName, $encodedValue);
         }
     }

@@ -15,6 +15,8 @@ use Linio\SellerCenter\Model\Product\GlobalProduct;
 use Linio\SellerCenter\Model\Product\Image;
 use Linio\SellerCenter\Model\Product\ProductData;
 use Linio\SellerCenter\Model\Product\Products;
+use Linio\SellerCenter\Model\Product\ProductsStock;
+use Linio\SellerCenter\Model\Product\ProductStock;
 use Linio\SellerCenter\Response\FeedResponse;
 use Linio\SellerCenter\Service\Contract\ProductManagerInterface;
 use Prophecy\Argument;
@@ -592,7 +594,75 @@ class GlobalProductManagerTest extends LinioTestCase
         );
     }
 
-    public function filters(): array
+    /**
+     * @dataProvider debugParameter
+     */
+    public function testItGetsStock(bool $debug): void
+    {
+        $this->prepareLogTest($debug);
+
+        $sdkClient = $this->getSdkClient(
+            $this->getSchema('Product/ProductsStock.xml'),
+            $this->logger
+        );
+
+        $result = $sdkClient->globalProducts()->getStock(['TEST-1234', 'TEST-123', 'TEST-12345'], 100, 0, $debug);
+
+        $this->assertContainsOnlyInstancesOf(ProductStock::class, $result);
+    }
+
+    /**
+     * @dataProvider debugParameter
+     */
+    public function testItGetsStockByFacilityId(bool $debug): void
+    {
+        $this->prepareLogTest($debug);
+
+        $sdkClient = $this->getSdkClient(
+            $this->getSchema('Product/ProductsStock.xml'),
+            $this->logger
+        );
+
+        $result = $sdkClient->globalProducts()->getStockByFacilityId(['1234'], 'GSC-123457', 1000, 0, $debug);
+
+        $this->assertContainsOnlyInstancesOf(ProductStock::class, $result);
+    }
+
+    /**
+     * @dataProvider debugParameter
+     */
+    public function testItGetsStockByWarehouseId(bool $debug): void
+    {
+        $this->prepareLogTest($debug);
+
+        $sdkClient = $this->getSdkClient(
+            $this->getSchema('Product/ProductsStock.xml'),
+            $this->logger
+        );
+
+        $result = $sdkClient->globalProducts()->getStockByWarehouseId(['1234'], 'GSC-123457', 1000, 0, $debug);
+
+        $this->assertContainsOnlyInstancesOf(ProductStock::class, $result);
+    }
+
+    public function testItUpdateStock(): void
+    {
+        $sdkClient = $this->getSdkClient(
+            $this->getSchema('Product/UpdateStockResponse.xml'),
+            $this->logger
+        );
+
+        $productsStock = new ProductsStock();
+        $productsStock->add(new ProductStock('TEST-1234', 10, 'GSC-123445', null));
+        $productsStock->add(new ProductStock('TEST-1235', 20, null, 'GSC-123457'));
+        $productsStock->add(new ProductStock('TEST-1236', 20, null, null));
+
+        $result = $sdkClient->globalProducts()->updateStock($productsStock, true);
+
+        $this->assertInstanceOf(FeedResponse::class, $result);
+    }
+
+    public static function filters(): array
     {
         return [
             ['all'],
@@ -608,7 +678,7 @@ class GlobalProductManagerTest extends LinioTestCase
         ];
     }
 
-    public function productActions(): array
+    public static function productActions(): array
     {
         return [
             ['productCreate'],
@@ -708,10 +778,11 @@ class GlobalProductManagerTest extends LinioTestCase
         return $product;
     }
 
-    public function validImageRequests(): array
+    public static function validImageRequests(): array
     {
-        $randomString = $this->getFaker()->word();
-        $randomNumberToString = (string) $this->getFaker()->randomNumber();
+        $faker = \Faker\Factory::create();
+        $randomString = $faker->word();
+        $randomNumberToString = (string) $faker->randomNumber();
 
         return [
             [
@@ -735,7 +806,7 @@ class GlobalProductManagerTest extends LinioTestCase
         ];
     }
 
-    public function debugParameter()
+    public static function debugParameter()
     {
         return [
             [false],
@@ -743,7 +814,7 @@ class GlobalProductManagerTest extends LinioTestCase
         ];
     }
 
-    public function dateTimeProvider(): array
+    public static function dateTimeProvider(): array
     {
         return [
             'defaultFormat' => [null],

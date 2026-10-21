@@ -186,12 +186,13 @@ class ImagesTest extends LinioTestCase
         $this->assertSame($imageUrl, $images->all()[0]->getUrl());
     }
 
-    public function generatedImages(): array
+    public static function generatedImages(): array
     {
         $imagesMock = [];
+        $faker = \Faker\Factory::create();
 
         for ($i = 0; $i < self::IMAGES; $i++) {
-            $imagesMock[] = new Image($this->getFaker()->imageUrl($width = 640, $height = 480));
+            $imagesMock[] = new Image($faker->imageUrl($width = 640, $height = 480));
         }
 
         return [
@@ -199,12 +200,13 @@ class ImagesTest extends LinioTestCase
         ];
     }
 
-    public function generatedImagesUrls(): array
+    public static function generatedImagesUrls(): array
     {
         $imagesMock = [];
+        $faker = \Faker\Factory::create();
 
         for ($i = 0; $i < self::IMAGES; $i++) {
-            $imagesMock[] = $this->getFaker()->imageUrl($width = 640, $height = 480);
+            $imagesMock[] = $faker->imageUrl($width = 640, $height = 480);
         }
 
         return [

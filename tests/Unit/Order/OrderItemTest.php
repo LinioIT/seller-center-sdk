@@ -227,7 +227,7 @@ class OrderItemTest extends LinioTestCase
         $this->assertJsonStringEqualsJsonString(Json::encode($expectedJson), Json::encode($orderItem));
     }
 
-    public function simpleXmlElementsWithoutAParameter(): array
+    public static function simpleXmlElementsWithoutAParameter(): array
     {
         return [
             ['OrderItemId', false],

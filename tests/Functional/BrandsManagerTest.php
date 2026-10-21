@@ -80,7 +80,7 @@ class BrandsManagerTest extends LinioTestCase
         $sdkClient->brands()->getBrands($debug);
     }
 
-    public function debugParameter()
+    public static function debugParameter()
     {
         return [
             [false],

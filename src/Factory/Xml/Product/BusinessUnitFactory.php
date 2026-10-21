@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace Linio\SellerCenter\Factory\Xml\Product;
 
 use Linio\SellerCenter\Model\Product\BusinessUnit;
+use Linio\SellerCenter\Model\Product\BusinessUnitForFactory;
 use Linio\SellerCenter\Validator\XmlStructureValidator;
 
 class BusinessUnitFactory
@@ -22,7 +23,7 @@ class BusinessUnitFactory
     {
         XmlStructureValidator::validateStructure($element, self::XML_MODEL, self::REQUIRED_FIELDS);
 
-        $businessUnit = new BusinessUnit(
+        $businessUnit = new BusinessUnitForFactory(
             (string) $element->OperatorCode,
             (float) $element->Price,
             (int) $element->Stock,

@@ -56,7 +56,7 @@ class FeedCountTest extends LinioTestCase
         $this->assertJsonStringEqualsJsonString($expectedJson, Json::encode($feedCount));
     }
 
-    public function responseStructureRequirementsDataProvider()
+    public static function responseStructureRequirementsDataProvider()
     {
         return [
             'FeedCount' => ['FeedCount'],

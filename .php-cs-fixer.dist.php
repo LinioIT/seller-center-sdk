@@ -33,6 +33,7 @@ return (new Config())
         'phpdoc_order' => true,
         'php_unit_construct' => true,
         'php_unit_dedicate_assert' => true,
+        'php_unit_data_provider_static' => true,
         'return_assignment' => true,
         'single_line_comment_style' => true,
         'ternary_to_null_coalescing' => true,

@@ -106,7 +106,7 @@ class CategoryManagerTest extends LinioTestCase
         }
     }
 
-    public function parametersProvider()
+    public static function parametersProvider()
     {
         return [
             'Without optional parameters' => [
@@ -171,7 +171,7 @@ class CategoryManagerTest extends LinioTestCase
         );
     }
 
-    public function debugParameter()
+    public static function debugParameter()
     {
         return [
             [false],

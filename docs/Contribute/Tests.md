@@ -64,11 +64,11 @@ A valid order item ID in the environment for get its document.
 
 First, we need to build the local docker image. To do this, run the following command:
 
-> `docker-compose build`
+> `docker compose build`
 
 We will be using an alias for executing the development commands.
 
-> `alias dcli='docker-compose -f docker-compose.cli.yml run --rm'`
+> `alias dcli='docker compose -f docker-compose.cli.yml run --rm'`
 
 **Install dependencies**:
 
@@ -81,10 +81,19 @@ To run the project tests and validate the coding standards:
 
     $ dcli composer test
 
-To run all unit tests you can use:
+To run the unit, helper and functional tests (including V2) you can use:
 
     $ dcli phpunit
+
+The default configuration excludes integration tests, which require environment
+credentials. To run them after configuring the environment, use:
+
+    $ dcli phpunit tests/Integration
 
 To run specific unit test you can use --filter option:
 
     $ dcli phpunit --filter=ClassName::MethodName
+
+PHPUnit data providers must be public static methods. Return input data from
+providers and build fixtures that depend on the test instance inside the test
+method, after `setUp()` has run.

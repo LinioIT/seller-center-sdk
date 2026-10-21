@@ -510,7 +510,7 @@ class ProductTest extends LinioTestCase
         $this->assertJsonStringEqualsJsonString(Json::encode($expectedJson), Json::encode($product));
     }
 
-    public function invalidPrices(): array
+    public static function invalidPrices(): array
     {
         return [
             [0],
@@ -519,20 +519,20 @@ class ProductTest extends LinioTestCase
         ];
     }
 
-    public function validAndInvalidPrices(): array
+    public static function validAndInvalidPrices(): array
     {
         return [
-            [-1, -1, $this->price, null],
-            [-0.5, 1, $this->price, 1],
+            [-1, -1, 5999.00, null],
+            [-0.5, 1, 5999.00, 1],
             [2.99, -0.5, 2.99, null],
             [2.99, 0, 2.99, null],
-            [0, -1, $this->price, null],
+            [0, -1, 5999.00, null],
             [0.5, 2, 0.5, null],
             [49.3, 34.2, 49.3, 34.2],
         ];
     }
 
-    public function validAndInvalidQuantity(): array
+    public static function validAndInvalidQuantity(): array
     {
         return [
             [-1, -1, 0, 0],
@@ -543,7 +543,7 @@ class ProductTest extends LinioTestCase
         ];
     }
 
-    public function invalidXmlStructure(): array
+    public static function invalidXmlStructure(): array
     {
         return [
             ['SellerSku'],
