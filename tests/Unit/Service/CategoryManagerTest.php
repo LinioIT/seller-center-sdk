@@ -9,7 +9,7 @@ use Linio\SellerCenter\Application\Parameters;
 use Linio\SellerCenter\Contract\ClientInterface;
 use Linio\SellerCenter\LinioTestCase;
 use Linio\SellerCenter\Service\CategoryManager;
-use Psr\Log\Test\TestLogger;
+use Psr\Log\LoggerInterface;
 
 class CategoryManagerTest extends LinioTestCase
 {
@@ -18,7 +18,7 @@ class CategoryManagerTest extends LinioTestCase
         $configuration = $this->prophesize(Configuration::class);
         $client = $this->prophesize(ClientInterface::class);
         $parameters = $this->prophesize(Parameters::class);
-        $logger = $this->prophesize(TestLogger::class);
+        $logger = $this->prophesize(LoggerInterface::class);
 
         $categoryManager = new CategoryManager(
             $configuration->reveal(),
@@ -34,7 +34,7 @@ class CategoryManagerTest extends LinioTestCase
         $configuration = $this->prophesize(Configuration::class);
         $client = $this->prophesize(ClientInterface::class);
         $parameters = $this->prophesize(Parameters::class);
-        $logger = $this->prophesize(TestLogger::class);
+        $logger = $this->prophesize(LoggerInterface::class);
 
         $categoryManager = new CategoryManager($configuration->reveal(), $client->reveal(), $parameters->reveal(), $logger->reveal());
 
@@ -44,6 +44,6 @@ class CategoryManagerTest extends LinioTestCase
 
         $setted = $property->getValue($categoryManager);
 
-        $this->assertInstanceOf(TestLogger::class, $setted);
+        $this->assertInstanceOf(LoggerInterface::class, $setted);
     }
 }

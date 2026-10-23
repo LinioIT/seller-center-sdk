@@ -11,7 +11,7 @@ jobs:
     runs-on: ubuntu-latest
     strategy:
       matrix:
-        php-versions: ['7.1', '7.2', '7.3', '7.4']
+        php-versions: ['8.3']
     name: Version ${{ matrix.php-versions }}
     steps:
       - name: Clone repository
@@ -20,8 +20,8 @@ jobs:
         uses: shivammathur/setup-php@v2
         with:
           php-version: ${{ matrix.php-versions }}
-          tools: composer:v1, prestissimo
+          tools: composer:v2
       - name: Install dependencies
-        run: composer install --no-scripts -o --no-interaction --no-suggest
+        run: composer install --no-scripts -o --no-interaction
       - name: Run test suite
         run: composer test
