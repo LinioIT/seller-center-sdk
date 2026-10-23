@@ -9,7 +9,7 @@ use Linio\SellerCenter\Application\Parameters;
 use Linio\SellerCenter\Contract\ClientInterface;
 use Linio\SellerCenter\LinioTestCase;
 use Linio\SellerCenter\Service\BrandManager;
-use Psr\Log\Test\TestLogger;
+use Psr\Log\LoggerInterface;
 
 class BrandManagerTest extends LinioTestCase
 {
@@ -18,7 +18,7 @@ class BrandManagerTest extends LinioTestCase
         $configuration = $this->prophesize(Configuration::class);
         $client = $this->prophesize(ClientInterface::class);
         $parameters = $this->prophesize(Parameters::class);
-        $logger = $this->prophesize(TestLogger::class);
+        $logger = $this->prophesize(LoggerInterface::class);
 
         $brandManager = new BrandManager(
             $configuration->reveal(),
@@ -33,7 +33,7 @@ class BrandManagerTest extends LinioTestCase
     {
         $configuration = $this->prophesize(Configuration::class);
         $client = $this->prophesize(ClientInterface::class);
-        $logger = $this->prophesize(TestLogger::class);
+        $logger = $this->prophesize(LoggerInterface::class);
         $parameters = $this->prophesize(Parameters::class);
 
         $brandManager = new BrandManager($configuration->reveal(), $client->reveal(), $parameters->reveal(), $logger->reveal());
@@ -44,6 +44,6 @@ class BrandManagerTest extends LinioTestCase
 
         $setted = $property->getValue($brandManager);
 
-        $this->assertInstanceOf(TestLogger::class, $setted);
+        $this->assertInstanceOf(LoggerInterface::class, $setted);
     }
 }

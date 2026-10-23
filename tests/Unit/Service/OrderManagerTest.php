@@ -10,7 +10,7 @@ use Linio\SellerCenter\Contract\ClientInterface;
 use Linio\SellerCenter\Service\OrderManager;
 use PHPUnit\Framework\TestCase;
 use Prophecy\PhpUnit\ProphecyTrait;
-use Psr\Log\Test\TestLogger;
+use Psr\Log\LoggerInterface;
 
 class OrderManagerTest extends TestCase
 {
@@ -21,7 +21,7 @@ class OrderManagerTest extends TestCase
         $configuration = $this->prophesize(Configuration::class);
         $client = $this->prophesize(ClientInterface::class);
         $parameters = $this->prophesize(Parameters::class);
-        $logger = $this->prophesize(TestLogger::class);
+        $logger = $this->prophesize(LoggerInterface::class);
 
         $orderManager = new OrderManager(
             $configuration->reveal(),
@@ -36,7 +36,7 @@ class OrderManagerTest extends TestCase
     {
         $configuration = $this->prophesize(Configuration::class);
         $client = $this->prophesize(ClientInterface::class);
-        $logger = $this->prophesize(TestLogger::class);
+        $logger = $this->prophesize(LoggerInterface::class);
         $parameters = $this->prophesize(Parameters::class);
 
         $orderManager = new OrderManager($configuration->reveal(), $client->reveal(), $parameters->reveal(), $logger->reveal());
@@ -47,6 +47,6 @@ class OrderManagerTest extends TestCase
 
         $setted = $property->getValue($orderManager);
 
-        $this->assertInstanceOf(TestLogger::class, $setted);
+        $this->assertInstanceOf(LoggerInterface::class, $setted);
     }
 }

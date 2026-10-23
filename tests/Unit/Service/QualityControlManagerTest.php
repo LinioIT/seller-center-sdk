@@ -9,7 +9,7 @@ use Linio\SellerCenter\Application\Parameters;
 use Linio\SellerCenter\Contract\ClientInterface;
 use Linio\SellerCenter\LinioTestCase;
 use Linio\SellerCenter\Service\QualityControlManager;
-use Psr\Log\Test\TestLogger;
+use Psr\Log\LoggerInterface;
 
 class QualityControlManagerTest extends LinioTestCase
 {
@@ -18,7 +18,7 @@ class QualityControlManagerTest extends LinioTestCase
         $configuration = $this->prophesize(Configuration::class);
         $client = $this->prophesize(ClientInterface::class);
         $parameters = $this->prophesize(Parameters::class);
-        $logger = $this->prophesize(TestLogger::class);
+        $logger = $this->prophesize(LoggerInterface::class);
 
         $qcManager = new QualityControlManager(
             $configuration->reveal(),
@@ -33,7 +33,7 @@ class QualityControlManagerTest extends LinioTestCase
     {
         $configuration = $this->prophesize(Configuration::class);
         $client = $this->prophesize(ClientInterface::class);
-        $logger = $this->prophesize(TestLogger::class);
+        $logger = $this->prophesize(LoggerInterface::class);
         $parameters = $this->prophesize(Parameters::class);
 
         $qcManager = new QualityControlManager($configuration->reveal(), $client->reveal(), $parameters->reveal(), $logger->reveal());
@@ -44,7 +44,7 @@ class QualityControlManagerTest extends LinioTestCase
 
         $setted = $property->getValue($qcManager);
 
-        $this->assertInstanceOf(TestLogger::class, $setted);
+        $this->assertInstanceOf(LoggerInterface::class, $setted);
     }
 
     /**
@@ -59,7 +59,7 @@ class QualityControlManagerTest extends LinioTestCase
 
         $configuration = $this->prophesize(Configuration::class);
         $client = $this->prophesize(ClientInterface::class);
-        $logger = $this->prophesize(TestLogger::class);
+        $logger = $this->prophesize(LoggerInterface::class);
         $parameters = $this->prophesize(Parameters::class);
 
         $qcManager = new QualityControlManager($configuration->reveal(), $client->reveal(), $parameters->reveal(), $logger->reveal());

@@ -10,7 +10,7 @@ use Linio\SellerCenter\Contract\ClientInterface;
 use Linio\SellerCenter\LinioTestCase;
 use Linio\SellerCenter\Service\Contract\ProductManagerInterface;
 use Linio\SellerCenter\Service\GlobalProductManager;
-use Psr\Log\Test\TestLogger;
+use Psr\Log\LoggerInterface;
 
 class GlobalProductManagerTest extends LinioTestCase
 {
@@ -19,7 +19,7 @@ class GlobalProductManagerTest extends LinioTestCase
         $configuration = $this->prophesize(Configuration::class);
         $client = $this->prophesize(ClientInterface::class);
         $parameters = $this->prophesize(Parameters::class);
-        $logger = $this->prophesize(TestLogger::class);
+        $logger = $this->prophesize(LoggerInterface::class);
 
         $globalProductManager = new GlobalProductManager(
             $configuration->reveal(),
@@ -36,7 +36,7 @@ class GlobalProductManagerTest extends LinioTestCase
         $configuration = $this->prophesize(Configuration::class);
         $client = $this->prophesize(ClientInterface::class);
         $parameters = $this->prophesize(Parameters::class);
-        $logger = $this->prophesize(TestLogger::class);
+        $logger = $this->prophesize(LoggerInterface::class);
 
         $globalProductManager = new GlobalProductManager(
             $configuration->reveal(),
@@ -51,6 +51,6 @@ class GlobalProductManagerTest extends LinioTestCase
 
         $setted = $property->getValue($globalProductManager);
 
-        $this->assertInstanceOf(TestLogger::class, $setted);
+        $this->assertInstanceOf(LoggerInterface::class, $setted);
     }
 }

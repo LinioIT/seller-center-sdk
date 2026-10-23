@@ -8,7 +8,7 @@ use Linio\SellerCenter\Application\Configuration;
 use Linio\SellerCenter\Application\Parameters;
 use Linio\SellerCenter\Contract\ClientInterface;
 use Linio\SellerCenter\LinioTestCase;
-use Psr\Log\Test\TestLogger;
+use Psr\Log\LoggerInterface;
 
 class ShipmentManagerTest extends LinioTestCase
 {
@@ -17,7 +17,7 @@ class ShipmentManagerTest extends LinioTestCase
         $configuration = $this->prophesize(Configuration::class);
         $client = $this->prophesize(ClientInterface::class);
         $parameters = $this->prophesize(Parameters::class);
-        $logger = $this->prophesize(TestLogger::class);
+        $logger = $this->prophesize(LoggerInterface::class);
 
         $shipmentManager = new ShipmentManager(
             $configuration->reveal(),
@@ -32,7 +32,7 @@ class ShipmentManagerTest extends LinioTestCase
     {
         $configuration = $this->prophesize(Configuration::class);
         $client = $this->prophesize(ClientInterface::class);
-        $logger = $this->prophesize(TestLogger::class);
+        $logger = $this->prophesize(LoggerInterface::class);
         $parameters = $this->prophesize(Parameters::class);
 
         $shipmentManager = new ShipmentManager($configuration->reveal(), $client->reveal(), $parameters->reveal(), $logger->reveal());
@@ -43,6 +43,6 @@ class ShipmentManagerTest extends LinioTestCase
 
         $setted = $property->getValue($shipmentManager);
 
-        $this->assertInstanceOf(TestLogger::class, $setted);
+        $this->assertInstanceOf(LoggerInterface::class, $setted);
     }
 }

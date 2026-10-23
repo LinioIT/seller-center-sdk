@@ -10,7 +10,7 @@ use Linio\SellerCenter\Contract\ClientInterface;
 use Linio\SellerCenter\LinioTestCase;
 use Linio\SellerCenter\Service\GlobalOrderManager;
 use Linio\SellerCenter\Service\OrderManager;
-use Psr\Log\Test\TestLogger;
+use Psr\Log\LoggerInterface;
 
 class GlobalOrderManagerTest extends LinioTestCase
 {
@@ -19,7 +19,7 @@ class GlobalOrderManagerTest extends LinioTestCase
         $configuration = $this->prophesize(Configuration::class);
         $client = $this->prophesize(ClientInterface::class);
         $parameters = $this->prophesize(Parameters::class);
-        $logger = $this->prophesize(TestLogger::class);
+        $logger = $this->prophesize(LoggerInterface::class);
 
         $globalOrderManager = new GlobalOrderManager(
             $configuration->reveal(),
@@ -34,7 +34,7 @@ class GlobalOrderManagerTest extends LinioTestCase
     {
         $configuration = $this->prophesize(Configuration::class);
         $client = $this->prophesize(ClientInterface::class);
-        $logger = $this->prophesize(TestLogger::class);
+        $logger = $this->prophesize(LoggerInterface::class);
         $parameters = $this->prophesize(Parameters::class);
 
         $globalOrderManager = new GlobalOrderManager($configuration->reveal(), $client->reveal(), $parameters->reveal(), $logger->reveal());
@@ -45,6 +45,6 @@ class GlobalOrderManagerTest extends LinioTestCase
 
         $setted = $property->getValue($globalOrderManager);
 
-        $this->assertInstanceOf(TestLogger::class, $setted);
+        $this->assertInstanceOf(LoggerInterface::class, $setted);
     }
 }
