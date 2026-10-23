@@ -4,10 +4,7 @@ declare(strict_types=1);
 
 namespace Linio\SellerCenter\Model\Category;
 
-use JsonSerializable;
-use stdClass;
-
-class CategoryContentScoreRuleConfig implements JsonSerializable
+class CategoryContentScoreRuleConfig implements \JsonSerializable
 {
     /**
      * @var int|null
@@ -35,9 +32,9 @@ class CategoryContentScoreRuleConfig implements JsonSerializable
         return $this->max;
     }
 
-    public function jsonSerialize(): stdClass
+    public function jsonSerialize(): \stdClass
     {
-        $serialized = new stdClass();
+        $serialized = new \stdClass();
         $serialized->min = $this->min;
         $serialized->max = $this->max;
 

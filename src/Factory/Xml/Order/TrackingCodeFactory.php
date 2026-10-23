@@ -6,7 +6,6 @@ namespace Linio\SellerCenter\Factory\Xml\Order;
 
 use Linio\SellerCenter\Model\Order\TrackingCode;
 use Linio\SellerCenter\Validator\XmlStructureValidator;
-use SimpleXMLElement;
 
 class TrackingCodeFactory
 {
@@ -16,7 +15,7 @@ class TrackingCodeFactory
         'TrackingNumber',
     ];
 
-    public static function make(SimpleXMLElement $element): TrackingCode
+    public static function make(\SimpleXMLElement $element): TrackingCode
     {
         XmlStructureValidator::validateStructure($element->TrackingCode, self::XML_MODEL, self::REQUIRED_FIELDS);
 

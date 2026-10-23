@@ -4,8 +4,8 @@ declare(strict_types=1);
 
 namespace Linio\SellerCenter\Model;
 
-use Linio\Component\Util\Json;
 use Linio\SellerCenter\Factory\Xml\Warehouse\ContactsFactory;
+use Linio\SellerCenter\Helper\Json;
 use Linio\SellerCenter\LinioTestCase;
 use Linio\SellerCenter\Model\Warehouse\Contact;
 use Linio\SellerCenter\Model\Warehouse\Contacts;

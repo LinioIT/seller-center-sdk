@@ -4,10 +4,7 @@ declare(strict_types=1);
 
 namespace Linio\SellerCenter\Model\Order;
 
-use JsonSerializable;
-use stdClass;
-
-class ExtraBillingAttributes implements JsonSerializable
+class ExtraBillingAttributes implements \JsonSerializable
 {
     /**
      * @var string|null
@@ -87,7 +84,7 @@ class ExtraBillingAttributes implements JsonSerializable
         ?string $customerVerifierDigit,
         ?string $receiverLocality,
         ?string $receiverEmail,
-        ?string $receiverPhonenumber
+        ?string $receiverPhonenumber,
     ) {
         $this->legalId = !empty($legalId) ? $legalId : null;
         $this->fiscalPerson = !empty($fiscalPerson) ? $fiscalPerson : null;
@@ -169,9 +166,9 @@ class ExtraBillingAttributes implements JsonSerializable
         return $this->receiverPhonenumber;
     }
 
-    public function jsonSerialize(): stdClass
+    public function jsonSerialize(): \stdClass
     {
-        $serialized = new stdClass();
+        $serialized = new \stdClass();
         $serialized->legalId = $this->legalId;
         $serialized->fiscalPerson = $this->fiscalPerson;
         $serialized->documentType = $this->documentType;

@@ -4,10 +4,7 @@ declare(strict_types=1);
 
 namespace Linio\SellerCenter\Model\Product;
 
-use JsonSerializable;
-use stdClass;
-
-class VariationAttributes implements JsonSerializable
+class VariationAttributes implements \JsonSerializable
 {
     /**
      * @var mixed[]
@@ -15,7 +12,6 @@ class VariationAttributes implements JsonSerializable
     protected $variationAttributes = [];
 
     private const ERROR_INVALID_KEY_VALUE = 'Both keys and values must be strings.';
-    private const ERROR_INVALID_VALUE = 'The value must be a string and not empty.';
 
     /**
      * @param mixed[] $attributes
@@ -57,9 +53,9 @@ class VariationAttributes implements JsonSerializable
         }
     }
 
-    public function jsonSerialize(): stdClass
+    public function jsonSerialize(): \stdClass
     {
-        $serialized = new stdClass();
+        $serialized = new \stdClass();
         foreach ($this->variationAttributes as $attribute => $value) {
             $serialized->$attribute = $value;
         }

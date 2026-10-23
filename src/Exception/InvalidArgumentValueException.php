@@ -4,9 +4,7 @@ declare(strict_types=1);
 
 namespace Linio\SellerCenter\Exception;
 
-use InvalidArgumentException;
-
-class InvalidArgumentValueException extends InvalidArgumentException
+class InvalidArgumentValueException extends \InvalidArgumentException
 {
     /**
      * @param string[] $references

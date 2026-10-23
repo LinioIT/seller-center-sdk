@@ -4,7 +4,6 @@ declare(strict_types=1);
 
 namespace Linio\SellerCenter\Service;
 
-use DateTimeInterface;
 use Linio\SellerCenter\Factory\Xml\Feed\FeedCountFactory;
 use Linio\SellerCenter\Factory\Xml\Feed\FeedFactory;
 use Linio\SellerCenter\Factory\Xml\Feed\FeedsFactory;
@@ -17,7 +16,7 @@ class FeedManager extends BaseManager
 {
     public function getFeedStatusById(
         string $id,
-        bool $debug = true
+        bool $debug = true,
     ): Feed {
         $action = 'FeedStatus';
 
@@ -64,9 +63,9 @@ class FeedManager extends BaseManager
         ?int $offset = null,
         ?int $pageSize = null,
         ?string $status = null,
-        ?DateTimeInterface $createdAfter = null,
-        ?DateTimeInterface $updatedAfter = null,
-        bool $debug = true
+        ?\DateTimeInterface $createdAfter = null,
+        ?\DateTimeInterface $updatedAfter = null,
+        bool $debug = true,
     ): array {
         $action = 'FeedOffsetList';
 
@@ -133,7 +132,7 @@ class FeedManager extends BaseManager
 
     public function feedCancel(
         string $id,
-        bool $debug = true
+        bool $debug = true,
     ): FeedResponse {
         $action = 'FeedCancel';
 

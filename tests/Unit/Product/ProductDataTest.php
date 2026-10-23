@@ -4,13 +4,12 @@ declare(strict_types=1);
 
 namespace Linio\SellerCenter\Unit\Product;
 
-use Linio\Component\Util\Json;
 use Linio\SellerCenter\Exception\InvalidDomainException;
 use Linio\SellerCenter\Exception\InvalidXmlStructureException;
 use Linio\SellerCenter\Factory\Xml\Product\ProductDataFactory;
+use Linio\SellerCenter\Helper\Json;
 use Linio\SellerCenter\Model\Product\ProductData;
-use PHPStan\Testing\TestCase;
-use SimpleXMLElement;
+use PHPUnit\Framework\TestCase;
 
 class ProductDataTest extends TestCase
 {
@@ -147,7 +146,7 @@ class ProductDataTest extends TestCase
                   <PackageWeight>0.70</PackageWeight>
                 </ProductData>';
 
-        ProductDataFactory::make(new SimpleXMLElement($xml));
+        ProductDataFactory::make(new \SimpleXMLElement($xml));
     }
 
     public function testItThrowsAExceptionWithoutAPackageLengthInTheXml(): void
@@ -163,7 +162,7 @@ class ProductDataTest extends TestCase
                   <PackageWeight>0.70</PackageWeight>
                 </ProductData>';
 
-        ProductDataFactory::make(new SimpleXMLElement($xml));
+        ProductDataFactory::make(new \SimpleXMLElement($xml));
     }
 
     public function testItThrowsAExceptionWithoutAPackageWidthInTheXml(): void
@@ -179,7 +178,7 @@ class ProductDataTest extends TestCase
                   <PackageWeight>0.70</PackageWeight>
                 </ProductData>';
 
-        ProductDataFactory::make(new SimpleXMLElement($xml));
+        ProductDataFactory::make(new \SimpleXMLElement($xml));
     }
 
     public function testItThrowsAExceptionWithoutAPackageWeightInTheXml(): void
@@ -195,7 +194,7 @@ class ProductDataTest extends TestCase
                   <PackageWidth>5.00</PackageWidth>
                 </ProductData>';
 
-        ProductDataFactory::make(new SimpleXMLElement($xml));
+        ProductDataFactory::make(new \SimpleXMLElement($xml));
     }
 
     public function testItReturnsAJsonRepresentation(): void
@@ -220,7 +219,7 @@ class ProductDataTest extends TestCase
         $this->assertJsonStringEqualsJsonString($expectedJson, Json::encode($productData));
     }
 
-    public function invalidPackageMeasures(): array
+    public static function invalidPackageMeasures(): array
     {
         return [
             [-1],

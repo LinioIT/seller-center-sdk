@@ -68,7 +68,7 @@
         "customerVerifierDigit": null,
         "receiverLocality": null,
         "receiverEmail": null,
-        "receiverPhonenumber": null                  
+        "receiverPhonenumber": null
     },
     "businessInvoiceRequired": null,
     "shippingType": null,

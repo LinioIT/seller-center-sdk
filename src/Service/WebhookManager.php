@@ -4,12 +4,12 @@ declare(strict_types=1);
 
 namespace Linio\SellerCenter\Service;
 
-use Linio\Component\Util\Json;
 use Linio\SellerCenter\Application\Parameters;
 use Linio\SellerCenter\Exception\EmptyArgumentException;
 use Linio\SellerCenter\Exception\InvalidUrlException;
 use Linio\SellerCenter\Factory\Xml\Webhook\EventsFactory;
 use Linio\SellerCenter\Factory\Xml\Webhook\WebhooksFactory;
+use Linio\SellerCenter\Helper\Json;
 use Linio\SellerCenter\Model\Webhook\Event;
 use Linio\SellerCenter\Model\Webhook\Webhook;
 use Linio\SellerCenter\Transformer\Webhook\WebhookTransformer;
@@ -18,7 +18,7 @@ class WebhookManager extends BaseManager
 {
     public function createWebhook(
         string $callbackUrl,
-        bool $debug = true
+        bool $debug = true,
     ): string {
         $action = 'CreateWebhook';
 
@@ -46,7 +46,7 @@ class WebhookManager extends BaseManager
 
     public function deleteWebhook(
         string $webhookId,
-        bool $debug = true
+        bool $debug = true,
     ): void {
         $action = 'DeleteWebhook';
 
@@ -73,7 +73,7 @@ class WebhookManager extends BaseManager
      */
     protected function getWebhooks(
         Parameters $parameters,
-        bool $debug = true
+        bool $debug = true,
     ): array {
         $action = 'GetWebhooks';
 
@@ -112,7 +112,7 @@ class WebhookManager extends BaseManager
      */
     public function getWebhooksByIds(
         array $webhookIds,
-        bool $debug = true
+        bool $debug = true,
     ): array {
         $parameters = clone $this->parameters;
 

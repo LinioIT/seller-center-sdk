@@ -10,7 +10,6 @@ use Linio\SellerCenter\Contract\ClientInterface;
 use Linio\SellerCenter\LinioTestCase;
 use Linio\SellerCenter\Service\BrandManager;
 use Psr\Log\Test\TestLogger;
-use ReflectionClass;
 
 class BrandManagerTest extends LinioTestCase
 {
@@ -39,7 +38,7 @@ class BrandManagerTest extends LinioTestCase
 
         $brandManager = new BrandManager($configuration->reveal(), $client->reveal(), $parameters->reveal(), $logger->reveal());
 
-        $reflectionClass = new ReflectionClass(BrandManager::class);
+        $reflectionClass = new \ReflectionClass(BrandManager::class);
         $property = $reflectionClass->getProperty('logger');
         $property->setAccessible(true);
 

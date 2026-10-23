@@ -5,7 +5,6 @@ declare(strict_types=1);
 namespace Linio\SellerCenter;
 
 use Linio\SellerCenter\Application\Configuration;
-use ReflectionClass;
 
 class SellerCenterSdkTest extends LinioTestCase
 {
@@ -16,7 +15,7 @@ class SellerCenterSdkTest extends LinioTestCase
 
         $sdk = new SellerCenterSdk($configuration);
 
-        $sdkReflection = new ReflectionClass(SellerCenterSdk::class);
+        $sdkReflection = new \ReflectionClass(SellerCenterSdk::class);
         $property = $sdkReflection->getProperty('configuration');
         $property->setAccessible(true);
 

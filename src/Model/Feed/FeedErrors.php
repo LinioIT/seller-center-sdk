@@ -4,10 +4,9 @@ declare(strict_types=1);
 
 namespace Linio\SellerCenter\Model\Feed;
 
-use JsonSerializable;
 use Linio\SellerCenter\Contract\CollectionInterface;
 
-class FeedErrors implements CollectionInterface, JsonSerializable
+class FeedErrors implements CollectionInterface, \JsonSerializable
 {
     /**
      * @var FeedError[]

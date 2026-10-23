@@ -4,8 +4,8 @@ declare(strict_types=1);
 
 namespace Linio\SellerCenter\Service;
 
-use Linio\Component\Util\Json;
 use Linio\SellerCenter\Factory\Xml\Order\OrderItemsFactory;
+use Linio\SellerCenter\Helper\Json;
 use Linio\SellerCenter\Model\Order\OrderItem;
 use Linio\SellerCenter\Response\SuccessResponse;
 use Linio\SellerCenter\Transformer\Order\OrderItemsTransformer;
@@ -19,7 +19,7 @@ class OrderManager extends BaseOrderManager
      */
     public function setOrderItemsImei(
         array $orderItems,
-        bool $debug = true
+        bool $debug = true,
     ): array {
         $action = 'SetImei';
         $parameters = $this->makeParametersForAction($action);
@@ -40,7 +40,7 @@ class OrderManager extends BaseOrderManager
     public function setInvoiceNumber(
         int $orderItemId,
         string $invoiceNumber,
-        bool $debug = true
+        bool $debug = true,
     ): SuccessResponse {
         $action = 'SetInvoiceNumber';
         $parameters = $this->makeParametersForAction($action);
@@ -67,9 +67,9 @@ class OrderManager extends BaseOrderManager
     public function setStatusToReadyToShip(
         array $orderItemIds,
         string $deliveryType,
-        string $shippingProvider = null,
-        string $trackingNumber = null,
-        bool $debug = true
+        ?string $shippingProvider = null,
+        ?string $trackingNumber = null,
+        bool $debug = true,
     ): array {
         $action = 'SetStatusToReadyToShip';
 
@@ -108,9 +108,9 @@ class OrderManager extends BaseOrderManager
     public function setStatusToPackedByMarketplace(
         array $orderItemIds,
         string $deliveryType,
-        string $shippingProvider = null,
-        string $trackingNumber = null,
-        bool $debug = true
+        ?string $shippingProvider = null,
+        ?string $trackingNumber = null,
+        bool $debug = true,
     ): array {
         $action = 'SetStatusToPackedByMarketplace';
 

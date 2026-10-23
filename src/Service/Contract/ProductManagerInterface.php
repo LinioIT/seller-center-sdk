@@ -4,7 +4,6 @@ declare(strict_types=1);
 
 namespace Linio\SellerCenter\Service\Contract;
 
-use DateTimeInterface;
 use Linio\SellerCenter\Application\Parameters;
 use Linio\SellerCenter\Model\Product\Contract\ProductInterface;
 use Linio\SellerCenter\Model\Product\Products;
@@ -41,51 +40,51 @@ interface ProductManagerInterface
     public function getAllProducts(
         int $limit = self::DEFAULT_LIMIT,
         int $offset = self::DEFAULT_OFFSET,
-        bool $debug = true
+        bool $debug = true,
     ): array;
 
     /**
      * @return ProductInterface[]
      */
     public function getProductsCreatedAfter(
-        DateTimeInterface $createdAfter,
+        \DateTimeInterface $createdAfter,
         int $limit = self::DEFAULT_LIMIT,
         int $offset = self::DEFAULT_OFFSET,
         ?string $dateFormat = null,
-        bool $debug = true
+        bool $debug = true,
     ): array;
 
     /**
      * @return ProductInterface[]
      */
     public function getProductsCreatedBefore(
-        DateTimeInterface $createdBefore,
+        \DateTimeInterface $createdBefore,
         int $limit = self::DEFAULT_LIMIT,
         int $offset = self::DEFAULT_OFFSET,
         ?string $dateFormat = null,
-        bool $debug = true
+        bool $debug = true,
     ): array;
 
     /**
      * @return ProductInterface[]
      */
     public function getProductsUpdatedAfter(
-        DateTimeInterface $updatedAfter,
+        \DateTimeInterface $updatedAfter,
         int $limit = self::DEFAULT_LIMIT,
         int $offset = self::DEFAULT_OFFSET,
         ?string $dateFormat = null,
-        bool $debug = true
+        bool $debug = true,
     ): array;
 
     /**
      * @return ProductInterface[]
      */
     public function getProductsUpdatedBefore(
-        DateTimeInterface $updatedBefore,
+        \DateTimeInterface $updatedBefore,
         int $limit = self::DEFAULT_LIMIT,
         int $offset = self::DEFAULT_OFFSET,
         ?string $dateFormat = null,
-        bool $debug = true
+        bool $debug = true,
     ): array;
 
     /**
@@ -95,7 +94,7 @@ interface ProductManagerInterface
         string $searchValue,
         int $limit = self::DEFAULT_LIMIT,
         int $offset = self::DEFAULT_OFFSET,
-        bool $debug = true
+        bool $debug = true,
     ): array;
 
     /**
@@ -105,7 +104,7 @@ interface ProductManagerInterface
         string $filter,
         int $limit = self::DEFAULT_LIMIT,
         int $offset = self::DEFAULT_OFFSET,
-        bool $debug = true
+        bool $debug = true,
     ): array;
 
     /**
@@ -117,7 +116,7 @@ interface ProductManagerInterface
         array $skuSellerList,
         int $limit = self::DEFAULT_LIMIT,
         int $offset = self::DEFAULT_OFFSET,
-        bool $debug = true
+        bool $debug = true,
     ): array;
 
     /**
@@ -126,17 +125,17 @@ interface ProductManagerInterface
      * @return ProductInterface[]
      */
     public function getProductsFromParameters(
-        ?DateTimeInterface $createdAfter = null,
-        ?DateTimeInterface $createdBefore = null,
+        ?\DateTimeInterface $createdAfter = null,
+        ?\DateTimeInterface $createdBefore = null,
         ?string $search = null,
         string $filter = self::DEFAULT_FILTER,
         int $limit = self::DEFAULT_LIMIT,
         int $offset = self::DEFAULT_OFFSET,
         ?array $skuSellerList = null,
-        ?DateTimeInterface $updateAfter = null,
-        ?DateTimeInterface $updateBefore = null,
+        ?\DateTimeInterface $updateAfter = null,
+        ?\DateTimeInterface $updateBefore = null,
         ?string $dateFormat = null,
-        bool $debug = true
+        bool $debug = true,
     ): array;
 
     public function setListDimensions(Parameters &$parameters, int $limit, int $offset): void;
@@ -150,7 +149,7 @@ interface ProductManagerInterface
         array $sellerSkuList = [],
         int $limit = self::DEFAULT_LIMIT,
         int $offset = self::DEFAULT_OFFSET,
-        bool $debug = true
+        bool $debug = true,
     ): array;
 
     /**
@@ -159,11 +158,11 @@ interface ProductManagerInterface
      * @return ProductStock[]
      */
     public function getStockByWarehouseId(
-        array $sellerSkuList = [],
+        array $sellerSkuList,
         string $sellerWarehouseId,
         int $limit = self::DEFAULT_LIMIT,
         int $offset = self::DEFAULT_OFFSET,
-        bool $debug = true
+        bool $debug = true,
     ): array;
 
     /**
@@ -172,15 +171,15 @@ interface ProductManagerInterface
      * @return ProductStock[]
      */
     public function getStockByFacilityId(
-        array $sellerSkuList = [],
+        array $sellerSkuList,
         string $facilityId,
         int $limit = self::DEFAULT_LIMIT,
         int $offset = self::DEFAULT_OFFSET,
-        bool $debug = true
+        bool $debug = true,
     ): array;
 
     public function updateStock(
         ProductsStock $productsStock,
-        bool $debug = true
+        bool $debug = true,
     ): FeedResponse;
 }

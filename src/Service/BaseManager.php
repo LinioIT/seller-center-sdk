@@ -4,7 +4,6 @@ declare(strict_types=1);
 
 namespace Linio\SellerCenter\Service;
 
-use DateTimeImmutable;
 use Linio\SellerCenter\Application\Configuration;
 use Linio\SellerCenter\Application\Parameters;
 use Linio\SellerCenter\Application\Security\Signature;
@@ -54,7 +53,7 @@ class BaseManager
         Configuration $configuration,
         ClientInterface $client,
         Parameters $parameters,
-        LoggerInterface $logger
+        LoggerInterface $logger,
     ) {
         $this->configuration = $configuration;
         $this->client = $client;
@@ -89,7 +88,7 @@ class BaseManager
         ?string $requestId,
         string $httpMethod = 'GET',
         bool $debug = true,
-        ?string $body = null
+        ?string $body = null,
     ): SuccessResponse {
         $requestHeaders = $this->generateRequestHeaders(
             [self::REQUEST_ID_HEADER => $requestId ?? $this->generateRequestId()]
@@ -163,7 +162,7 @@ class BaseManager
         ?string $body = null,
         bool $useHeaderParams = false,
         array $customHeader = [],
-        string $path = ''
+        string $path = '',
     ): SuccessJsonResponse {
         $requestHeaders = $this->generateRequestHeaders(
             $customHeader,
@@ -206,7 +205,7 @@ class BaseManager
     private function generateRequest(
         bool $useHeaderParams,
         Parameters $parameters,
-        RequestInterface $request
+        RequestInterface $request,
     ): ResponseInterface {
         if (!$useHeaderParams) {
             $query = $this->buildQuery($parameters);
@@ -240,7 +239,7 @@ class BaseManager
         string $requestId,
         RequestInterface $request,
         Parameters $parameters,
-        array $response
+        array $response,
     ): void {
         $this->logger->debug(
             LogMessageFormatter::fromAction($requestId, $action, LogMessageFormatter::TYPE_REQUEST),
@@ -277,7 +276,7 @@ class BaseManager
             $headerComplete['UserID'] = $this->configuration->getUser();
             $headerComplete['Version'] = $this->configuration->getVersion();
             $headerComplete['Format'] = $isXml ? 'XML' : 'JSON';
-            $headerComplete['Timestamp'] = (new DateTimeImmutable())->format(DATE_ATOM);
+            $headerComplete['Timestamp'] = (new \DateTimeImmutable())->format(DATE_ATOM);
             $headerComplete['Action'] = $action;
             ksort($headerComplete);
             $headerComplete['Signature'] = Signature::generate(

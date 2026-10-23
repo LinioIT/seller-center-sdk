@@ -4,8 +4,6 @@ declare(strict_types=1);
 
 namespace Linio\SellerCenter\Model\Product\Contract;
 
-use DateTimeInterface;
-
 interface VariationProductInterface
 {
     public function getAvailable(): ?int;
@@ -14,11 +12,11 @@ interface VariationProductInterface
 
     public function getSalePrice(): ?float;
 
-    public function getSaleStartDate(): ?DateTimeInterface;
+    public function getSaleStartDate(): ?\DateTimeInterface;
 
     public function getSaleStartDateString(): ?string;
 
-    public function getSaleEndDate(): ?DateTimeInterface;
+    public function getSaleEndDate(): ?\DateTimeInterface;
 
     public function getSaleEndDateString(): ?string;
 
@@ -26,7 +24,7 @@ interface VariationProductInterface
 
     public function setSalePrice(?float $specialPrice): void;
 
-    public function setSaleStartDate(?DateTimeInterface $specialFromDate): void;
+    public function setSaleStartDate(?\DateTimeInterface $specialFromDate): void;
 
-    public function setSaleEndDate(?DateTimeInterface $specialToDate): void;
+    public function setSaleEndDate(?\DateTimeInterface $specialToDate): void;
 }

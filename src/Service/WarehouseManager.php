@@ -22,7 +22,7 @@ class WarehouseManager extends BaseManager
         ?string $warehouseType = null,
         ?bool $isDefault = null,
         ?bool $isEnabled = null,
-        bool $debug = true
+        bool $debug = true,
     ): array {
         $action = 'GetWarehouse';
 
@@ -59,7 +59,7 @@ class WarehouseManager extends BaseManager
      */
     public function getWarehouseByFacilityId(
         string $facilityId,
-        bool $debug = true
+        bool $debug = true,
     ): array {
         $action = 'GetWarehouse';
 
@@ -87,7 +87,7 @@ class WarehouseManager extends BaseManager
      */
     public function getWarehouseById(
         string $sellerWarehouseId,
-        bool $debug = true
+        bool $debug = true,
     ): array {
         $action = 'GetWarehouse';
 

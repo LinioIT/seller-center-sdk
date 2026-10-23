@@ -4,7 +4,6 @@ declare(strict_types=1);
 
 namespace Linio\SellerCenter\Adapter\Client;
 
-use Exception;
 use Linio\SellerCenter\Contract\ClientInterface;
 use Psr\Http\Message\RequestInterface;
 use Psr\Http\Message\ResponseInterface;
@@ -27,7 +26,7 @@ class GuzzleClientAdapter implements ClientInterface
         $guzzleVersion = $this->getGuzzleVersion($client);
 
         if ($guzzleVersion < self::GUZZLE_SUPPORTED_VERSION) {
-            throw new Exception('Linio\'s SDK supports Guzzle v6 or greater');
+            throw new \Exception('Linio\'s SDK supports Guzzle v6 or greater');
         }
 
         $this->client = $client;

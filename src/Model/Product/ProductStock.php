@@ -4,10 +4,7 @@ declare(strict_types=1);
 
 namespace Linio\SellerCenter\Model\Product;
 
-use JsonSerializable;
-use stdClass;
-
-class ProductStock implements JsonSerializable
+class ProductStock implements \JsonSerializable
 {
     /**
      * @var string
@@ -57,9 +54,9 @@ class ProductStock implements JsonSerializable
         return $this->sellerWarehouseId;
     }
 
-    public function jsonSerialize(): stdClass
+    public function jsonSerialize(): \stdClass
     {
-        $serialized = new stdClass();
+        $serialized = new \stdClass();
         $serialized->sellerSku = $this->sellerSku;
         $serialized->quantity = $this->quantity;
         $serialized->facilityId = $this->facilityId;

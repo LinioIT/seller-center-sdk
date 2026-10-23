@@ -4,7 +4,6 @@ declare(strict_types=1);
 
 namespace Linio\SellerCenter;
 
-use Exception;
 use Linio\SellerCenter\Model\Brand\Brand;
 use Prophecy\Argument;
 use Prophecy\Prophecy\ObjectProphecy;
@@ -50,7 +49,7 @@ class BrandsManagerTest extends LinioTestCase
 
     public function testItThrowsAnExceptionWhenTheResponseIsAnError(): void
     {
-        $this->expectException(Exception::class);
+        $this->expectException(\Exception::class);
         $this->expectExceptionMessage('E0125: Test Error');
 
         $body = '<?xml version="1.0" encoding="UTF-8"?>
@@ -81,7 +80,7 @@ class BrandsManagerTest extends LinioTestCase
         $sdkClient->brands()->getBrands($debug);
     }
 
-    public function debugParameter()
+    public static function debugParameter()
     {
         return [
             [false],

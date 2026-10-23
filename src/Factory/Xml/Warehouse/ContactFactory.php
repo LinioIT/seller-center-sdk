@@ -5,11 +5,10 @@ declare(strict_types=1);
 namespace Linio\SellerCenter\Factory\Xml\Warehouse;
 
 use Linio\SellerCenter\Model\Warehouse\Contact;
-use SimpleXMLElement;
 
 class ContactFactory
 {
-    public static function make(SimpleXMLElement $xml): Contact
+    public static function make(\SimpleXMLElement $xml): Contact
     {
         $type = (string) $xml->type ?: null;
         $value = (string) $xml->value ?: null;

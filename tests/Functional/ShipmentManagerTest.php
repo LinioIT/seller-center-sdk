@@ -59,7 +59,7 @@ class ShipmentManagerTest extends LinioTestCase
         $sdkClient->shipment()->getShipmentProviders($debug);
     }
 
-    public function debugParameter()
+    public static function debugParameter()
     {
         return [
             [false],

@@ -52,7 +52,7 @@ class ConfigurationTest extends LinioTestCase
         $this->assertEquals($userAgent, $configuration->getUserAgent());
     }
 
-    public function configurationProvider(): array
+    public static function configurationProvider(): array
     {
         return [
             'default case' => [

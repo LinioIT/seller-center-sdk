@@ -6,11 +6,10 @@ namespace Linio\SellerCenter\Factory\Xml\Document;
 
 use Linio\SellerCenter\Exception\InvalidXmlStructureException;
 use Linio\SellerCenter\Model\Document\Document;
-use SimpleXMLElement;
 
 class DocumentFactory
 {
-    public static function make(SimpleXMLElement $element): Document
+    public static function make(\SimpleXMLElement $element): Document
     {
         if (!property_exists($element, 'DocumentType')) {
             throw new InvalidXmlStructureException('Document', 'DocumentType');

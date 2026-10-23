@@ -4,15 +4,12 @@ declare(strict_types=1);
 
 namespace Linio\SellerCenter\V2\Model\Order;
 
-use DateTimeInterface;
-use JsonSerializable;
 use Linio\SellerCenter\Model\Order\Address;
 use Linio\SellerCenter\Model\Order\ExtraBillingAttributes;
 use Linio\SellerCenter\Model\Order\OrderItems;
 use Linio\SellerCenter\V2\Model\Warehouse\Warehouse;
-use stdClass;
 
-class Order implements JsonSerializable
+class Order implements \JsonSerializable
 {
     /**
      * @var int
@@ -70,17 +67,17 @@ class Order implements JsonSerializable
     protected $voucherCode;
 
     /**
-     * @var DateTimeInterface|null
+     * @var \DateTimeInterface|null
      */
     protected $createdAt;
 
     /**
-     * @var DateTimeInterface|null
+     * @var \DateTimeInterface|null
      */
     protected $updatedAt;
 
     /**
-     * @var DateTimeInterface|null
+     * @var \DateTimeInterface|null
      */
     protected $addressUpdatedAt;
 
@@ -105,7 +102,7 @@ class Order implements JsonSerializable
     protected $itemsCount;
 
     /**
-     * @var DateTimeInterface|null
+     * @var \DateTimeInterface|null
      */
     protected $promisedShippingTime;
 
@@ -200,27 +197,27 @@ class Order implements JsonSerializable
         bool $giftOption,
         string $giftMessage,
         string $voucherCode,
-        ?DateTimeInterface $createdAt,
-        ?DateTimeInterface $updatedAt,
-        ?DateTimeInterface $addressUpdatedAt,
+        ?\DateTimeInterface $createdAt,
+        ?\DateTimeInterface $updatedAt,
+        ?\DateTimeInterface $addressUpdatedAt,
         Address $addressBilling,
         Address $addressShipping,
         ?string $nationalRegistrationNumber,
         int $itemsCount,
-        ?DateTimeInterface $promisedShippingTime,
+        ?\DateTimeInterface $promisedShippingTime,
         ?string $extraAttributes,
         array $statuses,
         ?bool $businessInvoiceRequired,
         ?string $shippingType,
-        ?string $operatorCode = null,
-        ?ExtraBillingAttributes $extraBillingAttributes = null,
+        ?string $operatorCode,
+        ?ExtraBillingAttributes $extraBillingAttributes,
         float $grandTotal,
         float $productTotal,
         float $taxAmount,
         float $shippingFeeTotal,
         float $shippingTax,
         float $voucher,
-        Warehouse $warehouse
+        Warehouse $warehouse,
     ): Order {
         $order = new self();
 
@@ -318,17 +315,17 @@ class Order implements JsonSerializable
         return $this->voucherCode;
     }
 
-    public function getCreatedAt(): ?DateTimeInterface
+    public function getCreatedAt(): ?\DateTimeInterface
     {
         return $this->createdAt;
     }
 
-    public function getUpdatedAt(): ?DateTimeInterface
+    public function getUpdatedAt(): ?\DateTimeInterface
     {
         return $this->updatedAt;
     }
 
-    public function getAddressUpdatedAt(): ?DateTimeInterface
+    public function getAddressUpdatedAt(): ?\DateTimeInterface
     {
         return $this->addressUpdatedAt;
     }
@@ -353,7 +350,7 @@ class Order implements JsonSerializable
         return $this->itemsCount;
     }
 
-    public function getPromisedShippingTime(): ?DateTimeInterface
+    public function getPromisedShippingTime(): ?\DateTimeInterface
     {
         return $this->promisedShippingTime;
     }
@@ -441,9 +438,9 @@ class Order implements JsonSerializable
         return $this->warehouse;
     }
 
-    public function jsonSerialize(): stdClass
+    public function jsonSerialize(): \stdClass
     {
-        $serialized = new stdClass();
+        $serialized = new \stdClass();
         $serialized->orderId = $this->orderId;
         $serialized->customerFirstName = $this->customerFirstName;
         $serialized->customerLastName = $this->customerLastName;

@@ -5,11 +5,10 @@ declare(strict_types=1);
 namespace Linio\SellerCenter\Factory\Xml\Warehouse;
 
 use Linio\SellerCenter\Model\Warehouse\Warehouses;
-use SimpleXMLElement;
 
 class WarehousesFactory
 {
-    public static function make(SimpleXMLElement $xml): Warehouses
+    public static function make(\SimpleXMLElement $xml): Warehouses
     {
         $warehouses = new Warehouses();
 

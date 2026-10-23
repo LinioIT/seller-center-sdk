@@ -4,10 +4,7 @@ declare(strict_types=1);
 
 namespace Linio\SellerCenter\Model\Warehouse;
 
-use JsonSerializable;
-use stdClass;
-
-class Contact implements JsonSerializable
+class Contact implements \JsonSerializable
 {
     /**
      * @var string|null
@@ -27,7 +24,7 @@ class Contact implements JsonSerializable
     public function __construct(
         ?string $type,
         ?string $value,
-        ?string $typeDescription
+        ?string $typeDescription,
     ) {
         $this->type = $type;
         $this->value = $value;
@@ -49,9 +46,9 @@ class Contact implements JsonSerializable
         return $this->typeDescription;
     }
 
-    public function jsonSerialize(): stdClass
+    public function jsonSerialize(): \stdClass
     {
-        $serialized = new stdClass();
+        $serialized = new \stdClass();
         $serialized->type = $this->type;
         $serialized->value = $this->value;
         $serialized->typeDescription = $this->typeDescription;

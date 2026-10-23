@@ -6,11 +6,10 @@ namespace Linio\SellerCenter\Factory\Xml\Feed;
 
 use Linio\SellerCenter\Exception\InvalidXmlStructureException;
 use Linio\SellerCenter\Model\Feed\FeedError;
-use SimpleXMLElement;
 
 class FeedErrorFactory
 {
-    public static function make(SimpleXMLElement $xml): FeedError
+    public static function make(\SimpleXMLElement $xml): FeedError
     {
         if (!property_exists($xml, 'Code')) {
             throw new InvalidXmlStructureException('FeedError', 'Code');

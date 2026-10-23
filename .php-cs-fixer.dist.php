@@ -1,10 +1,13 @@
 <?php
 
-$finder = PhpCsFixer\Finder::create()
+use PhpCsFixer\Config;
+use PhpCsFixer\Finder;
+
+$finder = Finder::create()
     ->in(__DIR__ . '/src')
     ->in(__DIR__ . '/tests');
 
-return PhpCsFixer\Config::create()
+return (new Config())
     ->setRules([
         '@Symfony' => true,
         '@PHP71Migration:risky' => true,
@@ -15,12 +18,12 @@ return PhpCsFixer\Config::create()
         'concat_space' => ['spacing' => 'one'],
         'declare_strict_types' => true,
         'increment_style' => ['style' => 'post'],
-        'is_null' => ['use_yoda_style' => false],
+        'is_null' => true,
         'list_syntax' => ['syntax' => 'short'],
-        'method_argument_space' => ['ensure_fully_multiline' => true],
+        'method_argument_space' => ['on_multiline' => 'ensure_fully_multiline'],
         'method_chaining_indentation' => true,
         'modernize_types_casting' => true,
-        'no_multiline_whitespace_before_semicolons' => true,
+        'multiline_whitespace_before_semicolons' => ['strategy' => 'no_multi_line'],
         'no_superfluous_elseif' => true,
         'no_superfluous_phpdoc_tags' => true,
         'no_useless_else' => true,
@@ -30,12 +33,13 @@ return PhpCsFixer\Config::create()
         'phpdoc_order' => true,
         'php_unit_construct' => true,
         'php_unit_dedicate_assert' => true,
+        'php_unit_data_provider_static' => true,
         'return_assignment' => true,
         'single_line_comment_style' => true,
         'ternary_to_null_coalescing' => true,
         'yoda_style' => ['equal' => false, 'identical' => false, 'less_and_greater' => false],
         'void_return' => true,
-        'single_blank_line_at_eof' => true
+        'single_blank_line_at_eof' => true,
     ])
     ->setFinder($finder)
     ->setUsingCache(true)

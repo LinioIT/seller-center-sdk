@@ -5,11 +5,10 @@ declare(strict_types=1);
 namespace Linio\SellerCenter\Transformer\Order;
 
 use Linio\SellerCenter\Model\Order\OrderItem;
-use SimpleXMLElement;
 
 class OrderItemTransformer
 {
-    public static function orderItemImeiAsXml(SimpleXMLElement &$xml, OrderItem $orderItem): void
+    public static function orderItemImeiAsXml(\SimpleXMLElement &$xml, OrderItem $orderItem): void
     {
         $body = $xml->addChild('OrderItem');
 
@@ -25,7 +24,7 @@ class OrderItemTransformer
     /**
      * @param mixed[] $attributes
      */
-    public static function addAttributes(SimpleXMLElement $xml, array $attributes): void
+    public static function addAttributes(\SimpleXMLElement $xml, array $attributes): void
     {
         foreach ($attributes as $attributeName => $attributeValue) {
             if ($attributeValue === null) {

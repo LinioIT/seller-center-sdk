@@ -4,8 +4,6 @@ declare(strict_types=1);
 
 namespace Linio\SellerCenter\Response;
 
-use Exception;
-use Linio\Component\Util\Json as JsonFormatter;
 use Linio\SellerCenter\Application\ResponseStatus;
 use Linio\SellerCenter\Exception\EmptyJsonException;
 use Linio\SellerCenter\Exception\EmptyXmlException;
@@ -13,7 +11,7 @@ use Linio\SellerCenter\Exception\ErrorJsonResponseException;
 use Linio\SellerCenter\Exception\ErrorResponseException;
 use Linio\SellerCenter\Exception\InvalidJsonException;
 use Linio\SellerCenter\Exception\InvalidXmlException;
-use SimpleXMLElement;
+use Linio\SellerCenter\Helper\Json as JsonFormatter;
 
 class HandleResponse
 {
@@ -55,12 +53,17 @@ class HandleResponse
      * @throws InvalidXmlException
      * @throws EmptyXmlException
      */
-    public static function getXml(string $data): SimpleXMLElement
+    public static function getXml(string $data): \SimpleXMLElement
     {
+        $useInternalErrors = libxml_use_internal_errors(true);
+
         try {
             $xml = simplexml_load_string($data);
-        } catch (Exception $e) {
+        } catch (\Exception $e) {
             throw new InvalidXmlException();
+        } finally {
+            libxml_clear_errors();
+            libxml_use_internal_errors($useInternalErrors);
         }
 
         if (empty($xml)) {
@@ -80,7 +83,7 @@ class HandleResponse
     {
         try {
             $json = JsonFormatter::decode($data);
-        } catch (Exception $e) {
+        } catch (\Exception $e) {
             throw new InvalidJsonException();
         }
 

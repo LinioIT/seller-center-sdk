@@ -4,10 +4,10 @@ declare(strict_types=1);
 
 namespace Linio\SellerCenter\Unit\Product;
 
+use Linio\SellerCenter\LinioTestCase;
 use Linio\SellerCenter\Model\Product\VariationAttributes;
-use PHPStan\Testing\TestCase;
 
-class VariationAttributesTest extends TestCase
+class VariationAttributesTest extends LinioTestCase
 {
     public function testItCreatesVariationAttributes(): void
     {

@@ -8,7 +8,7 @@ use Linio\SellerCenter\Model\Order\InvoiceDocument;
 
 class InvalidInvoiceDocumentFormatException extends InvalidArgumentValueException
 {
-    const INVOICE_DOC_FORMAT_FIELD = 'invoice document format';
+    public const INVOICE_DOC_FORMAT_FIELD = 'invoice document format';
 
     public function __construct()
     {

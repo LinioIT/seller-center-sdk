@@ -4,10 +4,7 @@ declare(strict_types=1);
 
 namespace Linio\SellerCenter\Model\Category;
 
-use JsonSerializable;
-use stdClass;
-
-class CategoryAttribute implements JsonSerializable
+class CategoryAttribute implements \JsonSerializable
 {
     /**
      * @var string
@@ -93,7 +90,7 @@ class CategoryAttribute implements JsonSerializable
         ?string $inputType = null,
         ?string $groupName = null,
         ?int $maxLength = null,
-        ?string $exampleValue = null
+        ?string $exampleValue = null,
     ) {
         $this->name = $name;
         $this->feedName = $feedName;
@@ -181,9 +178,9 @@ class CategoryAttribute implements JsonSerializable
         return $this->maxLength;
     }
 
-    public function jsonSerialize(): stdClass
+    public function jsonSerialize(): \stdClass
     {
-        $serialized = new stdClass();
+        $serialized = new \stdClass();
         $serialized->name = $this->name;
         $serialized->feedName = $this->feedName;
         $serialized->label = $this->label;

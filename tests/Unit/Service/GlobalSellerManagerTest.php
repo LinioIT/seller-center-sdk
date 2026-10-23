@@ -10,7 +10,6 @@ use Linio\SellerCenter\Contract\ClientInterface;
 use Linio\SellerCenter\LinioTestCase;
 use Linio\SellerCenter\Service\GlobalSellerManager;
 use Psr\Log\Test\TestLogger;
-use ReflectionClass;
 
 class GlobalSellerManagerTest extends LinioTestCase
 {
@@ -39,7 +38,7 @@ class GlobalSellerManagerTest extends LinioTestCase
 
         $globalSellerManager = new GlobalSellerManager($configuration->reveal(), $client->reveal(), $parameters->reveal(), $logger->reveal());
 
-        $reflectionClass = new ReflectionClass(GlobalSellerManager::class);
+        $reflectionClass = new \ReflectionClass(GlobalSellerManager::class);
         $property = $reflectionClass->getProperty('logger');
         $property->setAccessible(true);
 

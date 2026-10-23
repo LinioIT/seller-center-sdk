@@ -4,10 +4,9 @@ declare(strict_types=1);
 
 namespace Linio\SellerCenter\V2\Model;
 
-use DateTimeImmutable;
-use Linio\Component\Util\Json;
 use Linio\SellerCenter\Exception\InvalidDomainException;
 use Linio\SellerCenter\Exception\InvalidXmlStructureException;
+use Linio\SellerCenter\Helper\Json;
 use Linio\SellerCenter\LinioTestCase;
 use Linio\SellerCenter\Model\Order\Address;
 use Linio\SellerCenter\V2\Factory\Xml\Order\OrderFactory;
@@ -88,14 +87,14 @@ class OrderTest extends LinioTestCase
         $this->assertTrue($order->getGiftOption());
         $this->assertEquals((string) $simpleXml->GiftMessage, $order->getGiftMessage());
         $this->assertEquals((string) $simpleXml->VoucherCode, $order->getVoucherCode());
-        $this->assertInstanceOf(DateTimeImmutable::class, $order->getCreatedAt());
-        $this->assertInstanceOf(DateTimeImmutable::class, $order->getUpdatedAt());
-        $this->assertInstanceOf(DateTimeImmutable::class, $order->getAddressUpdatedAt());
+        $this->assertInstanceOf(\DateTimeImmutable::class, $order->getCreatedAt());
+        $this->assertInstanceOf(\DateTimeImmutable::class, $order->getUpdatedAt());
+        $this->assertInstanceOf(\DateTimeImmutable::class, $order->getAddressUpdatedAt());
         $this->assertInstanceOf(Address::class, $order->getAddressBilling());
         $this->assertInstanceOf(Address::class, $order->getAddressShipping());
         $this->assertEquals((string) $simpleXml->NationalRegistrationNumber, $order->getNationalRegistrationNumber());
         $this->assertEquals((int) $simpleXml->ItemsCount, $order->getItemsCount());
-        $this->assertInstanceOf(DateTimeImmutable::class, $order->getPromisedShippingTime());
+        $this->assertInstanceOf(\DateTimeImmutable::class, $order->getPromisedShippingTime());
         $this->assertEquals((string) $simpleXml->ExtraAttributes, $order->getExtraAttributes());
         $this->assertSame((string) $simpleXml->Statuses->Status[0], $order->getStatuses()[0]);
         $this->assertEquals((string) $simpleXml->OperatorCode, $order->getOperatorCode());
@@ -249,7 +248,7 @@ class OrderTest extends LinioTestCase
         );
     }
 
-    public function invalidXmlStructure(): array
+    public static function invalidXmlStructure(): array
     {
         return [
             ['OrderId'],
@@ -275,7 +274,7 @@ class OrderTest extends LinioTestCase
         ];
     }
 
-    public function dataVariations(): array
+    public static function dataVariations(): array
     {
         return [
             ['orderNumber'],

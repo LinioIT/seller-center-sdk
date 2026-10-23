@@ -6,7 +6,6 @@ namespace Linio\SellerCenter\V2\Factory\Xml\Warehouse;
 
 use Linio\SellerCenter\V2\Model\Warehouse\Warehouse;
 use Linio\SellerCenter\Validator\XmlStructureValidator;
-use SimpleXMLElement;
 
 class WarehouseFactory
 {
@@ -16,7 +15,7 @@ class WarehouseFactory
         'SellerWarehouseId',
     ];
 
-    public static function make(SimpleXMLElement $xml): Warehouse
+    public static function make(\SimpleXMLElement $xml): Warehouse
     {
         XmlStructureValidator::validateStructure($xml, self::XML_MODEL, self::REQUIRED_FIELDS);
 

@@ -4,14 +4,12 @@ declare(strict_types=1);
 
 namespace Linio\SellerCenter\Factory\Xml\Product;
 
-use DateTimeImmutable;
 use Linio\SellerCenter\Factory\Xml\Category\CategoriesFactory;
 use Linio\SellerCenter\Model\Brand\Brand;
 use Linio\SellerCenter\Model\Category\Category;
 use Linio\SellerCenter\Model\Product\Image;
 use Linio\SellerCenter\Model\Product\Product;
 use Linio\SellerCenter\Validator\XmlStructureValidator;
-use SimpleXMLElement;
 
 class ProductFactory
 {
@@ -29,7 +27,7 @@ class ProductFactory
         'Price',
     ];
 
-    public static function make(SimpleXMLElement $element): Product
+    public static function make(\SimpleXMLElement $element): Product
     {
         XmlStructureValidator::validateStructure($element, self::XML_MODEL, self::REQUIRED_FIELDS);
 
@@ -78,7 +76,7 @@ class ProductFactory
         }
 
         if (!empty($element->SaleStartDate)) {
-            $saleStartDate = DateTimeImmutable::createFromFormat('Y-m-d H:i:s', (string) $element->SaleStartDate);
+            $saleStartDate = \DateTimeImmutable::createFromFormat('Y-m-d H:i:s', (string) $element->SaleStartDate);
 
             if ($saleStartDate) {
                 $product->setSaleStartDate($saleStartDate);
@@ -86,7 +84,7 @@ class ProductFactory
         }
 
         if (!empty($element->SaleEndDate)) {
-            $saleEndDate = DateTimeImmutable::createFromFormat('Y-m-d H:i:s', (string) $element->SaleEndDate);
+            $saleEndDate = \DateTimeImmutable::createFromFormat('Y-m-d H:i:s', (string) $element->SaleEndDate);
 
             if ($saleEndDate) {
                 $product->setSaleEndDate($saleEndDate);

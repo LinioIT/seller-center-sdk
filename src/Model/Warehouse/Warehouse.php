@@ -4,11 +4,7 @@ declare(strict_types=1);
 
 namespace Linio\SellerCenter\Model\Warehouse;
 
-use DateTimeInterface;
-use JsonSerializable;
-use stdClass;
-
-class Warehouse implements JsonSerializable
+class Warehouse implements \JsonSerializable
 {
     /**
      * @var string
@@ -51,7 +47,7 @@ class Warehouse implements JsonSerializable
     protected $isEnabled;
 
     /**
-     * @var DateTimeInterface|null
+     * @var \DateTimeInterface|null
      */
     protected $updatedAt;
 
@@ -76,7 +72,7 @@ class Warehouse implements JsonSerializable
     protected $zoneAvailable;
 
     /**
-     * @var DateTimeInterface|null
+     * @var \DateTimeInterface|null
      */
     protected $zoneUpdatedAt;
 
@@ -94,13 +90,13 @@ class Warehouse implements JsonSerializable
         bool $isDefault,
         bool $isPickupStore,
         bool $isEnabled,
-        ?DateTimeInterface $updatedAt,
+        ?\DateTimeInterface $updatedAt,
         ?string $updatedBy,
         ?WarehouseAddress $warehouseAddress,
         ?string $nodeId,
         bool $zoneAvailable,
-        ?DateTimeInterface $zoneUpdatedAt,
-        ?WorkingSchedules $workingSchedule
+        ?\DateTimeInterface $zoneUpdatedAt,
+        ?WorkingSchedules $workingSchedule,
     ) {
         $this->name = $name;
         $this->sellerWarehouseId = $sellerWarehouseId;
@@ -159,7 +155,7 @@ class Warehouse implements JsonSerializable
         return $this->isEnabled;
     }
 
-    public function getUpdatedAt(): ?DateTimeInterface
+    public function getUpdatedAt(): ?\DateTimeInterface
     {
         return $this->updatedAt;
     }
@@ -184,7 +180,7 @@ class Warehouse implements JsonSerializable
         return $this->zoneAvailable;
     }
 
-    public function getZoneUpdatedAt(): ?DateTimeInterface
+    public function getZoneUpdatedAt(): ?\DateTimeInterface
     {
         return $this->zoneUpdatedAt;
     }
@@ -194,9 +190,9 @@ class Warehouse implements JsonSerializable
         return $this->workingSchedule;
     }
 
-    public function jsonSerialize(): stdClass
+    public function jsonSerialize(): \stdClass
     {
-        $serialized = new stdClass();
+        $serialized = new \stdClass();
         $serialized->name = $this->name;
         $serialized->sellerWarehouseId = $this->sellerWarehouseId;
         $serialized->facilityId = $this->facilityId;

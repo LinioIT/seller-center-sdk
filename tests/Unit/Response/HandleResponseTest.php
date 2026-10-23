@@ -9,7 +9,6 @@ use Linio\SellerCenter\Exception\EmptyXmlException;
 use Linio\SellerCenter\Exception\ErrorJsonResponseException;
 use Linio\SellerCenter\Exception\ErrorResponseException;
 use Linio\SellerCenter\Exception\InvalidJsonException;
-use Linio\SellerCenter\Exception\InvalidXmlException;
 use Linio\SellerCenter\LinioTestCase;
 
 class HandleResponseTest extends LinioTestCase
@@ -27,7 +26,7 @@ class HandleResponseTest extends LinioTestCase
 
     public function testItThrowAnExceptionWithAnInvalidXml(): void
     {
-        $this->expectException(InvalidXmlException::class);
+        $this->expectException(EmptyXmlException::class);
 
         $response = 'invalid-xml';
 
@@ -43,6 +42,39 @@ class HandleResponseTest extends LinioTestCase
 
         HandleResponse::parse($response);
         HandleResponse::validate($response);
+    }
+
+    /**
+     * @dataProvider xmlErrorHandling
+     */
+    public function testItRestoresLibxmlErrorHandling(string $xml, bool $useInternalErrors, bool $invalid): void
+    {
+        $previous = libxml_use_internal_errors($useInternalErrors);
+
+        try {
+            if ($invalid) {
+                $this->expectException(EmptyXmlException::class);
+            }
+
+            try {
+                HandleResponse::getXml($xml);
+            } finally {
+                $this->assertSame($useInternalErrors, libxml_use_internal_errors());
+                $this->assertSame([], libxml_get_errors());
+            }
+        } finally {
+            libxml_use_internal_errors($previous);
+        }
+    }
+
+    public static function xmlErrorHandling(): array
+    {
+        return [
+            ['<xml><Test>test</Test></xml>', false, false],
+            ['<xml><Test>test</Test></xml>', true, false],
+            ['invalid-xml', false, true],
+            ['invalid-xml', true, true],
+        ];
     }
 
     public function testItThrowAnExceptionWithAnErrorResponse(): void

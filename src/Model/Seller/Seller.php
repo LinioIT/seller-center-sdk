@@ -4,10 +4,7 @@ declare(strict_types=1);
 
 namespace Linio\SellerCenter\Model\Seller;
 
-use JsonSerializable;
-use stdClass;
-
-class Seller implements JsonSerializable
+class Seller implements \JsonSerializable
 {
     /**
      * @var string|null
@@ -39,7 +36,7 @@ class Seller implements JsonSerializable
         ?string $companyName = null,
         ?string $emailAddress = null,
         ?string $sellerName = null,
-        ?string $apiKey = null
+        ?string $apiKey = null,
     ) {
         $this->setShortCode($shortCode);
         $this->setCompanyName($companyName);
@@ -98,9 +95,9 @@ class Seller implements JsonSerializable
         $this->apiKey = $apiKey;
     }
 
-    public function jsonSerialize(): stdClass
+    public function jsonSerialize(): \stdClass
     {
-        $serialized = new stdClass();
+        $serialized = new \stdClass();
         $serialized->shortCode = $this->shortCode;
         $serialized->companyName = $this->companyName;
         $serialized->emailAddress = $this->emailAddress;

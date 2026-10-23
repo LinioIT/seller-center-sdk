@@ -4,10 +4,9 @@ declare(strict_types=1);
 
 namespace Linio\SellerCenter\Model\Feed;
 
-use JsonSerializable;
 use Linio\SellerCenter\Contract\CollectionInterface;
 
-class FeedWarnings implements CollectionInterface, JsonSerializable
+class FeedWarnings implements CollectionInterface, \JsonSerializable
 {
     /**
      * @var FeedWarning[]

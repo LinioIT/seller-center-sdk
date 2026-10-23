@@ -9,11 +9,13 @@ use Linio\SellerCenter\Application\Parameters;
 use Linio\SellerCenter\Contract\ClientInterface;
 use Linio\SellerCenter\Service\OrderManager;
 use PHPUnit\Framework\TestCase;
+use Prophecy\PhpUnit\ProphecyTrait;
 use Psr\Log\Test\TestLogger;
-use ReflectionClass;
 
 class OrderManagerTest extends TestCase
 {
+    use ProphecyTrait;
+
     public function testReturnsAOrderManagerManager(): void
     {
         $configuration = $this->prophesize(Configuration::class);
@@ -39,7 +41,7 @@ class OrderManagerTest extends TestCase
 
         $orderManager = new OrderManager($configuration->reveal(), $client->reveal(), $parameters->reveal(), $logger->reveal());
 
-        $reflectionClass = new ReflectionClass(OrderManager::class);
+        $reflectionClass = new \ReflectionClass(OrderManager::class);
         $property = $reflectionClass->getProperty('logger');
         $property->setAccessible(true);
 

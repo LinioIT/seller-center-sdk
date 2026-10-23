@@ -7,7 +7,6 @@ namespace Linio\SellerCenter\Factory\Xml\Order;
 use Linio\SellerCenter\Model\Order\Order;
 use Linio\SellerCenter\Model\Order\Orders;
 use Linio\SellerCenter\Validator\XmlStructureValidator;
-use SimpleXMLElement;
 
 class OrdersItemsFactory
 {
@@ -18,7 +17,7 @@ class OrdersItemsFactory
         'OrderItems',
     ];
 
-    public static function make(SimpleXMLElement $xml): Orders
+    public static function make(\SimpleXMLElement $xml): Orders
     {
         $orders = new Orders();
 

@@ -4,10 +4,7 @@ declare(strict_types=1);
 
 namespace Linio\SellerCenter\Model\Webhook;
 
-use JsonSerializable;
-use stdClass;
-
-class Event implements JsonSerializable
+class Event implements \JsonSerializable
 {
     /**
      * @var string
@@ -35,9 +32,9 @@ class Event implements JsonSerializable
         return $this->name;
     }
 
-    public function jsonSerialize(): stdClass
+    public function jsonSerialize(): \stdClass
     {
-        $serialized = new stdClass();
+        $serialized = new \stdClass();
         $serialized->alias = $this->alias;
         $serialized->name = $this->name;
 

@@ -4,43 +4,39 @@ declare(strict_types=1);
 
 namespace Linio\SellerCenter;
 
-use stdClass;
-
 class FeedManagerProvider
 {
-    public function xmlTypesProvider(): array
+    public static function xmlTypesProvider(): array
     {
-        $feedManager = new FeedManagerTest();
-
         return [
-            ['productUpdate' => $feedManager->getSchema('Feed/FeedProductUpdate.xml')],
-            ['ProductCreate' => $feedManager->getSchema('Feed/FeedProductCreate.xml')],
+            'productUpdate' => [LinioTestCase::getSchema('Feed/FeedProductUpdate.xml')],
+            'productCreate' => [LinioTestCase::getSchema('Feed/FeedProductCreate.xml')],
         ];
     }
 
-    public function feedProvider(): array
+    public static function feedProvider(): array
     {
         $result = [];
         $limit = 20;
 
         for ($index = 1; $index <= $limit; $index++) {
             $size = random_int(1, 10);
-            $pendingFeed = $this->getPendingFeedXml();
+            $pendingFeed = self::getPendingFeedXml();
             $result[] = [$pendingFeed['xml'], $pendingFeed['feeds'], $size];
         }
 
         return $result;
     }
 
-    private function pendingFeed(): stdClass
+    private static function pendingFeed(): \stdClass
     {
-        $feedManager = new FeedManagerTest();
-        $feedData = new stdClass();
-        $feedData->id = $feedManager->getFaker()->uuid;
+        $faker = \Faker\Factory::create();
+        $feedData = new \stdClass();
+        $feedData->id = $faker->uuid;
         $feedData->status = 'Queued';
         $feedData->action = 'ProductUpdate';
-        $feedData->creationDate = $feedManager->getFaker()->dateTime()->format('Y-m-d H:i:s');
-        $feedData->updatedDate = $feedManager->getFaker()->dateTime()->format('Y-m-d H:i:s');
+        $feedData->creationDate = $faker->dateTime()->format('Y-m-d H:i:s');
+        $feedData->updatedDate = $faker->dateTime()->format('Y-m-d H:i:s');
         $feedData->source = 'api';
         $feedData->totalRecords = random_int(0, 100000);
         $feedData->processedRecords = 0;
@@ -49,7 +45,7 @@ class FeedManagerProvider
         return $feedData;
     }
 
-    private function getPendingFeedXml(int $feedSize = 1): array
+    private static function getPendingFeedXml(int $feedSize = 1): array
     {
         $xml = '<?xml version="1.0" encoding="UTF-8"?>
         <SuccessResponse>
@@ -62,7 +58,7 @@ class FeedManagerProvider
         <Body>';
 
         for ($index = 0; $index <= $feedSize; $index++) {
-            $feed = $this->pendingFeed();
+            $feed = self::pendingFeed();
 
             $xml .= sprintf(
                 '<Feed>

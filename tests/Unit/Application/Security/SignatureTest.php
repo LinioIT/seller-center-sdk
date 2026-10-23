@@ -9,7 +9,6 @@ use Linio\SellerCenter\Application\Parameters;
 use Linio\SellerCenter\Application\Security\Signature;
 use Linio\SellerCenter\Exception\InvalidApiKeyException;
 use Linio\SellerCenter\LinioTestCase;
-use ReflectionClass;
 
 class SignatureTest extends LinioTestCase
 {
@@ -22,7 +21,7 @@ class SignatureTest extends LinioTestCase
 
         $signature = Signature::generate($parameters->all(), $configuration->getKey());
 
-        $rs = new ReflectionClass(Signature::class);
+        $rs = new \ReflectionClass(Signature::class);
         $property = $rs->getProperty('signature');
         $property->setAccessible(true);
 
@@ -41,7 +40,7 @@ class SignatureTest extends LinioTestCase
 
         $signature = Signature::generate($parameters->all(), $configuration->getKey());
 
-        $rs = new ReflectionClass(Signature::class);
+        $rs = new \ReflectionClass(Signature::class);
         $property = $rs->getProperty('signature');
         $property->setAccessible(true);
 

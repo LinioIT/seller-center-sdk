@@ -4,10 +4,9 @@ declare(strict_types=1);
 
 namespace Linio\SellerCenter\Model\Product;
 
-use JsonSerializable;
 use Linio\SellerCenter\Contract\CollectionInterface;
 
-class BusinessUnits implements CollectionInterface, JsonSerializable
+class BusinessUnits implements CollectionInterface, \JsonSerializable
 {
     /**
      * @var BusinessUnit[]

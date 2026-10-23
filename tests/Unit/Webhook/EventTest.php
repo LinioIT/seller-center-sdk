@@ -4,12 +4,11 @@ declare(strict_types=1);
 
 namespace Linio\SellerCenter\Unit\Webhook;
 
-use Linio\Component\Util\Json;
 use Linio\SellerCenter\Exception\InvalidXmlStructureException;
 use Linio\SellerCenter\Factory\Xml\Webhook\EventFactory;
+use Linio\SellerCenter\Helper\Json;
 use Linio\SellerCenter\LinioTestCase;
 use Linio\SellerCenter\Model\Webhook\Event;
-use SimpleXMLElement;
 
 class EventTest extends LinioTestCase
 {
@@ -54,7 +53,7 @@ class EventTest extends LinioTestCase
                   <EventName>created</EventName>
              </Event>';
 
-        EventFactory::make(new SimpleXMLElement($xml));
+        EventFactory::make(new \SimpleXMLElement($xml));
     }
 
     public function testItReturnsAJsonRepresentation(): void

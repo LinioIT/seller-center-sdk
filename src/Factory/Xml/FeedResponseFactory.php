@@ -7,7 +7,6 @@ namespace Linio\SellerCenter\Factory\Xml;
 use Linio\SellerCenter\Response\FeedResponse;
 use Linio\SellerCenter\Response\SuccessResponse;
 use Linio\SellerCenter\Validator\XmlStructureValidator;
-use SimpleXMLElement;
 
 class FeedResponseFactory
 {
@@ -27,7 +26,7 @@ class FeedResponseFactory
         'feed',
     ];
 
-    public static function make(SimpleXMLElement $xml): FeedResponse
+    public static function make(\SimpleXMLElement $xml): FeedResponse
     {
         XmlStructureValidator::validateStructure($xml, self::XML_MODEL, self::REQUIRED_FIELDS);
 

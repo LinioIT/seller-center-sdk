@@ -6,7 +6,6 @@ namespace Linio\SellerCenter\Factory\Xml\Product;
 
 use Linio\SellerCenter\Model\Product\ProductStock;
 use Linio\SellerCenter\Validator\XmlStructureValidator;
-use SimpleXMLElement;
 
 class ProductStockFactory
 {
@@ -16,7 +15,7 @@ class ProductStockFactory
         'Quantity',
     ];
 
-    public static function make(SimpleXMLElement $xml): ProductStock
+    public static function make(\SimpleXMLElement $xml): ProductStock
     {
         XmlStructureValidator::validateStructure($xml, self::XML_MODEL, self::REQUIRED_FIELDS);
 

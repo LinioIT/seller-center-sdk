@@ -4,8 +4,7 @@ declare(strict_types=1);
 
 namespace Linio\SellerCenter\Model;
 
-use DateTimeImmutable;
-use Linio\Component\Util\Json;
+use Linio\SellerCenter\Helper\Json;
 use Linio\SellerCenter\LinioTestCase;
 use Linio\SellerCenter\Model\Warehouse\Warehouse;
 use Linio\SellerCenter\Model\Warehouse\WarehouseAddress;
@@ -23,7 +22,7 @@ class WarehouseTest extends LinioTestCase
             false,
             false,
             true,
-            new DateTimeImmutable('2025-11-24T11:12:59.747Z'),
+            new \DateTimeImmutable('2025-11-24T11:12:59.747Z'),
             null,
             new WarehouseAddress(
                 'Calle Mario Valdivia 18081',

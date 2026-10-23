@@ -8,13 +8,12 @@ use Linio\SellerCenter\LinioTestCase;
 use Linio\SellerCenter\V2\Factory\Xml\Order\OrdersFactory;
 use Linio\SellerCenter\V2\Model\Order\Order;
 use Linio\SellerCenter\V2\Model\Order\Orders;
-use SimpleXMLElement;
 
 class OrdersTest extends LinioTestCase
 {
     public function testItReturnsACollectionOfOrders(): void
     {
-        $simpleXml = new SimpleXMLElement($this->getOrderResponse());
+        $simpleXml = new \SimpleXMLElement($this->getOrderResponse());
 
         $orders = OrdersFactory::make($simpleXml);
 
@@ -34,7 +33,7 @@ class OrdersTest extends LinioTestCase
 
     public function testItReturnNullWithAInvalidOrderId(): void
     {
-        $simpleXml = new SimpleXMLElement($this->getOrderResponse());
+        $simpleXml = new \SimpleXMLElement($this->getOrderResponse());
 
         $orders = OrdersFactory::make($simpleXml);
 

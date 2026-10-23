@@ -4,8 +4,8 @@ declare(strict_types=1);
 
 namespace Linio\SellerCenter\Order;
 
-use Linio\Component\Util\Json;
 use Linio\SellerCenter\Factory\Xml\Order\ExtraBillingAttributesFactory;
+use Linio\SellerCenter\Helper\Json;
 use Linio\SellerCenter\LinioTestCase;
 use Linio\SellerCenter\Model\Order\ExtraBillingAttributes;
 

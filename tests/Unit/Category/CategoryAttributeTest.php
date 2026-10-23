@@ -4,9 +4,9 @@ declare(strict_types=1);
 
 namespace Linio\SellerCenter\Category;
 
-use Linio\Component\Util\Json;
 use Linio\SellerCenter\Exception\InvalidXmlStructureException;
 use Linio\SellerCenter\Factory\Xml\Category\CategoryAttributeFactory;
+use Linio\SellerCenter\Helper\Json;
 use Linio\SellerCenter\LinioTestCase;
 use Linio\SellerCenter\Model\Category\CategoryAttribute;
 use Linio\SellerCenter\Model\Category\CategoryAttributeOption;
@@ -30,7 +30,7 @@ class CategoryAttributeTest extends LinioTestCase
         $inputType,
         $attributeType,
         $exampleValue,
-        $maxLength
+        $maxLength,
     ): void {
         $xml = sprintf(
             '<Attribute>
@@ -84,7 +84,7 @@ class CategoryAttributeTest extends LinioTestCase
         $this->assertEquals($maxLength, $result->getMaxLength());
     }
 
-    public function categoryTypesProvider()
+    public static function categoryTypesProvider()
     {
         return [
             [
@@ -151,7 +151,7 @@ class CategoryAttributeTest extends LinioTestCase
         $inputType,
         $attributeType,
         $exampleValue,
-        $maxLength
+        $maxLength,
     ): void {
         $xml = sprintf(
             '<Attribute>
@@ -622,7 +622,7 @@ class CategoryAttributeTest extends LinioTestCase
      */
     public function testMaxLengthCases(
         $maxLength,
-        $expected
+        $expected,
     ): void {
         $xml = sprintf(
             '<Attribute>
@@ -662,7 +662,7 @@ class CategoryAttributeTest extends LinioTestCase
         $this->assertEquals($expected, $result->getMaxLength());
     }
 
-    public function maxLengthTypesProvider()
+    public static function maxLengthTypesProvider()
     {
         return [
             ['maxLength' => 15, 'expected' => 15],

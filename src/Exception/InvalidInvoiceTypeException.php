@@ -8,7 +8,7 @@ use Linio\SellerCenter\Model\Order\InvoiceDocument;
 
 class InvalidInvoiceTypeException extends InvalidArgumentValueException
 {
-    const INVOICE_TYPE_FIELD = 'invoice type';
+    public const INVOICE_TYPE_FIELD = 'invoice type';
 
     public function __construct()
     {

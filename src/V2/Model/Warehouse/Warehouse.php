@@ -4,10 +4,7 @@ declare(strict_types=1);
 
 namespace Linio\SellerCenter\V2\Model\Warehouse;
 
-use JsonSerializable;
-use stdClass;
-
-class Warehouse implements JsonSerializable
+class Warehouse implements \JsonSerializable
 {
     /**
      * @var string
@@ -35,9 +32,9 @@ class Warehouse implements JsonSerializable
         return $this->sellerWarehouseId;
     }
 
-    public function jsonSerialize(): stdClass
+    public function jsonSerialize(): \stdClass
     {
-        $serialized = new stdClass();
+        $serialized = new \stdClass();
         $serialized->facilityId = $this->facilityId;
         $serialized->sellerWarehouseId = $this->sellerWarehouseId;
 

@@ -4,11 +4,7 @@ declare(strict_types=1);
 
 namespace Linio\SellerCenter\Model\Order;
 
-use DateTimeImmutable;
-use JsonSerializable;
-use stdClass;
-
-class OrderItem implements JsonSerializable
+class OrderItem implements \JsonSerializable
 {
     /**
      * @var int
@@ -161,7 +157,7 @@ class OrderItem implements JsonSerializable
     protected $packageId;
 
     /**
-     * @var DateTimeImmutable|null
+     * @var \DateTimeImmutable|null
      */
     protected $promisedShippingTime;
 
@@ -176,12 +172,12 @@ class OrderItem implements JsonSerializable
     protected $shippingProviderType;
 
     /**
-     * @var DateTimeImmutable|null
+     * @var \DateTimeImmutable|null
      */
     protected $createdAt;
 
     /**
-     * @var DateTimeImmutable|null
+     * @var \DateTimeImmutable|null
      */
     protected $updatedAt;
 
@@ -244,15 +240,15 @@ class OrderItem implements JsonSerializable
         ?int $purchaseOrderId,
         ?string $purchaseOrderNumber,
         ?string $packageId,
-        ?DateTimeImmutable $promisedShippingTime,
+        ?\DateTimeImmutable $promisedShippingTime,
         ?array $extraAttributes,
         string $shippingProviderType,
-        ?DateTimeImmutable $createdAt,
-        ?DateTimeImmutable $updatedAt,
+        ?\DateTimeImmutable $createdAt,
+        ?\DateTimeImmutable $updatedAt,
         ?string $returnStatus,
         ?float $shippingTax = null,
         ?string $salesType = null,
-        ?string $imei = null
+        ?string $imei = null,
     ): OrderItem {
         $orderItem = new self();
 
@@ -303,7 +299,7 @@ class OrderItem implements JsonSerializable
         int $orderItemId,
         int $purchaseOrderId,
         string $purchaseOrderNumber,
-        ?string $packageId
+        ?string $packageId,
     ): OrderItem {
         $orderItem = new self();
 
@@ -319,7 +315,7 @@ class OrderItem implements JsonSerializable
         int $orderItemId,
         ?string $imei,
         string $status,
-        ?string $message = null
+        ?string $message = null,
     ): OrderItem {
         $orderItem = new self();
 
@@ -481,7 +477,7 @@ class OrderItem implements JsonSerializable
         return $this->packageId;
     }
 
-    public function getPromisedShippingTime(): ?DateTimeImmutable
+    public function getPromisedShippingTime(): ?\DateTimeImmutable
     {
         return $this->promisedShippingTime;
     }
@@ -499,12 +495,12 @@ class OrderItem implements JsonSerializable
         return $this->shippingProviderType;
     }
 
-    public function getCreatedAt(): ?DateTimeImmutable
+    public function getCreatedAt(): ?\DateTimeImmutable
     {
         return !empty($this->createdAt) ? $this->createdAt : null;
     }
 
-    public function getUpdatedAt(): ?DateTimeImmutable
+    public function getUpdatedAt(): ?\DateTimeImmutable
     {
         return !empty($this->updatedAt) ? $this->updatedAt : null;
     }
@@ -539,9 +535,9 @@ class OrderItem implements JsonSerializable
         $this->imei = $imei;
     }
 
-    public function jsonSerialize(): stdClass
+    public function jsonSerialize(): \stdClass
     {
-        $serialized = new stdClass();
+        $serialized = new \stdClass();
         $serialized->orderItemId = $this->orderItemId;
         $serialized->shopId = $this->shopId;
         $serialized->orderId = $this->orderId;

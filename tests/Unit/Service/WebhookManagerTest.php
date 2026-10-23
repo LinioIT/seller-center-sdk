@@ -10,7 +10,6 @@ use Linio\SellerCenter\Contract\ClientInterface;
 use Linio\SellerCenter\LinioTestCase;
 use Linio\SellerCenter\Service\WebhookManager;
 use Psr\Log\Test\TestLogger;
-use ReflectionClass;
 
 class WebhookManagerTest extends LinioTestCase
 {
@@ -44,7 +43,7 @@ class WebhookManagerTest extends LinioTestCase
             $logger->reveal()
         );
 
-        $reflectionClass = new ReflectionClass(WebhookManager::class);
+        $reflectionClass = new \ReflectionClass(WebhookManager::class);
         $property = $reflectionClass->getProperty('logger');
         $property->setAccessible(true);
 

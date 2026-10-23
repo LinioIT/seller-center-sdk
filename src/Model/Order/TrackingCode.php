@@ -4,10 +4,7 @@ declare(strict_types=1);
 
 namespace Linio\SellerCenter\Model\Order;
 
-use JsonSerializable;
-use stdClass;
-
-class TrackingCode implements JsonSerializable
+class TrackingCode implements \JsonSerializable
 {
     /**
      * @var string
@@ -35,9 +32,9 @@ class TrackingCode implements JsonSerializable
         return $this->trackingNumber;
     }
 
-    public function jsonSerialize(): stdClass
+    public function jsonSerialize(): \stdClass
     {
-        $serialized = new stdClass();
+        $serialized = new \stdClass();
         $serialized->dispatchId = $this->dispatchId;
         $serialized->trackingNumber = $this->trackingNumber;
 

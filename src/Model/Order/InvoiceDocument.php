@@ -4,23 +4,20 @@ declare(strict_types=1);
 
 namespace Linio\SellerCenter\Model\Order;
 
-use DateTime;
-use JsonSerializable;
 use Linio\SellerCenter\Contract\BusinessUnitOperatorCodes;
 use Linio\SellerCenter\Exception\InvalidInvoiceDocumentFormatException;
 use Linio\SellerCenter\Exception\InvalidInvoiceTypeException;
 use Linio\SellerCenter\Exception\InvalidOperatorCodeException;
-use stdClass;
 
-class InvoiceDocument implements JsonSerializable
+class InvoiceDocument implements \JsonSerializable
 {
-    const INVOICE_TYPES = [
+    public const INVOICE_TYPES = [
         'BOLETA',
         'NOTA_DE_CREDITO',
         'FACTURA',
     ];
 
-    const INVOICE_DOCUMENT_FORMATS = [
+    public const INVOICE_DOCUMENT_FORMATS = [
         'pdf',
     ];
 
@@ -35,7 +32,7 @@ class InvoiceDocument implements JsonSerializable
     private $invoiceNumber;
 
     /**
-     * @var DateTime
+     * @var \DateTime
      */
     private $invoiceDate;
 
@@ -61,12 +58,12 @@ class InvoiceDocument implements JsonSerializable
 
     public function __construct(
         string $invoiceNumber,
-        DateTime $invoiceDate,
+        \DateTime $invoiceDate,
         string $invoiceType,
         string $operatorCode,
         string $invoiceDocumentBase64,
         OrderItems $orderItems,
-        ?string $invoiceDocumentFormat = 'pdf'
+        ?string $invoiceDocumentFormat = 'pdf',
     ) {
         $invoiceType = strtoupper($invoiceType);
         if (!in_array($invoiceType, self::INVOICE_TYPES)) {
@@ -102,7 +99,7 @@ class InvoiceDocument implements JsonSerializable
         return $this->invoiceNumber;
     }
 
-    public function getInvoiceDate(): DateTime
+    public function getInvoiceDate(): \DateTime
     {
         return $this->invoiceDate;
     }
@@ -132,9 +129,9 @@ class InvoiceDocument implements JsonSerializable
         return $this->invoiceDocumentBase64;
     }
 
-    public function jsonSerialize(): stdClass
+    public function jsonSerialize(): \stdClass
     {
-        $serialized = new stdClass();
+        $serialized = new \stdClass();
 
         foreach ($this->orderItems->all() as $item) {
             $orderItems[] = $item->getOrderItemId();

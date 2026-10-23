@@ -4,14 +4,13 @@ declare(strict_types=1);
 
 namespace Linio\SellerCenter\Service;
 
-use DateTimeInterface;
-use Linio\Component\Util\Json;
 use Linio\SellerCenter\Application\Parameters;
 use Linio\SellerCenter\Contract\ProductFilters;
 use Linio\SellerCenter\Exception\EmptyArgumentException;
 use Linio\SellerCenter\Factory\Xml\FeedResponseFactory;
 use Linio\SellerCenter\Factory\Xml\Product\GlobalProductsFactory;
 use Linio\SellerCenter\Factory\Xml\Product\ProductsStockFactory;
+use Linio\SellerCenter\Helper\Json;
 use Linio\SellerCenter\Model\Product\GlobalProduct;
 use Linio\SellerCenter\Model\Product\Images;
 use Linio\SellerCenter\Model\Product\Product;
@@ -27,7 +26,7 @@ class GlobalProductManager extends BaseManager implements ProductManagerInterfac
 {
     public function productCreate(
         Products $products,
-        bool $debug = true
+        bool $debug = true,
     ): FeedResponse {
         return $this->executeProductAction(
             'ProductCreate',
@@ -38,7 +37,7 @@ class GlobalProductManager extends BaseManager implements ProductManagerInterfac
 
     public function productUpdate(
         Products $products,
-        bool $debug = true
+        bool $debug = true,
     ): FeedResponse {
         return $this->executeProductAction(
             'ProductUpdate',
@@ -49,7 +48,7 @@ class GlobalProductManager extends BaseManager implements ProductManagerInterfac
 
     public function productRemove(
         Products $products,
-        bool $debug = true
+        bool $debug = true,
     ): FeedResponse {
         return $this->executeProductAction(
             'ProductRemove',
@@ -61,7 +60,7 @@ class GlobalProductManager extends BaseManager implements ProductManagerInterfac
     protected function executeProductAction(
         string $action,
         string $xml,
-        bool $debug = true
+        bool $debug = true,
     ): FeedResponse {
         $parameters = $this->makeParametersForAction($action);
 
@@ -80,7 +79,7 @@ class GlobalProductManager extends BaseManager implements ProductManagerInterfac
     protected function executeStockAction(
         string $action,
         string $xml,
-        bool $debug = true
+        bool $debug = true,
     ): FeedResponse {
         $parameters = $this->makeParametersForAction($action);
 
@@ -101,7 +100,7 @@ class GlobalProductManager extends BaseManager implements ProductManagerInterfac
      */
     public function addImage(
         array $productImages,
-        bool $debug = true
+        bool $debug = true,
     ): FeedResponse {
         $action = 'Image';
 
@@ -137,7 +136,7 @@ class GlobalProductManager extends BaseManager implements ProductManagerInterfac
      */
     public function getProducts(
         Parameters $parameters,
-        bool $debug = true
+        bool $debug = true,
     ): array {
         $action = 'GetProducts';
 
@@ -162,7 +161,7 @@ class GlobalProductManager extends BaseManager implements ProductManagerInterfac
     public function getAllProducts(
         int $limit = self::DEFAULT_LIMIT,
         int $offset = self::DEFAULT_OFFSET,
-        bool $debug = true
+        bool $debug = true,
     ): array {
         $parameters = clone $this->parameters;
 
@@ -175,11 +174,11 @@ class GlobalProductManager extends BaseManager implements ProductManagerInterfac
      * @return GlobalProduct[]
      */
     public function getProductsCreatedAfter(
-        DateTimeInterface $createdAfter,
+        \DateTimeInterface $createdAfter,
         int $limit = self::DEFAULT_LIMIT,
         int $offset = self::DEFAULT_OFFSET,
         ?string $dateFormat = null,
-        bool $debug = true
+        bool $debug = true,
     ): array {
         $parameters = clone $this->parameters;
         $dateFormat = $dateFormat ?? self::DEFAULT_DATE_FORMAT;
@@ -197,11 +196,11 @@ class GlobalProductManager extends BaseManager implements ProductManagerInterfac
      * @return GlobalProduct[]
      */
     public function getProductsCreatedBefore(
-        DateTimeInterface $createdBefore,
+        \DateTimeInterface $createdBefore,
         int $limit = self::DEFAULT_LIMIT,
         int $offset = self::DEFAULT_OFFSET,
         ?string $dateFormat = null,
-        bool $debug = true
+        bool $debug = true,
     ): array {
         $parameters = clone $this->parameters;
         $dateFormat = $dateFormat ?? self::DEFAULT_DATE_FORMAT;
@@ -219,11 +218,11 @@ class GlobalProductManager extends BaseManager implements ProductManagerInterfac
      * @return GlobalProduct[]
      */
     public function getProductsUpdatedAfter(
-        DateTimeInterface $updatedAfter,
+        \DateTimeInterface $updatedAfter,
         int $limit = self::DEFAULT_LIMIT,
         int $offset = self::DEFAULT_OFFSET,
         ?string $dateFormat = null,
-        bool $debug = true
+        bool $debug = true,
     ): array {
         $parameters = clone $this->parameters;
         $dateFormat = $dateFormat ?? self::DEFAULT_DATE_FORMAT;
@@ -241,11 +240,11 @@ class GlobalProductManager extends BaseManager implements ProductManagerInterfac
      * @return GlobalProduct[]
      */
     public function getProductsUpdatedBefore(
-        DateTimeInterface $updatedBefore,
+        \DateTimeInterface $updatedBefore,
         int $limit = self::DEFAULT_LIMIT,
         int $offset = self::DEFAULT_OFFSET,
         ?string $dateFormat = null,
-        bool $debug = true
+        bool $debug = true,
     ): array {
         $parameters = clone $this->parameters;
         $dateFormat = $dateFormat ?? self::DEFAULT_DATE_FORMAT;
@@ -266,7 +265,7 @@ class GlobalProductManager extends BaseManager implements ProductManagerInterfac
         string $searchValue,
         int $limit = self::DEFAULT_LIMIT,
         int $offset = self::DEFAULT_OFFSET,
-        bool $debug = true
+        bool $debug = true,
     ): array {
         $parameters = clone $this->parameters;
 
@@ -286,7 +285,7 @@ class GlobalProductManager extends BaseManager implements ProductManagerInterfac
         string $filter,
         int $limit = self::DEFAULT_LIMIT,
         int $offset = self::DEFAULT_OFFSET,
-        bool $debug = true
+        bool $debug = true,
     ): array {
         $parameters = clone $this->parameters;
 
@@ -312,7 +311,7 @@ class GlobalProductManager extends BaseManager implements ProductManagerInterfac
         array $skuSellerList,
         int $limit = self::DEFAULT_LIMIT,
         int $offset = self::DEFAULT_OFFSET,
-        bool $debug = true
+        bool $debug = true,
     ): array {
         $parameters = clone $this->parameters;
 
@@ -335,17 +334,17 @@ class GlobalProductManager extends BaseManager implements ProductManagerInterfac
      * @return GlobalProduct[]
      */
     public function getProductsFromParameters(
-        ?DateTimeInterface $createdAfter = null,
-        ?DateTimeInterface $createdBefore = null,
+        ?\DateTimeInterface $createdAfter = null,
+        ?\DateTimeInterface $createdBefore = null,
         ?string $search = null,
         string $filter = self::DEFAULT_FILTER,
         int $limit = self::DEFAULT_LIMIT,
         int $offset = self::DEFAULT_OFFSET,
         ?array $skuSellerList = null,
-        ?DateTimeInterface $updateAfter = null,
-        ?DateTimeInterface $updateBefore = null,
+        ?\DateTimeInterface $updateAfter = null,
+        ?\DateTimeInterface $updateBefore = null,
         ?string $dateFormat = null,
-        bool $debug = true
+        bool $debug = true,
     ): array {
         $parameters = clone $this->parameters;
         $dateFormat = $dateFormat ?? self::DEFAULT_DATE_FORMAT;
@@ -395,7 +394,7 @@ class GlobalProductManager extends BaseManager implements ProductManagerInterfac
         array $sellerSkuList = [],
         int $limit = self::DEFAULT_LIMIT,
         int $offset = self::DEFAULT_OFFSET,
-        bool $debug = true
+        bool $debug = true,
     ): array {
         $action = 'GetStock';
 
@@ -426,11 +425,11 @@ class GlobalProductManager extends BaseManager implements ProductManagerInterfac
      * @return ProductStock[]
      */
     public function getStockByWarehouseId(
-        array $sellerSkuList = [],
+        array $sellerSkuList,
         string $sellerWarehouseId,
         int $limit = self::DEFAULT_LIMIT,
         int $offset = self::DEFAULT_OFFSET,
-        bool $debug = true
+        bool $debug = true,
     ): array {
         $action = 'GetStock';
 
@@ -465,11 +464,11 @@ class GlobalProductManager extends BaseManager implements ProductManagerInterfac
      * @return ProductStock[]
      */
     public function getStockByFacilityId(
-        array $sellerSkuList = [],
+        array $sellerSkuList,
         string $facilityId,
         int $limit = self::DEFAULT_LIMIT,
         int $offset = self::DEFAULT_OFFSET,
-        bool $debug = true
+        bool $debug = true,
     ): array {
         $action = 'GetStock';
 
@@ -500,7 +499,7 @@ class GlobalProductManager extends BaseManager implements ProductManagerInterfac
 
     public function updateStock(
         ProductsStock $productsStock,
-        bool $debug = true
+        bool $debug = true,
     ): FeedResponse {
         return $this->executeStockAction(
             'UpdateStock',

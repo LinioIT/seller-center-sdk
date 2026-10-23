@@ -4,10 +4,7 @@ declare(strict_types=1);
 
 namespace Linio\SellerCenter\Model\Feed;
 
-use JsonSerializable;
-use stdClass;
-
-class FailureReports implements JsonSerializable
+class FailureReports implements \JsonSerializable
 {
     /**
      * @var string
@@ -35,9 +32,9 @@ class FailureReports implements JsonSerializable
         return $this->mimeType;
     }
 
-    public function jsonSerialize(): stdClass
+    public function jsonSerialize(): \stdClass
     {
-        $serialized = new stdClass();
+        $serialized = new \stdClass();
         $serialized->mimeType = $this->mimeType;
         $serialized->file = $this->file;
 

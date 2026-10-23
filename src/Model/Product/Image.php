@@ -4,11 +4,9 @@ declare(strict_types=1);
 
 namespace Linio\SellerCenter\Model\Product;
 
-use JsonSerializable;
 use Linio\SellerCenter\Exception\InvalidUrlException;
-use stdClass;
 
-class Image implements JsonSerializable
+class Image implements \JsonSerializable
 {
     /**
      * @var string
@@ -29,9 +27,9 @@ class Image implements JsonSerializable
         return $this->url;
     }
 
-    public function jsonSerialize(): stdClass
+    public function jsonSerialize(): \stdClass
     {
-        $serialized = new stdClass();
+        $serialized = new \stdClass();
         $serialized->url = $this->url;
 
         return $serialized;

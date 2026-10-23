@@ -4,15 +4,13 @@ declare(strict_types=1);
 
 namespace Linio\SellerCenter\Unit\Product;
 
-use DateTimeImmutable;
-use Linio\Component\Util\Json;
 use Linio\SellerCenter\Contract\BusinessUnitOperatorCodes;
 use Linio\SellerCenter\Exception\InvalidDomainException;
 use Linio\SellerCenter\Exception\InvalidXmlStructureException;
 use Linio\SellerCenter\Factory\Xml\Product\BusinessUnitFactory;
+use Linio\SellerCenter\Helper\Json;
 use Linio\SellerCenter\LinioTestCase;
 use Linio\SellerCenter\Model\Product\BusinessUnit;
-use SimpleXMLElement;
 
 class BusinessUnitTest extends LinioTestCase
 {
@@ -145,8 +143,8 @@ class BusinessUnitTest extends LinioTestCase
 
     public function testItCreatesABusinessUnitWithMandatoryAndOptionalParameters(): void
     {
-        $this->specialFromDate = DateTimeImmutable::createFromFormat(DATE_ATOM, '2021-5-10T14:54:23+00:00');
-        $this->specialToDate = DateTimeImmutable::createFromFormat(DATE_ATOM, '2021-5-20T14:54:23+00:00');
+        $this->specialFromDate = \DateTimeImmutable::createFromFormat(DATE_ATOM, '2021-5-10T14:54:23+00:00');
+        $this->specialToDate = \DateTimeImmutable::createFromFormat(DATE_ATOM, '2021-5-20T14:54:23+00:00');
 
         $businessUnit = new BusinessUnit(
             BusinessUnitOperatorCodes::COUNTRY_OPERATOR[$this->countryCode],
@@ -177,8 +175,8 @@ class BusinessUnitTest extends LinioTestCase
 
     public function testItCreatesAProductFromAnXml(): void
     {
-        $this->specialFromDate = DateTimeImmutable::createFromFormat(DATE_ATOM, '2021-5-10T14:54:23+00:00');
-        $this->specialToDate = DateTimeImmutable::createFromFormat(DATE_ATOM, '2021-5-20T14:54:23+00:00');
+        $this->specialFromDate = \DateTimeImmutable::createFromFormat(DATE_ATOM, '2021-5-10T14:54:23+00:00');
+        $this->specialToDate = \DateTimeImmutable::createFromFormat(DATE_ATOM, '2021-5-20T14:54:23+00:00');
         $xml = sprintf(
             $this->getSchema('Product/BusinessUnit.xml'),
             $this->businessUnit,
@@ -192,7 +190,7 @@ class BusinessUnitTest extends LinioTestCase
             $this->isPublished
         );
 
-        $businessUnit = BusinessUnitFactory::make(new SimpleXMLElement($xml));
+        $businessUnit = BusinessUnitFactory::make(new \SimpleXMLElement($xml));
 
         $this->assertInstanceOf(BusinessUnit::class, $businessUnit);
         $this->assertEquals($businessUnit->getOperatorCode(), $this->operatorCode);
@@ -219,7 +217,7 @@ class BusinessUnitTest extends LinioTestCase
         $status,
         $isPublished,
         $businessUnit,
-        $specialPrice
+        $specialPrice,
     ): void {
         $this->expectException(InvalidDomainException::class);
         $this->expectExceptionMessage(sprintf('The parameter %s is invalid.', $parameter));
@@ -260,10 +258,10 @@ class BusinessUnitTest extends LinioTestCase
      * @dataProvider invalidXmlStructure
      */
     public function testItThrowsAExceptionWithoutMandatoryParametersInTheXml(
-        string $property
+        string $property,
     ): void {
-        $this->specialFromDate = DateTimeImmutable::createFromFormat(DATE_ATOM, '2021-5-10T14:54:23+00:00');
-        $this->specialToDate = DateTimeImmutable::createFromFormat(DATE_ATOM, '2021-5-20T14:54:23+00:00');
+        $this->specialFromDate = \DateTimeImmutable::createFromFormat(DATE_ATOM, '2021-5-10T14:54:23+00:00');
+        $this->specialToDate = \DateTimeImmutable::createFromFormat(DATE_ATOM, '2021-5-20T14:54:23+00:00');
         $xmlString = sprintf(
             $this->getSchema('Product/BusinessUnit.xml'),
             $this->businessUnit,
@@ -277,7 +275,7 @@ class BusinessUnitTest extends LinioTestCase
             $this->isPublished
         );
 
-        $xml = new SimpleXMLElement($xmlString);
+        $xml = new \SimpleXMLElement($xmlString);
 
         unset($xml->{$property});
 
@@ -292,7 +290,7 @@ class BusinessUnitTest extends LinioTestCase
         BusinessUnitFactory::make($xml);
     }
 
-    public function invalidXmlStructure(): array
+    public static function invalidXmlStructure(): array
     {
         return [
             ['IsPublished'],
@@ -303,14 +301,14 @@ class BusinessUnitTest extends LinioTestCase
         ];
     }
 
-    public function invalidParameters(): array
+    public static function invalidParameters(): array
     {
         return [
-            ['SpecialPrice', $this->operatorCode, $this->price, $this->stock, $this->status, $this->isPublished, $this->businessUnit, -1000],
-            ['Status', $this->operatorCode, $this->price, $this->stock, 'Unavailable', $this->isPublished, $this->businessUnit, $this->specialPrice],
-            ['Stock', $this->operatorCode, $this->price, -1, $this->status, $this->isPublished, $this->businessUnit, $this->specialPrice],
-            ['Price', $this->operatorCode, -1, $this->stock, $this->status, $this->isPublished, $this->businessUnit, $this->specialPrice],
-            ['OperatorCode', 'sope', $this->price, $this->stock, $this->status, $this->isPublished, $this->businessUnit, $this->specialPrice],
+            ['SpecialPrice', 'facl', 12990.00, 4, 'active', 1, 'Falabella', -1000],
+            ['Status', 'facl', 12990.00, 4, 'Unavailable', 1, 'Falabella', 12000.00],
+            ['Stock', 'facl', 12990.00, -1, 'active', 1, 'Falabella', 12000.00],
+            ['Price', 'facl', -1, 4, 'active', 1, 'Falabella', 12000.00],
+            ['OperatorCode', 'sope', 12990.00, 4, 'active', 1, 'Falabella', 12000.00],
         ];
     }
 }

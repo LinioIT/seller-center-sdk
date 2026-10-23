@@ -4,10 +4,10 @@ declare(strict_types=1);
 
 namespace Linio\SellerCenter\Unit\Product;
 
-use DateTimeImmutable;
-use Linio\Component\Util\Json;
+use Faker\Generator;
 use Linio\SellerCenter\Exception\InvalidXmlStructureException;
 use Linio\SellerCenter\Factory\Xml\Product\GlobalProductFactory;
+use Linio\SellerCenter\Helper\Json;
 use Linio\SellerCenter\LinioTestCase;
 use Linio\SellerCenter\Model\Brand\Brand;
 use Linio\SellerCenter\Model\Category\Categories;
@@ -19,12 +19,11 @@ use Linio\SellerCenter\Model\Product\Image;
 use Linio\SellerCenter\Model\Product\Images;
 use Linio\SellerCenter\Model\Product\ProductData;
 use Linio\SellerCenter\Model\Product\VariationAttributes;
-use SimpleXMLElement;
 
 class GlobalProductTest extends LinioTestCase
 {
     protected $sellerSku = '21458191097';
-    protected $newSellerSku = null;
+    protected $newSellerSku;
     protected $name = 'Magic Product';
     protected $variation = 'XL';
     protected $primaryCategory;
@@ -67,7 +66,7 @@ class GlobalProductTest extends LinioTestCase
     protected $packageWeight = 6;
 
     protected $product;
-    protected $faker;
+    protected Generator $faker;
     protected $variationAttributes;
 
     public function setUp(): void
@@ -108,8 +107,8 @@ class GlobalProductTest extends LinioTestCase
         $this->categories->add(Category::fromId($this->faker->randomNumber));
         $this->categories->add(Category::fromId($this->faker->randomNumber));
 
-        $this->saleStartDate = DateTimeImmutable::createFromFormat(DATE_ATOM, '2013-09-03T11:31:23+00:00');
-        $this->saleEndDate = DateTimeImmutable::createFromFormat(DATE_ATOM, '2013-10-03T11:31:23+00:00');
+        $this->saleStartDate = \DateTimeImmutable::createFromFormat(DATE_ATOM, '2013-09-03T11:31:23+00:00');
+        $this->saleEndDate = \DateTimeImmutable::createFromFormat(DATE_ATOM, '2013-10-03T11:31:23+00:00');
 
         $this->mainImage = new Image($this->faker->imageUrl($width = 640, $height = 480));
 
@@ -244,9 +243,10 @@ class GlobalProductTest extends LinioTestCase
     /**
      * @dataProvider xmlGlobalProductProvider
      */
-    public function testItMakesAProductFromXml(string $xmlGlobalProduct, bool $hasFashionAttr): void
+    public function testItMakesAProductFromXml(bool $hasFashionAttr): void
     {
-        $xml = new SimpleXMLElement($xmlGlobalProduct);
+        $xmlGlobalProduct = $this->createXmlStringForAGlobalProductWithFashion($hasFashionAttr);
+        $xml = new \SimpleXMLElement($xmlGlobalProduct);
 
         $product = GlobalProductFactory::make($xml);
 
@@ -355,7 +355,7 @@ class GlobalProductTest extends LinioTestCase
             )
         );
 
-        $xml = new SimpleXMLElement($xmlString);
+        $xml = new \SimpleXMLElement($xmlString);
         if ($property == 'BusinessUnit') {
             unset($xml->BusinessUnits->{$property});
         } else {
@@ -377,12 +377,12 @@ class GlobalProductTest extends LinioTestCase
             )
         );
 
-        $xml = new SimpleXMLElement($xmlString);
+        $xml = new \SimpleXMLElement($xmlString);
 
         GlobalProductFactory::make($xml);
     }
 
-    public function invalidXmlStructure(): array
+    public static function invalidXmlStructure(): array
     {
         return [
             ['SellerSku'],
@@ -468,15 +468,13 @@ class GlobalProductTest extends LinioTestCase
     /**
      * @return mixed[]
      */
-    public function xmlGlobalProductProvider(): array
+    public static function xmlGlobalProductProvider(): array
     {
         return [
             'with variation without fashion data' => [
-                $this->createXmlStringForAGlobalProductWithFashion(false),
                 false,
             ],
             'without variation with fashion data' => [
-                $this->createXmlStringForAGlobalProductWithFashion(true),
                 true,
             ],
         ];

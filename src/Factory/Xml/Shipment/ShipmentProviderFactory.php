@@ -6,11 +6,10 @@ namespace Linio\SellerCenter\Factory\Xml\Shipment;
 
 use Linio\SellerCenter\Exception\InvalidXmlStructureException;
 use Linio\SellerCenter\Model\Shipment\ShipmentProvider;
-use SimpleXMLElement;
 
 class ShipmentProviderFactory
 {
-    public static function make(SimpleXMLElement $element): ShipmentProvider
+    public static function make(\SimpleXMLElement $element): ShipmentProvider
     {
         if (!property_exists($element, 'Name')) {
             throw new InvalidXmlStructureException('ShipmentProvider', 'Name');

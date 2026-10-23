@@ -5,11 +5,10 @@ declare(strict_types=1);
 namespace Linio\SellerCenter\Factory\Xml\Warehouse;
 
 use Linio\SellerCenter\Model\Warehouse\WarehouseAddress;
-use SimpleXMLElement;
 
 class WarehouseAddressFactory
 {
-    public static function make(SimpleXMLElement $xml): WarehouseAddress
+    public static function make(\SimpleXMLElement $xml): WarehouseAddress
     {
         $addressLine1 = (string) $xml->addressLine1 ?: null;
         $addressLine2 = (string) $xml->addressLine2 ?: null;

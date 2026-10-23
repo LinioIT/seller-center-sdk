@@ -4,8 +4,6 @@ declare(strict_types=1);
 
 namespace Linio\SellerCenter\V2\Functional;
 
-use DateTime;
-use DateTimeImmutable;
 use Linio\SellerCenter\ClientHelper;
 use Linio\SellerCenter\Exception\InvalidDomainException;
 use Linio\SellerCenter\LinioTestCase;
@@ -59,12 +57,12 @@ class OrderManagerTest extends LinioTestCase
      * @dataProvider dateTimesAndFilters
      */
     public function testItReturnsACollectionOfOrdersCreatedBetweenADateTime(
-        ?DateTimeImmutable $createdAfter,
-        ?DateTimeImmutable $createdBefore,
+        ?\DateTimeImmutable $createdAfter,
+        ?\DateTimeImmutable $createdBefore,
         string $sortBy,
         string $sortDirection,
         string $status,
-        ?string $dateFormat
+        ?string $dateFormat,
     ): void {
         $sdkClient = $this->getSdkClient($this->getOrdersResponse());
 
@@ -86,12 +84,12 @@ class OrderManagerTest extends LinioTestCase
      * @dataProvider dateTimesAndFilters
      */
     public function testItReturnsACollectionOfOrdersUpdatedBetweenADateTime(
-        ?DateTimeImmutable $updatedAfter,
-        ?DateTimeImmutable $updatedBefore,
+        ?\DateTimeImmutable $updatedAfter,
+        ?\DateTimeImmutable $updatedBefore,
         string $sortBy,
         string $sortDirection,
         string $status,
-        ?string $dateFormat
+        ?string $dateFormat,
     ): void {
         $sdkClient = $this->getSdkClient($this->getOrdersResponse());
 
@@ -113,12 +111,12 @@ class OrderManagerTest extends LinioTestCase
      * @dataProvider dateTimesAndFilters
      */
     public function testItReturnsACollectionOfOrdersCreatedAfterADateTime(
-        ?DateTimeImmutable $createdAfter,
-        ?DateTimeImmutable $unused,
+        ?\DateTimeImmutable $createdAfter,
+        ?\DateTimeImmutable $unused,
         string $sortBy,
         string $sortDirection,
         string $status,
-        ?string $dateFormat
+        ?string $dateFormat,
     ): void {
         $sdkClient = $this->getSdkClient($this->getOrdersResponse());
 
@@ -139,12 +137,12 @@ class OrderManagerTest extends LinioTestCase
      * @dataProvider dateTimesAndFilters
      */
     public function testItReturnsACollectionOfOrdersCreatedBeforeADateTime(
-        ?DateTimeImmutable $createdBefore,
-        ?DateTimeImmutable $unused,
+        ?\DateTimeImmutable $createdBefore,
+        ?\DateTimeImmutable $unused,
         string $sortBy,
         string $sortDirection,
         string $status,
-        ?string $dateFormat
+        ?string $dateFormat,
     ): void {
         $sdkClient = $this->getSdkClient($this->getOrdersResponse());
 
@@ -165,12 +163,12 @@ class OrderManagerTest extends LinioTestCase
      * @dataProvider dateTimesAndFilters
      */
     public function testItReturnsACollectionOfOrdersUpdatedAfterADateTime(
-        ?DateTimeImmutable $updatedAfter,
-        ?DateTimeImmutable $unused,
+        ?\DateTimeImmutable $updatedAfter,
+        ?\DateTimeImmutable $unused,
         string $sortBy,
         string $sortDirection,
         string $status,
-        ?string $dateFormat
+        ?string $dateFormat,
     ): void {
         $sdkClient = $this->getSdkClient($this->getOrdersResponse());
 
@@ -191,12 +189,12 @@ class OrderManagerTest extends LinioTestCase
      * @dataProvider dateTimesAndFilters
      */
     public function testItReturnsACollectionOfOrdersUpdatedBeforeADateTime(
-        ?DateTimeImmutable $updatedBefore,
-        ?DateTimeImmutable $unused,
+        ?\DateTimeImmutable $updatedBefore,
+        ?\DateTimeImmutable $unused,
         string $sortBy,
         string $sortDirection,
         string $status,
-        ?string $dateFormat
+        ?string $dateFormat,
     ): void {
         $sdkClient = $this->getSdkClient($this->getOrdersResponse());
 
@@ -217,12 +215,12 @@ class OrderManagerTest extends LinioTestCase
      * @dataProvider dateTimesAndFilters
      */
     public function testItReturnsACollectionOfOrdersWithStatus(
-        ?DateTimeImmutable $unused,
-        ?DateTimeImmutable $unused2,
+        ?\DateTimeImmutable $unused,
+        ?\DateTimeImmutable $unused2,
         string $sortBy,
         string $sortDirection,
         string $status,
-        ?string $dateFormat
+        ?string $dateFormat,
     ): void {
         $sdkClient = $this->getSdkClient($this->getOrdersResponse());
 
@@ -264,14 +262,14 @@ class OrderManagerTest extends LinioTestCase
      * @dataProvider parametersFromGetOrders
      */
     public function testItReturnsACollectionOfOrdersFromParameters(
-        ?DateTimeImmutable $createdAfter,
-        ?DateTimeImmutable $createdBefore,
-        ?DateTimeImmutable $updatedAfter,
-        ?DateTimeImmutable $updatedBefore,
+        ?\DateTimeImmutable $createdAfter,
+        ?\DateTimeImmutable $createdBefore,
+        ?\DateTimeImmutable $updatedAfter,
+        ?\DateTimeImmutable $updatedBefore,
         string $sortBy,
         string $sortDirection,
         string $status,
-        ?string $shippingType = null
+        ?string $shippingType = null,
     ): void {
         $sdkClient = $this->getSdkClient($this->getOrdersResponse());
 
@@ -341,8 +339,8 @@ class OrderManagerTest extends LinioTestCase
             )->shouldNotBeCalled();
         }
 
-        $since = new DateTime(self::ORDER_INIT_DATE);
-        $until = new DateTime(self::ORDER_END_DATE);
+        $since = new \DateTime(self::ORDER_INIT_DATE);
+        $until = new \DateTime(self::ORDER_END_DATE);
         $limit = 20;
         $offset = 0;
         $sortBy = '';
@@ -379,8 +377,8 @@ class OrderManagerTest extends LinioTestCase
             )->shouldNotBeCalled();
         }
 
-        $since = new DateTime(self::ORDER_INIT_DATE);
-        $until = new DateTime(self::ORDER_END_DATE);
+        $since = new \DateTime(self::ORDER_INIT_DATE);
+        $until = new \DateTime(self::ORDER_END_DATE);
         $limit = 20;
         $offset = 0;
         $sortBy = '';
@@ -417,7 +415,7 @@ class OrderManagerTest extends LinioTestCase
             )->shouldNotBeCalled();
         }
 
-        $since = new DateTime(self::ORDER_INIT_DATE);
+        $since = new \DateTime(self::ORDER_INIT_DATE);
         $limit = 20;
         $offset = 0;
         $sortBy = '';
@@ -453,7 +451,7 @@ class OrderManagerTest extends LinioTestCase
             )->shouldNotBeCalled();
         }
 
-        $since = new DateTime(self::ORDER_INIT_DATE);
+        $since = new \DateTime(self::ORDER_INIT_DATE);
         $limit = 20;
         $offset = 0;
         $sortBy = '';
@@ -489,7 +487,7 @@ class OrderManagerTest extends LinioTestCase
             )->shouldNotBeCalled();
         }
 
-        $since = new DateTime(self::ORDER_INIT_DATE);
+        $since = new \DateTime(self::ORDER_INIT_DATE);
         $limit = 20;
         $offset = 0;
         $sortBy = '';
@@ -525,7 +523,7 @@ class OrderManagerTest extends LinioTestCase
             )->shouldNotBeCalled();
         }
 
-        $since = new DateTime(self::ORDER_INIT_DATE);
+        $since = new \DateTime(self::ORDER_INIT_DATE);
         $limit = 20;
         $offset = 0;
         $sortBy = '';
@@ -582,9 +580,9 @@ class OrderManagerTest extends LinioTestCase
         );
     }
 
-    public function dateTimesAndFilters(): array
+    public static function dateTimesAndFilters(): array
     {
-        $date = DateTimeImmutable::createFromFormat('Y-m-d H:i:s', '2018-09-01 00:00:00');
+        $date = \DateTimeImmutable::createFromFormat('Y-m-d H:i:s', '2018-09-01 00:00:00');
 
         return [
             [$date, $date, 'created_at', 'ASC', 'pending', null],
@@ -598,9 +596,9 @@ class OrderManagerTest extends LinioTestCase
         ];
     }
 
-    public function parametersFromGetOrders(): array
+    public static function parametersFromGetOrders(): array
     {
-        $date = DateTimeImmutable::createFromFormat('Y-m-d H:i:s', '2018-09-01 00:00:00');
+        $date = \DateTimeImmutable::createFromFormat('Y-m-d H:i:s', '2018-09-01 00:00:00');
 
         return [
             [$date, $date, $date, $date, 'created_at', 'ASC', 'pending', null],
@@ -621,7 +619,7 @@ class OrderManagerTest extends LinioTestCase
         ];
     }
 
-    public function debugParameter()
+    public static function debugParameter()
     {
         return [
             [false],

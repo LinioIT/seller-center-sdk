@@ -4,10 +4,10 @@ declare(strict_types=1);
 
 namespace Linio\SellerCenter\Category;
 
-use Linio\Component\Util\Json;
 use Linio\SellerCenter\Exception\InvalidXmlStructureException;
 use Linio\SellerCenter\Factory\Xml\Category\AttributeSetFactory;
 use Linio\SellerCenter\Factory\Xml\Category\AttributesSetFactory;
+use Linio\SellerCenter\Helper\Json;
 use Linio\SellerCenter\LinioTestCase;
 use Linio\SellerCenter\Model\Category\AttributeSet;
 use Linio\SellerCenter\Model\Category\Categories;

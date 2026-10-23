@@ -6,11 +6,10 @@ namespace Linio\SellerCenter\Factory\Xml\QualityControl;
 
 use Linio\SellerCenter\Exception\InvalidXmlStructureException;
 use Linio\SellerCenter\Model\QualityControl\QualityControl;
-use SimpleXMLElement;
 
 class QualityControlFactory
 {
-    public static function make(SimpleXMLElement $element): QualityControl
+    public static function make(\SimpleXMLElement $element): QualityControl
     {
         if (!property_exists($element, 'SellerSKU')) {
             throw new InvalidXmlStructureException('QcStatus', 'SellerSku');

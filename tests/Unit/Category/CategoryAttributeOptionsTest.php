@@ -73,7 +73,7 @@ class CategoryAttributeOptionsTest extends LinioTestCase
         $this->assertFalse($options[1]->isDefault());
     }
 
-    public function elementsWithAndWithoutOptions(): array
+    public static function elementsWithAndWithoutOptions(): array
     {
         return [
             [

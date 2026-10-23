@@ -4,9 +4,7 @@ declare(strict_types=1);
 
 namespace Linio\SellerCenter\Exception;
 
-use RuntimeException;
-
-class InvalidUrlException extends RuntimeException
+class InvalidUrlException extends \RuntimeException
 {
     public function __construct(string $url)
     {

@@ -4,7 +4,6 @@ declare(strict_types=1);
 
 namespace Linio\SellerCenter;
 
-use DateTimeInterface;
 use Linio\SellerCenter\Exception\InvalidXmlStructureException;
 use Linio\SellerCenter\Factory\Xml\Warehouse\WarehouseFactory;
 use Linio\SellerCenter\Model\Warehouse\Warehouse;
@@ -132,12 +131,12 @@ class WarehouseManagerTest extends LinioTestCase
             $this->assertFalse($warehouse->isDefault());
             $this->assertTrue($warehouse->isEnabled());
             $this->assertInstanceOf(WarehouseAddress::class, $warehouse->getWarehouseAddress());
-            $this->assertInstanceOf(DateTimeInterface::class, $warehouse->getUpdatedAt());
-            $this->assertInstanceOf(DateTimeInterface::class, $warehouse->getUpdatedAt());
+            $this->assertInstanceOf(\DateTimeInterface::class, $warehouse->getUpdatedAt());
+            $this->assertInstanceOf(\DateTimeInterface::class, $warehouse->getUpdatedAt());
             $this->assertNull($warehouse->getNodeId());
             $this->assertFalse($warehouse->isAvailableZone());
             $this->assertInstanceOf(WorkingSchedules::class, $warehouse->getWorkingSchedule());
-            $this->assertInstanceOf(DateTimeInterface::class, $warehouse->getZoneUpdatedAt());
+            $this->assertInstanceOf(\DateTimeInterface::class, $warehouse->getZoneUpdatedAt());
         }
 
         $this->assertIsArray($result);

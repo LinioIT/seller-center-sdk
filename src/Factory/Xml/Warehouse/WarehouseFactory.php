@@ -4,16 +4,14 @@ declare(strict_types=1);
 
 namespace Linio\SellerCenter\Factory\Xml\Warehouse;
 
-use DateTimeImmutable;
 use Linio\SellerCenter\Exception\InvalidXmlStructureException;
 use Linio\SellerCenter\Model\Warehouse\Warehouse;
-use SimpleXMLElement;
 
 class WarehouseFactory
 {
     public const TRUE_STRING = 'true';
 
-    public static function make(SimpleXMLElement $xml): Warehouse
+    public static function make(\SimpleXMLElement $xml): Warehouse
     {
         if (!property_exists($xml, 'facilityId') || empty((string) $xml->facilityId)) {
             throw new InvalidXmlStructureException('Warehouse', 'facilityId');
@@ -39,8 +37,8 @@ class WarehouseFactory
         $warehouseAddres = !empty($xml->address) ? WarehouseAddressFactory::make($xml->address) : null;
         $workingSchedules = !empty($xml->workingSchedule) ? WorkingSchedulesFactory::make($xml->workingSchedule) : null;
 
-        $updatedAt = !empty($xml->updatedAt) ? new DateTimeImmutable((string) $xml->updatedAt) : null;
-        $zoneUpdatedAt = !empty($xml->zoneUpdatedAt) ? new DateTimeImmutable((string) $xml->zoneUpdatedAt) : null;
+        $updatedAt = !empty($xml->updatedAt) ? new \DateTimeImmutable((string) $xml->updatedAt) : null;
+        $zoneUpdatedAt = !empty($xml->zoneUpdatedAt) ? new \DateTimeImmutable((string) $xml->zoneUpdatedAt) : null;
 
         return new Warehouse(
             $name,

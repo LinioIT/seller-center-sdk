@@ -4,10 +4,7 @@ declare(strict_types=1);
 
 namespace Linio\SellerCenter\Model\Warehouse;
 
-use JsonSerializable;
-use stdClass;
-
-class WorkingSchedule implements JsonSerializable
+class WorkingSchedule implements \JsonSerializable
 {
     /**
      *  @var string
@@ -35,9 +32,9 @@ class WorkingSchedule implements JsonSerializable
         return $this->shiftHours;
     }
 
-    public function jsonSerialize(): stdClass
+    public function jsonSerialize(): \stdClass
     {
-        $serialized = new stdClass();
+        $serialized = new \stdClass();
         $serialized->day = $this->day;
         $serialized->shiftHours = $this->shiftHours;
 

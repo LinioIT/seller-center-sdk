@@ -4,10 +4,9 @@ declare(strict_types=1);
 
 namespace Linio\SellerCenter\Unit;
 
-use Exception;
-use Linio\Component\Util\Json;
 use Linio\SellerCenter\Exception\EmptyArgumentException;
 use Linio\SellerCenter\Factory\Xml\Feed\FeedFactory;
+use Linio\SellerCenter\Helper\Json;
 use Linio\SellerCenter\LinioTestCase;
 use Linio\SellerCenter\Model\Feed\Feed;
 use Linio\SellerCenter\Model\Feed\FeedError;
@@ -116,11 +115,11 @@ class FeedTest extends LinioTestCase
         $this->assertEquals($file, $failureReports->getFile());
     }
 
-    public function feedRandomData()
+    public static function feedRandomData()
     {
-        $faker = $this->getFaker();
+        $faker = \Faker\Factory::create();
 
-        $id = $this->getFaker()->uuid;
+        $id = $faker->uuid;
         $status = 'Finished';
         $action = 'ProductUpdate';
         $created = $faker->dateTime()->format('Y-m-d H:i:s');
@@ -140,7 +139,7 @@ class FeedTest extends LinioTestCase
 
     public function testItThrowsExceptionIfResponseIsEmpty(): void
     {
-        $this->expectException(Exception::class);
+        $this->expectException(\Exception::class);
         $this->expectExceptionMessage('The xml structure is not valid for a Feed. The property Feed should exist.');
 
         $simplexml = simplexml_load_string('<xml></xml>');

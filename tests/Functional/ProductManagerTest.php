@@ -4,9 +4,7 @@ declare(strict_types=1);
 
 namespace Linio\SellerCenter;
 
-use DateTimeImmutable;
-use Exception;
-use InvalidArgumentException;
+use Faker\Generator;
 use Linio\SellerCenter\Application\Parameters;
 use Linio\SellerCenter\Model\Brand\Brand;
 use Linio\SellerCenter\Model\Category\Categories;
@@ -31,10 +29,7 @@ class ProductManagerTest extends LinioTestCase
      */
     protected $products;
 
-    /**
-     * @var Generator
-     */
-    protected $faker;
+    protected Generator $faker;
 
     /**
      * @var ObjectProphecy
@@ -86,7 +81,7 @@ class ProductManagerTest extends LinioTestCase
     {
         $sdkClient = $this->getSdkClient($this->getSchema('Product/ProductsResponse.xml'));
 
-        $createdAfter = DateTimeImmutable::createFromFormat('Y-m-d H:i:s', '2018-09-01 00:00:00');
+        $createdAfter = \DateTimeImmutable::createFromFormat('Y-m-d H:i:s', '2018-09-01 00:00:00');
 
         $result = $sdkClient->products()->getProductsCreatedAfter(
             $createdAfter,
@@ -106,7 +101,7 @@ class ProductManagerTest extends LinioTestCase
     {
         $sdkClient = $this->getSdkClient($this->getSchema('Product/ProductsResponse.xml'));
 
-        $createdBefore = DateTimeImmutable::createFromFormat('Y-m-d H:i:s', '2019-01-23 00:00:00');
+        $createdBefore = \DateTimeImmutable::createFromFormat('Y-m-d H:i:s', '2019-01-23 00:00:00');
 
         $result = $sdkClient->products()->getProductsCreatedBefore(
             $createdBefore,
@@ -126,7 +121,7 @@ class ProductManagerTest extends LinioTestCase
     {
         $sdkClient = $this->getSdkClient($this->getSchema('Product/ProductsResponse.xml'));
 
-        $updatedAfter = DateTimeImmutable::createFromFormat('Y-m-d H:i:s', '2019-01-23 00:00:00');
+        $updatedAfter = \DateTimeImmutable::createFromFormat('Y-m-d H:i:s', '2019-01-23 00:00:00');
 
         $result = $sdkClient->products()->getProductsUpdatedAfter(
             $updatedAfter,
@@ -146,7 +141,7 @@ class ProductManagerTest extends LinioTestCase
     {
         $sdkClient = $this->getSdkClient($this->getSchema('Product/ProductsResponse.xml'));
 
-        $updatedBefore = DateTimeImmutable::createFromFormat('Y-m-d H:i:s', '2019-01-23 00:00:00');
+        $updatedBefore = \DateTimeImmutable::createFromFormat('Y-m-d H:i:s', '2019-01-23 00:00:00');
 
         $result = $sdkClient->products()->getProductsUpdatedBefore(
             $updatedBefore,
@@ -198,7 +193,7 @@ class ProductManagerTest extends LinioTestCase
 
     public function testItThrowsExceptionWithANullSkuSellerList(): void
     {
-        $this->expectException(InvalidArgumentException::class);
+        $this->expectException(\InvalidArgumentException::class);
 
         $sdkClient = $this->getSdkClient($this->getSchema('Product/ProductsResponse.xml'));
 
@@ -212,10 +207,10 @@ class ProductManagerTest extends LinioTestCase
     {
         $sdkClient = $this->getSdkClient($this->getSchema('Product/ProductsResponse.xml'));
 
-        $createdBefore = DateTimeImmutable::createFromFormat('Y-m-d H:i:s', '2019-01-23 00:00:00');
-        $createdAfter = DateTimeImmutable::createFromFormat('Y-m-d H:i:s', '2019-01-23 00:00:00');
-        $updatedAfter = DateTimeImmutable::createFromFormat('Y-m-d H:i:s', '2019-01-23 00:00:00');
-        $updatedBefore = DateTimeImmutable::createFromFormat('Y-m-d H:i:s', '2019-01-23 00:00:00');
+        $createdBefore = \DateTimeImmutable::createFromFormat('Y-m-d H:i:s', '2019-01-23 00:00:00');
+        $createdAfter = \DateTimeImmutable::createFromFormat('Y-m-d H:i:s', '2019-01-23 00:00:00');
+        $updatedAfter = \DateTimeImmutable::createFromFormat('Y-m-d H:i:s', '2019-01-23 00:00:00');
+        $updatedBefore = \DateTimeImmutable::createFromFormat('Y-m-d H:i:s', '2019-01-23 00:00:00');
         $filter = 'invalidFilter';
         $search = 'pil';
         $skuSellerList = ['jasku-10001', 'jasku-10002'];
@@ -283,7 +278,7 @@ class ProductManagerTest extends LinioTestCase
      */
     public function testItReturnsErrorResponseException(string $action): void
     {
-        $this->expectException(Exception::class);
+        $this->expectException(\Exception::class);
         $this->expectExceptionMessage('E0125: Test Error');
 
         $body = sprintf(
@@ -418,7 +413,7 @@ class ProductManagerTest extends LinioTestCase
         );
 
         $sdkClient->products()->getProductsCreatedAfter(
-            DateTimeImmutable::createFromFormat('Y-m-d H:i:s', '2018-09-01 00:00:00'),
+            \DateTimeImmutable::createFromFormat('Y-m-d H:i:s', '2018-09-01 00:00:00'),
             100,
             100,
             null,
@@ -438,7 +433,7 @@ class ProductManagerTest extends LinioTestCase
         );
 
         $sdkClient->products()->getProductsCreatedBefore(
-            DateTimeImmutable::createFromFormat('Y-m-d H:i:s', '2018-09-01 00:00:00'),
+            \DateTimeImmutable::createFromFormat('Y-m-d H:i:s', '2018-09-01 00:00:00'),
             100,
             100,
             null,
@@ -458,7 +453,7 @@ class ProductManagerTest extends LinioTestCase
         );
 
         $sdkClient->products()->getProductsUpdatedAfter(
-            DateTimeImmutable::createFromFormat('Y-m-d H:i:s', '2018-09-01 00:00:00'),
+            \DateTimeImmutable::createFromFormat('Y-m-d H:i:s', '2018-09-01 00:00:00'),
             100,
             100,
             null,
@@ -478,7 +473,7 @@ class ProductManagerTest extends LinioTestCase
         );
 
         $sdkClient->products()->getProductsUpdatedBefore(
-            DateTimeImmutable::createFromFormat('Y-m-d H:i:s', '2018-09-01 00:00:00'),
+            \DateTimeImmutable::createFromFormat('Y-m-d H:i:s', '2018-09-01 00:00:00'),
             100,
             100,
             null,
@@ -569,7 +564,7 @@ class ProductManagerTest extends LinioTestCase
         );
     }
 
-    public function filters(): array
+    public static function filters(): array
     {
         return [
             ['all'],
@@ -585,7 +580,7 @@ class ProductManagerTest extends LinioTestCase
         ];
     }
 
-    public function productActions(): array
+    public static function productActions(): array
     {
         return [
             ['productCreate'],
@@ -667,10 +662,11 @@ class ProductManagerTest extends LinioTestCase
         return $product;
     }
 
-    public function validImageRequests(): array
+    public static function validImageRequests(): array
     {
-        $randomString = $this->getFaker()->word();
-        $randomNumberToString = (string) $this->getFaker()->randomNumber();
+        $faker = \Faker\Factory::create();
+        $randomString = $faker->word();
+        $randomNumberToString = (string) $faker->randomNumber();
 
         return [
             [
@@ -745,7 +741,7 @@ class ProductManagerTest extends LinioTestCase
         $this->assertContainsOnlyInstancesOf(ProductStock::class, $result);
     }
 
-    public function debugParameter()
+    public static function debugParameter()
     {
         return [
             [false],
@@ -753,7 +749,7 @@ class ProductManagerTest extends LinioTestCase
         ];
     }
 
-    public function dateTimeProvider(): array
+    public static function dateTimeProvider(): array
     {
         return [
             'defaultFormat' => [null],

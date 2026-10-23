@@ -4,11 +4,10 @@ declare(strict_types=1);
 
 namespace Linio\SellerCenter\Model;
 
-use DateTime;
-use Linio\Component\Util\Json;
 use Linio\SellerCenter\Exception\InvalidInvoiceDocumentFormatException;
 use Linio\SellerCenter\Exception\InvalidInvoiceTypeException;
 use Linio\SellerCenter\Exception\InvalidOperatorCodeException;
+use Linio\SellerCenter\Helper\Json;
 use Linio\SellerCenter\LinioTestCase;
 use Linio\SellerCenter\Model\Order\InvoiceDocument;
 use Linio\SellerCenter\Model\Order\OrderItem;
@@ -27,7 +26,7 @@ class InvoiceDocumentTest extends LinioTestCase
     private $invoiceNumber = '123123';
 
     /**
-     * @var DateTime
+     * @var \DateTime
      */
     private $invoiceDate;
 
@@ -63,7 +62,7 @@ class InvoiceDocumentTest extends LinioTestCase
 
     protected function setUp(): void
     {
-        $this->invoiceDate = new DateTime('2023/06/15');
+        $this->invoiceDate = new \DateTime('2023/06/15');
         $orderItems = new OrderItems();
         $this->orderItem = OrderItem::fromStatus(21, 123123, '123123', 'packageID123');
         $orderItems->add($this->orderItem);
@@ -112,15 +111,15 @@ class InvoiceDocumentTest extends LinioTestCase
      * @dataProvider exceptionProviders
      */
     public function testInvoiceDocumentInvalidArgumentException(
-        string $excepcion,
+        string $exception,
         string $messageException,
         string $invoiceNumber,
         string $invoiceType,
         string $operatorCode,
         string $invoiceDocumentBase64,
-        string $invoiceDocumentFormat
+        string $invoiceDocumentFormat,
     ): void {
-        $this->expectException($excepcion);
+        $this->expectException($exception);
         $this->expectExceptionMessage($messageException);
         new InvoiceDocument(
             $invoiceNumber,
@@ -136,35 +135,35 @@ class InvoiceDocumentTest extends LinioTestCase
     /**
      * @return mixed[]
      */
-    public function exceptionProviders(): array
+    public static function exceptionProviders(): array
     {
         return [
             'InvalidInvoiceTypeException' => [
                 'exception' => InvalidInvoiceTypeException::class,
                 'messageException' => 'The parameter invoice type is invalid , use a valid value like: BOLETA, NOTA_DE_CREDITO, FACTURA.',
-                'invoiceNumber' => $this->invoiceNumber,
+                'invoiceNumber' => '123123',
                 'invoiceType' => 'nonexistent type',
-                'operatorCode' => $this->operatorCode,
-                'invoiceDocumentBase64' => $this->invoiceDocumentBase64,
-                'invoiceDocumentFormat' => $this->invoiceDocumentFormat,
+                'operatorCode' => 'facl',
+                'invoiceDocumentBase64' => 'qwertyuiopasdfghjklzxcvbnm',
+                'invoiceDocumentFormat' => 'pdf',
             ],
             'InvalidInvoiceDocumentFormatException' => [
                 'exception' => InvalidInvoiceDocumentFormatException::class,
                 'messageException' => 'The parameter invoice document format is invalid , use a valid value like: pdf.',
-                'invoiceNumber' => $this->invoiceNumber,
-                'invoiceType' => $this->invoiceType,
-                'operatorCode' => $this->operatorCode,
-                'invoiceDocumentBase64' => $this->invoiceDocumentBase64,
+                'invoiceNumber' => '123123',
+                'invoiceType' => 'BOLETA',
+                'operatorCode' => 'facl',
+                'invoiceDocumentBase64' => 'qwertyuiopasdfghjklzxcvbnm',
                 'invoiceDocumentFormat' => 'xml',
             ],
             'InvalidOperatorCodeException' => [
                 'exception' => InvalidOperatorCodeException::class,
                 'messageException' => 'The parameter operator code is invalid , use a valid value like: facl, fape, famx, faco.',
-                'invoiceNumber' => $this->invoiceNumber,
-                'invoiceType' => $this->invoiceType,
+                'invoiceNumber' => '123123',
+                'invoiceType' => 'BOLETA',
                 'operatorCode' => 'fafa',
-                'invoiceDocumentBase64' => $this->invoiceDocumentBase64,
-                'invoiceDocumentFormat' => $this->invoiceDocumentFormat,
+                'invoiceDocumentBase64' => 'qwertyuiopasdfghjklzxcvbnm',
+                'invoiceDocumentFormat' => 'pdf',
             ],
         ];
     }

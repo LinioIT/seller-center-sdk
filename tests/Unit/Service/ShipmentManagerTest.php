@@ -9,7 +9,6 @@ use Linio\SellerCenter\Application\Parameters;
 use Linio\SellerCenter\Contract\ClientInterface;
 use Linio\SellerCenter\LinioTestCase;
 use Psr\Log\Test\TestLogger;
-use ReflectionClass;
 
 class ShipmentManagerTest extends LinioTestCase
 {
@@ -38,7 +37,7 @@ class ShipmentManagerTest extends LinioTestCase
 
         $shipmentManager = new ShipmentManager($configuration->reveal(), $client->reveal(), $parameters->reveal(), $logger->reveal());
 
-        $rs = new ReflectionClass(ShipmentManager::class);
+        $rs = new \ReflectionClass(ShipmentManager::class);
         $property = $rs->getProperty('logger');
         $property->setAccessible(true);
 

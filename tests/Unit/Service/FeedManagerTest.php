@@ -10,7 +10,6 @@ use Linio\SellerCenter\Contract\ClientInterface;
 use Linio\SellerCenter\LinioTestCase;
 use Linio\SellerCenter\Service\FeedManager;
 use Psr\Log\Test\TestLogger;
-use ReflectionClass;
 
 class FeedManagerTest extends LinioTestCase
 {
@@ -39,7 +38,7 @@ class FeedManagerTest extends LinioTestCase
 
         $brandManager = new FeedManager($configuration->reveal(), $client->reveal(), $parameters->reveal(), $logger->reveal());
 
-        $reflectionClass = new ReflectionClass(FeedManager::class);
+        $reflectionClass = new \ReflectionClass(FeedManager::class);
         $property = $reflectionClass->getProperty('logger');
         $property->setAccessible(true);
 

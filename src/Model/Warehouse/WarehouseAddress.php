@@ -4,10 +4,7 @@ declare(strict_types=1);
 
 namespace Linio\SellerCenter\Model\Warehouse;
 
-use JsonSerializable;
-use stdClass;
-
-class WarehouseAddress implements JsonSerializable
+class WarehouseAddress implements \JsonSerializable
 {
     /**
      * @var string|null
@@ -87,7 +84,7 @@ class WarehouseAddress implements JsonSerializable
         ?string $email,
         ?string $name,
         ?string $contactAddress2Code,
-        ?Contacts $contacts
+        ?Contacts $contacts,
     ) {
         $this->addressLine1 = $addressLine1;
         $this->addressLine2 = $addressLine2;
@@ -169,9 +166,9 @@ class WarehouseAddress implements JsonSerializable
         return $this->city;
     }
 
-    public function jsonSerialize(): stdClass
+    public function jsonSerialize(): \stdClass
     {
-        $serialized = new stdClass();
+        $serialized = new \stdClass();
         $serialized->addressLine1 = $this->addressLine1;
         $serialized->addressLine2 = $this->addressLine2;
         $serialized->addressLine3 = $this->addressLine3;
