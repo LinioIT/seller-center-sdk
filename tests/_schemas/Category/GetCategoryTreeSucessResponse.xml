@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<SuccessResponse>
+  <Head>
+    <RequestId/>
+    <RequestAction>GetCategoryTree</RequestAction>
+    <ResponseType>Categories</ResponseType>
+    <Timestamp>2015-07-01T11:11:11+0000</Timestamp>
+  </Head>
+  <Body>
+    <Categories>
+      <Category>
+        <Name>Quadrilaterals</Name>
+        <CategoryId>2790</CategoryId>
+        <GlobalIdentifier>QUADRILATER</GlobalIdentifier>
+        <AttributeSetId>1</AttributeSetId>
+        <Children>
+          <Category>
+            <Name>Rectangles</Name>
+            <CategoryId>589</CategoryId>
+            <GlobalIdentifier>RECTANGLE</GlobalIdentifier>
+            <AttributeSetId>1</AttributeSetId>
+            <Children>
+              <Category>
+                <Name>Squares</Name>
+                <CategoryId>603</CategoryId>
+                <GlobalIdentifier>SQUARE</GlobalIdentifier>
+                <AttributeSetId>2</AttributeSetId>
+                <Children/>
+              </Category>
+            </Children>
+          </Category>
+        </Children>
+      </Category>
+    </Categories>
+  </Body>
+</SuccessResponse>

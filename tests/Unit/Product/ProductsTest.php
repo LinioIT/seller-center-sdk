@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace Linio\SellerCenter\Product;
 
-use DateTimeImmutable;
+use Faker\Generator;
 use Linio\SellerCenter\Factory\Xml\Product\ProductsFactory;
 use Linio\SellerCenter\LinioTestCase;
 use Linio\SellerCenter\Model\Brand\Brand;
@@ -22,7 +22,7 @@ class ProductsTest extends LinioTestCase
      * @var Products
      */
     protected $products;
-    protected $faker;
+    protected Generator $faker;
 
     public function setUp(): void
     {
@@ -51,8 +51,8 @@ class ProductsTest extends LinioTestCase
         $product->setCategories($categories);
         $product->setParentSku('91230ej8913he89');
         $product->setSalePrice(5888.00);
-        $product->setSaleStartDate(DateTimeImmutable::createFromFormat(DATE_ATOM, '2013-09-03T11:31:23+00:00'));
-        $product->setSaleEndDate(DateTimeImmutable::createFromFormat(DATE_ATOM, '2013-10-03T11:31:23+00:00'));
+        $product->setSaleStartDate(\DateTimeImmutable::createFromFormat(DATE_ATOM, '2013-09-03T11:31:23+00:00'));
+        $product->setSaleEndDate(\DateTimeImmutable::createFromFormat(DATE_ATOM, '2013-10-03T11:31:23+00:00'));
         $product->setQuantity(10);
 
         $product->getImages()->addMany([
@@ -61,20 +61,21 @@ class ProductsTest extends LinioTestCase
             new Image('http://static.somecdn.com/rear.jpeg'),
         ]);
 
+        $emptyProduct = new Product();
+        $emptyProduct->setSellerSku('2145819109aaeu7e');
+
         $this->products->add($product);
+        $this->products->add($emptyProduct);
     }
 
     public function testFindsAndReturnTheProductBySellerSku(): void
     {
-        $response = $this->getResponseMock();
-        $products = ProductsFactory::make($response->Body);
+        $sku = '2145819109aaeu7';
 
-        $sku = 'jasku-10003';
+        $product = $this->products->findBySellerSku($sku);
 
-        $product = $products->findBySellerSku($sku);
-
-        $this->assertInstanceOf(Products::class, $products);
-        $this->assertContainsOnlyInstancesOf(Product::class, $products->all());
+        $this->assertInstanceOf(Products::class, $this->products);
+        $this->assertContainsOnlyInstancesOf(Product::class, $this->products->all());
         $this->assertInstanceOf(Product::class, $product);
         $this->assertEquals($sku, $product->getSellerSku());
     }
@@ -113,7 +114,6 @@ class ProductsTest extends LinioTestCase
         $xml = ProductsTransformer::asXml($this->products);
 
         $product = $this->products->findBySellerSku('2145819109aaeu7');
-
         $this->assertInstanceOf(Products::class, $this->products);
         $this->assertInstanceOf(Product::class, $product);
         $this->assertEquals($product->getSellerSku(), $xml->Product->SellerSku);
@@ -129,8 +129,8 @@ class ProductsTest extends LinioTestCase
             $categoriesIds[] = $secondaryCategory->getId();
         }
 
-        $this->assertContains(implode(',', $categoriesIds), $xml->Product->Categories);
-        $this->assertEquals($product->getDescription(), $xml->Product->Description);
+        $this->assertEquals(implode(',', $categoriesIds), $xml->Product->Categories);
+        $this->assertEquals($product->getDescription(), (string) $xml->Product->Description);
         $this->assertEquals($product->getBrand()->getName(), $xml->Product->Brand);
         $this->assertEquals($product->getPrice(), (float) $xml->Product->Price);
         $this->assertEquals($product->getProductId(), $xml->Product->ProductId);
@@ -174,7 +174,7 @@ class ProductsTest extends LinioTestCase
         $this->assertCount(3, $images);
 
         foreach ($images as $key => $image) {
-            $this->assertContains($image->getUrl(), (string) $xml->ProductImage->Images->Image[$key]);
+            $this->assertEquals($image->getUrl(), (string) $xml->ProductImage->Images->Image[$key]);
         }
     }
 
@@ -194,131 +194,8 @@ class ProductsTest extends LinioTestCase
         $this->assertEquals($product->getSellerSku(), $xmlProduct->SellerSku);
     }
 
-    public function getResponseMock($xml = null)
+    public function getResponseMock(string $xml = 'Product/ProductsResponse.xml')
     {
-        if (empty($xml)) {
-            $xml = '<?xml version="1.0" encoding="UTF-8"?>
-                    <SuccessResponse>
-                         <Head>
-                              <RequestId/>
-                              <RequestAction>GetProducts</RequestAction>
-                              <ResponseType>Products</ResponseType>
-                              <Timestamp>2019-02-05T11:39:11-0300</Timestamp>
-                         </Head>
-                         <Body>
-                              <Products>
-                                   <Product>
-                                        <SellerSku>jasku-10001</SellerSku>
-                                        <ShopSku>A89AS7A7S99</ShopSku>
-                                        <ProductSin>SAU8SAY87AS</ProductSin>
-                                        <Name>jasku-10001</Name>
-                                        <Variation>...</Variation>
-                                        <ParentSku>jasku-10001</ParentSku>
-                                        <Quantity>1000</Quantity>
-                                        <Available>1000</Available>
-                                        <Price>22000.00</Price>
-                                        <SalePrice>20000.00</SalePrice>
-                                        <SaleStartDate>2019-01-23 00:00:00</SaleStartDate>
-                                        <SaleEndDate>2019-02-25 00:00:00</SaleEndDate>
-                                        <Status>active</Status>
-                                        <ProductId>jasku-10001</ProductId>
-                                        <Url/>
-                                        <MainImage/>
-                                        <Images>
-                                          <Image>http://static.somesite.com/p/image1.jpg</Image>
-                                          <Image>http://static.somesite.com/p/image2.jpg</Image>
-                                          <Image>http://static.somesite.com/p/image3.jpg</Image>
-                                        </Images>
-                                        <Description>fdsfdsfds&lt;span&gt;&lt;/span&gt;</Description>
-                                        <TaxClass>IVA 19%</TaxClass>
-                                        <Brand>GENERIC</Brand>
-                                        <PrimaryCategory>Bicicletas</PrimaryCategory>
-                                        <Categories>Sillas Portabebes para Bicicletas</Categories>
-                                        <ProductData>
-                                             <ConditionType>Nuevo</ConditionType>
-                                             <PackageWidth>5</PackageWidth>
-                                             <PackageLength>0</PackageLength>
-                                             <PackageHeight>5</PackageHeight>
-                                             <PackageWeight>1</PackageWeight>
-                                             <ShortDescription>1,2,3,4</ShortDescription>
-                                        </ProductData>
-                                   </Product>
-                                   <Product>
-                                        <SellerSku>jasku-10002</SellerSku>
-                                        <ShopSku>NE32HE293ED9</ShopSku>
-                                        <ProductSin>MDWIJ239DAD9H</ProductSin>
-                                        <Variation>0</Variation>
-                                        <ParentSku>jasku-10002</ParentSku>
-                                        <Quantity>1000</Quantity>
-                                        <Available>1000</Available>
-                                        <Price>22000.00</Price>
-                                        <SalePrice>20000.00</SalePrice>
-                                        <SaleStartDate>2019-01-23 00:00:00</SaleStartDate>
-                                        <SaleEndDate>2019-02-25 00:00:00</SaleEndDate>
-                                        <Status>active</Status>
-                                        <ProductId>jasku-10002</ProductId>
-                                        <Url/>
-                                        <MainImage/>
-                                        <Images>
-                                          <Image>http://static.somesite.com/p/image1.jpg</Image>
-                                          <Image>http://static.somesite.com/p/image2.jpg</Image>
-                                          <Image>http://static.somesite.com/p/image3.jpg</Image>
-                                        </Images>
-                                        <Description>ndjdhmq mamnk</Description>
-                                        <TaxClass>IVA 19%</TaxClass>
-                                        <Brand>GENERIC</Brand>
-                                        <PrimaryCategory>Perros</PrimaryCategory>
-                                        <Categories>Collares, arneses y correas para perros,Arneses para perros</Categories>
-                                        <ProductData>
-                                             <ConditionType>Nuevo</ConditionType>
-                                             <PackageWidth>0</PackageWidth>
-                                             <PackageLength>0</PackageLength>
-                                             <PackageHeight>0</PackageHeight>
-                                             <PackageWeight>0</PackageWeight>
-                                             <ShortDescription>1,2,3,4</ShortDescription>
-                                        </ProductData>
-                                   </Product>
-                                   <Product>
-                                        <SellerSku>jasku-10003</SellerSku>
-                                        <ShopSku>MMIDJ20M10JDM10</ShopSku>
-                                        <ProductSin>MWQI10923D109J</ProductSin>
-                                        <Name>jasku-10003</Name>
-                                        <Variation>XL</Variation>
-                                        <ParentSku>jasku-10003</ParentSku>
-                                        <Quantity>1000</Quantity>
-                                        <Available>1000</Available>
-                                        <Price>22000.00</Price>
-                                        <SalePrice>20000.00</SalePrice>
-                                        <SaleStartDate>2019-01-23 00:00:00</SaleStartDate>
-                                        <SaleEndDate>2019-02-25 00:00:00</SaleEndDate>
-                                        <Status>active</Status>
-                                        <ProductId>jasku-10003</ProductId>
-                                        <Url/>
-                                        <MainImage/>
-                                        <Images>
-                                          <Image>http://static.somesite.com/p/image1.jpg</Image>
-                                          <Image>http://static.somesite.com/p/image2.jpg</Image>
-                                          <Image>http://static.somesite.com/p/image3.jpg</Image>
-                                        </Images>
-                                        <Description>fdsfdsfds&lt;span&gt;&lt;/span&gt;</Description>
-                                        <TaxClass>IVA 19%</TaxClass>
-                                        <Brand>GENERIC</Brand>
-                                        <PrimaryCategory>TVs</PrimaryCategory>
-                                        <Categories>TV, Audio y Video,Smart TV</Categories>
-                                        <ProductData>
-                                             <ConditionType>Reacondicionado</ConditionType>
-                                             <PackageWidth>5</PackageWidth>
-                                             <PackageLength>5</PackageLength>
-                                             <PackageHeight>5</PackageHeight>
-                                             <PackageWeight>1</PackageWeight>
-                                             <ShortDescription>1,2,3,4</ShortDescription>
-                                        </ProductData>
-                                   </Product>
-                              </Products>
-                         </Body>
-                    </SuccessResponse>';
-        }
-
-        return simplexml_load_string($xml);
+        return simplexml_load_string($this->getSchema($xml));
     }
 }

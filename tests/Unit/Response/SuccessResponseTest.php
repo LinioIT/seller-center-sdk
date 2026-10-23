@@ -5,7 +5,6 @@ declare(strict_types=1);
 namespace Linio\SellerCenter\Response;
 
 use Linio\SellerCenter\LinioTestCase;
-use SimpleXMLElement;
 
 class SuccessResponseTest extends LinioTestCase
 {
@@ -37,7 +36,7 @@ class SuccessResponseTest extends LinioTestCase
 
         $success = SuccessResponse::fromXml($xml);
 
-        $this->assertInstanceOf(SimpleXMLElement::class, $success->getBody());
+        $this->assertInstanceOf(\SimpleXMLElement::class, $success->getBody());
         $this->assertEquals('GetBrands', $success->getHead()->RequestAction);
     }
 }

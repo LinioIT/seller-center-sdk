@@ -4,10 +4,9 @@ declare(strict_types=1);
 
 namespace Linio\SellerCenter\Model\Webhook;
 
-use JsonSerializable;
 use Linio\SellerCenter\Contract\CollectionInterface;
 
-class Events implements CollectionInterface, JsonSerializable
+class Events implements CollectionInterface, \JsonSerializable
 {
     /**
      * @var Event[]
@@ -23,6 +22,9 @@ class Events implements CollectionInterface, JsonSerializable
         return $this->collection[$alias];
     }
 
+    /**
+     * @return Event[]
+     */
     public function all(): array
     {
         return $this->collection;
@@ -33,6 +35,9 @@ class Events implements CollectionInterface, JsonSerializable
         $this->collection[$event->getAlias()] = $event;
     }
 
+    /**
+     * @return mixed[]
+     */
     public function jsonSerialize(): array
     {
         return array_values($this->collection);

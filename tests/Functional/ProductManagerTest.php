@@ -4,10 +4,8 @@ declare(strict_types=1);
 
 namespace Linio\SellerCenter;
 
-use DateTimeImmutable;
-use Exception;
-use InvalidArgumentException;
-use Linio\SellerCenter\Application\Configuration;
+use Faker\Generator;
+use Linio\SellerCenter\Application\Parameters;
 use Linio\SellerCenter\Model\Brand\Brand;
 use Linio\SellerCenter\Model\Category\Categories;
 use Linio\SellerCenter\Model\Category\Category;
@@ -15,14 +13,45 @@ use Linio\SellerCenter\Model\Product\Image;
 use Linio\SellerCenter\Model\Product\Product;
 use Linio\SellerCenter\Model\Product\ProductData;
 use Linio\SellerCenter\Model\Product\Products;
+use Linio\SellerCenter\Model\Product\ProductStock;
 use Linio\SellerCenter\Response\FeedResponse;
+use Linio\SellerCenter\Service\Contract\ProductManagerInterface;
+use Prophecy\Argument;
+use Prophecy\Prophecy\ObjectProphecy;
+use Psr\Log\LoggerInterface;
 
 class ProductManagerTest extends LinioTestCase
 {
     use ClientHelper;
 
+    /**
+     * @var Products
+     */
     protected $products;
-    protected $faker;
+
+    protected Generator $faker;
+
+    /**
+     * @var ObjectProphecy
+     */
+    protected $logger;
+
+    public function prepareLogTest(bool $debug): void
+    {
+        $this->logger = $this->prophesize(LoggerInterface::class);
+
+        $this->logger->debug(
+            Argument::type('string'),
+            Argument::type('array')
+        )->shouldBeCalled();
+
+        if (!$debug) {
+            $this->logger->debug(
+                Argument::type('string'),
+                Argument::type('array')
+            )->shouldNotBeCalled();
+        }
+    }
 
     public function setUp(): void
     {
@@ -38,82 +67,88 @@ class ProductManagerTest extends LinioTestCase
 
     public function testItReturnsACollectionOfProducts(): void
     {
-        $client = $this->createClientWithResponse($this->getResponse());
-
-        $env = $this->getParameters();
-        $configuration = new Configuration($env['key'], $env['username'], $env['endpoint'], $env['version']);
-
-        $sdkClient = new SellerCenterSdk($configuration, $client);
-
+        $sdkClient = $this->getSdkClient($this->getSchema('Product/ProductsResponse.xml'));
         $result = $sdkClient->products()->getAllProducts();
 
         $this->assertIsArray($result);
         $this->assertContainsOnlyInstancesOf(Product::class, $result);
     }
 
-    public function testItReturnsACollectionOfProductsCreatedAfterADateTime(): void
+    /**
+     * @dataProvider dateTimeProvider
+     */
+    public function testItReturnsACollectionOfProductsCreatedAfterADateTime(?string $dateFormat): void
     {
-        $client = $this->createClientWithResponse($this->getResponse());
+        $sdkClient = $this->getSdkClient($this->getSchema('Product/ProductsResponse.xml'));
 
-        $env = $this->getParameters();
-        $configuration = new Configuration($env['key'], $env['username'], $env['endpoint'], $env['version']);
+        $createdAfter = \DateTimeImmutable::createFromFormat('Y-m-d H:i:s', '2018-09-01 00:00:00');
 
-        $sdkClient = new SellerCenterSdk($configuration, $client);
-
-        $createdAfter = DateTimeImmutable::createFromFormat('Y-m-d H:i:s', '2018-09-01 00:00:00');
-
-        $result = $sdkClient->products()->getProductsCreatedAfter($createdAfter);
+        $result = $sdkClient->products()->getProductsCreatedAfter(
+            $createdAfter,
+            ProductManagerInterface::DEFAULT_LIMIT,
+            ProductManagerInterface::DEFAULT_OFFSET,
+            $dateFormat
+        );
 
         $this->assertIsArray($result);
         $this->assertContainsOnlyInstancesOf(Product::class, $result);
     }
 
-    public function testItReturnsACollectionOfProductsCreatedBeforeADateTime(): void
+    /**
+     * @dataProvider dateTimeProvider
+     */
+    public function testItReturnsACollectionOfProductsCreatedBeforeADateTime(?string $dateFormat): void
     {
-        $client = $this->createClientWithResponse($this->getResponse());
+        $sdkClient = $this->getSdkClient($this->getSchema('Product/ProductsResponse.xml'));
 
-        $env = $this->getParameters();
-        $configuration = new Configuration($env['key'], $env['username'], $env['endpoint'], $env['version']);
+        $createdBefore = \DateTimeImmutable::createFromFormat('Y-m-d H:i:s', '2019-01-23 00:00:00');
 
-        $sdkClient = new SellerCenterSdk($configuration, $client);
-
-        $createdBefore = DateTimeImmutable::createFromFormat('Y-m-d H:i:s', '2019-01-23 00:00:00');
-
-        $result = $sdkClient->products()->getProductsCreatedBefore($createdBefore);
+        $result = $sdkClient->products()->getProductsCreatedBefore(
+            $createdBefore,
+            ProductManagerInterface::DEFAULT_LIMIT,
+            ProductManagerInterface::DEFAULT_OFFSET,
+            $dateFormat
+        );
 
         $this->assertIsArray($result);
         $this->assertContainsOnlyInstancesOf(Product::class, $result);
     }
 
-    public function testItReturnsACollectionOfProductsUpdatedAfterADateTime(): void
+    /**
+     * @dataProvider dateTimeProvider
+     */
+    public function testItReturnsACollectionOfProductsUpdatedAfterADateTime(?string $dateFormat): void
     {
-        $client = $this->createClientWithResponse($this->getResponse());
+        $sdkClient = $this->getSdkClient($this->getSchema('Product/ProductsResponse.xml'));
 
-        $env = $this->getParameters();
-        $configuration = new Configuration($env['key'], $env['username'], $env['endpoint'], $env['version']);
+        $updatedAfter = \DateTimeImmutable::createFromFormat('Y-m-d H:i:s', '2019-01-23 00:00:00');
 
-        $sdkClient = new SellerCenterSdk($configuration, $client);
-
-        $updatedAfter = DateTimeImmutable::createFromFormat('Y-m-d H:i:s', '2019-01-23 00:00:00');
-
-        $result = $sdkClient->products()->getProductsUpdatedAfter($updatedAfter);
+        $result = $sdkClient->products()->getProductsUpdatedAfter(
+            $updatedAfter,
+            ProductManagerInterface::DEFAULT_LIMIT,
+            ProductManagerInterface::DEFAULT_OFFSET,
+            $dateFormat
+        );
 
         $this->assertIsArray($result);
         $this->assertContainsOnlyInstancesOf(Product::class, $result);
     }
 
-    public function testItReturnsACollectionOfProductsUpdatedBeforeADateTime(): void
+    /**
+     * @dataProvider dateTimeProvider
+     */
+    public function testItReturnsACollectionOfProductsUpdatedBeforeADateTime(?string $dateFormat): void
     {
-        $client = $this->createClientWithResponse($this->getResponse());
+        $sdkClient = $this->getSdkClient($this->getSchema('Product/ProductsResponse.xml'));
 
-        $env = $this->getParameters();
-        $configuration = new Configuration($env['key'], $env['username'], $env['endpoint'], $env['version']);
+        $updatedBefore = \DateTimeImmutable::createFromFormat('Y-m-d H:i:s', '2019-01-23 00:00:00');
 
-        $sdkClient = new SellerCenterSdk($configuration, $client);
-
-        $updatedBefore = DateTimeImmutable::createFromFormat('Y-m-d H:i:s', '2019-01-23 00:00:00');
-
-        $result = $sdkClient->products()->getProductsUpdatedBefore($updatedBefore);
+        $result = $sdkClient->products()->getProductsUpdatedBefore(
+            $updatedBefore,
+            ProductManagerInterface::DEFAULT_LIMIT,
+            ProductManagerInterface::DEFAULT_OFFSET,
+            $dateFormat
+        );
 
         $this->assertIsArray($result);
         $this->assertContainsOnlyInstancesOf(Product::class, $result);
@@ -121,12 +156,7 @@ class ProductManagerTest extends LinioTestCase
 
     public function testItReturnsACollectionOfProductsSearchedByValue(): void
     {
-        $client = $this->createClientWithResponse($this->getResponse());
-
-        $env = $this->getParameters();
-        $configuration = new Configuration($env['key'], $env['username'], $env['endpoint'], $env['version']);
-
-        $sdkClient = new SellerCenterSdk($configuration, $client);
+        $sdkClient = $this->getSdkClient($this->getSchema('Product/ProductsResponse.xml'));
 
         $search = 'pil';
 
@@ -141,12 +171,7 @@ class ProductManagerTest extends LinioTestCase
      */
     public function testItReturnsACollectionOfProductsFiltered(string $filters): void
     {
-        $client = $this->createClientWithResponse($this->getResponse());
-
-        $env = $this->getParameters();
-        $configuration = new Configuration($env['key'], $env['username'], $env['endpoint'], $env['version']);
-
-        $sdkClient = new SellerCenterSdk($configuration, $client);
+        $sdkClient = $this->getSdkClient($this->getSchema('Product/ProductsResponse.xml'));
 
         $result = $sdkClient->products()->filterProducts($filters);
 
@@ -156,12 +181,7 @@ class ProductManagerTest extends LinioTestCase
 
     public function testItReturnsACollectionOfProductsBySkuSellerList(): void
     {
-        $client = $this->createClientWithResponse($this->getResponse());
-
-        $env = $this->getParameters();
-        $configuration = new Configuration($env['key'], $env['username'], $env['endpoint'], $env['version']);
-
-        $sdkClient = new SellerCenterSdk($configuration, $client);
+        $sdkClient = $this->getSdkClient($this->getSchema('Product/ProductsResponse.xml'));
 
         $skuSellerList = ['jasku-10001', 'jasku-10002'];
 
@@ -173,31 +193,24 @@ class ProductManagerTest extends LinioTestCase
 
     public function testItThrowsExceptionWithANullSkuSellerList(): void
     {
-        $this->expectException(InvalidArgumentException::class);
+        $this->expectException(\InvalidArgumentException::class);
 
-        $client = $this->createClientWithResponse($this->getResponse());
-
-        $env = $this->getParameters();
-        $configuration = new Configuration($env['key'], $env['username'], $env['endpoint'], $env['version']);
-
-        $sdkClient = new SellerCenterSdk($configuration, $client);
+        $sdkClient = $this->getSdkClient($this->getSchema('Product/ProductsResponse.xml'));
 
         $sdkClient->products()->getProductsBySellerSku([]);
     }
 
-    public function testItReturnsACollectionOfProductsFromParameters(): void
+    /**
+     * @dataProvider dateTimeProvider
+     */
+    public function testItReturnsACollectionOfProductsFromParameters(?string $dateFormat): void
     {
-        $client = $this->createClientWithResponse($this->getResponse());
+        $sdkClient = $this->getSdkClient($this->getSchema('Product/ProductsResponse.xml'));
 
-        $env = $this->getParameters();
-        $configuration = new Configuration($env['key'], $env['username'], $env['endpoint'], $env['version']);
-
-        $sdkClient = new SellerCenterSdk($configuration, $client);
-
-        $createdBefore = DateTimeImmutable::createFromFormat('Y-m-d H:i:s', '2019-01-23 00:00:00');
-        $createdAfter = DateTimeImmutable::createFromFormat('Y-m-d H:i:s', '2019-01-23 00:00:00');
-        $updatedAfter = DateTimeImmutable::createFromFormat('Y-m-d H:i:s', '2019-01-23 00:00:00');
-        $updatedBefore = DateTimeImmutable::createFromFormat('Y-m-d H:i:s', '2019-01-23 00:00:00');
+        $createdBefore = \DateTimeImmutable::createFromFormat('Y-m-d H:i:s', '2019-01-23 00:00:00');
+        $createdAfter = \DateTimeImmutable::createFromFormat('Y-m-d H:i:s', '2019-01-23 00:00:00');
+        $updatedAfter = \DateTimeImmutable::createFromFormat('Y-m-d H:i:s', '2019-01-23 00:00:00');
+        $updatedBefore = \DateTimeImmutable::createFromFormat('Y-m-d H:i:s', '2019-01-23 00:00:00');
         $filter = 'invalidFilter';
         $search = 'pil';
         $skuSellerList = ['jasku-10001', 'jasku-10002'];
@@ -211,87 +224,33 @@ class ProductManagerTest extends LinioTestCase
             0,
             $skuSellerList,
             $updatedAfter,
-            $updatedBefore
+            $updatedBefore,
+            $dateFormat
         );
 
         $this->assertIsArray($result);
         $this->assertContainsOnlyInstancesOf(Product::class, $result);
     }
 
-    public function testItReturnsAFeedResponseFromAProductCreateRequest(): void
+    /**
+     * @dataProvider productActions
+     */
+    public function testItReturnsAFeedResponseFromAProductActionRequest(string $action): void
     {
-        $body = '<?xml version="1.0" encoding="UTF-8"?>
-                    <SuccessResponse>
-                        <Head>
-                            <RequestId>cb106552-87f3-450b-aa8b-412246a24b34</RequestId>
-                            <RequestAction>ProductCreate</RequestAction>
-                            <ResponseType/>
-                            <Timestamp>2016-06-22T04:40:14+0200</Timestamp>
-                        </Head>
-                        <Body/>
-                    </SuccessResponse>';
+        $body = sprintf(
+            $this->getSchema('Feed/ProductActionFeedResponse.xml'),
+            ucfirst($action)
+        );
 
-        $client = $this->createClientWithResponse($body);
+        $sdkClient = $this->getSdkClient($body);
 
-        $env = $this->getParameters();
-        $configuration = new Configuration($env['key'], $env['username'], $env['endpoint'], $env['version']);
-
-        $sdkClient = new SellerCenterSdk($configuration, $client);
-
-        $result = $sdkClient->products()->productCreate($this->products);
+        $result = $sdkClient->products()->{$action}($this->products);
 
         $this->assertIsArray($this->products->all());
-        $this->assertContainsOnlyInstancesOf(Product::class, $this->products->all());
-        $this->assertInstanceOf(FeedResponse::class, $result);
-    }
-
-    public function testItReturnsAFeedResponseFromAProductUpdateRequest(): void
-    {
-        $body = '<?xml version="1.0" encoding="UTF-8"?>
-                    <SuccessResponse>
-                        <Head>
-                            <RequestId>cb106552-87f3-450b-aa8b-412246a24b34</RequestId>
-                            <RequestAction>ProductUpdate</RequestAction>
-                            <ResponseType/>
-                            <Timestamp>2016-06-22T04:40:14+0200</Timestamp>
-                        </Head>
-                        <Body/>
-                    </SuccessResponse>';
-
-        $client = $this->createClientWithResponse($body);
-
-        $parameters = $this->getParameters();
-        $configuration = new Configuration($parameters['key'], $parameters['username'], $parameters['endpoint'], $parameters['version']);
-
-        $sdk = new SellerCenterSdk($configuration, $client);
-
-        $result = $sdk->products()->productUpdate($this->products);
-
-        $this->assertInstanceOf(FeedResponse::class, $result);
-    }
-
-    public function testItReturnsAFeedResponseFromAProductRemoveRequest(): void
-    {
-        $body = '<?xml version="1.0" encoding="UTF-8"?>
-                    <SuccessResponse>
-                      <Head>
-                        <RequestId>f8bf8d09-1647-4136-b405-03c44f228cf5</RequestId>
-                        <RequestAction>ProductRemove</RequestAction>
-                        <ResponseType/>
-                        <Timestamp>2015-07-01T11:11:11+0000</Timestamp>
-                      </Head>
-                      <Body/>
-                    </SuccessResponse>';
-
-        $client = $this->createClientWithResponse($body);
-
-        $parameters = $this->getParameters();
-        $configuration = new Configuration($parameters['key'], $parameters['username'], $parameters['endpoint'], $parameters['version']);
-
-        $sdk = new SellerCenterSdk($configuration, $client);
-
-        $result = $sdk->products()->productRemove($this->products);
-
+        $this->assertContainsOnlyInstancesOf(
+            Product::class,
+            $this->products->all()
+        );
         $this->assertInstanceOf(FeedResponse::class, $result);
     }
 
@@ -300,59 +259,312 @@ class ProductManagerTest extends LinioTestCase
      */
     public function testItReturnsFeedResponseFromAnAddImageRequest(array $images): void
     {
-        $body = '<?xml version="1.0" encoding="UTF-8"?>
-                    <SuccessResponse>
-                        <Head>
-                            <RequestId>cb106552-87f3-450b-aa8b-412246a24b34</RequestId>
-                            <RequestAction>Image</RequestAction>
-                            <ResponseType/>
-                            <Timestamp>2016-06-22T04:40:14+0200</Timestamp>
-                        </Head>
-                        <Body/>
-                    </SuccessResponse>';
+        $body = sprintf(
+            $this->getSchema('Feed/ProductActionFeedResponse.xml'),
+            'Image'
+        );
 
-        $client = $this->createClientWithResponse($body);
+        $sdkClient = $this->getSdkClient($body);
 
-        $env = $this->getParameters();
-        $configuration = new Configuration($env['key'], $env['username'], $env['endpoint'], $env['version']);
-
-        $sdk = new SellerCenterSdk($configuration, $client);
-
-        $result = $sdk->products()->addImage($images);
+        $result = $sdkClient->products()->addImage($images);
 
         $this->assertIsArray($this->products->all());
         $this->assertContainsOnlyInstancesOf(Product::class, $this->products->all());
         $this->assertInstanceOf(FeedResponse::class, $result);
     }
 
-    public function testItReturnsErrorResponseException(): void
+    /**
+     * @dataProvider productActions
+     */
+    public function testItReturnsErrorResponseException(string $action): void
     {
-        $this->expectException(Exception::class);
+        $this->expectException(\Exception::class);
         $this->expectExceptionMessage('E0125: Test Error');
 
-        $body = '<?xml version="1.0" encoding="UTF-8"?>
-        <ErrorResponse>
-            <Head>
-                <RequestAction>GetOrder</RequestAction>
-                <ErrorType>Sender</ErrorType>
-                <ErrorCode>125</ErrorCode>
-                <ErrorMessage>E0125: Test Error</ErrorMessage>
-            </Head>
-            <Body/>
-        </ErrorResponse>';
+        $body = sprintf(
+            $this->getSchema('Feed/ProductActionFeedResponseError.xml'),
+            ucfirst($action),
+            'Sender',
+            125,
+            'E0125: Test Error'
+        );
 
-        $client = $this->createClientWithResponse($body, 400);
+        $sdkClient = $this->getSdkClient($body, null, 400);
 
-        $env = $this->getParameters();
-
-        $configuration = new Configuration($env['key'], $env['username'], $env['endpoint'], $env['version']);
-
-        $sdk = new SellerCenterSdk($configuration, $client);
-
-        $sdk->products()->productCreate($this->products);
+        $sdkClient->products()->productCreate($this->products);
     }
 
-    public function filters(): array
+    /**
+     * @dataProvider debugParameter
+     */
+    public function testItLogsDependingOnDebugParamWhenProductCreateSuccessResponse(bool $debug): void
+    {
+        $body = sprintf(
+            $this->getSchema('Feed/ProductActionFeedResponse.xml'),
+            'productCreate'
+        );
+
+        $this->prepareLogTest($debug);
+        $sdkClient = $this->getSdkClient($body, $this->logger);
+
+        $sdkClient->products()->productCreate($this->products, $debug);
+    }
+
+    /**
+     * @dataProvider debugParameter
+     */
+    public function testItLogsDependingOnDebugParamWhenProductUpdateSuccessResponse(bool $debug): void
+    {
+        $body = sprintf(
+            $this->getSchema('Feed/ProductActionFeedResponse.xml'),
+            'productUpdate'
+        );
+
+        $this->prepareLogTest($debug);
+        $sdkClient = $this->getSdkClient($body, $this->logger);
+
+        $sdkClient->products()->productUpdate($this->products, $debug);
+    }
+
+    /**
+     * @dataProvider debugParameter
+     */
+    public function testItLogsDependingOnDebugParamWhenProductRemoveSuccessResponse(bool $debug): void
+    {
+        $body = sprintf(
+            $this->getSchema('Feed/ProductActionFeedResponse.xml'),
+            'productRemove'
+        );
+
+        $this->prepareLogTest($debug);
+        $sdkClient = $this->getSdkClient($body, $this->logger);
+
+        $sdkClient->products()->productRemove($this->products, $debug);
+    }
+
+    /**
+     * @dataProvider debugParameter
+     */
+    public function testItLogsDependingOnDebugParamWhenAddImageSuccessResponse(bool $debug): void
+    {
+        $body = sprintf(
+            $this->getSchema('Feed/ProductActionFeedResponse.xml'),
+            'Image'
+        );
+
+        $this->prepareLogTest($debug);
+        $sdkClient = $this->getSdkClient($body, $this->logger);
+
+        $sdkClient->products()->addImage(
+            ['testSku' => [
+                'http://static.somecdn.com/moneyshot.jpeg',
+                'http://static.somecdn.com/front.jpeg',
+                'http://static.somecdn.com/rear.jpeg',
+            ],
+            ],
+            $debug
+        );
+    }
+
+    /**
+     * @dataProvider debugParameter
+     */
+    public function testItLogsDependingOnDebugParamWhenGetProductsSuccessResponse(bool $debug): void
+    {
+        $this->prepareLogTest($debug);
+        $sdkClient = $this->getSdkClient(
+            $this->getSchema('Product/ProductsResponse.xml'),
+            $this->logger
+        );
+
+        $sdkClient->products()->getProducts(
+            new Parameters(),
+            $debug
+        );
+    }
+
+    /**
+     * @dataProvider debugParameter
+     */
+    public function testItLogsDependingOnDebugParamWhenGetAllProductsSuccessResponse(bool $debug): void
+    {
+        $this->prepareLogTest($debug);
+        $sdkClient = $this->getSdkClient(
+            $this->getSchema('Product/ProductsResponse.xml'),
+            $this->logger
+        );
+
+        $sdkClient->products()->getAllProducts(
+            100,
+            100,
+            $debug
+        );
+    }
+
+    /**
+     * @dataProvider debugParameter
+     */
+    public function testItLogsDependingOnDebugParamWhenGetProductsCreatedAfterSuccessResponse(bool $debug): void
+    {
+        $this->prepareLogTest($debug);
+        $sdkClient = $this->getSdkClient(
+            $this->getSchema('Product/ProductsResponse.xml'),
+            $this->logger
+        );
+
+        $sdkClient->products()->getProductsCreatedAfter(
+            \DateTimeImmutable::createFromFormat('Y-m-d H:i:s', '2018-09-01 00:00:00'),
+            100,
+            100,
+            null,
+            $debug
+        );
+    }
+
+    /**
+     * @dataProvider debugParameter
+     */
+    public function testItLogsDependingOnDebugParamWhenGetProductsCreatedBeforeSuccessResponse(bool $debug): void
+    {
+        $this->prepareLogTest($debug);
+        $sdkClient = $this->getSdkClient(
+            $this->getSchema('Product/ProductsResponse.xml'),
+            $this->logger
+        );
+
+        $sdkClient->products()->getProductsCreatedBefore(
+            \DateTimeImmutable::createFromFormat('Y-m-d H:i:s', '2018-09-01 00:00:00'),
+            100,
+            100,
+            null,
+            $debug
+        );
+    }
+
+    /**
+     * @dataProvider debugParameter
+     */
+    public function testItLogsDependingOnDebugParamWhenGetProductsUpdatedAfterSuccessResponse(bool $debug): void
+    {
+        $this->prepareLogTest($debug);
+        $sdkClient = $this->getSdkClient(
+            $this->getSchema('Product/ProductsResponse.xml'),
+            $this->logger
+        );
+
+        $sdkClient->products()->getProductsUpdatedAfter(
+            \DateTimeImmutable::createFromFormat('Y-m-d H:i:s', '2018-09-01 00:00:00'),
+            100,
+            100,
+            null,
+            $debug
+        );
+    }
+
+    /**
+     * @dataProvider debugParameter
+     */
+    public function testItLogsDependingOnDebugParamWhenGetProductsUpdatedBeforeSuccessResponse(bool $debug): void
+    {
+        $this->prepareLogTest($debug);
+        $sdkClient = $this->getSdkClient(
+            $this->getSchema('Product/ProductsResponse.xml'),
+            $this->logger
+        );
+
+        $sdkClient->products()->getProductsUpdatedBefore(
+            \DateTimeImmutable::createFromFormat('Y-m-d H:i:s', '2018-09-01 00:00:00'),
+            100,
+            100,
+            null,
+            $debug
+        );
+    }
+
+    /**
+     * @dataProvider debugParameter
+     */
+    public function testItLogsDependingOnDebugParamWhenSearchProductsSuccessResponse(bool $debug): void
+    {
+        $this->prepareLogTest($debug);
+        $sdkClient = $this->getSdkClient(
+            $this->getSchema('Product/ProductsResponse.xml'),
+            $this->logger
+        );
+
+        $sdkClient->products()->searchProducts(
+            'test-sku',
+            100,
+            100,
+            $debug
+        );
+    }
+
+    /**
+     * @dataProvider debugParameter
+     */
+    public function testItLogsDependingOnDebugParamWhenFilterProductsSuccessResponse(bool $debug): void
+    {
+        $this->prepareLogTest($debug);
+        $sdkClient = $this->getSdkClient(
+            $this->getSchema('Product/ProductsResponse.xml'),
+            $this->logger
+        );
+
+        $sdkClient->products()->filterProducts(
+            'live',
+            100,
+            100,
+            $debug
+        );
+    }
+
+    /**
+     * @dataProvider debugParameter
+     */
+    public function testItLogsDependingOnDebugParamWhenGetProductsBySellerSkuSuccessResponse(bool $debug): void
+    {
+        $this->prepareLogTest($debug);
+        $sdkClient = $this->getSdkClient(
+            $this->getSchema('Product/ProductsResponse.xml'),
+            $this->logger
+        );
+
+        $sdkClient->products()->getProductsBySellerSku(
+            ['test-sku1', 'test-sku2'],
+            100,
+            100,
+            $debug
+        );
+    }
+
+    /**
+     * @dataProvider debugParameter
+     */
+    public function testItLogsDependingOnDebugParamWhenGetProductsFromParametersSuccessResponse(bool $debug): void
+    {
+        $this->prepareLogTest($debug);
+        $sdkClient = $this->getSdkClient(
+            $this->getSchema('Product/ProductsResponse.xml'),
+            $this->logger
+        );
+
+        $sdkClient->products()->getProductsFromParameters(
+            null,
+            null,
+            null,
+            'live',
+            100,
+            100,
+            ['test-sku'],
+            null,
+            null,
+            null,
+            $debug
+        );
+    }
+
+    public static function filters(): array
     {
         return [
             ['all'],
@@ -368,143 +580,38 @@ class ProductManagerTest extends LinioTestCase
         ];
     }
 
-    public function getResponse(): string
+    public static function productActions(): array
     {
-        return '<?xml version="1.0" encoding="UTF-8"?>
-                    <SuccessResponse>
-                         <Head>
-                              <RequestId/>
-                              <RequestAction>GetProducts</RequestAction>
-                              <ResponseType>Products</ResponseType>
-                              <Timestamp>2019-02-05T11:39:11-0300</Timestamp>
-                         </Head>
-                         <Body>
-                              <Products>
-                                   <Product>
-                                        <SellerSku>jasku-10001</SellerSku>
-                                        <ShopSku>A89AS7A7S99</ShopSku>
-                                        <ProductSin>SAU8SAY87AS</ProductSin>
-                                        <Name>jasku-10001</Name>
-                                        <Variation>0</Variation>
-                                        <ParentSku>jasku-10001</ParentSku>
-                                        <Quantity>1000</Quantity>
-                                        <Available>1000</Available>
-                                        <Price>22000.00</Price>
-                                        <SalePrice>20000.00</SalePrice>
-                                        <SaleStartDate>2019-01-23 00:00:00</SaleStartDate>
-                                        <SaleEndDate>2019-02-25 00:00:00</SaleEndDate>
-                                        <Status>active</Status>
-                                        <ProductId>jasku-10001</ProductId>
-                                        <Url/>
-                                        <MainImage/>
-                                        <Images>
-                                          <Image>http://static.somesite.com/p/image1.jpg</Image>
-                                          <Image>http://static.somesite.com/p/image2.jpg</Image>
-                                          <Image>http://static.somesite.com/p/image3.jpg</Image>
-                                        </Images>
-                                        <Description>fdsfdsfds&lt;span&gt;&lt;/span&gt;</Description>
-                                        <TaxClass>IVA 19%</TaxClass>
-                                        <Brand>GENERIC</Brand>
-                                        <PrimaryCategory>Sillas Portabebes para Bicicletas</PrimaryCategory>
-                                        <Categories>1232,32132</Categories>
-                                        <ProductData>
-                                             <ConditionType>Nuevo</ConditionType>
-                                             <PackageWidth>5</PackageWidth>
-                                             <PackageLength>5</PackageLength>
-                                             <PackageHeight>5</PackageHeight>
-                                             <PackageWeight>1</PackageWeight>
-                                             <ShortDescription>1,2,3,4</ShortDescription>
-                                        </ProductData>
-                                   </Product>
-                                   <Product>
-                                        <SellerSku>jasku-10002</SellerSku>
-                                        <ShopSku>NE32HE293ED9</ShopSku>
-                                        <ProductSin>MDWIJ239DAD9H</ProductSin>
-                                        <Variation>...</Variation>
-                                        <ParentSku>jasku-10002</ParentSku>
-                                        <Quantity>1000</Quantity>
-                                        <Available>1000</Available>
-                                        <Price>22000.00</Price>
-                                        <SalePrice>20000.00</SalePrice>
-                                        <SaleStartDate>2019-01-23 00:00:00</SaleStartDate>
-                                        <SaleEndDate>2019-02-25 00:00:00</SaleEndDate>
-                                        <Status>active</Status>
-                                        <ProductId>jasku-10002</ProductId>
-                                        <Url/>
-                                        <MainImage/>
-                                        <Images>
-                                          <Image>http://static.somesite.com/p/image1.jpg</Image>
-                                          <Image>http://static.somesite.com/p/image2.jpg</Image>
-                                          <Image>http://static.somesite.com/p/image3.jpg</Image>
-                                        </Images>
-                                        <Description>ndjdhmq mamnk</Description>
-                                        <TaxClass>IVA 19%</TaxClass>
-                                        <Brand>GENERIC</Brand>
-                                        <PrimaryCategory>Andadores de seguridad</PrimaryCategory>
-                                        <Categories>2713,78123</Categories>
-                                        <ProductData>
-                                             <ConditionType>Nuevo</ConditionType>
-                                             <PackageWidth>5</PackageWidth>
-                                             <PackageLength>5</PackageLength>
-                                             <PackageHeight>5</PackageHeight>
-                                             <PackageWeight>1</PackageWeight>
-                                             <ShortDescription>1,2,3,4</ShortDescription>
-                                        </ProductData>
-                                   </Product>
-                                   <Product>
-                                        <SellerSku>jasku-10003</SellerSku>
-                                        <ShopSku>MMIDJ20M10JDM10</ShopSku>
-                                        <ProductSin>MWQI10923D109J</ProductSin>
-                                        <Name>jasku-10003</Name>
-                                        <Variation>...</Variation>
-                                        <ParentSku>jasku-10003</ParentSku>
-                                        <Quantity>1000</Quantity>
-                                        <Available>1000</Available>
-                                        <Price>22000.00</Price>
-                                        <SalePrice>20000.00</SalePrice>
-                                        <SaleStartDate>2019-01-23 00:00:00</SaleStartDate>
-                                        <SaleEndDate>2019-02-25 00:00:00</SaleEndDate>
-                                        <Status>active</Status>
-                                        <ProductId>jasku-10003</ProductId>
-                                        <Url/>
-                                        <MainImage/>
-                                        <Images>
-                                          <Image>http://static.somesite.com/p/image1.jpg</Image>
-                                          <Image>http://static.somesite.com/p/image2.jpg</Image>
-                                          <Image>http://static.somesite.com/p/image3.jpg</Image>
-                                        </Images>
-                                        <Description>fdsfdsfds&lt;span&gt;&lt;/span&gt;</Description>
-                                        <TaxClass>IVA 19%</TaxClass>
-                                        <Brand>GENERIC</Brand>
-                                        <PrimaryCategory>Sillas Portabebes para Bicicletas</PrimaryCategory>
-                                        <Categories>2819,23819</Categories>
-                                        <ProductData>
-                                             <ConditionType>Reacondicionado</ConditionType>
-                                             <PackageWidth>5</PackageWidth>
-                                             <PackageLength>5</PackageLength>
-                                             <PackageHeight>0</PackageHeight>
-                                             <PackageWeight>1</PackageWeight>
-                                             <ShortDescription>1,2,3,4</ShortDescription>
-                                        </ProductData>
-                                   </Product>
-                              </Products>
-                         </Body>
-                    </SuccessResponse>';
+        return [
+            ['productCreate'],
+            ['productUpdate'],
+            ['productRemove'],
+        ];
     }
 
     public function primaryProduct(): Product
     {
+        $sellerSku = '2145819109aaeu7';
+        $name = 'Magic Product';
+        $variation = '0';
+        $primaryCategory = Category::fromName('Jeans');
+        $description = 'This is a bold product.';
+        $brand = Brand::fromName('Samsung');
+        $productId = '123326998';
+        $taxClass = 'IVA exento 0%';
+        $productData = new ProductData('Nuevo', 0, 4, 5, 4);
+
         $product = Product::fromBasicData(
-            '2145819109aaeu7',
-            'Magic Product',
-            '0',
-            Category::fromName('Jeans'),
-            'This is a bold product.',
-            Brand::fromName('Samsung'),
+            $sellerSku,
+            $name,
+            $variation,
+            $primaryCategory,
+            $description,
+            $brand,
             5999.00,
-            'IVA exento 0%',
-            '123326998',
-            new ProductData('Nuevo', 0, 4, 5, 4)
+            $productId,
+            $taxClass,
+            $productData
         );
 
         $product->getImages()->addMany([
@@ -516,23 +623,34 @@ class ProductManagerTest extends LinioTestCase
         $categories = new Categories();
         $categories->add(Category::fromId($this->faker->randomNumber));
         $categories->add(Category::fromId($this->faker->randomNumber));
+        $product->setCategories($categories);
 
         return $product;
     }
 
     public function secondProduct(): Product
     {
+        $sellerSku = '2145887609aaeu7';
+        $name = 'Rare Product';
+        $variation = 'Large';
+        $primaryCategory = Category::fromName('Camisas');
+        $description = 'This is a bold product.';
+        $brand = Brand::fromName('Motorola');
+        $productId = '123326998';
+        $taxClass = 'IVA exento 0%';
+        $productData = new ProductData('Nuevo', 3, 0, 5, 4);
+
         $product = Product::fromBasicData(
-            '2145887609aaeu7',
-            'Rare Product',
-            'Large',
-            Category::fromName('Camisas'),
-            'This is a bold product.',
-            Brand::fromName('Motorola'),
+            $sellerSku,
+            $name,
+            $variation,
+            $primaryCategory,
+            $description,
+            $brand,
             9999.00,
-            'IVA exento 0%',
-            '123810998',
-            new ProductData('Nuevo', 3, 0, 5, 4)
+            $productId,
+            $taxClass,
+            $productData
         );
 
         $product->getImages()->addMany([
@@ -544,10 +662,11 @@ class ProductManagerTest extends LinioTestCase
         return $product;
     }
 
-    public function validImageRequests(): array
+    public static function validImageRequests(): array
     {
-        $randomString = $this->getFaker()->word();
-        $randomNumberToString = (string) $this->getFaker()->randomNumber();
+        $faker = \Faker\Factory::create();
+        $randomString = $faker->word();
+        $randomNumberToString = (string) $faker->randomNumber();
 
         return [
             [
@@ -568,6 +687,73 @@ class ProductManagerTest extends LinioTestCase
                     ],
                 ],
             ],
+        ];
+    }
+
+    /**
+     * @dataProvider debugParameter
+     */
+    public function testItGetsStock(bool $debug): void
+    {
+        $this->prepareLogTest($debug);
+
+        $sdkClient = $this->getSdkClient(
+            $this->getSchema('Product/ProductsStock.xml'),
+            $this->logger
+        );
+
+        $result = $sdkClient->products()->getStock(['TEST-1234', 'TEST-123', 'TEST-12345'], 100, 0, $debug);
+
+        $this->assertContainsOnlyInstancesOf(ProductStock::class, $result);
+    }
+
+    /**
+     * @dataProvider debugParameter
+     */
+    public function testItGetsStockByFacilityId(bool $debug): void
+    {
+        $this->prepareLogTest($debug);
+
+        $sdkClient = $this->getSdkClient(
+            $this->getSchema('Product/ProductsStock.xml'),
+            $this->logger
+        );
+
+        $result = $sdkClient->products()->getStockByFacilityId(['1234'], 'GSC-123457', 1000, 0, $debug);
+
+        $this->assertContainsOnlyInstancesOf(ProductStock::class, $result);
+    }
+
+    /**
+     * @dataProvider debugParameter
+     */
+    public function testItGetsStockByWarehouseId(bool $debug): void
+    {
+        $this->prepareLogTest($debug);
+
+        $sdkClient = $this->getSdkClient(
+            $this->getSchema('Product/ProductsStock.xml'),
+            $this->logger
+        );
+
+        $result = $sdkClient->products()->getStockByWarehouseId(['1234'], 'GSC-123457', 1000, 0, $debug);
+
+        $this->assertContainsOnlyInstancesOf(ProductStock::class, $result);
+    }
+
+    public static function debugParameter()
+    {
+        return [
+            [false],
+            [true],
+        ];
+    }
+
+    public static function dateTimeProvider(): array
+    {
+        return [
+            'defaultFormat' => [null],
+            'anotherFormat' => ['Y-m-d H:i:s'],
         ];
     }
 }

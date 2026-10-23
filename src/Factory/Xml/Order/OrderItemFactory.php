@@ -4,172 +4,79 @@ declare(strict_types=1);
 
 namespace Linio\SellerCenter\Factory\Xml\Order;
 
-use DateTimeImmutable;
-use Linio\Component\Util\Json;
-use Linio\SellerCenter\Exception\InvalidXmlStructureException;
+use Linio\SellerCenter\Helper\Json;
 use Linio\SellerCenter\Model\Order\OrderItem;
-use SimpleXMLElement;
+use Linio\SellerCenter\Validator\XmlStructureValidator;
 
 class OrderItemFactory
 {
-    public static function make(SimpleXMLElement $element): OrderItem
+    private const XML_MODEL = 'OrderItem';
+    private const REQUIRED_FIELDS = [
+        'OrderItemId',
+        'ShopId',
+        'OrderId',
+        'Name',
+        'Sku',
+        'Variation',
+        'ShopSku',
+        'ShippingType',
+        'ItemPrice',
+        'PaidPrice',
+        'Currency',
+        'WalletCredits',
+        'TaxAmount',
+        'CodCollectableAmount',
+        'ShippingAmount',
+        'ShippingServiceCost',
+        'VoucherAmount',
+        'VoucherCode',
+        'Status',
+        'IsProcessable',
+        'ShipmentProvider',
+        'IsDigital',
+        'DigitalDeliveryInfo',
+        'TrackingCode',
+        'TrackingCodePre',
+        'Reason',
+        'ReasonDetail',
+        'PurchaseOrderId',
+        'PurchaseOrderNumber',
+        'PackageId',
+        'PromisedShippingTime',
+        'ExtraAttributes',
+        'ShippingProviderType',
+        'CreatedAt',
+        'UpdatedAt',
+        'ReturnStatus',
+        'ShippingTax',
+    ];
+    private const REQUIRED_FIELDS_FROM_STATUS = [
+        'PurchaseOrderId',
+        'PurchaseOrderNumber',
+    ];
+
+    private const REQUIRED_FIELDS_FROM_IMEI_STATUS = [
+        'OrderItemId',
+        'Imei',
+        'Status',
+    ];
+
+    public static function make(\SimpleXMLElement $element): OrderItem
     {
-        if (!property_exists($element, 'OrderItemId')) {
-            throw new InvalidXmlStructureException('OrderItem', 'OrderItemId');
-        }
-
-        if (!property_exists($element, 'ShopId')) {
-            throw new InvalidXmlStructureException('OrderItem', 'ShopId');
-        }
-
-        if (!property_exists($element, 'OrderId')) {
-            throw new InvalidXmlStructureException('OrderItem', 'OrderId');
-        }
-
-        if (!property_exists($element, 'Name')) {
-            throw new InvalidXmlStructureException('OrderItem', 'Name');
-        }
-
-        if (!property_exists($element, 'Sku')) {
-            throw new InvalidXmlStructureException('OrderItem', 'Sku');
-        }
-
-        if (!property_exists($element, 'Variation')) {
-            throw new InvalidXmlStructureException('OrderItem', 'Variation');
-        }
-
-        if (!property_exists($element, 'ShopSku')) {
-            throw new InvalidXmlStructureException('OrderItem', 'ShopSku');
-        }
-
-        if (!property_exists($element, 'ShippingType')) {
-            throw new InvalidXmlStructureException('OrderItem', 'ShippingType');
-        }
-
-        if (!property_exists($element, 'ItemPrice')) {
-            throw new InvalidXmlStructureException('OrderItem', 'ItemPrice');
-        }
-
-        if (!property_exists($element, 'PaidPrice')) {
-            throw new InvalidXmlStructureException('OrderItem', 'PaidPrice');
-        }
-
-        if (!property_exists($element, 'Currency')) {
-            throw new InvalidXmlStructureException('OrderItem', 'Currency');
-        }
-
-        if (!property_exists($element, 'WalletCredits')) {
-            throw new InvalidXmlStructureException('OrderItem', 'WalletCredits');
-        }
-
-        if (!property_exists($element, 'TaxAmount')) {
-            throw new InvalidXmlStructureException('OrderItem', 'TaxAmount');
-        }
-
-        if (!property_exists($element, 'CodCollectableAmount')) {
-            throw new InvalidXmlStructureException('OrderItem', 'CodCollectableAmount');
-        }
-
-        if (!property_exists($element, 'ShippingAmount')) {
-            throw new InvalidXmlStructureException('OrderItem', 'ShippingAmount');
-        }
-
-        if (!property_exists($element, 'ShippingServiceCost')) {
-            throw new InvalidXmlStructureException('OrderItem', 'ShippingServiceCost');
-        }
-
-        if (!property_exists($element, 'VoucherAmount')) {
-            throw new InvalidXmlStructureException('OrderItem', 'VoucherAmount');
-        }
-
-        if (!property_exists($element, 'VoucherCode')) {
-            throw new InvalidXmlStructureException('OrderItem', 'VoucherCode');
-        }
-
-        if (!property_exists($element, 'Status')) {
-            throw new InvalidXmlStructureException('OrderItem', 'Status');
-        }
-
-        if (!property_exists($element, 'IsProcessable')) {
-            throw new InvalidXmlStructureException('OrderItem', 'IsProcessable');
-        }
-
-        if (!property_exists($element, 'ShipmentProvider')) {
-            throw new InvalidXmlStructureException('OrderItem', 'ShipmentProvider');
-        }
-
-        if (!property_exists($element, 'IsDigital')) {
-            throw new InvalidXmlStructureException('OrderItem', 'IsDigital');
-        }
-
-        if (!property_exists($element, 'DigitalDeliveryInfo')) {
-            throw new InvalidXmlStructureException('OrderItem', 'DigitalDeliveryInfo');
-        }
-
-        if (!property_exists($element, 'TrackingCode')) {
-            throw new InvalidXmlStructureException('OrderItem', 'TrackingCode');
-        }
-
-        if (!property_exists($element, 'TrackingCodePre')) {
-            throw new InvalidXmlStructureException('OrderItem', 'TrackingCodePre');
-        }
-
-        if (!property_exists($element, 'Reason')) {
-            throw new InvalidXmlStructureException('OrderItem', 'Reason');
-        }
-
-        if (!property_exists($element, 'ReasonDetail')) {
-            throw new InvalidXmlStructureException('OrderItem', 'ReasonDetail');
-        }
-
-        if (!property_exists($element, 'PurchaseOrderId')) {
-            throw new InvalidXmlStructureException('OrderItem', 'PurchaseOrderId');
-        }
-
-        if (!property_exists($element, 'PurchaseOrderNumber')) {
-            throw new InvalidXmlStructureException('OrderItem', 'PurchaseOrderNumber');
-        }
-
-        if (!property_exists($element, 'PackageId')) {
-            throw new InvalidXmlStructureException('OrderItem', 'PackageId');
-        }
-
-        if (!property_exists($element, 'PromisedShippingTime')) {
-            throw new InvalidXmlStructureException('OrderItem', 'PromisedShippingTime');
-        }
-
-        if (!property_exists($element, 'ExtraAttributes')) {
-            throw new InvalidXmlStructureException('OrderItem', 'ExtraAttributes');
-        }
-
-        if (!property_exists($element, 'ShippingProviderType')) {
-            throw new InvalidXmlStructureException('OrderItem', 'ShippingProviderType');
-        }
-
-        if (!property_exists($element, 'CreatedAt')) {
-            throw new InvalidXmlStructureException('OrderItem', 'CreatedAt');
-        }
-
-        if (!property_exists($element, 'UpdatedAt')) {
-            throw new InvalidXmlStructureException('OrderItem', 'UpdatedAt');
-        }
-
-        if (!property_exists($element, 'ReturnStatus')) {
-            throw new InvalidXmlStructureException('OrderItem', 'ReturnStatus');
-        }
+        XmlStructureValidator::validateStructure($element, self::XML_MODEL, self::REQUIRED_FIELDS);
 
         $isProcessable = !empty($element->IsProcessable);
         $isDigital = !empty($element->IsDigital);
 
-        $dateTime = DateTimeImmutable::createFromFormat('Y-m-d H:i:s', (string) $element->PromisedShippingTime);
+        $dateTime = \DateTimeImmutable::createFromFormat('Y-m-d H:i:s', (string) $element->PromisedShippingTime);
         $promisedShippingTime = !empty($dateTime) ? $dateTime : null;
 
         $extraAttributes = Json::decode((string) $element->ExtraAttributes);
 
-        $dateTime = DateTimeImmutable::createFromFormat('Y-m-d H:i:s', (string) $element->CreatedAt);
+        $dateTime = \DateTimeImmutable::createFromFormat('Y-m-d H:i:s', (string) $element->CreatedAt);
         $createdAt = !empty($dateTime) ? $dateTime : null;
 
-        $dateTime = DateTimeImmutable::createFromFormat('Y-m-d H:i:s', (string) $element->UpdatedAt);
+        $dateTime = \DateTimeImmutable::createFromFormat('Y-m-d H:i:s', (string) $element->UpdatedAt);
         $updatedAt = !empty($dateTime) ? $dateTime : null;
 
         return OrderItem::fromOrderItem(
@@ -189,7 +96,7 @@ class OrderItemFactory
             (float) $element->CodCollectableAmount,
             (float) $element->ShippingAmount,
             (float) $element->ShippingServiceCost,
-            (int) $element->VoucherAmount,
+            (float) $element->VoucherAmount,
             (string) $element->VoucherCode,
             (string) $element->Status,
             $isProcessable,
@@ -208,19 +115,16 @@ class OrderItemFactory
             (string) $element->ShippingProviderType,
             $createdAt,
             $updatedAt,
-            (string) $element->ReturnStatus
+            (string) $element->ReturnStatus,
+            (float) $element->ShippingTax,
+            isset($element->SalesType) ? (string) $element->SalesType : null,
+            isset($element->Imei) ? (string) $element->Imei : null
         );
     }
 
-    public static function makeFromStatus(SimpleXMLElement $element): OrderItem
+    public static function makeFromStatus(\SimpleXMLElement $element): OrderItem
     {
-        if (!property_exists($element, 'PurchaseOrderId')) {
-            throw new InvalidXmlStructureException('OrderItem', 'PurchaseOrderId');
-        }
-
-        if (!property_exists($element, 'PurchaseOrderNumber')) {
-            throw new InvalidXmlStructureException('OrderItem', 'PurchaseOrderNumber');
-        }
+        XmlStructureValidator::validateStructure($element, self::XML_MODEL, self::REQUIRED_FIELDS_FROM_STATUS);
 
         $orderItemId = (int) $element->OrderItemId;
         $packageId = empty($element->PackageId) ? null : (string) $element->PackageId;
@@ -230,6 +134,22 @@ class OrderItemFactory
             (int) $element->PurchaseOrderId,
             (string) $element->PurchaseOrderNumber,
             $packageId
+        );
+    }
+
+    public static function makeFromImeiStatus(\SimpleXMLElement $element): OrderItem
+    {
+        XmlStructureValidator::validateStructure($element, self::XML_MODEL, self::REQUIRED_FIELDS_FROM_IMEI_STATUS);
+
+        $orderItemId = (int) $element->OrderItemId;
+        $imei = empty($element->Imei) ? null : (string) $element->Imei;
+        $message = empty($element->Message) ? null : (string) $element->Message;
+
+        return OrderItem::fromImeiStatus(
+            $orderItemId,
+            $imei,
+            (string) $element->Status,
+            $message
         );
     }
 }

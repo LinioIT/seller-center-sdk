@@ -7,13 +7,28 @@ namespace Linio\SellerCenter\Service;
 use Linio\SellerCenter\Application\Configuration;
 use Linio\SellerCenter\Application\Parameters;
 use Linio\SellerCenter\Contract\ClientInterface;
-use PHPUnit\Framework\TestCase;
+use Linio\SellerCenter\LinioTestCase;
 use Psr\Log\Test\TestLogger;
-use ReflectionClass;
 
-class DocumentManagerTest extends TestCase
+class DocumentManagerTest extends LinioTestCase
 {
-    public function testItReturnsTheTheLoggerWhenIsSet(): void
+    public function testReturnsADocumentManager(): void
+    {
+        $configuration = $this->prophesize(Configuration::class);
+        $client = $this->prophesize(ClientInterface::class);
+        $parameters = $this->prophesize(Parameters::class);
+        $logger = $this->prophesize(TestLogger::class);
+
+        $documentManager = new DocumentManager(
+            $configuration->reveal(),
+            $client->reveal(),
+            $parameters->reveal(),
+            $logger->reveal()
+        );
+        $this->assertInstanceOf(DocumentManager::class, $documentManager);
+    }
+
+    public function testItReturnsTheLoggerWhenIsSet(): void
     {
         $configuration = $this->prophesize(Configuration::class);
         $client = $this->prophesize(ClientInterface::class);
@@ -22,7 +37,7 @@ class DocumentManagerTest extends TestCase
 
         $documentManager = new DocumentManager($configuration->reveal(), $client->reveal(), $parameters->reveal(), $logger->reveal());
 
-        $reflectionClass = new ReflectionClass(DocumentManager::class);
+        $reflectionClass = new \ReflectionClass(DocumentManager::class);
         $property = $reflectionClass->getProperty('logger');
         $property->setAccessible(true);
 

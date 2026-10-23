@@ -4,34 +4,22 @@ declare(strict_types=1);
 
 namespace Linio\SellerCenter\Factory\Xml\Product;
 
-use Linio\SellerCenter\Exception\InvalidXmlStructureException;
 use Linio\SellerCenter\Model\Product\ProductData;
-use SimpleXMLElement;
+use Linio\SellerCenter\Validator\XmlStructureValidator;
 
 class ProductDataFactory
 {
-    public static function make(SimpleXMLElement $element): ProductData
+    private const XML_MODEL = 'ProductData';
+    private const REQUIRED_FIELDS = [
+        'PackageHeight',
+        'PackageWidth',
+        'PackageLength',
+        'PackageWeight',
+    ];
+
+    public static function make(\SimpleXMLElement $element): ProductData
     {
-        if (!property_exists($element, 'ConditionType')) {
-            throw new InvalidXmlStructureException('ProductData', 'ConditionType');
-        }
-
-        if (!property_exists($element, 'PackageHeight')) {
-            throw new InvalidXmlStructureException('ProductData', 'PackageHeight');
-        }
-
-        if (!property_exists($element, 'PackageWidth')) {
-            throw new InvalidXmlStructureException('ProductData', 'PackageWidth');
-        }
-
-        if (!property_exists($element, 'PackageLength')) {
-            throw new InvalidXmlStructureException('ProductData', 'PackageLength');
-        }
-
-        if (!property_exists($element, 'PackageWeight')) {
-            throw new InvalidXmlStructureException('ProductData', 'PackageWeight');
-        }
-
+        XmlStructureValidator::validateStructure($element, self::XML_MODEL, self::REQUIRED_FIELDS);
         $productData = new ProductData(
             (string) $element->ConditionType,
             (float) $element->PackageHeight,

@@ -13,6 +13,9 @@ class AttributeSets implements CollectionInterface
      */
     protected $collection;
 
+    /**
+     * @return AttributeSet[]
+     */
     public function all(): array
     {
         return $this->collection;

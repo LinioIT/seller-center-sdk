@@ -23,6 +23,9 @@ class PsrClientAdapter implements ClientInterface
         $this->client = $client;
     }
 
+    /**
+     * @param mixed[] $options
+     */
     public function send(RequestInterface $request, array $options = []): ResponseInterface
     {
         $query = $options['query'] ?? null;
@@ -35,6 +38,9 @@ class PsrClientAdapter implements ClientInterface
         return $this->client->sendRequest($request);
     }
 
+    /**
+     * @param mixed[]|null $query
+     */
     public function appendQuery(UriInterface $endpoint, ?array $query): UriInterface
     {
         if (empty($query)) {

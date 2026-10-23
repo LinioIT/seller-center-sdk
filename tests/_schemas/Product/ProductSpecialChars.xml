@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Products>
+    <Product>
+        <SellerSku>BLACK_BAG_TEST</SellerSku>
+        <Name>Black Leather bagskasd</Name>
+        <Variation>M</Variation>
+        <Status>active</Status>
+        <PrimaryCategory>7080</PrimaryCategory>
+        <Description><![CDATA[<p>Womens black <b>leather and bag</b>, with ample space. Can be worn over the shoulder, or remove straps to carry in your hand.asdasd</p>]]></Description>
+        <Brand>Apple</Brand>
+        <Price>30000</Price>
+        <ProductId>123456783</ProductId>
+        <TaxClass>IVA 19%</TaxClass>
+        <Quantity>0</Quantity>
+        <ProductData>
+            <ConditionType>Nuevo</ConditionType>
+            <PackageHeight>1</PackageHeight>
+            <PackageWidth>1</PackageWidth>
+            <PackageLength>1</PackageLength>
+            <PackageWeight>1</PackageWeight>
+            <ShortDescription>Short description &amp; ampersand</ShortDescription>
+            <MultiOption>Option one,Option two</MultiOption>
+        </ProductData>
+    </Product>
+</Products>

@@ -1,0 +1,13 @@
+{
+  "firstName": "%s",
+  "lastName": "%s",
+  "phone": "%d",
+  "phone2": null,
+  "address": "%s",
+  "customerEmail": "%s",
+  "city": "%s",
+  "ward": "%s",
+  "region": "%s",
+  "postCode": "%s",
+  "country": "%s"
+}

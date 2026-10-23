@@ -9,7 +9,6 @@ use Linio\SellerCenter\Application\Parameters;
 use Linio\SellerCenter\Application\Security\Signature;
 use Linio\SellerCenter\Exception\InvalidApiKeyException;
 use Linio\SellerCenter\LinioTestCase;
-use ReflectionClass;
 
 class SignatureTest extends LinioTestCase
 {
@@ -20,9 +19,9 @@ class SignatureTest extends LinioTestCase
 
         $parameters = Parameters::fromBasics($configuration->getUser(), $configuration->getVersion());
 
-        $signature = Signature::generate($parameters, $configuration->getKey());
+        $signature = Signature::generate($parameters->all(), $configuration->getKey());
 
-        $rs = new ReflectionClass(Signature::class);
+        $rs = new \ReflectionClass(Signature::class);
         $property = $rs->getProperty('signature');
         $property->setAccessible(true);
 
@@ -39,9 +38,9 @@ class SignatureTest extends LinioTestCase
         $parameters = Parameters::fromBasics($configuration->getUser(), $configuration->getVersion());
         $parameters->set(['integer-parameter' => 1]);
 
-        $signature = Signature::generate($parameters, $configuration->getKey());
+        $signature = Signature::generate($parameters->all(), $configuration->getKey());
 
-        $rs = new ReflectionClass(Signature::class);
+        $rs = new \ReflectionClass(Signature::class);
         $property = $rs->getProperty('signature');
         $property->setAccessible(true);
 
@@ -55,6 +54,6 @@ class SignatureTest extends LinioTestCase
         $this->expectException(InvalidApiKeyException::class);
         $this->expectExceptionMessage('The API KEY cannot be null.');
         $parameters = new Parameters();
-        Signature::generate($parameters, '');
+        Signature::generate($parameters->all(), '');
     }
 }

@@ -8,17 +8,41 @@ use Linio\SellerCenter\Exception\InvalidDomainException;
 use Linio\SellerCenter\Model\Brand\Brand;
 use Linio\SellerCenter\Model\Category\Categories;
 use Linio\SellerCenter\Model\Category\Category;
+use Linio\SellerCenter\Model\Product\Contract\ProductInterface;
+use Linio\SellerCenter\Model\Product\GlobalProduct;
 use Linio\SellerCenter\Model\Product\Product;
-use SimpleXMLElement;
 
 class ProductTransformer
 {
-    public static function asXml(SimpleXMLElement &$xml, Product $product): void
+    public static function asXml(\SimpleXMLElement &$xml, ProductInterface $product): void
     {
         $body = $xml->addChild('Product');
-        self::addAttributes($body, $product->all());
+
+        $overrideStatus = self::getOverrideStatus($product);
+        self::addAttributes($body, $product->all(), $overrideStatus);
 
         $productDataAttributes = $product->getProductData()->all();
+
+        if ($product instanceof GlobalProduct) {
+            $businessUnits = $product->getBusinessUnits();
+
+            if (!empty($businessUnits)) {
+                $businessUnitsElement = $body->addChild('BusinessUnits');
+                foreach ($businessUnits->all() as $aBusinessUnit) {
+                    $businessUnitElement = $businessUnitsElement->addChild('BusinessUnit');
+                    $businessUnitAttributes = $aBusinessUnit->getAllAttributes();
+                    foreach ($businessUnitAttributes as $attributeKey => $attributeValue) {
+                        $businessUnitElement->addChild((string) $attributeKey, htmlspecialchars((string) $attributeValue));
+                    }
+                }
+            }
+
+            $variationAttributes = $product->getVariationAttributes() ? $product->getVariationAttributes()->all() : null;
+
+            if (!empty($variationAttributes)) {
+                self::addVariationAttributes($body, $variationAttributes);
+            }
+        }
 
         if (empty($productDataAttributes)) {
             return;
@@ -35,9 +59,65 @@ class ProductTransformer
         }
     }
 
-    public static function addAttributes(SimpleXMLElement $xml, array $attributes): void
+    public static function sanitizeHtmlAndWrapInCData(string $html): string
+    {
+        $cleanText = self::removeUnwantedHtmlTags($html);
+
+        return self::wrapInCData($cleanText);
+    }
+
+    public static function removeUnwantedHtmlTags(string $html): string
+    {
+        $decodedText = html_entity_decode($html);
+
+        $regexFilters = [
+            'doctype' => '/<!DOCTYPE html>/i',
+            'meta' => '/<meta\b[^>]*\/?>/',
+            'link' => '/<link\b[^>]*\/?>/',
+            'head' => '/<head\b[^>]*>.*?<\/head>/i',
+            'style' => '/<style\b[^>]*>.*?<\/style>/i',
+            'script' => '/<script\b[^>]*>.*?<\/script>/i',
+            'iframe' => '/<iframe\b[^>]*>.*?<\/iframe>/i',
+            'section' => '/<\/?section\b[^>]*>/i',
+            'a' => '/<a\b[^>]*>.*?<\/a>/i',
+        ];
+
+        return trim((string) preg_replace($regexFilters, '', $decodedText));
+    }
+
+    public static function wrapInCData(string $content): string
+    {
+        if ($content === '') {
+            return '';
+        }
+
+        return sprintf('<![CDATA[%s]]>', $content);
+    }
+
+    /**
+     * @param mixed[] $attributes
+     * @param string[] $overrideAttributes
+     */
+    public static function addAttributes(\SimpleXMLElement $xml, array $attributes, array $overrideAttributes): void
     {
         foreach ($attributes as $attributeName => $attributeValue) {
+            if (strtolower((string) $attributeName) === 'description') {
+                if ($attributeValue === null || $attributeValue === '') {
+                    continue;
+                }
+                $value = self::sanitizeHtmlAndWrapInCData((string) $attributeValue);
+                self::addChildWithCData($xml, (string) $attributeName, $value);
+                continue;
+            }
+
+            if (in_array($attributeName, $overrideAttributes)) {
+                $xml->addChild(
+                    $attributeName,
+                    $attributeValue ? htmlspecialchars((string) $attributeValue) : ''
+                );
+                continue;
+            }
+
             if ($attributeValue === null) {
                 continue;
             }
@@ -53,6 +133,51 @@ class ProductTransformer
         }
     }
 
+    private static function addChildWithCData(\SimpleXMLElement $xml, string $name, string $value): void
+    {
+        $simpleXmlChild = $xml->addChild($name);
+        $domNode = dom_import_simplexml($simpleXmlChild);
+
+        $cleanValue = preg_replace('/^<!\[CDATA\[(.*)\]\]>$/s', '$1', $value) ?? $value;
+        $cleanValue = str_replace(']]>', ']]]]><![CDATA[>', $cleanValue);
+
+        if ($domNode->ownerDocument === null) {
+            throw new \RuntimeException('Unable to create CDATA without an XML document.');
+        }
+
+        $domNode->appendChild($domNode->ownerDocument->createCDATASection($cleanValue));
+    }
+
+    /**
+     * @param mixed[] $variationAttributes
+     */
+    public static function addVariationAttributes(\SimpleXMLElement $xml, array $variationAttributes): void
+    {
+        foreach ($variationAttributes as $attributeName => $attributeValue) {
+            if ($attributeValue === null) {
+                continue;
+            }
+
+            $encodedValue = htmlspecialchars($attributeValue);
+            $xml->addChild($attributeName, $encodedValue);
+        }
+    }
+
+    /**
+     * @return string[]
+     */
+    public static function getOverrideStatus(ProductInterface $product): array
+    {
+        if ($product instanceof Product) {
+            return $product->getOverrideAttributes();
+        }
+
+        return [];
+    }
+
+    /**
+     * @phpstan-ignore-next-line
+     */
     public static function attributeAsString($attribute): ?string
     {
         if (is_object($attribute)) {
@@ -62,6 +187,9 @@ class ProductTransformer
         return (string) $attribute;
     }
 
+    /**
+     * @phpstan-ignore-next-line
+     */
     public static function attributeObjectAsString($attribute): ?string
     {
         $className = get_class($attribute);
@@ -81,7 +209,7 @@ class ProductTransformer
                 return $attribute->getName();
         }
 
-        throw new InvalidDomainException($className);
+        throw new InvalidDomainException((string) $className);
     }
 
     /**
@@ -98,13 +226,13 @@ class ProductTransformer
         return implode(',', $categoriesIds);
     }
 
-    public static function skuAsXml(SimpleXMLElement &$xml, Product $product): void
+    public static function skuAsXml(\SimpleXMLElement &$xml, ProductInterface $product): void
     {
         $body = $xml->addChild('Product');
         $body->addChild('SellerSku', htmlspecialchars($product->getSellerSku()));
     }
 
-    public static function imagesAsXml(SimpleXMLElement $xml, Product $product): void
+    public static function imagesAsXml(\SimpleXMLElement $xml, ProductInterface $product): void
     {
         $body = $xml->addChild('ProductImage');
 

@@ -6,11 +6,10 @@ namespace Linio\SellerCenter\Factory\Xml\Brand;
 
 use Linio\SellerCenter\Exception\InvalidXmlStructureException;
 use Linio\SellerCenter\Model\Brand\Brand;
-use SimpleXMLElement;
 
 class BrandFactory
 {
-    public static function make(SimpleXMLElement $element): Brand
+    public static function make(\SimpleXMLElement $element): Brand
     {
         if (!property_exists($element, 'BrandId')) {
             throw new InvalidXmlStructureException('Brand', 'BrandId');

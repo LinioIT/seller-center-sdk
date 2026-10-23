@@ -4,10 +4,9 @@ declare(strict_types=1);
 
 namespace Linio\SellerCenter\Model\Order;
 
-use JsonSerializable;
 use Linio\SellerCenter\Contract\CollectionInterface;
 
-class OrderItems implements CollectionInterface, JsonSerializable
+class OrderItems implements CollectionInterface, \JsonSerializable
 {
     /**
      * @var OrderItem[]
@@ -23,6 +22,9 @@ class OrderItems implements CollectionInterface, JsonSerializable
         return $this->collection[$orderItemId];
     }
 
+    /**
+     * @return OrderItem[]
+     */
     public function all(): array
     {
         return $this->collection;
@@ -33,6 +35,9 @@ class OrderItems implements CollectionInterface, JsonSerializable
         $this->collection[$orderItem->getOrderItemId()] = $orderItem;
     }
 
+    /**
+     * @return mixed[]
+     */
     public function jsonSerialize(): array
     {
         return array_values($this->collection);

@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<SuccessResponse>
+  <Head>
+    <RequestId/>
+    <RequestAction>SetImei</RequestAction>
+    <ResponseType/>
+    <Timestamp>2022-07-20T06:00:27-0500</Timestamp>
+  </Head>
+  <Body>
+    <OrderItem>
+      <OrderItemId>3631813</OrderItemId>
+      <Imei>1231321321321</Imei>
+      <Status>success</Status>
+    </OrderItem>
+    <OrderItem>
+      <OrderItemId>3631814</OrderItemId>
+      <Imei/>
+      <Status>fail</Status>
+      <Message>Denied. The order has already a package assigned.</Message>
+    </OrderItem>
+  </Body>
+</SuccessResponse>

@@ -1,4 +1,3 @@
-version: '3.7'
 services:
   php-cs-fixer:
     image: linio/seller-center-sdk:latest
@@ -21,6 +20,7 @@ services:
     init: true
     volumes:
       - .:/application
+      - ./docker/php.ini:/usr/local/etc/php/conf.d/php.ini
     entrypoint: vendor/bin/phpunit
 
   php:

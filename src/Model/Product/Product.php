@@ -4,80 +4,23 @@ declare(strict_types=1);
 
 namespace Linio\SellerCenter\Model\Product;
 
-use DateTimeInterface;
-use JsonSerializable;
 use Linio\SellerCenter\Contract\ProductStatus;
-use Linio\SellerCenter\Exception\EmptyArgumentException;
 use Linio\SellerCenter\Exception\InvalidDomainException;
 use Linio\SellerCenter\Model\Brand\Brand;
 use Linio\SellerCenter\Model\Category\Categories;
 use Linio\SellerCenter\Model\Category\Category;
-use stdClass;
+use Linio\SellerCenter\Model\Product\Contract\ProductInterface;
+use Linio\SellerCenter\Model\Product\Contract\VariationProductInterface;
 
-class Product implements JsonSerializable
+class Product extends BaseProduct implements \JsonSerializable, ProductInterface, VariationProductInterface, ProductStatus
 {
-    /**
-     * @var string
-     */
-    protected $sellerSku;
-
-    /**
-     * @var string|null
-     */
-    protected $newSellerSku = null;
-
-    /**
-     * @var string|null
-     */
-    protected $shopSku;
-
-    /**
-     * @var string|null
-     */
-    protected $productSin;
-
-    /**
-     * @var string|null
-     */
-    protected $parentSku;
-
     /**
      * @var string
      */
     protected $status;
 
     /**
-     * @var string
-     */
-    protected $name;
-
-    /**
-     * @var string
-     */
-    protected $variation;
-
-    /**
-     * @var Category
-     */
-    protected $primaryCategory;
-
-    /**
-     * @var Categories
-     */
-    protected $categories;
-
-    /**
-     * @var string
-     */
-    protected $description;
-
-    /**
-     * @var Brand
-     */
-    protected $brand;
-
-    /**
-     * @var float
+     * @var float|null
      */
     protected $price;
 
@@ -87,29 +30,14 @@ class Product implements JsonSerializable
     protected $salePrice;
 
     /**
-     * @var DateTimeInterface|null
+     * @var \DateTimeInterface|null
      */
     protected $saleStartDate;
 
     /**
-     * @var DateTimeInterface|null
+     * @var \DateTimeInterface|null
      */
     protected $saleEndDate;
-
-    /**
-     * @var string
-     */
-    protected $productId;
-
-    /**
-     * @var string|null
-     */
-    protected $taxClass;
-
-    /**
-     * @var ProductData
-     */
-    protected $productData;
 
     /**
      * @var int
@@ -117,60 +45,45 @@ class Product implements JsonSerializable
     protected $quantity;
 
     /**
-     * @var int
+     * @var int|null
      */
     protected $available;
 
     /**
-     * @var Image
+     * @var string[]
      */
-    protected $mainImage;
+    protected $overrideAttributes;
 
-    /**
-     * @var Images
-     */
-    protected $images;
-
-    private function __construct()
+    public function __construct()
     {
         $this->productData = new ProductData();
         $this->images = new Images();
+        $this->overrideAttributes = [];
     }
 
     /**
+     * @param string[] $overrideAttributes
+     *
      * @return static
      */
     public static function fromBasicData(
         string $sellerSku,
         string $name,
-        string $variation,
+        ?string $variation,
         Category $primaryCategory,
         string $description,
         Brand $brand,
-        float $price,
+        ?float $price,
         string $productId,
         ?string $taxClass,
         ProductData $productData,
-        ?Images $images = null
+        ?Images $images = null,
+        ?array $overrideAttributes = [],
     ): self {
-        if (empty($sellerSku)) {
-            throw new EmptyArgumentException('SellerSku');
-        }
-
-        if (empty($name)) {
-            throw new EmptyArgumentException('Name');
-        }
-
-        if (empty($description)) {
-            throw new EmptyArgumentException('Description');
-        }
+        self::ValidateArguments($sellerSku, $name, $description);
 
         if ($price <= 0) {
             throw new InvalidDomainException('Price');
-        }
-
-        if (empty($productId)) {
-            throw new EmptyArgumentException('ProductId');
         }
 
         $product = new static();
@@ -196,81 +109,12 @@ class Product implements JsonSerializable
             $product->attachImages($images);
         }
 
-        return $product;
-    }
-
-    /**
-     * @return static
-     */
-    public static function fromSku(string $sku): self
-    {
-        $product = new static();
-        $product->setSellerSku($sku);
+        $product->setOverrideAttributes($overrideAttributes);
 
         return $product;
     }
 
-    public function getSellerSku(): string
-    {
-        return $this->sellerSku;
-    }
-
-    public function getNewSellerSku(): ?string
-    {
-        return $this->newSellerSku;
-    }
-
-    public function getShopSku(): ?string
-    {
-        return $this->shopSku;
-    }
-
-    public function getProductSin(): ?string
-    {
-        return $this->productSin;
-    }
-
-    public function getParentSku(): ?string
-    {
-        return $this->parentSku;
-    }
-
-    public function getStatus(): string
-    {
-        return $this->status;
-    }
-
-    public function getName(): string
-    {
-        return $this->name;
-    }
-
-    public function getVariation(): string
-    {
-        return $this->variation;
-    }
-
-    public function getPrimaryCategory(): Category
-    {
-        return $this->primaryCategory;
-    }
-
-    public function getCategories(): Categories
-    {
-        return $this->categories;
-    }
-
-    public function getDescription(): string
-    {
-        return $this->description;
-    }
-
-    public function getBrand(): Brand
-    {
-        return $this->brand;
-    }
-
-    public function getPrice(): float
+    public function getPrice(): ?float
     {
         return $this->price;
     }
@@ -280,7 +124,7 @@ class Product implements JsonSerializable
         return $this->salePrice;
     }
 
-    public function getSaleStartDate(): ?DateTimeInterface
+    public function getSaleStartDate(): ?\DateTimeInterface
     {
         return $this->saleStartDate;
     }
@@ -294,7 +138,7 @@ class Product implements JsonSerializable
         return $this->saleStartDate->format('Y-m-d H:i:s');
     }
 
-    public function getSaleEndDate(): ?DateTimeInterface
+    public function getSaleEndDate(): ?\DateTimeInterface
     {
         return $this->saleEndDate;
     }
@@ -308,64 +152,19 @@ class Product implements JsonSerializable
         return $this->saleEndDate->format('Y-m-d H:i:s');
     }
 
-    public function getProductId(): string
-    {
-        return $this->productId;
-    }
-
-    public function getTaxClass(): ?string
-    {
-        return $this->taxClass;
-    }
-
-    public function getProductData(): ProductData
-    {
-        return $this->productData;
-    }
-
     public function getQuantity(): int
     {
         return $this->quantity;
     }
 
-    public function getAvailable(): int
+    public function getAvailable(): ?int
     {
         return $this->available;
     }
 
-    public function getMainImage(): Image
+    public function getStatus(): string
     {
-        return $this->mainImage;
-    }
-
-    public function getImages(): Images
-    {
-        return $this->images;
-    }
-
-    public function setSellerSku(string $sellerSku): void
-    {
-        $this->sellerSku = $sellerSku;
-    }
-
-    public function setNewSellerSku(string $newSellerSku): void
-    {
-        $this->newSellerSku = $newSellerSku;
-    }
-
-    public function setParentSku(string $parentSku): void
-    {
-        $this->parentSku = $parentSku;
-    }
-
-    public function setShopSku(string $sku): void
-    {
-        $this->shopSku = $sku;
-    }
-
-    public function setProductSin(string $productSin): void
-    {
-        $this->productSin = $productSin;
+        return $this->status;
     }
 
     public function setStatus(string $status): void
@@ -375,73 +174,28 @@ class Product implements JsonSerializable
         }
     }
 
-    public function setName(string $name): void
-    {
-        $this->name = $name;
-    }
-
-    public function setVariation(string $variation): void
-    {
-        $this->variation = $variation;
-    }
-
-    public function setPrimaryCategory(Category $primaryCategory): void
-    {
-        $this->primaryCategory = $primaryCategory;
-    }
-
-    public function setCategories(Categories $categories): void
-    {
-        $this->categories = $categories;
-    }
-
-    public function setDescription(string $description): void
-    {
-        $this->description = $description;
-    }
-
-    public function setBrand(Brand $brand): void
-    {
-        $this->brand = $brand;
-    }
-
-    public function setPrice(float $price): void
+    public function setPrice(?float $price): void
     {
         if ($price > 0) {
             $this->price = $price;
         }
     }
 
-    public function setSalePrice(float $salePrice): void
+    public function setSalePrice(?float $salePrice): void
     {
         if ($salePrice > 0 && $salePrice < $this->price) {
             $this->salePrice = $salePrice;
         }
     }
 
-    public function setSaleStartDate(DateTimeInterface $saleStartDate): void
+    public function setSaleStartDate(?\DateTimeInterface $saleStartDate): void
     {
         $this->saleStartDate = $saleStartDate;
     }
 
-    public function setSaleEndDate(DateTimeInterface $saleEndDate): void
+    public function setSaleEndDate(?\DateTimeInterface $saleEndDate): void
     {
         $this->saleEndDate = $saleEndDate;
-    }
-
-    public function setProductId(string $productId): void
-    {
-        $this->productId = $productId;
-    }
-
-    public function setTaxClass(?string $taxClass): void
-    {
-        $this->taxClass = $taxClass;
-    }
-
-    public function setProductData(ProductData $productData): void
-    {
-        $this->productData = $productData;
     }
 
     public function setQuantity(int $quantity): void
@@ -451,21 +205,27 @@ class Product implements JsonSerializable
         }
     }
 
-    public function setAvailable(int $available): void
+    public function setAvailable(?int $available): void
     {
         if ($available <= $this->quantity && $available >= 0) {
             $this->available = $available;
         }
     }
 
-    public function setMainImage(Image $mainImage): void
+    /**
+     * @param string[] $overrideAttributes
+     */
+    public function setOverrideAttributes(array $overrideAttributes): void
     {
-        $this->mainImage = $mainImage;
+        $this->overrideAttributes = $overrideAttributes;
     }
 
-    public function attachImages(Images $images): void
+    /**
+     * @return string[]
+     */
+    public function getOverrideAttributes(): array
     {
-        $this->images = $images;
+        return $this->overrideAttributes;
     }
 
     /**
@@ -494,32 +254,16 @@ class Product implements JsonSerializable
         ];
     }
 
-    public function jsonSerialize(): stdClass
+    public function jsonSerialize(): \stdClass
     {
-        $serialized = new stdClass();
-        $serialized->sellerSku = $this->sellerSku;
-        $serialized->newSellerSku = $this->newSellerSku;
-        $serialized->shopSku = $this->shopSku;
-        $serialized->productSin = $this->productSin;
-        $serialized->parentSku = $this->parentSku;
+        $serialized = parent::jsonSerialize();
         $serialized->status = $this->status;
-        $serialized->name = $this->name;
-        $serialized->variation = $this->variation;
-        $serialized->primaryCategory = $this->primaryCategory;
-        $serialized->categories = $this->categories;
-        $serialized->description = $this->description;
-        $serialized->brand = $this->brand;
         $serialized->price = $this->price;
         $serialized->salePrice = $this->salePrice;
         $serialized->saleStartDate = $this->saleStartDate;
         $serialized->saleEndDate = $this->saleEndDate;
-        $serialized->productId = $this->productId;
-        $serialized->taxClass = $this->taxClass;
-        $serialized->productData = $this->productData;
         $serialized->quantity = $this->quantity;
         $serialized->available = $this->available;
-        $serialized->mainImage = $this->mainImage;
-        $serialized->images = $this->images;
 
         return $serialized;
     }

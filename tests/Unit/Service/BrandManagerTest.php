@@ -10,11 +10,26 @@ use Linio\SellerCenter\Contract\ClientInterface;
 use Linio\SellerCenter\LinioTestCase;
 use Linio\SellerCenter\Service\BrandManager;
 use Psr\Log\Test\TestLogger;
-use ReflectionClass;
 
 class BrandManagerTest extends LinioTestCase
 {
-    public function testItReturnsTheTheLoggerWhenIsSet(): void
+    public function testReturnsABrandManager(): void
+    {
+        $configuration = $this->prophesize(Configuration::class);
+        $client = $this->prophesize(ClientInterface::class);
+        $parameters = $this->prophesize(Parameters::class);
+        $logger = $this->prophesize(TestLogger::class);
+
+        $brandManager = new BrandManager(
+            $configuration->reveal(),
+            $client->reveal(),
+            $parameters->reveal(),
+            $logger->reveal()
+        );
+        $this->assertInstanceOf(BrandManager::class, $brandManager);
+    }
+
+    public function testItReturnsTheLoggerWhenIsSet(): void
     {
         $configuration = $this->prophesize(Configuration::class);
         $client = $this->prophesize(ClientInterface::class);
@@ -23,7 +38,7 @@ class BrandManagerTest extends LinioTestCase
 
         $brandManager = new BrandManager($configuration->reveal(), $client->reveal(), $parameters->reveal(), $logger->reveal());
 
-        $reflectionClass = new ReflectionClass(BrandManager::class);
+        $reflectionClass = new \ReflectionClass(BrandManager::class);
         $property = $reflectionClass->getProperty('logger');
         $property->setAccessible(true);
 

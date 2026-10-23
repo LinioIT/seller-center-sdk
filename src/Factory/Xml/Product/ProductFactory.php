@@ -4,58 +4,32 @@ declare(strict_types=1);
 
 namespace Linio\SellerCenter\Factory\Xml\Product;
 
-use DateTimeImmutable;
-use Linio\SellerCenter\Exception\InvalidXmlStructureException;
 use Linio\SellerCenter\Factory\Xml\Category\CategoriesFactory;
 use Linio\SellerCenter\Model\Brand\Brand;
 use Linio\SellerCenter\Model\Category\Category;
 use Linio\SellerCenter\Model\Product\Image;
 use Linio\SellerCenter\Model\Product\Product;
-use SimpleXMLElement;
+use Linio\SellerCenter\Validator\XmlStructureValidator;
 
 class ProductFactory
 {
-    public static function make(SimpleXMLElement $element): Product
+    private const XML_MODEL = 'Product';
+    private const REQUIRED_FIELDS = [
+        'SellerSku',
+        'Name',
+        'Variation',
+        'PrimaryCategory',
+        'Description',
+        'Brand',
+        'ProductId',
+        'TaxClass',
+        'ProductData',
+        'Price',
+    ];
+
+    public static function make(\SimpleXMLElement $element): Product
     {
-        if (!property_exists($element, 'SellerSku')) {
-            throw new InvalidXmlStructureException('Product', 'SellerSku');
-        }
-
-        if (!property_exists($element, 'Name')) {
-            throw new InvalidXmlStructureException('Product', 'Name');
-        }
-
-        if (!property_exists($element, 'Variation')) {
-            throw new InvalidXmlStructureException('Product', 'Variation');
-        }
-
-        if (!property_exists($element, 'PrimaryCategory')) {
-            throw new InvalidXmlStructureException('Product', 'PrimaryCategory');
-        }
-
-        if (!property_exists($element, 'Description')) {
-            throw new InvalidXmlStructureException('Product', 'Description');
-        }
-
-        if (!property_exists($element, 'Brand')) {
-            throw new InvalidXmlStructureException('Product', 'Brand');
-        }
-
-        if (!property_exists($element, 'Price')) {
-            throw new InvalidXmlStructureException('Product', 'Price');
-        }
-
-        if (!property_exists($element, 'ProductId')) {
-            throw new InvalidXmlStructureException('Product', 'ProductId');
-        }
-
-        if (!property_exists($element, 'TaxClass')) {
-            throw new InvalidXmlStructureException('Product', 'TaxClass');
-        }
-
-        if (!property_exists($element, 'ProductData')) {
-            throw new InvalidXmlStructureException('Product', 'ProductData');
-        }
+        XmlStructureValidator::validateStructure($element, self::XML_MODEL, self::REQUIRED_FIELDS);
 
         $brand = Brand::fromName((string) $element->Brand);
 
@@ -102,7 +76,7 @@ class ProductFactory
         }
 
         if (!empty($element->SaleStartDate)) {
-            $saleStartDate = DateTimeImmutable::createFromFormat('Y-m-d H:i:s', (string) $element->SaleStartDate);
+            $saleStartDate = \DateTimeImmutable::createFromFormat('Y-m-d H:i:s', (string) $element->SaleStartDate);
 
             if ($saleStartDate) {
                 $product->setSaleStartDate($saleStartDate);
@@ -110,7 +84,7 @@ class ProductFactory
         }
 
         if (!empty($element->SaleEndDate)) {
-            $saleEndDate = DateTimeImmutable::createFromFormat('Y-m-d H:i:s', (string) $element->SaleEndDate);
+            $saleEndDate = \DateTimeImmutable::createFromFormat('Y-m-d H:i:s', (string) $element->SaleEndDate);
 
             if ($saleEndDate) {
                 $product->setSaleEndDate($saleEndDate);
@@ -133,6 +107,10 @@ class ProductFactory
         if (!empty($element->MainImage)) {
             $image = new Image((string) $element->MainImage);
             $product->setMainImage($image);
+        }
+
+        if (!empty($element->Url)) {
+            $product->setUrl((string) $element->Url);
         }
 
         return $product;

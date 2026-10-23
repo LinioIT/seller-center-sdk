@@ -1,0 +1,17 @@
+{
+    "message": "Invoice Uploaded Successfully",
+    "data": {
+      "invoiceNumber": 0,
+      "invoiceDate": "string",
+      "sellerOrderNumber": "string",
+      "invoiceDocument": "string",
+      "invoiceDocumentFormat": "pdf",
+      "invoiceType": "BOLETA",
+      "operatorCode": "FACL",
+      "invoiceLines": [
+        {
+          "sellerOrderLineId": "string"
+        }
+      ]
+    }
+  }

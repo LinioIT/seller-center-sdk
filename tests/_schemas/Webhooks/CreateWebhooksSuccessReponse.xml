@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<SuccessResponse>
+    <Head>
+        <RequestId/>
+        <RequestAction>CreateWebhook</RequestAction>
+        <ResponseType>Webhook</ResponseType>
+        <Timestamp>2022-12-29T08:52:26-0300</Timestamp>
+    </Head>
+    <Body>
+        <Webhook>
+            <WebhookId>aa7e85d6-f3ee-4138-bc43-469a69b74bee</WebhookId>
+            <CreatedAt>2022-12-29T08:52:26-0300</CreatedAt>
+        </Webhook>
+    </Body>
+</SuccessResponse>

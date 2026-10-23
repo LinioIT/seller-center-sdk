@@ -4,31 +4,48 @@ declare(strict_types=1);
 
 namespace Linio\SellerCenter;
 
-use DateTimeImmutable;
-use Linio\SellerCenter\Application\Configuration;
 use Linio\SellerCenter\Exception\ErrorResponseException;
 use Linio\SellerCenter\Exception\InvalidXmlStructureException;
 use Linio\SellerCenter\Model\Feed\Feed;
 use Linio\SellerCenter\Model\Feed\FeedError;
 use Linio\SellerCenter\Model\Feed\FeedErrors;
 use Linio\SellerCenter\Response\FeedResponse;
-use stdClass;
+use Prophecy\Argument;
+use Prophecy\Prophecy\ObjectProphecy;
+use Psr\Log\LoggerInterface;
 
 class FeedManagerTest extends LinioTestCase
 {
     use ClientHelper;
 
     /**
+     * @var ObjectProphecy
+     */
+    protected $logger;
+
+    public function prepareLogTest(bool $debug): void
+    {
+        $this->logger = $this->prophesize(LoggerInterface::class);
+
+        $this->logger->debug(
+            Argument::type('string'),
+            Argument::type('array')
+        )->shouldBeCalled();
+
+        if (!$debug) {
+            $this->logger->debug(
+                Argument::type('string'),
+                Argument::type('array')
+            )->shouldNotBeCalled();
+        }
+    }
+
+    /**
      * @dataProvider Linio\SellerCenter\FeedManagerProvider::feedProvider
      */
     public function testItReturnsFeedCollectionFromValidXml(string $xml, $expectedFeeds, $size): void
     {
-        $env = $this->getParameters();
-        $configuration = new Configuration($env['key'], $env['username'], $env['endpoint'], $env['version']);
-
-        $client = $this->createClientWithResponse($xml);
-
-        $sdkClient = new SellerCenterSdk($configuration, $client);
+        $sdkClient = $this->getSdkClient($xml);
 
         $feeds = $sdkClient->feeds()->getFeedList();
 
@@ -43,19 +60,14 @@ class FeedManagerTest extends LinioTestCase
      */
     public function testItReturnsFeedCollectionFromValidXmlOnFeedOffsetList(string $xml, $expectedFeeds, $size): void
     {
-        $env = $this->getParameters();
-        $configuration = new Configuration($env['key'], $env['username'], $env['endpoint'], $env['version']);
-
-        $client = $this->createClientWithResponse($xml);
-
-        $sdkClient = new SellerCenterSdk($configuration, $client);
+        $sdkClient = $this->getSdkClient($xml);
 
         $feeds = $sdkClient->feeds()->getFeedOffsetList(
             1,
             1,
             'processing',
-            new DateTimeImmutable(),
-            new DateTimeImmutable()
+            new \DateTimeImmutable(),
+            new \DateTimeImmutable()
         );
 
         $this->assertContainsOnlyInstancesOf(Feed::class, $feeds);
@@ -66,13 +78,8 @@ class FeedManagerTest extends LinioTestCase
 
     public function testItCancelsAFeedById(): void
     {
-        $env = $this->getParameters();
-        $configuration = new Configuration($env['key'], $env['username'], $env['endpoint'], $env['version']);
-
         $xml = $this->getSchema('Feed/FeedCancel.xml');
-        $client = $this->createClientWithResponse($xml);
-
-        $sdkClient = new SellerCenterSdk($configuration, $client);
+        $sdkClient = $this->getSdkClient($xml);
 
         $feedResponse = $sdkClient->feeds()->feedCancel('c685b76e-180d-484c-b0ef-7e9aee9e3f98');
 
@@ -95,11 +102,7 @@ class FeedManagerTest extends LinioTestCase
           <Body/>
         </ErrorResponse>';
 
-        $env = $this->getParameters();
-        $configuration = new Configuration($env['key'], $env['username'], $env['endpoint'], $env['version']);
-        $client = $this->createClientWithResponse($xml, 400);
-
-        $sdkClient = new SellerCenterSdk($configuration, $client);
+        $sdkClient = $this->getSdkClient($xml, null, 400);
 
         $sdkClient->feeds()->getFeedList();
     }
@@ -110,11 +113,8 @@ class FeedManagerTest extends LinioTestCase
     public function testItReturnsFeedInstanceFromValidXml($xml): void
     {
         $sxml = simplexml_load_string($xml);
-        $env = $this->getParameters();
-        $configuration = new Configuration($env['key'], $env['username'], $env['endpoint'], $env['version']);
-        $client = $this->createClientWithResponse($xml);
+        $sdkClient = $this->getSdkClient($xml);
 
-        $sdkClient = new SellerCenterSdk($configuration, $client);
         $feed = $sdkClient->feeds()->getFeedStatusById('aa19d73f-ab3a-48c1-b196-9a1f18e5280e');
 
         $this->assertInstanceOf(Feed::class, $feed);
@@ -122,8 +122,8 @@ class FeedManagerTest extends LinioTestCase
 
         $this->assertEquals('Finished', $feed->getStatus());
         $this->assertEquals((string) $sxml->Body->FeedDetail->Action, $feed->getAction());
-        $this->assertInstanceOf(DateTimeImmutable::class, $feed->getCreationDate());
-        $this->assertInstanceOf(DateTimeImmutable::class, $feed->getUpdatedDate());
+        $this->assertInstanceOf(\DateTimeImmutable::class, $feed->getCreationDate());
+        $this->assertInstanceOf(\DateTimeImmutable::class, $feed->getUpdatedDate());
         $this->assertEquals('1232', $feed->getTotalRecords());
         $this->assertEquals('1190', $feed->getProcessedRecords());
         $this->assertEquals('114', $feed->getFailedRecords());
@@ -137,11 +137,7 @@ class FeedManagerTest extends LinioTestCase
         $this->expectException(InvalidXmlStructureException::class);
 
         $xml = $this->getSchema('Feed/FeedInvalidStatusPending.xml');
-        $env = $this->getParameters();
-        $configuration = new Configuration($env['key'], $env['username'], $env['endpoint'], $env['version']);
-        $client = $this->createClientWithResponse($xml);
-
-        $sdkClient = new SellerCenterSdk($configuration, $client);
+        $sdkClient = $this->getSdkClient($xml);
 
         $sdkClient->feeds()->getFeedList();
     }
@@ -152,11 +148,7 @@ class FeedManagerTest extends LinioTestCase
 
         $xml = $this->getSchema('Feed/FeedInvalidWithFeedPending.xml');
 
-        $env = $this->getParameters();
-        $configuration = new Configuration($env['key'], $env['username'], $env['endpoint'], $env['version']);
-        $client = $this->createClientWithResponse($xml);
-
-        $sdkClient = new SellerCenterSdk($configuration, $client);
+        $sdkClient = $this->getSdkClient($xml);
 
         $sdkClient->feeds()->getFeedList();
     }
@@ -177,18 +169,14 @@ class FeedManagerTest extends LinioTestCase
              <Body/>
         </ErrorResponse>';
 
-        $env = $this->getParameters();
-        $configuration = new Configuration($env['key'], $env['username'], $env['endpoint'], $env['version']);
-        $client = $this->createClientWithResponse($xml, 400);
-
-        $sdkClient = new SellerCenterSdk($configuration, $client);
+        $sdkClient = $this->getSdkClient($xml, null, 400);
 
         $sdkClient->feeds()->getFeedStatusById('aa19d73f-ab3a-48c1-b196-9a1f18e5280e');
     }
 
     /**
      * @param Feed[] $feeds
-     * @param stdClass[] $expectedFeeds
+     * @param \stdClass[] $expectedFeeds
      */
     private function assertFeeds(array $feeds, array $expectedFeeds): void
     {
@@ -216,9 +204,6 @@ class FeedManagerTest extends LinioTestCase
 
     public function testItReturnsFeedCount(): void
     {
-        $env = $this->getParameters();
-        $configuration = new Configuration($env['key'], $env['username'], $env['endpoint'], $env['version']);
-
         $total = 5;
         $queued = 4;
         $processing = 3;
@@ -234,9 +219,7 @@ class FeedManagerTest extends LinioTestCase
             $canceled
         );
 
-        $client = $this->createClientWithResponse($xmlSchema);
-
-        $sdkClient = new SellerCenterSdk($configuration, $client);
+        $sdkClient = $this->getSdkClient($xmlSchema);
 
         $feedCount = $sdkClient->feeds()->getFeedCount();
 
@@ -245,5 +228,96 @@ class FeedManagerTest extends LinioTestCase
         $this->assertEquals($processing, $feedCount->getProcessing());
         $this->assertEquals($finished, $feedCount->getFinished());
         $this->assertEquals($canceled, $feedCount->getCanceled());
+    }
+
+    /**
+     * @dataProvider debugParameter
+     */
+    public function testItLogsDependingOnDebugParamWhenGetFeedStatusSuccessResponse(bool $debug): void
+    {
+        $body = $this->getSchema('Feed/FeedProductCreate.xml');
+        $this->prepareLogTest($debug);
+        $sdkClient = $this->getSdkClient($body, $this->logger);
+
+        $sdkClient->feeds()->getFeedStatusById(
+            '1adasd-qqweqw',
+            $debug
+        );
+    }
+
+    /**
+     * @dataProvider debugParameter
+     */
+    public function testItLogsDependingOnDebugParamWhenGetFeedListSuccessResponse(bool $debug): void
+    {
+        $body = $this->getSchema('Feed/FeedListSuccessResponse.xml');
+        $this->prepareLogTest($debug);
+        $sdkClient = $this->getSdkClient($body, $this->logger);
+
+        $sdkClient->feeds()->getFeedList($debug);
+    }
+
+    /**
+     * @dataProvider debugParameter
+     */
+    public function testItLogsDependingOnDebugParamWhenGetFeedOffsetListSuccessResponse(bool $debug): void
+    {
+        $body = $this->getSchema('Feed/FeedListSuccessResponse.xml');
+        $this->prepareLogTest($debug);
+        $sdkClient = $this->getSdkClient($body, $this->logger);
+
+        $this->logger->info(
+            Argument::type('string')
+        )->shouldBeCalled();
+
+        if (!$debug) {
+            $this->logger->info(
+                Argument::type('string')
+            )->shouldNotBeCalled();
+        }
+
+        $sdkClient->feeds()->getFeedOffsetList(
+            null,
+            null,
+            null,
+            null,
+            null,
+            $debug
+        );
+    }
+
+    /**
+     * @dataProvider debugParameter
+     */
+    public function testItLogsDependingOnDebugParamWhenGetFeedCountSuccessResponse(bool $debug): void
+    {
+        $body = $this->getSchema('Feed/FeedCount.xml');
+        $this->prepareLogTest($debug);
+        $sdkClient = $this->getSdkClient($body, $this->logger);
+
+        $sdkClient->feeds()->getFeedCount($debug);
+    }
+
+    /**
+     * @dataProvider debugParameter
+     */
+    public function testItLogsDependingOnDebugParamWhenFeedCancelSuccessResponse(bool $debug): void
+    {
+        $body = $this->getSchema('Feed/FeedCancel.xml');
+        $this->prepareLogTest($debug);
+        $sdkClient = $this->getSdkClient($body, $this->logger);
+
+        $sdkClient->feeds()->feedCancel(
+            'asd-123',
+            $debug
+        );
+    }
+
+    public static function debugParameter()
+    {
+        return [
+            [false],
+            [true],
+        ];
     }
 }

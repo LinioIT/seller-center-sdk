@@ -1,0 +1,30 @@
+<?php
+
+declare(strict_types=1);
+
+namespace Linio\SellerCenter\Model\Product\Contract;
+
+interface VariationProductInterface
+{
+    public function getAvailable(): ?int;
+
+    public function getPrice(): ?float;
+
+    public function getSalePrice(): ?float;
+
+    public function getSaleStartDate(): ?\DateTimeInterface;
+
+    public function getSaleStartDateString(): ?string;
+
+    public function getSaleEndDate(): ?\DateTimeInterface;
+
+    public function getSaleEndDateString(): ?string;
+
+    public function setPrice(?float $price): void;
+
+    public function setSalePrice(?float $specialPrice): void;
+
+    public function setSaleStartDate(?\DateTimeInterface $specialFromDate): void;
+
+    public function setSaleEndDate(?\DateTimeInterface $specialToDate): void;
+}

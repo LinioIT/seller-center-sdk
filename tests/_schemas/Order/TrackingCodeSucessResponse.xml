@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<SuccessResponse>
+     <Head>
+          <RequestId/>
+          <RequestAction>GetTrackingCode</RequestAction>
+          <ResponseType>TrackingCode</ResponseType>
+          <Timestamp>2022-02-09T09:46:09-0300</Timestamp>
+          <RequestParameters>
+               <packageId>10f9780b-380c-4625-8024-b166ece74453</packageId>
+               <shipping_provider_name>chilexpress</shipping_provider_name>
+          </RequestParameters>
+     </Head>
+     <Body>
+          <TrackingCode>
+               <DispatchId>10f9780b-380c-4625-8024-b166ece74453</DispatchId>
+               <TrackingNumber>MOCKED_be834cdb-551f-4d03-bea7-38d255c4b13b</TrackingNumber>
+          </TrackingCode>
+     </Body>
+</SuccessResponse>

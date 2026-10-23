@@ -4,115 +4,36 @@ declare(strict_types=1);
 
 namespace Linio\SellerCenter\Service;
 
-use Linio\Component\Util\Json;
-use Linio\SellerCenter\Application\Configuration;
-use Linio\SellerCenter\Application\Parameters;
-use Linio\SellerCenter\Application\Security\Signature;
-use Linio\SellerCenter\Contract\ClientInterface;
-use Linio\SellerCenter\Factory\RequestFactory;
 use Linio\SellerCenter\Factory\Xml\Document\DocumentFactory;
-use Linio\SellerCenter\Formatter\LogMessageFormatter;
+use Linio\SellerCenter\Helper\Json;
 use Linio\SellerCenter\Model\Document\Document;
-use Linio\SellerCenter\Response\HandleResponse;
-use Psr\Log\LoggerInterface;
 
-class DocumentManager
+class DocumentManager extends BaseManager
 {
     /**
-     * @var LoggerInterface
+     * @param mixed[] $orderItemIds
      */
-    protected $logger;
-
-    /**
-     * @var Configuration
-     */
-    protected $configuration;
-
-    /**
-     * @var ClientInterface
-     */
-    protected $client;
-
-    /**
-     * @var Parameters
-     */
-    protected $parameters;
-
-    public function __construct(
-        Configuration $configuration,
-        ClientInterface $client,
-        Parameters $parameters,
-        LoggerInterface $logger
-    ) {
-        $this->configuration = $configuration;
-        $this->client = $client;
-        $this->parameters = $parameters;
-        $this->logger = $logger;
-    }
-
-    public function getDocument(string $documentType, array $orderItemIds): Document
-    {
+    public function getDocument(
+        string $documentType,
+        array $orderItemIds,
+        bool $debug = true,
+    ): Document {
         $action = 'GetDocument';
 
-        $parameters = clone $this->parameters;
+        $parameters = $this->makeParametersForAction($action);
         $parameters->set([
-            'Action' => $action,
             'DocumentType' => $documentType,
             'OrderItemIds' => Json::encode($orderItemIds),
         ]);
-        $parameters->set([
-            'Signature' => Signature::generate($parameters, $this->configuration->getKey())->get(),
-        ]);
 
-        $requestId = uniqid((string) mt_rand());
-
-        $request = RequestFactory::make('GET', $this->configuration->getEndpoint(), [
-            'Request-ID' => $requestId,
-        ]);
-
-        $this->logger->debug(
-            LogMessageFormatter::fromAction($requestId, $action, LogMessageFormatter::TYPE_REQUEST),
-            [
-                'url' => (string) $request->getUri(),
-                'method' => $request->getMethod(),
-                'body' => (string) $request->getBody(),
-                'parameters' => $parameters->all(),
-            ]
+        $builtResponse = $this->executeAction(
+            $action,
+            $parameters,
+            null,
+            'GET',
+            $debug
         );
 
-        $response = $this->client->send($request, [
-            'query' => $parameters->all(),
-        ]);
-
-        $body = (string) $response->getBody();
-
-        $this->logger->debug(
-            LogMessageFormatter::fromAction($requestId, $action, LogMessageFormatter::TYPE_RESPONSE),
-            [
-                'body' => $body,
-            ]
-        );
-
-        $builtResponse = HandleResponse::parse($body);
-
-        $this->logger->debug(
-            LogMessageFormatter::fromAction($requestId, $action, LogMessageFormatter::TYPE_BUILT_RESPONSE),
-            [
-                'head' => $builtResponse->getHead()->asXML(),
-                'body' => $builtResponse->getBody()->asXML(),
-            ]
-        );
-
-        $documentResponse = DocumentFactory::make($builtResponse->getBody()->Documents->Document);
-
-        $this->logger->info(
-            sprintf(
-                '%d::%s::APIResponse::SellerCenterSdk: the document was recovered',
-                $request->getHeaderLine('Request-ID'),
-                $action
-            )
-        );
-
-        return $documentResponse;
+        return DocumentFactory::make($builtResponse->getBody()->Documents->Document);
     }
 }

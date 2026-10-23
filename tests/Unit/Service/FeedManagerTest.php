@@ -10,10 +10,25 @@ use Linio\SellerCenter\Contract\ClientInterface;
 use Linio\SellerCenter\LinioTestCase;
 use Linio\SellerCenter\Service\FeedManager;
 use Psr\Log\Test\TestLogger;
-use ReflectionClass;
 
 class FeedManagerTest extends LinioTestCase
 {
+    public function testReturnsAFeedManager(): void
+    {
+        $configuration = $this->prophesize(Configuration::class);
+        $client = $this->prophesize(ClientInterface::class);
+        $parameters = $this->prophesize(Parameters::class);
+        $logger = $this->prophesize(TestLogger::class);
+
+        $feedManager = new FeedManager(
+            $configuration->reveal(),
+            $client->reveal(),
+            $parameters->reveal(),
+            $logger->reveal()
+        );
+        $this->assertInstanceOf(FeedManager::class, $feedManager);
+    }
+
     public function testItReturnsTheLoggerWhenIsSet(): void
     {
         $configuration = $this->prophesize(Configuration::class);
@@ -23,7 +38,7 @@ class FeedManagerTest extends LinioTestCase
 
         $brandManager = new FeedManager($configuration->reveal(), $client->reveal(), $parameters->reveal(), $logger->reveal());
 
-        $reflectionClass = new ReflectionClass(FeedManager::class);
+        $reflectionClass = new \ReflectionClass(FeedManager::class);
         $property = $reflectionClass->getProperty('logger');
         $property->setAccessible(true);
 

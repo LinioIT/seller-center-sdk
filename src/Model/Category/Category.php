@@ -4,10 +4,7 @@ declare(strict_types=1);
 
 namespace Linio\SellerCenter\Model\Category;
 
-use JsonSerializable;
-use stdClass;
-
-class Category implements JsonSerializable
+class Category implements \JsonSerializable
 {
     /**
      * @var int|null
@@ -35,21 +32,21 @@ class Category implements JsonSerializable
     protected $children = [];
 
     /**
-     * @var array
+     * @var mixed[]
      */
     protected $attributes = [];
 
     /**
-     * @return static
+     * @param Category[] $children
      */
     public static function build(
         int $categoryId,
         string $name,
         string $globalIdentifier,
         ?int $attributeSetId = null,
-        array $children = null
+        ?array $children = null,
     ): self {
-        $category = new static();
+        $category = new self();
 
         $category->categoryId = $categoryId;
         $category->name = $name;
@@ -65,24 +62,18 @@ class Category implements JsonSerializable
         return $category;
     }
 
-    /**
-     * @return static
-     */
     public static function fromId(int $id): self
     {
-        $category = new static();
+        $category = new self();
 
         $category->categoryId = $id;
 
         return $category;
     }
 
-    /**
-     * @return static
-     */
     public static function fromName(string $name): self
     {
-        $category = new static();
+        $category = new self();
 
         $category->name = $name;
 
@@ -122,9 +113,9 @@ class Category implements JsonSerializable
         return $this->children;
     }
 
-    public function jsonSerialize(): stdClass
+    public function jsonSerialize(): \stdClass
     {
-        $serialized = new stdClass();
+        $serialized = new \stdClass();
         $serialized->categoryId = $this->categoryId;
         $serialized->name = $this->name;
         $serialized->globalIdentifier = $this->globalIdentifier;

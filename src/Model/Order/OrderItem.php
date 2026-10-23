@@ -4,11 +4,7 @@ declare(strict_types=1);
 
 namespace Linio\SellerCenter\Model\Order;
 
-use DateTimeImmutable;
-use JsonSerializable;
-use stdClass;
-
-class OrderItem implements JsonSerializable
+class OrderItem implements \JsonSerializable
 {
     /**
      * @var int
@@ -91,7 +87,7 @@ class OrderItem implements JsonSerializable
     protected $shippingServiceCost;
 
     /**
-     * @var int|null
+     * @var float|null
      */
     protected $voucherAmount;
 
@@ -161,12 +157,12 @@ class OrderItem implements JsonSerializable
     protected $packageId;
 
     /**
-     * @var DateTimeImmutable|null
+     * @var \DateTimeImmutable|null
      */
     protected $promisedShippingTime;
 
     /**
-     * @var array|null
+     * @var mixed[]|null
      */
     protected $extraAttributes;
 
@@ -176,12 +172,12 @@ class OrderItem implements JsonSerializable
     protected $shippingProviderType;
 
     /**
-     * @var DateTimeImmutable|null
+     * @var \DateTimeImmutable|null
      */
     protected $createdAt;
 
     /**
-     * @var DateTimeImmutable|null
+     * @var \DateTimeImmutable|null
      */
     protected $updatedAt;
 
@@ -191,9 +187,29 @@ class OrderItem implements JsonSerializable
     protected $returnStatus;
 
     /**
-     * @return static
+     * @var string|null
      */
-    public static function fromOrderItem(
+    protected $salesType;
+
+    /**
+     * @var string|null
+     */
+    protected $imei;
+
+    /**
+     * @var string|null
+     */
+    protected $message;
+
+    /**
+     * @var float|null
+     */
+    protected $shippingTax;
+
+    /**
+     * @param mixed[]|null $extraAttributes
+     */
+    final public static function fromOrderItem(
         int $orderItemId,
         int $shopId,
         int $orderId,
@@ -210,7 +226,7 @@ class OrderItem implements JsonSerializable
         ?float $codCollectableAmount,
         float $shippingAmount,
         float $shippingServiceCost,
-        int $voucherAmount,
+        float $voucherAmount,
         ?string $voucherCode,
         string $status,
         bool $isProcessable,
@@ -224,14 +240,17 @@ class OrderItem implements JsonSerializable
         ?int $purchaseOrderId,
         ?string $purchaseOrderNumber,
         ?string $packageId,
-        ?DateTimeImmutable $promisedShippingTime,
+        ?\DateTimeImmutable $promisedShippingTime,
         ?array $extraAttributes,
         string $shippingProviderType,
-        ?DateTimeImmutable $createdAt,
-        ?DateTimeImmutable $updatedAt,
-        ?string $returnStatus
+        ?\DateTimeImmutable $createdAt,
+        ?\DateTimeImmutable $updatedAt,
+        ?string $returnStatus,
+        ?float $shippingTax = null,
+        ?string $salesType = null,
+        ?string $imei = null,
     ): OrderItem {
-        $orderItem = new static();
+        $orderItem = new self();
 
         $orderItem->orderItemId = $orderItemId;
         $orderItem->shopId = $shopId;
@@ -269,25 +288,41 @@ class OrderItem implements JsonSerializable
         $orderItem->createdAt = $createdAt;
         $orderItem->updatedAt = $updatedAt;
         $orderItem->returnStatus = $returnStatus;
+        $orderItem->shippingTax = $shippingTax;
+        $orderItem->salesType = $salesType;
+        $orderItem->imei = $imei;
 
         return $orderItem;
     }
 
-    /**
-     * @return static
-     */
     public static function fromStatus(
         int $orderItemId,
         int $purchaseOrderId,
         string $purchaseOrderNumber,
-        ?string $packageId
+        ?string $packageId,
     ): OrderItem {
-        $orderItem = new static();
+        $orderItem = new self();
 
         $orderItem->purchaseOrderId = $purchaseOrderId;
         $orderItem->purchaseOrderNumber = $purchaseOrderNumber;
         $orderItem->orderItemId = $orderItemId;
         $orderItem->packageId = $packageId;
+
+        return $orderItem;
+    }
+
+    public static function fromImeiStatus(
+        int $orderItemId,
+        ?string $imei,
+        string $status,
+        ?string $message = null,
+    ): OrderItem {
+        $orderItem = new self();
+
+        $orderItem->orderItemId = $orderItemId;
+        $orderItem->imei = $imei;
+        $orderItem->status = $status;
+        $orderItem->message = $message;
 
         return $orderItem;
     }
@@ -372,7 +407,7 @@ class OrderItem implements JsonSerializable
         return $this->shippingServiceCost;
     }
 
-    public function getVoucherAmount(): ?int
+    public function getVoucherAmount(): ?float
     {
         return $this->voucherAmount;
     }
@@ -442,11 +477,14 @@ class OrderItem implements JsonSerializable
         return $this->packageId;
     }
 
-    public function getPromisedShippingTime(): ?DateTimeImmutable
+    public function getPromisedShippingTime(): ?\DateTimeImmutable
     {
         return $this->promisedShippingTime;
     }
 
+    /**
+     * @return mixed[]|null
+     */
     public function getExtraAttributes(): ?array
     {
         return !empty($this->extraAttributes) ? $this->extraAttributes : null;
@@ -457,12 +495,12 @@ class OrderItem implements JsonSerializable
         return $this->shippingProviderType;
     }
 
-    public function getCreatedAt(): ?DateTimeImmutable
+    public function getCreatedAt(): ?\DateTimeImmutable
     {
         return !empty($this->createdAt) ? $this->createdAt : null;
     }
 
-    public function getUpdatedAt(): ?DateTimeImmutable
+    public function getUpdatedAt(): ?\DateTimeImmutable
     {
         return !empty($this->updatedAt) ? $this->updatedAt : null;
     }
@@ -472,9 +510,34 @@ class OrderItem implements JsonSerializable
         return !empty($this->returnStatus) ? $this->returnStatus : null;
     }
 
-    public function jsonSerialize(): stdClass
+    public function getSalesType(): ?string
     {
-        $serialized = new stdClass();
+        return !empty($this->salesType) ? $this->salesType : null;
+    }
+
+    public function getMessage(): ?string
+    {
+        return $this->message;
+    }
+
+    public function getImei(): ?string
+    {
+        return !empty($this->imei) ? $this->imei : null;
+    }
+
+    public function getShippingTax(): ?float
+    {
+        return $this->shippingTax;
+    }
+
+    public function setImei(?string $imei): void
+    {
+        $this->imei = $imei;
+    }
+
+    public function jsonSerialize(): \stdClass
+    {
+        $serialized = new \stdClass();
         $serialized->orderItemId = $this->orderItemId;
         $serialized->shopId = $this->shopId;
         $serialized->orderId = $this->orderId;
@@ -511,6 +574,9 @@ class OrderItem implements JsonSerializable
         $serialized->createdAt = $this->createdAt;
         $serialized->updatedAt = $this->updatedAt;
         $serialized->returnStatus = $this->returnStatus;
+        $serialized->shippingTax = $this->shippingTax;
+        $serialized->salesType = $this->salesType;
+        $serialized->imei = $this->imei;
 
         return $serialized;
     }

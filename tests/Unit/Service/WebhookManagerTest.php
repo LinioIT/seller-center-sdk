@@ -10,11 +10,26 @@ use Linio\SellerCenter\Contract\ClientInterface;
 use Linio\SellerCenter\LinioTestCase;
 use Linio\SellerCenter\Service\WebhookManager;
 use Psr\Log\Test\TestLogger;
-use ReflectionClass;
 
 class WebhookManagerTest extends LinioTestCase
 {
-    public function testItReturnsTheTheLoggerWhenIsSet(): void
+    public function testReturnsAWebhookManager(): void
+    {
+        $configuration = $this->prophesize(Configuration::class);
+        $client = $this->prophesize(ClientInterface::class);
+        $parameters = $this->prophesize(Parameters::class);
+        $logger = $this->prophesize(TestLogger::class);
+
+        $webhookManager = new WebhookManager(
+            $configuration->reveal(),
+            $client->reveal(),
+            $parameters->reveal(),
+            $logger->reveal()
+        );
+        $this->assertInstanceOf(WebhookManager::class, $webhookManager);
+    }
+
+    public function testItReturnsTheLoggerWhenIsSet(): void
     {
         $configuration = $this->prophesize(Configuration::class);
         $client = $this->prophesize(ClientInterface::class);
@@ -28,7 +43,7 @@ class WebhookManagerTest extends LinioTestCase
             $logger->reveal()
         );
 
-        $reflectionClass = new ReflectionClass(WebhookManager::class);
+        $reflectionClass = new \ReflectionClass(WebhookManager::class);
         $property = $reflectionClass->getProperty('logger');
         $property->setAccessible(true);
 

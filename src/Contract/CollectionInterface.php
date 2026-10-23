@@ -6,5 +6,8 @@ namespace Linio\SellerCenter\Contract;
 
 interface CollectionInterface
 {
+    /**
+     * @return mixed[]
+     */
     public function all(): array;
 }

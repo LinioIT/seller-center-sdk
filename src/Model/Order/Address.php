@@ -4,10 +4,7 @@ declare(strict_types=1);
 
 namespace Linio\SellerCenter\Model\Order;
 
-use JsonSerializable;
-use stdClass;
-
-class Address implements JsonSerializable
+class Address implements \JsonSerializable
 {
     /**
      * @var string|null
@@ -20,12 +17,12 @@ class Address implements JsonSerializable
     protected $lastName;
 
     /**
-     * @var int|null
+     * @var string|null
      */
     protected $phone;
 
     /**
-     * @var int|null
+     * @var string|null
      */
     protected $phone2;
 
@@ -33,6 +30,26 @@ class Address implements JsonSerializable
      * @var string|null
      */
     protected $address;
+
+    /**
+     * @var string|null
+     */
+    protected $address2;
+
+    /**
+     * @var string|null
+     */
+    protected $address3;
+
+    /**
+     * @var string|null
+     */
+    protected $address4;
+
+    /**
+     * @var string|null
+     */
+    protected $address5;
 
     /**
      * @var string|null
@@ -67,21 +84,29 @@ class Address implements JsonSerializable
     public function __construct(
         string $firstName,
         string $lastName,
-        int $phone,
-        int $phone2,
+        string $phone,
+        string $phone2,
         string $address,
         string $customerEmail,
         string $city,
         string $ward,
         string $region,
         string $postCode,
-        string $country
+        string $country,
+        ?string $address2 = null,
+        ?string $address3 = null,
+        ?string $address4 = null,
+        ?string $address5 = null,
     ) {
         $this->firstName = !empty($firstName) ? $firstName : null;
         $this->lastName = !empty($lastName) ? $lastName : null;
         $this->phone = !empty($phone) ? $phone : null;
         $this->phone2 = !empty($phone2) ? $phone2 : null;
         $this->address = !empty($address) ? $address : null;
+        $this->address2 = !empty($address2) ? $address2 : null;
+        $this->address3 = !empty($address3) ? $address3 : null;
+        $this->address4 = !empty($address4) ? $address4 : null;
+        $this->address5 = !empty($address5) ? $address5 : null;
         $this->customerEmail = !empty($customerEmail) ? $customerEmail : null;
         $this->city = !empty($city) ? $city : null;
         $this->ward = !empty($ward) ? $ward : null;
@@ -100,12 +125,12 @@ class Address implements JsonSerializable
         return $this->lastName;
     }
 
-    public function getPhone(): ?int
+    public function getPhone(): ?string
     {
         return $this->phone;
     }
 
-    public function getPhone2(): ?int
+    public function getPhone2(): ?string
     {
         return $this->phone2;
     }
@@ -113,6 +138,26 @@ class Address implements JsonSerializable
     public function getAddress(): ?string
     {
         return $this->address;
+    }
+
+    public function getAddress2(): ?string
+    {
+        return $this->address2;
+    }
+
+    public function getAddress3(): ?string
+    {
+        return $this->address3;
+    }
+
+    public function getAddress4(): ?string
+    {
+        return $this->address4;
+    }
+
+    public function getAddress5(): ?string
+    {
+        return $this->address5;
     }
 
     public function getCustomerEmail(): ?string
@@ -145,14 +190,23 @@ class Address implements JsonSerializable
         return $this->country;
     }
 
-    public function jsonSerialize(): stdClass
+    public function setPostCode(string $postalCode): void
     {
-        $serialized = new stdClass();
+        $this->postCode = $postalCode;
+    }
+
+    public function jsonSerialize(): \stdClass
+    {
+        $serialized = new \stdClass();
         $serialized->firstName = $this->firstName;
         $serialized->lastName = $this->lastName;
         $serialized->phone = $this->phone;
         $serialized->phone2 = $this->phone2;
         $serialized->address = $this->address;
+        $serialized->address2 = $this->address2;
+        $serialized->address3 = $this->address3;
+        $serialized->address4 = $this->address4;
+        $serialized->address5 = $this->address5;
         $serialized->customerEmail = $this->customerEmail;
         $serialized->city = $this->city;
         $serialized->ward = $this->ward;

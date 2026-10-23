@@ -4,11 +4,7 @@ declare(strict_types=1);
 
 namespace Linio\SellerCenter\Model\Order;
 
-use DateTimeInterface;
-use JsonSerializable;
-use stdClass;
-
-class Order implements JsonSerializable
+class Order implements \JsonSerializable
 {
     /**
      * @var int
@@ -26,7 +22,7 @@ class Order implements JsonSerializable
     protected $customerLastName;
 
     /**
-     * @var int
+     * @var string|int
      */
     protected $orderNumber;
 
@@ -66,17 +62,17 @@ class Order implements JsonSerializable
     protected $voucherCode;
 
     /**
-     * @var DateTimeInterface|null
+     * @var \DateTimeInterface|null
      */
     protected $createdAt;
 
     /**
-     * @var DateTimeInterface|null
+     * @var \DateTimeInterface|null
      */
     protected $updatedAt;
 
     /**
-     * @var DateTimeInterface|null
+     * @var \DateTimeInterface|null
      */
     protected $addressUpdatedAt;
 
@@ -101,7 +97,7 @@ class Order implements JsonSerializable
     protected $itemsCount;
 
     /**
-     * @var DateTimeInterface|null
+     * @var \DateTimeInterface|null
      */
     protected $promisedShippingTime;
 
@@ -111,7 +107,7 @@ class Order implements JsonSerializable
     protected $extraAttributes;
 
     /**
-     * @var array|null
+     * @var string[]|null
      */
     protected $statuses;
 
@@ -121,11 +117,67 @@ class Order implements JsonSerializable
     protected $orderItems;
 
     /**
-     * @return static
+     * @var string|null
+     */
+    protected $operatorCode;
+
+    /**
+     * @var bool|null
+     */
+    protected $businessInvoiceRequired;
+
+    /**
+     * @var string|null
+     */
+    protected $shippingType;
+
+    /**
+     * @var ExtraBillingAttributes|null
+     */
+    protected $extraBillingAttributes;
+
+    /**
+     * @param string[] $statuses
+     * @param string|int $orderNumber
+     */
+
+    /**
+     * @var float|null
+     */
+    protected $grandTotal;
+
+    /**
+     * @var float|null
+     */
+    protected $productTotal;
+
+    /**
+     * @var float|null
+     */
+    protected $taxAmount;
+
+    /**
+     * @var float|null
+     */
+    protected $shippingFeeTotal;
+
+    /**
+     * @var float|null
+     */
+    protected $shippingTax;
+
+    /**
+     * @var float|null
+     */
+    protected $voucher;
+
+    /**
+     * @param string|int $orderNumber
+     * @param string[] $statuses
      */
     public static function fromData(
         int $orderId,
-        int $orderNumber,
+        $orderNumber,
         ?string $customerFirstName,
         ?string $customerLastName,
         string $paymentMethod,
@@ -135,18 +187,28 @@ class Order implements JsonSerializable
         bool $giftOption,
         string $giftMessage,
         string $voucherCode,
-        ?DateTimeInterface $createdAt,
-        ?DateTimeInterface $updatedAt,
-        ?DateTimeInterface $addressUpdatedAt,
+        ?\DateTimeInterface $createdAt,
+        ?\DateTimeInterface $updatedAt,
+        ?\DateTimeInterface $addressUpdatedAt,
         Address $addressBilling,
         Address $addressShipping,
-        string $nationalRegistrationNumber,
+        ?string $nationalRegistrationNumber,
         int $itemsCount,
-        ?DateTimeInterface $promisedShippingTime,
+        ?\DateTimeInterface $promisedShippingTime,
         ?string $extraAttributes,
-        array $statuses
+        array $statuses,
+        ?bool $businessInvoiceRequired,
+        ?string $shippingType,
+        ?string $operatorCode = null,
+        ?ExtraBillingAttributes $extraBillingAttributes = null,
+        ?float $grandTotal = null,
+        ?float $productTotal = null,
+        ?float $taxAmount = null,
+        ?float $shippingFeeTotal = null,
+        ?float $shippingTax = null,
+        ?float $voucher = null,
     ): Order {
-        $order = new static();
+        $order = new self();
 
         $order->orderId = $orderId;
         $order->orderNumber = $orderNumber;
@@ -169,19 +231,29 @@ class Order implements JsonSerializable
         $order->promisedShippingTime = $promisedShippingTime;
         $order->extraAttributes = $extraAttributes;
         $order->statuses = $statuses;
+        $order->businessInvoiceRequired = $businessInvoiceRequired;
+        $order->shippingType = $shippingType;
+        $order->extraBillingAttributes = $extraBillingAttributes;
+        $order->operatorCode = $operatorCode;
+        $order->grandTotal = $grandTotal;
+        $order->productTotal = $productTotal;
+        $order->taxAmount = $taxAmount;
+        $order->shippingFeeTotal = $shippingFeeTotal;
+        $order->shippingTax = $shippingTax;
+        $order->voucher = $voucher;
 
         return $order;
     }
 
     /**
-     * @return static
+     * @param string|int $orderNumber
      */
-    public static function fromItems(int $orderId, int $orderNumber, OrderItems $orderItems): Order
+    public static function fromItems(int $orderId, $orderNumber, OrderItems $orderItems): Order
     {
-        $order = new static();
+        $order = new self();
 
         $order->orderId = $orderId;
-        $order->orderNumber = $orderNumber;
+        $order->orderNumber = is_numeric($orderNumber) ? (int) $orderNumber : (string) $orderNumber;
         $order->orderItems = $orderItems;
 
         return $order;
@@ -202,7 +274,10 @@ class Order implements JsonSerializable
         return $this->customerLastName;
     }
 
-    public function getOrderNumber(): int
+    /**
+     * @return string|int
+     */
+    public function getOrderNumber()
     {
         return $this->orderNumber;
     }
@@ -242,17 +317,17 @@ class Order implements JsonSerializable
         return $this->voucherCode;
     }
 
-    public function getCreatedAt(): ?DateTimeInterface
+    public function getCreatedAt(): ?\DateTimeInterface
     {
         return $this->createdAt;
     }
 
-    public function getUpdatedAt(): ?DateTimeInterface
+    public function getUpdatedAt(): ?\DateTimeInterface
     {
         return $this->updatedAt;
     }
 
-    public function getAddressUpdatedAt(): ?DateTimeInterface
+    public function getAddressUpdatedAt(): ?\DateTimeInterface
     {
         return $this->addressUpdatedAt;
     }
@@ -277,7 +352,7 @@ class Order implements JsonSerializable
         return $this->itemsCount;
     }
 
-    public function getPromisedShippingTime(): ?DateTimeInterface
+    public function getPromisedShippingTime(): ?\DateTimeInterface
     {
         return $this->promisedShippingTime;
     }
@@ -287,6 +362,9 @@ class Order implements JsonSerializable
         return $this->extraAttributes;
     }
 
+    /**
+     * @return string[]|null
+     */
     public function getStatuses(): ?array
     {
         return $this->statuses;
@@ -297,14 +375,69 @@ class Order implements JsonSerializable
         return $this->orderItems;
     }
 
+    public function getOperatorCode(): ?string
+    {
+        return $this->operatorCode;
+    }
+
+    public function getBusinessInvoiceRequired(): ?bool
+    {
+        return $this->businessInvoiceRequired;
+    }
+
+    public function getShippingType(): ?string
+    {
+        return $this->shippingType;
+    }
+
+    public function getExtraBillingAttributes(): ?ExtraBillingAttributes
+    {
+        return $this->extraBillingAttributes;
+    }
+
+    public function getGrandTotal(): float
+    {
+        return $this->grandTotal;
+    }
+
+    public function getProductTotal(): float
+    {
+        return $this->productTotal;
+    }
+
+    public function getTaxAmount(): float
+    {
+        return $this->taxAmount;
+    }
+
+    public function getShippingFeeTotal(): float
+    {
+        return $this->shippingFeeTotal;
+    }
+
+    public function getShippingTax(): float
+    {
+        return $this->shippingTax;
+    }
+
+    public function getVoucher(): float
+    {
+        return $this->voucher;
+    }
+
     public function setOrderItems(OrderItems $orderItems): void
     {
         $this->orderItems = $orderItems;
     }
 
-    public function jsonSerialize(): stdClass
+    public function stringToFloat(string $value): float
     {
-        $serialized = new stdClass();
+        return (float) str_replace(',', '', $value);
+    }
+
+    public function jsonSerialize(): \stdClass
+    {
+        $serialized = new \stdClass();
         $serialized->orderId = $this->orderId;
         $serialized->customerFirstName = $this->customerFirstName;
         $serialized->customerLastName = $this->customerLastName;
@@ -327,6 +460,16 @@ class Order implements JsonSerializable
         $serialized->extraAttributes = $this->extraAttributes;
         $serialized->statuses = $this->statuses;
         $serialized->orderItems = $this->orderItems;
+        $serialized->businessInvoiceRequired = $this->businessInvoiceRequired;
+        $serialized->shippingType = $this->shippingType;
+        $serialized->extraBillingAttributes = $this->extraBillingAttributes;
+        $serialized->operatorCode = $this->operatorCode;
+        $serialized->grandTotal = $this->grandTotal;
+        $serialized->productTotal = $this->productTotal;
+        $serialized->taxAmount = $this->taxAmount;
+        $serialized->shippingFeeTotal = $this->shippingFeeTotal;
+        $serialized->shippingTax = $this->shippingTax;
+        $serialized->voucher = $this->voucher;
 
         return $serialized;
     }

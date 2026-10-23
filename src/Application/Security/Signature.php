@@ -4,7 +4,6 @@ declare(strict_types=1);
 
 namespace Linio\SellerCenter\Application\Security;
 
-use Linio\SellerCenter\Application\Parameters;
 use Linio\SellerCenter\Exception\InvalidApiKeyException;
 
 class Signature
@@ -20,18 +19,17 @@ class Signature
     }
 
     /**
-     * @return static
+     * @param string[] $parameters
      */
-    public static function generate(Parameters $parameters, string $apiKey): Signature
+    public static function generate(array $parameters, string $apiKey): Signature
     {
         if (empty($apiKey)) {
             throw new InvalidApiKeyException();
         }
 
-        $parametersIterable = $parameters->all();
         $encoded = [];
 
-        foreach ($parametersIterable as $name => $value) {
+        foreach ($parameters as $name => $value) {
             $encoded[] = rawurlencode($name) . '=' . rawurlencode($value);
         }
 
@@ -39,7 +37,7 @@ class Signature
 
         $signature = rawurlencode(hash_hmac('sha256', $concatenatedParameters, $apiKey, false));
 
-        return new static($signature);
+        return new self($signature);
     }
 
     public function get(): string

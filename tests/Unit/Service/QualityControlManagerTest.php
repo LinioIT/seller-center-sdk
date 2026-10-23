@@ -10,12 +10,26 @@ use Linio\SellerCenter\Contract\ClientInterface;
 use Linio\SellerCenter\LinioTestCase;
 use Linio\SellerCenter\Service\QualityControlManager;
 use Psr\Log\Test\TestLogger;
-use ReflectionClass;
-use ReflectionMethod;
 
 class QualityControlManagerTest extends LinioTestCase
 {
-    public function testItReturnsTheTheLoggerWhenIsSet(): void
+    public function testReturnsAQualityControlManager(): void
+    {
+        $configuration = $this->prophesize(Configuration::class);
+        $client = $this->prophesize(ClientInterface::class);
+        $parameters = $this->prophesize(Parameters::class);
+        $logger = $this->prophesize(TestLogger::class);
+
+        $qcManager = new QualityControlManager(
+            $configuration->reveal(),
+            $client->reveal(),
+            $parameters->reveal(),
+            $logger->reveal()
+        );
+        $this->assertInstanceOf(QualityControlManager::class, $qcManager);
+    }
+
+    public function testItReturnsTheLoggerWhenIsSet(): void
     {
         $configuration = $this->prophesize(Configuration::class);
         $client = $this->prophesize(ClientInterface::class);
@@ -24,7 +38,7 @@ class QualityControlManagerTest extends LinioTestCase
 
         $qcManager = new QualityControlManager($configuration->reveal(), $client->reveal(), $parameters->reveal(), $logger->reveal());
 
-        $reflectionClass = new ReflectionClass(QualityControlManager::class);
+        $reflectionClass = new \ReflectionClass(QualityControlManager::class);
         $property = $reflectionClass->getProperty('logger');
         $property->setAccessible(true);
 
@@ -40,7 +54,7 @@ class QualityControlManagerTest extends LinioTestCase
     {
         $config = $this->getParameters();
 
-        $method = new ReflectionMethod(QualityControlManager::class, 'setListDimensions');
+        $method = new \ReflectionMethod(QualityControlManager::class, 'setListDimensions');
         $method->setAccessible(true);
 
         $configuration = $this->prophesize(Configuration::class);
@@ -60,7 +74,7 @@ class QualityControlManagerTest extends LinioTestCase
         $this->assertSame($expected->all(), $parameters->all());
     }
 
-    public function parametersProvider(): array
+    public static function parametersProvider(): array
     {
         return [
             [0, 0, QualityControlManager::DEFAULT_LIMIT, QualityControlManager::DEFAULT_OFFSET],

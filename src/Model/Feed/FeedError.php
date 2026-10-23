@@ -4,11 +4,9 @@ declare(strict_types=1);
 
 namespace Linio\SellerCenter\Model\Feed;
 
-use JsonSerializable;
 use Linio\SellerCenter\Exception\EmptyArgumentException;
-use stdClass;
 
-class FeedError implements JsonSerializable
+class FeedError implements \JsonSerializable
 {
     /**
      * @var int
@@ -51,9 +49,9 @@ class FeedError implements JsonSerializable
         return $this->message;
     }
 
-    public function jsonSerialize(): stdClass
+    public function jsonSerialize(): \stdClass
     {
-        $serialized = new stdClass();
+        $serialized = new \stdClass();
         $serialized->code = $this->code;
         $serialized->sku = $this->sku;
         $serialized->message = $this->message;

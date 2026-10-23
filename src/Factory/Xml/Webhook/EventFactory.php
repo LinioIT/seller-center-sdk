@@ -6,11 +6,10 @@ namespace Linio\SellerCenter\Factory\Xml\Webhook;
 
 use Linio\SellerCenter\Exception\InvalidXmlStructureException;
 use Linio\SellerCenter\Model\Webhook\Event;
-use SimpleXMLElement;
 
 class EventFactory
 {
-    public static function make(SimpleXMLElement $element): Event
+    public static function make(\SimpleXMLElement $element): Event
     {
         if (!property_exists($element, 'EventAlias')) {
             throw new InvalidXmlStructureException('Event', 'EventAlias');

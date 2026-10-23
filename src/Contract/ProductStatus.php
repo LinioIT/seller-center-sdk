@@ -15,4 +15,8 @@ interface ProductStatus
         self::INACTIVE,
         self::DELETED,
     ];
+
+    public function setStatus(string $status): void;
+
+    public function getStatus(): string;
 }

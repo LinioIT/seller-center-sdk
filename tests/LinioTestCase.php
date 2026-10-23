@@ -6,12 +6,19 @@ namespace Linio\SellerCenter;
 
 use Faker;
 use Faker\Generator;
-use Linio\Component\Util\Json;
+use Linio\SellerCenter\Application\Configuration;
+use Linio\SellerCenter\Helper\Json;
 use PHPUnit\Framework\TestCase;
-use RuntimeException;
+use Prophecy\PhpUnit\ProphecyTrait;
+use Prophecy\Prophecy\ObjectProphecy;
 
 class LinioTestCase extends TestCase
 {
+    use ClientHelper;
+    use ProphecyTrait;
+
+    protected Generator $faker;
+
     public function getFaker(): Generator
     {
         if (empty($this->faker)) {
@@ -36,14 +43,37 @@ class LinioTestCase extends TestCase
         $appData = getenv($appName);
 
         if (!$appData) {
-            throw new RuntimeException(sprintf('"%s" is not a valid app environment', $appName));
+            throw new \RuntimeException(sprintf('"%s" is not a valid app environment', $appName));
         }
 
         return Json::decode($appData);
     }
 
-    public function getSchema(string $schema): string
+    public static function getSchema(string $schema): string
     {
         return file_get_contents(__DIR__ . '/_schemas/' . $schema);
+    }
+
+    public function getSchemaV2(string $schema): string
+    {
+        return file_get_contents(__DIR__ . '/V2/_schemas/' . $schema);
+    }
+
+    public function getSdkClient(
+        string $body,
+        ?ObjectProphecy $logger = null,
+        int $statusCode = 200,
+        ?string $extraResponse = null,
+    ): SellerCenterSdk {
+        $client = $this->createClientWithResponse($body, $statusCode, $extraResponse);
+
+        $parameters = $this->getParameters();
+        $configuration = new Configuration($parameters['key'], $parameters['username'], $parameters['endpoint'], $parameters['version']);
+
+        if (empty($logger)) {
+            return new SellerCenterSdk($configuration, $client);
+        }
+
+        return new SellerCenterSdk($configuration, $client, $logger->reveal());
     }
 }

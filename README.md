@@ -1,134 +1,221 @@
-Seller Center PHP SDK
-=====================
-[![License](https://img.shields.io/badge/License-BSD%203--Clause-blue.svg)](https://opensource.org/licenses/BSD-3-Clause)
-[![Codefresh build status]( https://g.codefresh.io/api/badges/pipeline/linioit/seller-center-sdk%2Fdefault?branch=master&key=eyJhbGciOiJIUzI1NiJ9.NWNhNzllZDQzNjVkMGNlMjdjOTYzNzI4.OK7sUA-U_zNwHsu1lm9Xw2DAX9hj0MUjFH1CUUK7xhM&type=cf-1)]( https%3A%2F%2Fg.codefresh.io%2Fpipelines%2Fdefault%2Fbuilds%3FrepoOwner%3DLinioIT%26repoName%3Dseller-center-sdk%26serviceName%3DLinioIT%252Fseller-center-sdk%26filter%3Dtrigger%3Abuild~Build%3Bbranch%3Amaster%3Bpipeline%3A5e600de27efa9000aa57452f~default)
+# Seller Center PHP SDK
 
+https://img.shields.io/badge/License-BSD%203--Clause-blue.svg](https://opensource.org/licenses/BSD-3-Clause)
 
-Installation
-------------
+## Installation
 
-The recommended way to install the SDK is [through composer](http://getcomposer.org)
+The recommended way to install the SDK is through [Composer](https://getcomposer.org).
 
-We have a new version to support Falabella and Linio platform, please use and follow instructions of README from branch [gsc-master](https://github.com/LinioIT/seller-center-sdk/tree/gsc-master)
+> ### PHP Version Support
+>
+> This repository currently maintains two active branches:
+>
+> - **`main`**: Primary development branch with support for **PHP 8.3+**. All new features, improvements, and future enhancements will be delivered here.
+> - **`gsc-master`**: Maintenance branch for **PHP 7.x** users. This branch will continue receiving bug fixes, compatibility updates, and security-related changes until **December 2026**.
+>
+> If your application is running on PHP 7.x, continue using the `gsc-master` branch. New integrations and projects running on PHP 8 should use the `main` branch.
 
-Edit your composer.json to add the repository URL:
+### Composer Installation
 
-    {
-        "repositories": [
-            {
-                "type": "git",
-                "url": "https://github.com/LinioIT/seller-center-sdk.git"
-            }
-        ]
-    }
+Add the repository to your `composer.json`:
 
-Then require the package:
+```json
+{
+    "repositories": [
+        {
+            "type": "git",
+            "url": "https://github.com/LinioIT/seller-center-sdk.git"
+        }
+    ]
+}
+```
 
-    $ composer require linio/seller-center-sdk
+Install the version that matches your PHP runtime:
 
-Quick start
------
+**PHP 8.3+ (recommended)**
+
+```bash
+composer require "linio/seller-center-sdk:dev-main"
+```
+
+**PHP 7.x (supported until December 2026)**
+
+```bash
+composer require "linio/seller-center-sdk:dev-gsc-master"
+```
+
+## Quick Start
 
 ### Configuration
 
-To interact with the Seller Center platform you need to ask for a UserID and API KEY and know the URL and version of the service you'll consume.
+To interact with the Seller Center platform, you need a User ID, an API Key, and the API URL and version of the Seller Center environment you want to consume.
 
-Those values will be used through a `Configuration` object as follows.
+These values are provided through a `Configuration` object:
 
 ```php
-$configuration = new \Linio\SellerCenter\Application\Configuration('api-key-provided', 'api-username-provided', 'https://enviroment-seller-center-api.com', '1.0');
+$configuration = new \Linio\SellerCenter\Application\Configuration(
+    'api-key-provided',
+    'api-username-provided',
+    'https://environment-seller-center-api.com',
+    '1.0'
+);
 ```
 
-### Accessing the functionalities
+### Accessing the Functionalities
 
-All the interaction with the platform will be guided through the SDK class **SellerCenterSdk**.  To create it you need to provide a specific configuration and optionally a *HTTP Client*. 
-> Note: We support HTTP Client for Guzzle v6 higher or any PSR7 HTTP Client. 
->* If you want to use Guzzle v5 you MUST install as dependency `php-http/guzzle5-adapter` And You MUST NOT pass a client into constructor.
->* For Guzzle v6 take it in consideration.
->   * If you are using Guzzle v6 and passing a client into constructor you don't need any dependency. 
->   * If you are using Guzzle v6 and not passing a client into constructor you will need a `php-http/guzzle6-adapter` dependency. 
+All interaction with the platform is performed through the `SellerCenterSdk` class. To create an instance, you need to provide a configuration object and optionally an HTTP client.
 
-#### Client use case.
+> **Note:** The SDK supports Guzzle v6+ and any PSR-7 compatible HTTP client.
+>
+> - If you want to use **Guzzle v5**, you must install `php-http/guzzle5-adapter` and **must not** pass a client into the constructor.
+> - If you use **Guzzle v6**:
+>   - Passing a client to the constructor requires no additional dependencies.
+>   - Not passing a client requires `php-http/guzzle6-adapter`.
+
+#### Client Use Case
+
 ```php
-$client = new Client(); // Guzzle >= v6 only or a PSR7 HTTP Client
+$client = new Client(); // Guzzle >= 6 or any PSR-7 HTTP Client
 
-$configuration = new \Linio\SellerCenter\Application\Configuration('api-key-provided', 'api-username-provided', 'https://enviroment-seller-center-api.com', '1.0');
+$configuration = new \Linio\SellerCenter\Application\Configuration(
+    'api-key-provided',
+    'api-username-provided',
+    'https://environment-seller-center-api.com',
+    '1.0'
+);
 
 $sdk = new \Linio\SellerCenter\SellerCenterSdk($configuration, $client);
 ```
 
-#### Without Client or Guzzle v5 use case.
->Note:
->* case Guzzle v5
->   * ```$ composer require php-http/guzzle5-adapter```
->* case Guzzle v6
->   * ```$ composer require php-http/guzzle6-adapter```
->* For PSR7 HTTP Client no further more dependency is required.
+#### Integrator Use Case
+
+If you are an integrator, additional metadata is required to build the mandatory `User-Agent` header:
 
 ```php
-$configuration = new \Linio\SellerCenter\Application\Configuration('api-key-provided', 'api-username-provided', 'https://enviroment-seller-center-api.com', '1.0');
+$configuration = new \Linio\SellerCenter\Application\Configuration(
+    'api-key-provided',
+    'api-username-provided',
+    'https://environment-seller-center-api.com',
+    '1.0',
+    'SDK',                 // Source
+    'seller-id',
+    'PHP',                 // Language
+    PHP_VERSION,           // Language version
+    'integrator-name',
+    'cl'                   // Country
+);
+
+$sdk = new \Linio\SellerCenter\SellerCenterSdk($configuration, $client);
+```
+
+#### Without Client (or Guzzle v5)
+
+> **Note**
+>
+> - Guzzle v5:
+>
+>   ```bash
+>   composer require php-http/guzzle5-adapter
+>   ```
+>
+> - Guzzle v6:
+>
+>   ```bash
+>   composer require php-http/guzzle6-adapter
+>   ```
+>
+> - PSR-7 compatible clients require no additional adapter dependencies.
+
+```php
+$configuration = new \Linio\SellerCenter\Application\Configuration(
+    'api-key-provided',
+    'api-username-provided',
+    'https://environment-seller-center-api.com',
+    '1.0'
+);
 
 $sdk = new \Linio\SellerCenter\SellerCenterSdk($configuration);
 ```
-One you have the SDK instance you can access to all the functionalities group in a series of managers.
+
+Once you have an SDK instance, you can access all functionalities through the available managers:
 
 ```php
 $result = $sdk->manager()->getSome();
 ```
 
-If you want to retrieve all the available brands in Seller Center, you just need to use the Brand manager as follows:
+For example, to retrieve all available brands:
 
 ```php
 $brandList = $sdk->brands()->getBrands();
 ```
 
-### Knowing the managers
+## Available Managers
 
-Here is a list of the actual managers in the SDK:
+- docs/Managers/SellerManager.md
+- docs/Managers/GlobalSellerManager.md
+- docs/Managers/OrderManager.md
+- docs/Managers/GlobalOrderManager.md
+- docs/Managers/ProductManager.md
+- docs/Managers/GlobalProductManager.md
+- docs/Managers/BrandManager.md
+- docs/Managers/CategoryManager.md
+- docs/Managers/DocumentManager.md
+- docs/Managers/FeedManager.md
+- docs/Managers/QualityControlManager.md
+- docs/Managers/WebhookManager.md
+- docs/Managers/ShipmentManager.md
 
-- [BrandManager](docs/Managers/Brand.md)
-- [CategoryManager](docs/Managers/Category.md)
-- [DocumentManager](docs/Managers/Document.md)
-- [FeedManager](docs/Managers/Feed.md)
-- [OrderManager](docs/Managers/Order.md)
-- [ProductManager](docs/Managers/Product.md)
-- [QualityControlManager](docs/Managers/QcStatus.md)
-- [WebhookManager](docs/Managers/Webhook.md)
-- [Shipment](docs/Managers/Shipment.md)
+## Logging
 
-### Logging
+The SDK accepts a PSR-compatible logger implementation and uses it to register requests and responses exchanged with Seller Center.
 
-The SDK accept a Logging interface that will use to register every request and response through your application and 
-Seller Center in DEBUG mode.
-
-```php
-use Monolog\Logger;
-use Monolog\Handler\StreamHandler;
-
-$logger = new Logger('myLogger');
-$logger->pushHandler(new StreamHandler(__DIR__.'/sdk-log.log'));
-
-$sellerCenterSdk = new SellerCenterSdk($configuration, $client, $logger);
-```
-
-Be very careful by using the SDK in debug mode, it will increase the size of log files very quickly. If you need to register every response, we recommend adding multiple log handlers. 
-
+### Basic Logging
 
 ```php
 use Monolog\Logger;
 use Monolog\Handler\StreamHandler;
 
 $logger = new Logger('myLogger');
-$logger->pushHandler(new StreamHandler(__DIR__.'/sdk-log.log', Logger::INFO));
-$logger->pushHandler(new StreamHandler(__DIR__.'/sdk-log-debug.log', Logger::DEBUG));
+$logger->pushHandler(new StreamHandler(__DIR__ . '/sdk.log'));
 
-$sellerCenterSdk = new SellerCenterSdk($configuration, $client, $logger);
+$sellerCenterSdk = new SellerCenterSdk(
+    $configuration,
+    $client,
+    $logger
+);
 ```
 
-### Contributing
+### Separate Info and Debug Logs
 
-Feel free to send your contributions as a PR. Make sure to fulfill the followings items.
+Be careful when enabling debug logging, as log files can grow very quickly.
 
-* [Commit standards](docs/Contribute/Standards.md)
-* [PSR-2](https://www.php-fig.org/psr/psr-2/)
-* [Tests](docs/Contribute/Tests.md)
+```php
+use Monolog\Logger;
+use Monolog\Handler\StreamHandler;
+
+$logger = new Logger('myLogger');
+
+$logger->pushHandler(
+    new StreamHandler(__DIR__ . '/sdk.log', Logger::INFO)
+);
+
+$logger->pushHandler(
+    new StreamHandler(__DIR__ . '/sdk-debug.log', Logger::DEBUG)
+);
+
+$sellerCenterSdk = new SellerCenterSdk(
+    $configuration,
+    $client,
+    $logger
+);
+```
+
+## Contributing
+
+Feel free to submit contributions through Pull Requests.
+
+Please ensure the following requirements are met:
+
+- docs/Contribute/Standards.md
+- [PSR-2 Coding Standard](https://www.php-fig.org/psr/psr-2/)
+- docs/Contribute/Tests.md

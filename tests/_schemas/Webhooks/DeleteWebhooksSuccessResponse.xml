@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<SuccessResponse>
+    <Head>
+        <RequestId/>
+        <RequestAction>DeleteWebhook</RequestAction>
+        <ResponseType/>
+        <Timestamp>2022-12-29T08:56:23-0300</Timestamp>
+    </Head>
+    <Body/>
+</SuccessResponse>

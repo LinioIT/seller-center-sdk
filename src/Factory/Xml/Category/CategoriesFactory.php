@@ -7,11 +7,10 @@ namespace Linio\SellerCenter\Factory\Xml\Category;
 use Linio\SellerCenter\Exception\InvalidXmlStructureException;
 use Linio\SellerCenter\Model\Category\Categories;
 use Linio\SellerCenter\Model\Category\Category;
-use SimpleXMLElement;
 
 class CategoriesFactory
 {
-    public static function make(SimpleXMLElement $xml): Categories
+    public static function make(\SimpleXMLElement $xml): Categories
     {
         if (empty($xml->Categories->Category)) {
             throw new InvalidXmlStructureException('Categories', 'Category');
@@ -29,7 +28,7 @@ class CategoriesFactory
         return $categories;
     }
 
-    public static function makeFromXmlString(SimpleXMLElement $element): Categories
+    public static function makeFromXmlString(\SimpleXMLElement $element): Categories
     {
         /**
          * separate the categories by comma, as long as the comma is not followed by a space

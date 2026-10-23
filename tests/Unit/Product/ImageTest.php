@@ -4,15 +4,16 @@ declare(strict_types=1);
 
 namespace Linio\SellerCenter\Product;
 
-use Linio\Component\Util\Json;
+use Faker\Generator;
 use Linio\SellerCenter\Exception\InvalidUrlException;
 use Linio\SellerCenter\Factory\Xml\Product\ImagesFactory;
+use Linio\SellerCenter\Helper\Json;
 use Linio\SellerCenter\LinioTestCase;
 use Linio\SellerCenter\Model\Product\Image;
 
 class ImageTest extends LinioTestCase
 {
-    protected $faker;
+    protected Generator $faker;
 
     public function setUp(): void
     {

@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<BusinessUnit>
+    <BusinessUnit>%s</BusinessUnit>
+    <OperatorCode>%s</OperatorCode>
+    <Price>%f</Price>
+    <SpecialPrice>%f</SpecialPrice>
+    <SpecialFromDate>%s</SpecialFromDate>
+    <SpecialToDate>%s</SpecialToDate>
+    <Stock>%d</Stock>
+    <Status>%s</Status>
+    <IsPublished>%d</IsPublished>
+</BusinessUnit>

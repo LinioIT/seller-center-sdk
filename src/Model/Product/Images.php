@@ -4,11 +4,9 @@ declare(strict_types=1);
 
 namespace Linio\SellerCenter\Model\Product;
 
-use JsonSerializable;
 use Linio\SellerCenter\Contract\CollectionInterface;
-use Linio\SellerCenter\Exception\MaxImagesExceededException;
 
-class Images implements CollectionInterface, JsonSerializable
+class Images implements CollectionInterface, \JsonSerializable
 {
     public const MAX_IMAGES_ALLOWED = 8;
 
@@ -27,10 +25,6 @@ class Images implements CollectionInterface, JsonSerializable
 
     public function add(Image $image): void
     {
-        if (count($this->collection) >= self::MAX_IMAGES_ALLOWED) {
-            throw new MaxImagesExceededException(self::MAX_IMAGES_ALLOWED);
-        }
-
         $this->collection[] = $image;
     }
 
@@ -74,6 +68,9 @@ class Images implements CollectionInterface, JsonSerializable
         $this->collection = array_merge($this->collection, $items);
     }
 
+    /**
+     * @return mixed[]
+     */
     public function jsonSerialize(): array
     {
         return $this->collection;

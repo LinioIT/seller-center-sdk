@@ -4,10 +4,9 @@ declare(strict_types=1);
 
 namespace Linio\SellerCenter\Model\Feed;
 
-use JsonSerializable;
 use Linio\SellerCenter\Contract\CollectionInterface;
 
-class FeedWarnings implements CollectionInterface, JsonSerializable
+class FeedWarnings implements CollectionInterface, \JsonSerializable
 {
     /**
      * @var FeedWarning[]
@@ -24,6 +23,9 @@ class FeedWarnings implements CollectionInterface, JsonSerializable
         $this->collection[] = $warning;
     }
 
+    /**
+     * @return FeedWarning[]
+     */
     public function jsonSerialize(): array
     {
         return $this->collection;

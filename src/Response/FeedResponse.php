@@ -4,7 +4,6 @@ declare(strict_types=1);
 
 namespace Linio\SellerCenter\Response;
 
-use DateTimeImmutable;
 use Linio\SellerCenter\Exception\EmptyArgumentException;
 
 class FeedResponse
@@ -25,7 +24,7 @@ class FeedResponse
     protected $responseType;
 
     /**
-     * @var DateTimeImmutable|null
+     * @var \DateTimeImmutable|null
      */
     protected $timestamp;
 
@@ -34,12 +33,15 @@ class FeedResponse
      */
     protected $requestParameters;
 
+    /**
+     * @param mixed[] $requestParameters
+     */
     public function __construct(
         ?string $requestId,
         string $requestAction,
         string $responseType,
         string $timestamp,
-        array $requestParameters = []
+        array $requestParameters = [],
     ) {
         if (empty($requestAction)) {
             throw new EmptyArgumentException('RequestAction');
@@ -49,11 +51,11 @@ class FeedResponse
             throw new EmptyArgumentException('Timestamp');
         }
 
-        $date = DateTimeImmutable::createFromFormat(DATE_ATOM, $timestamp);
+        $date = \DateTimeImmutable::createFromFormat(DATE_ATOM, $timestamp);
 
         $this->requestId = $requestId;
         $this->requestAction = $requestAction;
-        $this->responseType = $responseType ?? null;
+        $this->responseType = $responseType;
         $this->timestamp = $date ? $date : null;
         $this->requestParameters = $requestParameters;
     }
@@ -73,7 +75,7 @@ class FeedResponse
         return $this->responseType;
     }
 
-    public function getTimestamp(): ?DateTimeImmutable
+    public function getTimestamp(): ?\DateTimeImmutable
     {
         return $this->timestamp;
     }

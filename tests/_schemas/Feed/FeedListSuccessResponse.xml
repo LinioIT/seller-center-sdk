@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<SuccessResponse>
+    <Head>
+    <RequestId></RequestId>
+    <RequestAction>FeedList</RequestAction>
+    <ResponseType>Feed</ResponseType>
+    <Timestamp>2013-10-28T16:33:55+0000</Timestamp>
+    </Head>
+    <Body>
+    <Feed>
+        <Feed>829a8d2a-d370-4fa6-8613-8554f43d5qwed</Feed>
+        <Status>Processing</Status>
+        <Action>ProductCreate</Action>
+        <CreationDate>2013-10-23 15:43:26</CreationDate>
+        <UpdatedDate></UpdatedDate>
+        <Source>api</Source>
+        <TotalRecords>9999</TotalRecords>
+        <ProcessedRecords>0</ProcessedRecords>
+        <FailedRecords>0</FailedRecords>
+        <FailureReports></FailureReports>
+    </Feed>
+    <Feed>
+        <Feed>829a8d2a-d370-4fa6-8613-8554f43d5fed</Feed>
+        <Status>Processing</Status>
+        <Action>ProductCreate</Action>
+        <CreationDate>2013-10-23 15:43:26</CreationDate>
+        <UpdatedDate></UpdatedDate>
+        <Source>api</Source>
+        <TotalRecords>9999</TotalRecords>
+        <ProcessedRecords>0</ProcessedRecords>
+        <FailedRecords>10</FailedRecords>
+        <FailureReports>
+        <MimeType>text/csv</MimeType>
+        <File>IkVycm9yIjsiV2FybmluZyI7IlNlbGdFN....</File>
+        </FailureReports>
+    </Feed>
+    </Body>
+</SuccessResponse>

@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace Linio\SellerCenter;
 
+use GuzzleHttp\ClientInterface as GuzzleClientInterface;
 use Http\Discovery\HttpClientDiscovery;
 use Linio\SellerCenter\Adapter\Client\GuzzleClientAdapter;
 use Linio\SellerCenter\Adapter\Client\PsrClientAdapter;
@@ -12,104 +13,67 @@ use Linio\SellerCenter\Application\Parameters;
 use Linio\SellerCenter\Contract\ClientInterface;
 use Linio\SellerCenter\Service\BrandManager;
 use Linio\SellerCenter\Service\CategoryManager;
+use Linio\SellerCenter\Service\Contract\ProductManagerInterface;
 use Linio\SellerCenter\Service\DocumentManager;
 use Linio\SellerCenter\Service\FeedManager;
+use Linio\SellerCenter\Service\GlobalOrderManager;
+use Linio\SellerCenter\Service\GlobalProductManager;
+use Linio\SellerCenter\Service\GlobalSellerManager;
 use Linio\SellerCenter\Service\OrderManager;
 use Linio\SellerCenter\Service\ProductManager;
 use Linio\SellerCenter\Service\QualityControlManager;
+use Linio\SellerCenter\Service\SellerManager;
 use Linio\SellerCenter\Service\ShipmentManager;
+use Linio\SellerCenter\Service\WarehouseManager;
 use Linio\SellerCenter\Service\WebhookManager;
+use Linio\SellerCenter\V2\Service\OrderManager as OrderManagerV2;
+use Psr\Http\Client\ClientInterface as PsrClientInterface;
 use Psr\Log\LoggerInterface;
 use Psr\Log\NullLogger;
 
 class SellerCenterSdk
 {
-    /**
-     * @var BrandManager
-     */
-    protected $brands;
+    protected ?BrandManager $brands;
+    protected ?FeedManager $feeds;
+    protected ?QualityControlManager $qualityControl;
+    protected ?DocumentManager $documents;
+    protected ?CategoryManager $categories;
+    protected ?OrderManager $orders;
+    protected ?GlobalOrderManager $globalOrders;
+    protected ?WebhookManager $webhooks;
+    protected ?Parameters $parameters;
+    protected Configuration $configuration;
+    protected ClientInterface $client;
+    protected LoggerInterface $logger;
+    protected ?ProductManager $products;
+    protected ?GlobalProductManager $globalProducts;
+    protected ?ShipmentManager $shipment;
+    protected ?SellerManager $seller;
+    protected ?GlobalSellerManager $globalSeller;
+    protected ?OrderManagerV2 $ordersV2;
+    protected ?WarehouseManager $warehouses;
 
     /**
-     * @var FeedManager
-     */
-    protected $feeds;
-
-    /**
-     * @var QualityControlManager
-     */
-    protected $qualityControl;
-
-    /**
-     * @var DocumentManager
-     */
-    protected $documents;
-
-    /**
-     * @var CategoryManager
-     */
-    protected $categories;
-
-    /**
-     * @var OrderManager
-     */
-    protected $orders;
-
-    /**
-     * @var WebhookManager
-     */
-    protected $webhooks;
-
-    /**
-     * @var Parameters
-     */
-    protected $parameters;
-
-    /**
-     * @var Configuration
-     */
-    protected $configuration;
-
-    /**
-     * @var ClientInterface
-     */
-    protected $client;
-
-    /**
-     * @var LoggerInterface
-     */
-    protected $logger;
-
-    /**
-     * @var ProductManager
-     */
-    protected $products;
-
-    /**
-     * @var ShipmentManager
-     */
-    protected $shipment;
-
-    /**
-     * @param \GuzzleHttp\ClientInterface|\Psr\Http\Client\ClientInterface|null $client
+     * @param GuzzleClientInterface|PsrClientInterface|null $client
      */
     public function __construct(
         Configuration $configuration,
         $client = null,
-        ?LoggerInterface $logger = null
+        ?LoggerInterface $logger = null,
     ) {
         $client = $client ? $client : HttpClientDiscovery::find();
         $this->setClient($client);
         $this->configuration = $configuration;
         $this->logger = $logger ?? new NullLogger();
-        $this->parameters = Parameters::fromBasics($configuration->getUser(), $configuration->getVersion());
+        $this->parameters = Parameters::fromConfiguration($configuration);
     }
 
     /**
-     * @param \GuzzleHttp\ClientInterface|\Psr\Http\Client\ClientInterface $client
+     * @param GuzzleClientInterface|PsrClientInterface $client
      */
     public function setClient($client): void
     {
-        if (is_subclass_of($client, \GuzzleHttp\ClientInterface::class)) {
+        if ($client instanceof GuzzleClientInterface) {
             $this->client = new GuzzleClientAdapter($client);
 
             return;
@@ -120,7 +84,7 @@ class SellerCenterSdk
 
     public function brands(): BrandManager
     {
-        if (empty($this->brands)) {
+        if (!isset($this->brands)) {
             $this->brands = new BrandManager(
                 $this->configuration,
                 $this->client,
@@ -134,7 +98,7 @@ class SellerCenterSdk
 
     public function feeds(): FeedManager
     {
-        if (empty($this->feeds)) {
+        if (!isset($this->feeds)) {
             $this->feeds = new FeedManager(
                 $this->configuration,
                 $this->client,
@@ -148,7 +112,7 @@ class SellerCenterSdk
 
     public function documents(): DocumentManager
     {
-        if (empty($this->documents)) {
+        if (!isset($this->documents)) {
             $this->documents = new DocumentManager(
                 $this->configuration,
                 $this->client,
@@ -162,7 +126,7 @@ class SellerCenterSdk
 
     public function categories(): CategoryManager
     {
-        if (empty($this->categories)) {
+        if (!isset($this->categories)) {
             $this->categories = new CategoryManager(
                 $this->configuration,
                 $this->client,
@@ -174,9 +138,9 @@ class SellerCenterSdk
         return $this->categories;
     }
 
-    public function products(): ProductManager
+    public function products(): ProductManagerInterface
     {
-        if (empty($this->products)) {
+        if (!isset($this->products)) {
             $this->products = new ProductManager(
                 $this->configuration,
                 $this->client,
@@ -188,9 +152,23 @@ class SellerCenterSdk
         return $this->products;
     }
 
+    public function globalProducts(): ProductManagerInterface
+    {
+        if (!isset($this->globalProducts)) {
+            $this->globalProducts = new GlobalProductManager(
+                $this->configuration,
+                $this->client,
+                $this->parameters,
+                $this->logger
+            );
+        }
+
+        return $this->globalProducts;
+    }
+
     public function orders(): OrderManager
     {
-        if (empty($this->orders)) {
+        if (!isset($this->orders)) {
             $this->orders = new OrderManager(
                 $this->configuration,
                 $this->client,
@@ -202,9 +180,37 @@ class SellerCenterSdk
         return $this->orders;
     }
 
+    public function globalOrders(): GlobalOrderManager
+    {
+        if (!isset($this->globalOrders)) {
+            $this->globalOrders = new GlobalOrderManager(
+                $this->configuration,
+                $this->client,
+                $this->parameters,
+                $this->logger
+            );
+        }
+
+        return $this->globalOrders;
+    }
+
+    public function ordersV2(): OrderManagerV2
+    {
+        if (empty($this->ordersV2)) {
+            $this->ordersV2 = new OrderManagerV2(
+                $this->configuration,
+                $this->client,
+                $this->parameters,
+                $this->logger
+            );
+        }
+
+        return $this->ordersV2;
+    }
+
     public function qualityControl(): QualityControlManager
     {
-        if (empty($this->qualityControl)) {
+        if (!isset($this->qualityControl)) {
             $this->qualityControl = new QualityControlManager(
                 $this->configuration,
                 $this->client,
@@ -218,7 +224,7 @@ class SellerCenterSdk
 
     public function webhooks(): WebhookManager
     {
-        if (empty($this->webhooks)) {
+        if (!isset($this->webhooks)) {
             $this->webhooks = new WebhookManager(
                 $this->configuration,
                 $this->client,
@@ -232,7 +238,7 @@ class SellerCenterSdk
 
     public function shipment(): ShipmentManager
     {
-        if (empty($this->shipment)) {
+        if (!isset($this->shipment)) {
             $this->shipment = new ShipmentManager(
                 $this->configuration,
                 $this->client,
@@ -242,5 +248,47 @@ class SellerCenterSdk
         }
 
         return $this->shipment;
+    }
+
+    public function seller(): SellerManager
+    {
+        if (!isset($this->seller)) {
+            $this->seller = new SellerManager(
+                $this->configuration,
+                $this->client,
+                $this->parameters,
+                $this->logger
+            );
+        }
+
+        return $this->seller;
+    }
+
+    public function globalSeller(): GlobalSellerManager
+    {
+        if (!isset($this->globalSeller)) {
+            $this->globalSeller = new GlobalSellerManager(
+                $this->configuration,
+                $this->client,
+                $this->parameters,
+                $this->logger
+            );
+        }
+
+        return $this->globalSeller;
+    }
+
+    public function warehouses(): WarehouseManager
+    {
+        if (empty($this->warehouses)) {
+            $this->warehouses = new WarehouseManager(
+                $this->configuration,
+                $this->client,
+                $this->parameters,
+                $this->logger
+            );
+        }
+
+        return $this->warehouses;
     }
 }

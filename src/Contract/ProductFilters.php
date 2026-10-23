@@ -7,6 +7,7 @@ namespace Linio\SellerCenter\Contract;
 interface ProductFilters
 {
     public const ALL = 'all';
+    public const ACTIVE = 'active';
     public const LIVE = 'live';
     public const INACTIVE = 'inactive';
     public const DELETED = 'deleted';
@@ -17,6 +18,7 @@ interface ProductFilters
 
     public const FILTERS = [
         self::ALL,
+        self::ACTIVE,
         self::LIVE,
         self::INACTIVE,
         self::DELETED,

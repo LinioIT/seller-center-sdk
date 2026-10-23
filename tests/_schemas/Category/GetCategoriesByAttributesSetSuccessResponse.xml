@@ -1,0 +1,52 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<SuccessResponse>
+  <Head>
+    <RequestId/>
+    <RequestAction>GetCategoriesByAttributeSet</RequestAction>
+    <ResponseType>AttributeSets</ResponseType>
+    <Timestamp>2015-07-16T05:19:15+0200</Timestamp>
+  </Head>
+  <Body>
+    <AttributeSets>
+      <AttributeSet>
+        <AttributeSetId>3</AttributeSetId>
+        <Name>home_living</Name>
+        <GlobalIdentifier>HL</GlobalIdentifier>
+        <Categories>
+          <Category>
+            <Name>Home &amp; Living</Name>
+            <CategoryId>390</CategoryId>
+            <GlobalIdentifier/>
+            <Children>
+              <Category>
+                <Name>Large Appliances</Name>
+                <CategoryId>2931</CategoryId>
+                <GlobalIdentifier/>
+                <Children>
+                  <Category>
+                    <Name>Fridge &amp; Freezers</Name>
+                    <CategoryId>2949</CategoryId>
+                    <GlobalIdentifier/>
+                    <Children/>
+                  </Category>
+                  <Category>
+                    <Name>Washing Machine</Name>
+                    <CategoryId>2948</CategoryId>
+                    <GlobalIdentifier/>
+                    <Children/>
+                  </Category>
+                  <Category>
+                    <Name>Microwave</Name>
+                    <CategoryId>2947</CategoryId>
+                    <GlobalIdentifier/>
+                    <Children/>
+                  </Category>
+                </Children>
+              </Category>
+            </Children>
+          </Category>
+        </Categories>
+      </AttributeSet>
+    </AttributeSets>
+  </Body>
+</SuccessResponse>

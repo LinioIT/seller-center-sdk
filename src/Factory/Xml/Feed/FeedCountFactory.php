@@ -6,7 +6,6 @@ namespace Linio\SellerCenter\Factory\Xml\Feed;
 
 use Linio\SellerCenter\Exception\InvalidXmlStructureException;
 use Linio\SellerCenter\Model\Feed\FeedCount;
-use SimpleXMLElement;
 
 class FeedCountFactory
 {
@@ -19,7 +18,7 @@ class FeedCountFactory
         'Canceled',
     ];
 
-    public static function make(SimpleXMLElement $xml): FeedCount
+    public static function make(\SimpleXMLElement $xml): FeedCount
     {
         self::validateStructure($xml, self::FEED_COUNT);
 
@@ -36,7 +35,7 @@ class FeedCountFactory
         );
     }
 
-    private static function validateStructure(SimpleXMLElement $xml, string $property): void
+    private static function validateStructure(\SimpleXMLElement $xml, string $property): void
     {
         if (!property_exists($xml, $property)) {
             throw new InvalidXmlStructureException(self::FEED_COUNT, $property);

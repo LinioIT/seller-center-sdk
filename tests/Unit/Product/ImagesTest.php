@@ -4,12 +4,10 @@ declare(strict_types=1);
 
 namespace Linio\SellerCenter\Product;
 
-use Linio\SellerCenter\Exception\MaxImagesExceededException;
 use Linio\SellerCenter\Factory\Xml\Product\ImagesFactory;
 use Linio\SellerCenter\LinioTestCase;
 use Linio\SellerCenter\Model\Product\Image;
 use Linio\SellerCenter\Model\Product\Images;
-use stdClass;
 
 class ImagesTest extends LinioTestCase
 {
@@ -79,22 +77,6 @@ class ImagesTest extends LinioTestCase
     /**
      * @dataProvider generatedImages
      */
-    public function testItThrowsAnExceptionByOverflow(array $imageStack): void
-    {
-        $this->expectException(MaxImagesExceededException::class);
-        $this->expectExceptionMessage(sprintf('Only %s are supported into the collection.', Images::MAX_IMAGES_ALLOWED));
-
-        $availableImages = array_slice($imageStack, 0, Images::MAX_IMAGES_ALLOWED);
-        $image = array_slice($imageStack, 8, 1)[0];
-
-        $images = new Images();
-        $images->addMany($availableImages);
-        $images->add($image);
-    }
-
-    /**
-     * @dataProvider generatedImages
-     */
     public function testItSkipsAddingManyWithAFullyStackOfImages(array $imageStack): void
     {
         $availableImages = array_slice($imageStack, 0, Images::MAX_IMAGES_ALLOWED);
@@ -152,7 +134,7 @@ class ImagesTest extends LinioTestCase
     public function testItSkipObjectsThatAreNotImages(array $imageStack): void
     {
         $multipleImages = array_slice($imageStack, 0, 3);
-        $object = new stdClass();
+        $object = new \stdClass();
 
         $multipleImages[] = $object;
 
@@ -204,12 +186,13 @@ class ImagesTest extends LinioTestCase
         $this->assertSame($imageUrl, $images->all()[0]->getUrl());
     }
 
-    public function generatedImages(): array
+    public static function generatedImages(): array
     {
         $imagesMock = [];
+        $faker = \Faker\Factory::create();
 
         for ($i = 0; $i < self::IMAGES; $i++) {
-            $imagesMock[] = new Image($this->getFaker()->imageUrl($width = 640, $height = 480));
+            $imagesMock[] = new Image($faker->imageUrl($width = 640, $height = 480));
         }
 
         return [
@@ -217,12 +200,13 @@ class ImagesTest extends LinioTestCase
         ];
     }
 
-    public function generatedImagesUrls(): array
+    public static function generatedImagesUrls(): array
     {
         $imagesMock = [];
+        $faker = \Faker\Factory::create();
 
         for ($i = 0; $i < self::IMAGES; $i++) {
-            $imagesMock[] = $this->getFaker()->imageUrl($width = 640, $height = 480);
+            $imagesMock[] = $faker->imageUrl($width = 640, $height = 480);
         }
 
         return [

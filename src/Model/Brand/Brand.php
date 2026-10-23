@@ -4,12 +4,10 @@ declare(strict_types=1);
 
 namespace Linio\SellerCenter\Model\Brand;
 
-use JsonSerializable;
 use Linio\SellerCenter\Exception\InvalidBrandIdException;
 use Linio\SellerCenter\Exception\InvalidBrandNameException;
-use stdClass;
 
-class Brand implements JsonSerializable
+class Brand implements \JsonSerializable
 {
     /**
      * @var int|null
@@ -26,9 +24,6 @@ class Brand implements JsonSerializable
      */
     protected $globalIdentifier;
 
-    /**
-     * @return static
-     */
     public static function build(int $brandId, string $name, ?string $globalIdentifier): self
     {
         if (empty($brandId)) {
@@ -39,7 +34,7 @@ class Brand implements JsonSerializable
             throw new InvalidBrandNameException();
         }
 
-        $brand = new static();
+        $brand = new self();
 
         $brand->name = $name;
         $brand->brandId = $brandId;
@@ -48,12 +43,9 @@ class Brand implements JsonSerializable
         return $brand;
     }
 
-    /**
-     * @return static
-     */
     public static function fromName(string $name): self
     {
-        $brand = new static();
+        $brand = new self();
 
         $brand->name = $name;
 
@@ -75,9 +67,9 @@ class Brand implements JsonSerializable
         return $this->globalIdentifier;
     }
 
-    public function jsonSerialize(): stdClass
+    public function jsonSerialize(): \stdClass
     {
-        $serialized = new stdClass();
+        $serialized = new \stdClass();
         $serialized->brandId = $this->brandId;
         $serialized->name = $this->name;
         $serialized->globalIdentifier = $this->globalIdentifier;

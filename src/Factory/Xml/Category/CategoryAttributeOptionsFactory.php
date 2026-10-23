@@ -5,11 +5,10 @@ declare(strict_types=1);
 namespace Linio\SellerCenter\Factory\Xml\Category;
 
 use Linio\SellerCenter\Model\Category\CategoryAttributeOptions;
-use SimpleXMLElement;
 
 class CategoryAttributeOptionsFactory
 {
-    public static function make(SimpleXMLElement $xml): CategoryAttributeOptions
+    public static function make(\SimpleXMLElement $xml): CategoryAttributeOptions
     {
         $attributeOptions = new CategoryAttributeOptions();
 

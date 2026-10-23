@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<SuccessResponse>
+  <Head>
+    <RequestId/>
+    <RequestAction>GetDocument</RequestAction>
+    <ResponseType>Document</ResponseType>
+    <Timestamp>2019-01-16T12:56:50-0500</Timestamp>
+  </Head>
+  <Body>
+    <Documents>
+      <Document>
+        <DocumentType>invoice</DocumentType>
+        <MimeType>text/html</MimeType>
+        <File>kJPHRkIHWxlPd</File>
+      </Document>
+    </Documents>
+  </Body>
+</SuccessResponse>

@@ -4,255 +4,123 @@ declare(strict_types=1);
 
 namespace Linio\SellerCenter\Service;
 
-use Linio\Component\Util\Json;
-use Linio\SellerCenter\Application\Configuration;
-use Linio\SellerCenter\Application\Parameters;
-use Linio\SellerCenter\Application\Security\Signature;
-use Linio\SellerCenter\Contract\ClientInterface;
-use Linio\SellerCenter\Factory\RequestFactory;
 use Linio\SellerCenter\Factory\Xml\Category\AttributesSetFactory;
 use Linio\SellerCenter\Factory\Xml\Category\CategoriesFactory;
 use Linio\SellerCenter\Factory\Xml\Category\CategoryAttributesFactory;
-use Linio\SellerCenter\Formatter\LogMessageFormatter;
-use Linio\SellerCenter\Response\HandleResponse;
-use Psr\Log\LoggerInterface;
+use Linio\SellerCenter\Factory\Xml\Category\CategoryContentScoreRulesFactory;
+use Linio\SellerCenter\Helper\Json;
+use Linio\SellerCenter\Model\Category\AttributeSet;
+use Linio\SellerCenter\Model\Category\Category;
+use Linio\SellerCenter\Model\Category\CategoryAttribute;
+use Linio\SellerCenter\Model\Category\CategoryContentScoreRules;
 
-class CategoryManager
+class CategoryManager extends BaseManager
 {
-    /**
-     * @var LoggerInterface
-     */
-    protected $logger;
+    public const GET_RULES_ONLY_DEFAULT_VALUE = true;
 
     /**
-     * @var Configuration
+     * @return Category[]
      */
-    protected $configuration;
-
-    /**
-     * @var ClientInterface
-     */
-    protected $client;
-
-    /**
-     * @var Parameters
-     */
-    protected $parameters;
-
-    public function __construct(
-        Configuration $configuration,
-        ClientInterface $client,
-        Parameters $parameters,
-        LoggerInterface $logger
-    ) {
-        $this->configuration = $configuration;
-        $this->client = $client;
-        $this->parameters = $parameters;
-        $this->logger = $logger;
-    }
-
-    public function getCategoryTree(): array
+    public function getCategoryTree(bool $debug = true): array
     {
         $action = 'GetCategoryTree';
 
-        $parameters = clone $this->parameters;
-        $parameters->set(['Action' => $action]);
-        $parameters->set([
-            'Signature' => Signature::generate($parameters, $this->configuration->getKey())->get(),
-        ]);
+        $parameters = $this->makeParametersForAction($action);
 
-        $requestId = uniqid((string) mt_rand());
-
-        $request = RequestFactory::make('GET', $this->configuration->getEndpoint(), [
-            'Request-ID' => $requestId,
-        ]);
-
-        $this->logger->debug(
-            LogMessageFormatter::fromAction($requestId, $action, LogMessageFormatter::TYPE_REQUEST),
-            [
-                'url' => (string) $request->getUri(),
-                'method' => $request->getMethod(),
-                'body' => (string) $request->getBody(),
-                'parameters' => $parameters->all(),
-            ]
-        );
-
-        $response = $this->client->send($request, [
-            'query' => $parameters->all(),
-        ]);
-
-        $body = (string) $response->getBody();
-
-        $this->logger->debug(
-            LogMessageFormatter::fromAction($requestId, $action, LogMessageFormatter::TYPE_RESPONSE),
-            [
-                'body' => $body,
-            ]
-        );
-
-        $builtResponse = HandleResponse::parse($body);
-
-        $this->logger->debug(
-            LogMessageFormatter::fromAction($requestId, $action, LogMessageFormatter::TYPE_BUILT_RESPONSE),
-            [
-                'head' => $builtResponse->getHead()->asXML(),
-                'body' => $builtResponse->getBody()->asXML(),
-            ]
+        $builtResponse = $this->executeAction(
+            $action,
+            $parameters,
+            null,
+            'GET',
+            $debug
         );
 
         $categories = CategoriesFactory::make($builtResponse->getBody());
 
-        $categoriesResponse = $categories->all();
-
-        $this->logger->info(
-            sprintf(
-                '%d::%s::APIResponse::SellerCenterSdk: %d categories was recovered',
-                $request->getHeaderLine('Request-ID'),
-                $action,
-                count($categories->all())
-            )
-        );
-
-        return $categoriesResponse;
+        return $categories->all();
     }
 
-    public function getCategoryAttributes(int $categoryId): array
-    {
+    /**
+     * @return CategoryAttribute[]
+     */
+    public function getCategoryAttributes(
+        int $categoryId,
+        bool $debug = true,
+    ): array {
         $action = 'GetCategoryAttributes';
 
-        $parameters = clone $this->parameters;
-        $parameters->set([
-            'Action' => $action,
-            'PrimaryCategory' => $categoryId,
-        ]);
-        $parameters->set([
-            'Signature' => Signature::generate($parameters, $this->configuration->getKey())->get(),
-        ]);
+        $parameters = $this->makeParametersForAction($action);
+        $parameters->set(['PrimaryCategory' => $categoryId]);
 
-        $requestId = uniqid((string) mt_rand());
-
-        $request = RequestFactory::make('GET', $this->configuration->getEndpoint(), [
-            'Request-ID' => $requestId,
-        ]);
-
-        $this->logger->debug(
-            LogMessageFormatter::fromAction($requestId, $action, LogMessageFormatter::TYPE_REQUEST),
-            [
-                'url' => (string) $request->getUri(),
-                'method' => $request->getMethod(),
-                'body' => (string) $request->getBody(),
-                'parameters' => $parameters->all(),
-            ]
-        );
-
-        $response = $this->client->send($request, [
-            'query' => $parameters->all(),
-        ]);
-
-        $body = (string) $response->getBody();
-
-        $this->logger->debug(
-            LogMessageFormatter::fromAction($requestId, $action, LogMessageFormatter::TYPE_RESPONSE),
-            [
-                'body' => $body,
-            ]
-        );
-
-        $builtResponse = HandleResponse::parse($body);
-
-        $this->logger->debug(
-            LogMessageFormatter::fromAction($requestId, $action, LogMessageFormatter::TYPE_BUILT_RESPONSE),
-            [
-                'head' => $builtResponse->getHead()->asXML(),
-                'body' => $builtResponse->getBody()->asXML(),
-            ]
+        $builtResponse = $this->executeAction(
+            $action,
+            $parameters,
+            null,
+            'GET',
+            $debug
         );
 
         $categoryAttributes = CategoryAttributesFactory::make($builtResponse->getBody());
 
-        $categoryAttributesResponse = $categoryAttributes->all();
-
-        $this->logger->info(
-            sprintf(
-                '%d::%s::APIResponse::SellerCenterSdk: %d category attributes was recovered',
-                $request->getHeaderLine('Request-ID'),
-                $action,
-                count($categoryAttributes->all())
-            )
-        );
-
-        return $categoryAttributesResponse;
+        return $categoryAttributes->all();
     }
 
-    public function getCategoriesByAttributesSet(?array $attributesSetIds): array
-    {
+    /**
+     * @param mixed[]|null $attributesSetIds
+     *
+     * @return AttributeSet[]
+     */
+    public function getCategoriesByAttributesSet(
+        ?array $attributesSetIds,
+        bool $debug = true,
+    ): array {
         $action = 'GetCategoriesByAttributeSet';
-
-        $parameters = clone $this->parameters;
-        $parameters->set(['Action' => $action]);
-
         $attributesSetValue = 0;
+
+        $parameters = $this->makeParametersForAction($action);
 
         if (!empty($attributesSetIds)) {
             $attributesSetValue = Json::encode($attributesSetIds);
         }
 
         $parameters->set(['AttributeSet' => $attributesSetValue]);
-        $parameters->set([
-            'Signature' => Signature::generate($parameters, $this->configuration->getKey())->get(),
-        ]);
 
-        $requestId = uniqid((string) mt_rand());
-
-        $request = RequestFactory::make('GET', $this->configuration->getEndpoint(), [
-            'Request-ID' => $requestId,
-        ]);
-
-        $this->logger->debug(
-            LogMessageFormatter::fromAction($requestId, $action, LogMessageFormatter::TYPE_REQUEST),
-            [
-                'url' => (string) $request->getUri(),
-                'method' => $request->getMethod(),
-                'body' => (string) $request->getBody(),
-                'parameters' => $parameters->all(),
-            ]
-        );
-
-        $response = $this->client->send($request, [
-            'query' => $parameters->all(),
-        ]);
-
-        $body = (string) $response->getBody();
-
-        $this->logger->debug(
-            LogMessageFormatter::fromAction($requestId, $action, LogMessageFormatter::TYPE_RESPONSE),
-            [
-                'body' => $body,
-            ]
-        );
-        $builtResponse = HandleResponse::parse($body);
-
-        $this->logger->debug(
-            LogMessageFormatter::fromAction($requestId, $action, LogMessageFormatter::TYPE_BUILT_RESPONSE),
-            [
-                'head' => $builtResponse->getHead()->asXML(),
-                'body' => $builtResponse->getBody()->asXML(),
-            ]
+        $builtResponse = $this->executeAction(
+            $action,
+            $parameters,
+            null,
+            'GET',
+            $debug
         );
 
         $attributesSet = AttributesSetFactory::make($builtResponse->getBody());
 
-        $attributesSetResponse = $attributesSet->all();
+        return $attributesSet->all();
+    }
 
-        $this->logger->info(
-            sprintf(
-                '%d::%s::APIResponse::SellerCenterSdk: %d attributes set was recovered',
-                $request->getHeaderLine('Request-ID'),
-                $action,
-                count($attributesSet->all())
-            )
+    public function getCategoryContentScoreRules(
+        int $categoryId,
+        ?bool $getRulesOnly = self::GET_RULES_ONLY_DEFAULT_VALUE,
+        ?string $operator = null,
+        bool $debug = true,
+    ): CategoryContentScoreRules {
+        $action = 'GetContentScore';
+
+        $parameters = $this->makeParametersForAction($action);
+        $parameters->set([
+            'CategoryId' => $categoryId,
+            'GetRulesOnly' => $getRulesOnly,
+            'Operator' => $operator,
+        ]);
+
+        $builtResponse = $this->executeAction(
+            $action,
+            $parameters,
+            null,
+            'GET',
+            $debug
         );
 
-        return $attributesSetResponse;
+        return CategoryContentScoreRulesFactory::make($builtResponse->getBody());
     }
 }

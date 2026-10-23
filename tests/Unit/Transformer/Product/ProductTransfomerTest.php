@@ -9,12 +9,14 @@ use Linio\SellerCenter\LinioTestCase;
 use Linio\SellerCenter\Model\Brand\Brand;
 use Linio\SellerCenter\Model\Category\Categories;
 use Linio\SellerCenter\Model\Category\Category;
+use Linio\SellerCenter\Model\Product\BusinessUnit;
+use Linio\SellerCenter\Model\Product\BusinessUnits;
+use Linio\SellerCenter\Model\Product\GlobalProduct;
 use Linio\SellerCenter\Model\Product\Image;
 use Linio\SellerCenter\Model\Product\Images;
 use Linio\SellerCenter\Model\Product\Product;
 use Linio\SellerCenter\Model\Product\ProductData;
-use SimpleXMLElement;
-use stdClass;
+use Linio\SellerCenter\Model\Product\VariationAttributes;
 
 class ProductTransfomerTest extends LinioTestCase
 {
@@ -29,7 +31,7 @@ class ProductTransfomerTest extends LinioTestCase
             'Black Leather bagskasd',
             'M',
             Category::fromId(7080),
-            '<p>Womens black <b>leather & bag</b>, with ample space. Can be worn over the shoulder, or remove straps to carry in your hand.asdasd</p>',
+            '<p>Womens black <b>leather and bag</b>, with ample space. Can be worn over the shoulder, or remove straps to carry in your hand.asdasd</p>',
             Brand::fromName('Apple'),
             30000,
             '123456783',
@@ -37,34 +39,10 @@ class ProductTransfomerTest extends LinioTestCase
             $productData
         );
 
-        $xml = new SimpleXMLElement('<Products/>');
+        $xml = new \SimpleXMLElement('<Products/>');
         ProductTransformer::asXml($xml, $product);
 
-        $expectedXml = '
-            <Products>
-                <Product>
-                    <SellerSku>BLACK_BAG_TEST</SellerSku>
-                    <Name>Black Leather bagskasd</Name>
-                    <Variation>M</Variation>
-                    <Status>active</Status>
-                    <PrimaryCategory>7080</PrimaryCategory>
-                    <Description>&lt;p&gt;Womens black &lt;b&gt;leather &amp; bag&lt;/b&gt;, with ample space. Can be worn over the shoulder, or remove straps to carry in your hand.asdasd&lt;/p&gt;</Description>
-                    <Brand>Apple</Brand>
-                    <Price>30000</Price>
-                    <ProductId>123456783</ProductId>
-                    <TaxClass>IVA 19%</TaxClass>
-                    <Quantity>0</Quantity>
-                    <ProductData>
-                        <ConditionType>Nuevo</ConditionType>
-                        <PackageHeight>1</PackageHeight>
-                        <PackageWidth>1</PackageWidth>
-                        <PackageLength>1</PackageLength>
-                        <PackageWeight>1</PackageWeight>
-                        <ShortDescription>Short description &amp; ampersand</ShortDescription>
-                        <MultiOption>Option one,Option two</MultiOption>
-                        </ProductData>
-                    </Product>
-                </Products>';
+        $expectedXml = $this->getSchema('Product/ProductSpecialChars.xml');
 
         $this->assertXmlStringEqualsXmlString($expectedXml, $xml->asXML());
     }
@@ -78,7 +56,7 @@ class ProductTransfomerTest extends LinioTestCase
         $product = Product::fromSku('SKU');
         $product->attachImages($images);
 
-        $xml = new SimpleXMLElement('<Request/>');
+        $xml = new \SimpleXMLElement('<Request/>');
         ProductTransformer::imagesAsXml($xml, $product);
 
         $expectedXml = '
@@ -94,9 +72,169 @@ class ProductTransfomerTest extends LinioTestCase
         $this->assertXmlStringEqualsXmlString($expectedXml, $xml->asXML());
     }
 
+    public function testItCreatesDescriptionAsRealCDataWithoutXmlWarnings(): void
+    {
+        $description = '<p><span>Learn & Grow</span></p>';
+        $productData = new ProductData('Nuevo', 1, 1, 1, 1);
+
+        $product = Product::fromBasicData(
+            'BLACK_BAG_TEST',
+            'Black Leather bagskasd',
+            'M',
+            Category::fromId(7080),
+            $description,
+            Brand::fromName('Apple'),
+            30000,
+            '123456783',
+            'IVA 19%',
+            $productData
+        );
+
+        $warnings = [];
+        set_error_handler(static function (int $severity, string $message) use (&$warnings): bool {
+            $warnings[] = $message;
+
+            return true;
+        });
+
+        $xml = new \SimpleXMLElement('<Request/>');
+        ProductTransformer::asXml($xml, $product);
+        restore_error_handler();
+
+        $xmlString = $xml->asXML();
+
+        $this->assertSame([], array_values(array_filter($warnings, static function (string $warning): bool {
+            return str_contains($warning, 'SimpleXMLElement::addChild(): unterminated entity reference');
+        })));
+        $this->assertStringContainsString('<![CDATA[<p><span>Learn & Grow</span></p>]]>', $xmlString);
+        $this->assertStringNotContainsString('&amp;', $xmlString);
+    }
+
+    /**
+     * @dataProvider productXMLForFashionAttrProvider
+     */
+    public function testItCreatesProductXMLFashionAttributes(bool $hasFashionData): void
+    {
+        $product = $this->getGlobalProduct($hasFashionData);
+        $expectedXml = $this->getXmlExpected($hasFashionData);
+        $xml = new \SimpleXMLElement('<Request/>');
+        ProductTransformer::asXml($xml, $product);
+
+        $this->assertXmlStringEqualsXmlString($expectedXml, $xml->asXML());
+    }
+
+    public function testItCreatesProductXMLWithOverridAttributes(): void
+    {
+        $businessUnits = new BusinessUnits();
+        $businessUnit = new BusinessUnit(
+            'facl',
+            1299.00,
+            100,
+            'active'
+        );
+        $businessUnit->setOverrideAttributes(['SpecialPrice']);
+        $businessUnits->add($businessUnit);
+
+        $product = GlobalProduct::fromBasicData(
+            '21458191097',
+            'Magic Global Product',
+            'XL',
+            Category::fromId(123),
+            'This is a bold product.',
+            Brand::fromName('Samsung'),
+            $businessUnits,
+            '123326998',
+            null,
+            new ProductData('Nuevo', 1, 1, 1, 1)
+        );
+
+        $xml = new \SimpleXMLElement('<Request/>');
+        ProductTransformer::asXml($xml, $product);
+        $expectedXml = $this->getSchema('Product/GlobalProductEmptySpecialPrice.xml');
+        $this->assertXmlStringEqualsXmlString($expectedXml, $xml->asXML());
+    }
+
+    public function testItCreatesProductXMLWithVariationAttributes(): void
+    {
+        $businessUnits = new BusinessUnits();
+        $businessUnit = new BusinessUnit(
+            'facl',
+            1299.00,
+            100,
+            'active'
+        );
+
+        $businessUnits->add($businessUnit);
+        $variationAttributes = new VariationAttributes();
+
+        $variationAttributes->add('ColorBasicoVariation', 'Green');
+        $variationAttributes->add('TallaBicicleta', 'L');
+
+        $product = GlobalProduct::fromBasicData(
+            '21458191097',
+            'Magic Global Product',
+            'XL',
+            Category::fromId(123),
+            'This is a bold product.',
+            Brand::fromName('Samsung'),
+            $businessUnits,
+            '123326998',
+            null,
+            new ProductData('Nuevo', 1, 1, 1, 1),
+            null,
+            null,
+            null,
+            $variationAttributes
+        );
+
+        $xml = new \SimpleXMLElement('<Request/>');
+        ProductTransformer::asXml($xml, $product);
+        $expectedXml = $this->getSchema('Product/GlobalProductWithVariationAttributes.xml');
+        $this->assertXmlStringEqualsXmlString($expectedXml, $xml->asXML());
+    }
+
+    public function testItCreatesProductXMLWithVariationAttributesAndSkippingThoseWithNullValues(): void
+    {
+        $businessUnits = new BusinessUnits();
+        $businessUnit = new BusinessUnit(
+            'facl',
+            1299.00,
+            100,
+            'active'
+        );
+
+        $businessUnits->add($businessUnit);
+        $variationAttributes = new VariationAttributes();
+
+        $variationAttributes->add('ColorBasicoVariation', 'Green');
+        $variationAttributes->add('TallaBicicleta', null);
+
+        $product = GlobalProduct::fromBasicData(
+            '21458191097',
+            'Magic Global Product',
+            'XL',
+            Category::fromId(123),
+            'This is a bold product.',
+            Brand::fromName('Samsung'),
+            $businessUnits,
+            '123326998',
+            null,
+            new ProductData('Nuevo', 1, 1, 1, 1),
+            null,
+            null,
+            null,
+            $variationAttributes
+        );
+
+        $xml = new \SimpleXMLElement('<Request/>');
+        ProductTransformer::asXml($xml, $product);
+        $expectedXml = $this->getSchema('Product/GlobalProductWithVariationAttributesAndAttributeWithNullValue.xml');
+        $this->assertXmlStringEqualsXmlString($expectedXml, $xml->asXML());
+    }
+
     public function testItAddsAttributesIgnoringTheNullValues(): void
     {
-        $xml = new SimpleXMLElement('<Root />');
+        $xml = new \SimpleXMLElement('<Root />');
 
         $attributes = [
             'Main' => null,
@@ -104,12 +242,39 @@ class ProductTransfomerTest extends LinioTestCase
             'Foo' => 'Bar',
         ];
 
-        ProductTransformer::addAttributes($xml, $attributes);
+        ProductTransformer::addAttributes($xml, $attributes, []);
         $children = $xml->children();
 
         $this->assertCount(1, $children);
         $this->assertEquals('Foo', $children[0]->getName());
         $this->assertEquals('Bar', (string) $children[0]);
+    }
+
+    public function testItAddsNullValuesIfExistInOverrideAttributesForCommonProducts(): void
+    {
+        $xml = new \SimpleXMLElement('<Root />');
+
+        $attributes = [
+            'Main' => null,
+            'EmptyCategories' => new Categories(),
+            'Foo' => 'Bar',
+        ];
+
+        ProductTransformer::addAttributes($xml, $attributes, ['Main']);
+        $children = $xml->children();
+
+        $this->assertCount(2, $children);
+        $this->assertEquals('Main', $children[0]->getName());
+        $this->assertEmpty((string) $children[0]);
+        $this->assertEquals('Foo', $children[1]->getName());
+        $this->assertEquals('Bar', (string) $children[1]);
+    }
+
+    public function testItSanitizeHtmlAndWrapInCDataFromHtmlText(): void
+    {
+        $result = ProductTransformer::sanitizeHtmlAndWrapInCData('<p><strong>Good quality, great price!</strong></p><p><strong>hola</strong></p>');
+
+        $this->assertSame('<![CDATA[<p><strong>Good quality, great price!</strong></p><p><strong>hola</strong></p>]]>', $result);
     }
 
     /**
@@ -121,7 +286,7 @@ class ProductTransfomerTest extends LinioTestCase
         $this->assertSame($expectedString, $result);
     }
 
-    public function transformedTypesToString()
+    public static function transformedTypesToString()
     {
         return [
             [1, '1'],
@@ -136,7 +301,7 @@ class ProductTransfomerTest extends LinioTestCase
      */
     public function testItTransformsAttributeObjectAsString($object, $expectedResult): void
     {
-        if ($object instanceof stdClass) {
+        if ($object instanceof \stdClass) {
             $this->expectException(InvalidDomainException::class);
         }
 
@@ -144,7 +309,7 @@ class ProductTransfomerTest extends LinioTestCase
         $this->assertSame($expectedResult, $result);
     }
 
-    public function transfomedObjectsProvider()
+    public static function transfomedObjectsProvider()
     {
         $categories = new Categories();
         $categories->add(Category::fromId(222));
@@ -155,7 +320,70 @@ class ProductTransfomerTest extends LinioTestCase
             [new Categories(), null],
             [$categories, '222,333'],
             [Brand::fromName('Linio'), 'Linio'],
-            [new stdClass(), null],
+            [new \stdClass(), null],
         ];
+    }
+
+    /**
+     * @return mixed[]
+     */
+    public static function productXMLForFashionAttrProvider(): array
+    {
+        return [
+            'With Fashion attributes' => [
+                true,
+            ],
+            'Without Fashion attributes' => [
+                false,
+            ],
+        ];
+    }
+
+    public function getGlobalProduct(bool $hasFashionData): GlobalProduct
+    {
+        $businessUnits = new BusinessUnits();
+        $businessUnit = new BusinessUnit(
+            'facl',
+            1299.00,
+            100,
+            'active'
+        );
+        $businessUnits->add($businessUnit);
+
+        $product = GlobalProduct::fromBasicData(
+            '21458191097',
+            'Magic Global Product',
+            $hasFashionData ? null : 'XL',
+            Category::fromId(123),
+            'This is a bold product.',
+            Brand::fromName('Samsung'),
+            $businessUnits,
+            '123326998',
+            null,
+            new ProductData('Nuevo', 1, 1, 1, 1)
+        );
+
+        if ($hasFashionData) {
+            $product->setColor('Beige');
+            $product->setColorBasico('Beige');
+            $product->setSize('L');
+            $product->setTalla('XL');
+        }
+
+        return $product;
+    }
+
+    public function getXmlExpected(bool $hasFashionData): string
+    {
+        $schema = 'Product/GlobalProductFashionAttributes.xml';
+
+        $xmlVariation = '<Variation>XL</Variation>';
+
+        $xmlFashion = '<Color>Beige</Color>
+        <ColorBasico>Beige</ColorBasico>
+        <Size>L</Size>
+        <Talla>XL</Talla>';
+
+        return sprintf($this->getSchema($schema), $hasFashionData ? $xmlFashion : $xmlVariation);
     }
 }

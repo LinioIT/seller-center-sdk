@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<SuccessResponse>
+     <Head>
+          <RequestId/>
+          <RequestAction>GetStock</RequestAction>
+          <ResponseType/>
+          <Timestamp>2025-07-02T17:12:54-04:00</Timestamp>
+     </Head>
+     <Body>
+          <Stocks>
+               <SellerWarehouses>
+                    <Warehouse>
+                         <SellerWarehouseId/>
+                         <FacilityID>GSC-12345</FacilityID>
+                         <SellerSku>TEST-123</SellerSku>
+                         <Quantity>900</Quantity>
+                    </Warehouse>
+                    <Warehouse>
+                         <SellerWarehouseId/>
+                         <FacilityID>GSC-12345</FacilityID>
+                         <SellerSku>TEST-1234</SellerSku>
+                         <Quantity>900</Quantity>
+                    </Warehouse>
+                    <Warehouse>
+                         <SellerWarehouseId/>
+                         <FacilityID>GSC-12345</FacilityID>
+                         <SellerSku>TEST-12345</SellerSku>
+                         <Quantity>9000</Quantity>
+                    </Warehouse>
+               </SellerWarehouses>
+          </Stocks>
+     </Body>
+</SuccessResponse>

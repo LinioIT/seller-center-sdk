@@ -4,9 +4,9 @@ declare(strict_types=1);
 
 namespace Linio\SellerCenter\Shipment;
 
-use Linio\Component\Util\Json;
 use Linio\SellerCenter\Exception\InvalidXmlStructureException;
 use Linio\SellerCenter\Factory\Xml\Shipment\ShipmentProviderFactory;
+use Linio\SellerCenter\Helper\Json;
 use Linio\SellerCenter\LinioTestCase;
 
 class ShipmentProviderTest extends LinioTestCase

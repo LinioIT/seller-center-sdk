@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<SuccessResponse>
+    <Head>
+        <RequestId/>
+        <RequestAction>UpdateStock</RequestAction>
+        <ResponseType/>
+        <Timestamp>2025-08-27T08:53:54-0400</Timestamp>
+    </Head>
+    <Body>
+        <Stocks>
+            <feed>653fee96-8043-4647-8ac9-11d15dc4cc84</feed>
+        </Stocks>
+    </Body>
+</SuccessResponse>

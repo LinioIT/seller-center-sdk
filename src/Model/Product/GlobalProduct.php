@@ -1,0 +1,348 @@
+<?php
+
+declare(strict_types=1);
+
+namespace Linio\SellerCenter\Model\Product;
+
+use Linio\SellerCenter\Exception\EmptyArgumentException;
+use Linio\SellerCenter\Model\Brand\Brand;
+use Linio\SellerCenter\Model\Category\Categories;
+use Linio\SellerCenter\Model\Category\Category;
+use Linio\SellerCenter\Model\Product\Contract\FashionInterface;
+use Linio\SellerCenter\Model\Product\Contract\ProductInterface;
+
+class GlobalProduct extends BaseProduct implements \JsonSerializable, ProductInterface, FashionInterface
+{
+    /**
+     * @var BusinessUnits
+     */
+    protected $businessUnits;
+
+    /**
+     * @var string|null
+     */
+    protected $qcStatus;
+
+    /**
+     * @var string|null
+     */
+    protected $color;
+
+    /**
+     * @var string|null
+     */
+    protected $colorBasico;
+
+    /**
+     * @var string|null
+     */
+    protected $size;
+
+    /**
+     * @var string|null
+     */
+    protected $talla;
+
+    /**
+     * @var int|null
+     */
+    protected $contentScore;
+
+    public function __construct()
+    {
+        $this->productData = new ProductData();
+        $this->images = new Images();
+        $this->variationAttributes = new VariationAttributes();
+    }
+
+    /**
+     * @return static
+     */
+    public static function fromBasicData(
+        string $sellerSku,
+        string $name,
+        ?string $variation,
+        Category $primaryCategory,
+        string $description,
+        Brand $brand,
+        BusinessUnits $businessUnits,
+        ?string $productId,
+        ?string $taxClass,
+        ProductData $productData,
+        ?Images $images = null,
+        ?string $qcStatus = null,
+        ?int $contentScore = null,
+        ?VariationAttributes $variationAttributes = null,
+    ): self {
+        self::ValidateArguments($sellerSku, $name, $description);
+
+        return self::fromMainData(
+            $sellerSku,
+            $name,
+            $variation,
+            $primaryCategory,
+            $description,
+            $brand,
+            $businessUnits,
+            $productId,
+            $taxClass,
+            $productData,
+            $images,
+            $qcStatus,
+            $contentScore,
+            $variationAttributes
+        );
+    }
+
+    /**
+     * @return static
+     */
+    public static function fromMainData(
+        string $sellerSku,
+        string $name,
+        ?string $variation,
+        Category $primaryCategory,
+        string $description,
+        Brand $brand,
+        BusinessUnits $businessUnits,
+        ?string $productId,
+        ?string $taxClass,
+        ProductData $productData,
+        ?Images $images = null,
+        ?string $qcStatus = null,
+        ?int $contentScore = null,
+        ?VariationAttributes $variationAtributes = null,
+    ): self {
+        $product = new static();
+
+        $product->setSellerSku($sellerSku);
+        $product->setName($name);
+        $product->setPrimaryCategory($primaryCategory);
+        $product->setDescription($description);
+        $product->setBrand($brand);
+        $product->setBusinessUnits($businessUnits);
+        $product->setProductData($productData);
+
+        $categories = new Categories();
+        $product->setCategories($categories);
+
+        if (!empty($variation)) {
+            $product->setVariation($variation);
+        }
+
+        if (!empty($productId)) {
+            $product->setProductId($productId);
+        }
+
+        if (!empty($taxClass)) {
+            $product->setTaxClass($taxClass);
+        }
+
+        if (!empty($images)) {
+            $product->attachImages($images);
+        }
+
+        if (!empty($qcStatus)) {
+            $product->setQcStatus($qcStatus);
+        }
+
+        if (!empty($contentScore)) {
+            $product->setContentScore($contentScore);
+        }
+
+        if (!empty($variationAtributes)) {
+            $product->setVariationAttributes($variationAtributes);
+        }
+
+        return $product;
+    }
+
+    /**
+     * @return static
+     */
+    public static function fromBasicDataWithNullableParams(
+        string $sellerSku,
+        ?string $name,
+        ?string $variation,
+        ?Category $primaryCategory,
+        ?string $description,
+        Brand $brand,
+        BusinessUnits $businessUnits,
+        ?string $productId,
+        ?string $taxClass,
+        ProductData $productData,
+        ?Images $images = null,
+        ?string $qcStatus = null,
+        ?int $contentScore = null,
+        ?VariationAttributes $variationAttributes = null,
+    ): self {
+        if (empty($sellerSku)) {
+            throw new EmptyArgumentException('SellerSku');
+        }
+
+        $product = new static();
+
+        $product->setSellerSku($sellerSku);
+        $product->setBrand($brand);
+        $product->setBusinessUnits($businessUnits);
+        $product->setProductData($productData);
+
+        $categories = new Categories();
+        $product->setCategories($categories);
+
+        if (!empty($primaryCategory)) {
+            $product->setPrimaryCategory($primaryCategory);
+        }
+
+        if (!empty($variation)) {
+            $product->setVariation($variation);
+        }
+
+        if (!empty($productId)) {
+            $product->setProductId($productId);
+        }
+
+        if (!empty($taxClass)) {
+            $product->setTaxClass($taxClass);
+        }
+
+        if (!empty($images)) {
+            $product->attachImages($images);
+        }
+
+        if (!empty($qcStatus)) {
+            $product->setQcStatus($qcStatus);
+        }
+
+        if (!empty($contentScore)) {
+            $product->setContentScore($contentScore);
+        }
+
+        if (!empty($name)) {
+            $product->setName($name);
+        }
+
+        if (!empty($description)) {
+            $product->setDescription($description);
+        }
+
+        if (!empty($variationAttributes)) {
+            $product->setVariationAttributes($variationAttributes);
+        }
+
+        return $product;
+    }
+
+    public function getQcStatus(): ?string
+    {
+        if (empty($this->qcStatus)) {
+            return null;
+        }
+
+        return $this->qcStatus;
+    }
+
+    public function getBusinessUnits(): ?BusinessUnits
+    {
+        return $this->businessUnits;
+    }
+
+    public function getColor(): ?string
+    {
+        return $this->color;
+    }
+
+    public function getColorBasico(): ?string
+    {
+        return $this->colorBasico;
+    }
+
+    public function getSize(): ?string
+    {
+        return $this->size;
+    }
+
+    public function getTalla(): ?string
+    {
+        return $this->talla;
+    }
+
+    public function getContentScore(): ?int
+    {
+        return $this->contentScore;
+    }
+
+    public function setQcStatus(string $qcStatus): void
+    {
+        $this->qcStatus = $qcStatus;
+    }
+
+    public function setBusinessUnits(BusinessUnits $businessUnits): void
+    {
+        $this->businessUnits = $businessUnits;
+    }
+
+    public function setColor(string $color): void
+    {
+        $this->color = $color;
+    }
+
+    public function setColorBasico(string $colorBasico): void
+    {
+        $this->colorBasico = $colorBasico;
+    }
+
+    public function setSize(string $size): void
+    {
+        $this->size = $size;
+    }
+
+    public function setTalla(string $talla): void
+    {
+        $this->talla = $talla;
+    }
+
+    public function setContentScore(int $contentScore): void
+    {
+        $this->contentScore = $contentScore;
+    }
+
+    /**
+     * @return mixed[]
+     */
+    public function all(): array
+    {
+        return [
+            Attribute::FEED_SELLER_SKU => $this->sellerSku,
+            Attribute::FEED_NEW_SELLER_SKU => $this->newSellerSku,
+            Attribute::FEED_NAME => $this->name,
+            Attribute::FEED_PRIMARY_CATEGORY => $this->primaryCategory,
+            Attribute::FEED_CATEGORIES => $this->categories,
+            Attribute::FEED_DESCRIPTION => $this->description,
+            Attribute::FEED_BRAND => $this->brand,
+            Attribute::FEED_PRODUCT_ID => $this->productId,
+            Attribute::FEED_TAX_CLASS => $this->taxClass,
+            Attribute::FEED_PARENT_SKU => $this->parentSku,
+            Attribute::FEED_VARIATION => $this->variation,
+            Attribute::FEED_COLOR => $this->color,
+            Attribute::FEED_BASIC_COLOR => $this->colorBasico,
+            Attribute::FEED_SIZE => $this->size,
+            Attribute::FEED_TALLA => $this->talla,
+        ];
+    }
+
+    public function jsonSerialize(): \stdClass
+    {
+        $serialized = parent::jsonSerialize();
+
+        $serialized->businessUnits = $this->businessUnits;
+        $serialized->qcStatus = $this->qcStatus;
+        $serialized->color = $this->color;
+        $serialized->colorBasico = $this->colorBasico;
+        $serialized->size = $this->size;
+        $serialized->talla = $this->talla;
+        $serialized->variationAttributes = $this->variationAttributes;
+
+        return $serialized;
+    }
+}
