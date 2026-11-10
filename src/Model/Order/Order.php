@@ -172,6 +172,11 @@ class Order implements \JsonSerializable
     protected $voucher;
 
     /**
+     * @var VoucherDetails|null
+     */
+    protected $voucherDetails;
+
+    /**
      * @param string|int $orderNumber
      * @param string[] $statuses
      */
@@ -425,6 +430,16 @@ class Order implements \JsonSerializable
         return $this->voucher;
     }
 
+    public function getVoucherDetails(): ?VoucherDetails
+    {
+        return $this->voucherDetails;
+    }
+
+    public function setVoucherDetails(?VoucherDetails $voucherDetails): void
+    {
+        $this->voucherDetails = $voucherDetails;
+    }
+
     public function setOrderItems(OrderItems $orderItems): void
     {
         $this->orderItems = $orderItems;
@@ -470,6 +485,7 @@ class Order implements \JsonSerializable
         $serialized->shippingFeeTotal = $this->shippingFeeTotal;
         $serialized->shippingTax = $this->shippingTax;
         $serialized->voucher = $this->voucher;
+        $serialized->voucherDetails = $this->voucherDetails;
 
         return $serialized;
     }

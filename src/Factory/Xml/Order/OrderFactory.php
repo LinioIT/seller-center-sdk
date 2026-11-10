@@ -89,7 +89,7 @@ class OrderFactory
         $extraBillingAttributes = !empty($element->ExtraBillingAttributes) ?
             ExtraBillingAttributesFactory::make($element->ExtraBillingAttributes) : null;
 
-        return Order::fromData(
+        $order = Order::fromData(
             (int) $element->OrderId,
             $orderNumber,
             (string) $element->CustomerFirstName,
@@ -122,6 +122,10 @@ class OrderFactory
             self::stringToFloat((string) $element->ShippingTax),
             self::stringToFloat((string) $element->Voucher)
         );
+
+        $order->setVoucherDetails(VoucherDetailsFactory::make($element));
+
+        return $order;
     }
 
     public static function stringToFloat(string $value): float

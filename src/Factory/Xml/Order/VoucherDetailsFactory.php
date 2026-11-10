@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace Linio\SellerCenter\Factory\Xml\Order;
 
+use Linio\SellerCenter\Model\Order\VoucherAmountDetails;
 use Linio\SellerCenter\Model\Order\VoucherDetails;
 use SimpleXMLElement;
 
@@ -20,6 +21,21 @@ final class VoucherDetailsFactory
         return new VoucherDetails(
             self::toFloat($details->CmrDiscount) ?? 0.0,
             self::toFloat($details->OtherDiscount) ?? 0.0,
+        );
+    }
+
+    public static function makeAmountDetails(SimpleXMLElement $element): ?VoucherAmountDetails
+    {
+        if (!isset($element->VoucherAmountDetails)) {
+            return null;
+        }
+
+        $details = $element->VoucherAmountDetails;
+
+        return new VoucherAmountDetails(
+            self::toFloat($details->CmrDiscount) ?? 0.0,
+            self::toFloat($details->OtherDiscount) ?? 0.0,
+            self::toFloat($details->CmrDiscountSellerFundedPct)
         );
     }
 
