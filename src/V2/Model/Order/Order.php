@@ -489,7 +489,11 @@ class Order implements \JsonSerializable
         $serialized->shippingFeeTotal = $this->shippingFeeTotal;
         $serialized->shippingTax = $this->shippingTax;
         $serialized->voucher = $this->voucher;
-        $serialized->voucherDetails = $this->voucherDetails;
+
+        if ($this->voucherDetails !== null) {
+            $serialized->voucherDetails = $this->voucherDetails;
+        }
+
         $serialized->warehouse = $this->warehouse;
 
         return $serialized;

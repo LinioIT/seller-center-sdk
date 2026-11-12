@@ -6,11 +6,10 @@ namespace Linio\SellerCenter\Factory\Xml\Order;
 
 use Linio\SellerCenter\Model\Order\VoucherAmountDetails;
 use Linio\SellerCenter\Model\Order\VoucherDetails;
-use SimpleXMLElement;
 
 final class VoucherDetailsFactory
 {
-    public static function make(SimpleXMLElement $element): ?VoucherDetails
+    public static function make(\SimpleXMLElement $element): ?VoucherDetails
     {
         if (!isset($element->VoucherDetails)) {
             return null;
@@ -24,7 +23,7 @@ final class VoucherDetailsFactory
         );
     }
 
-    public static function makeAmountDetails(SimpleXMLElement $element): ?VoucherAmountDetails
+    public static function makeAmountDetails(\SimpleXMLElement $element): ?VoucherAmountDetails
     {
         if (!isset($element->VoucherAmountDetails)) {
             return null;
@@ -42,7 +41,7 @@ final class VoucherDetailsFactory
     /**
      * Parses amounts such as "10790.00" or "10,790.00"; returns null when empty.
      */
-    public static function toFloat(?SimpleXMLElement $value): ?float
+    public static function toFloat(?\SimpleXMLElement $value): ?float
     {
         $raw = str_replace(',', '', trim((string) $value));
 

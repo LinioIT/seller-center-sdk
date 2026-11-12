@@ -571,7 +571,11 @@ class OrderItem implements \JsonSerializable
         $serialized->shippingServiceCost = $this->shippingServiceCost;
         $serialized->voucherAmount = $this->voucherAmount;
         $serialized->voucherCode = $this->voucherCode;
-        $serialized->voucherAmountDetails = $this->voucherAmountDetails;
+
+        if ($this->voucherAmountDetails !== null) {
+            $serialized->voucherAmountDetails = $this->voucherAmountDetails;
+        }
+
         $serialized->status = $this->status;
         $serialized->isProcessable = $this->isProcessable;
         $serialized->shipmentProvider = $this->shipmentProvider;

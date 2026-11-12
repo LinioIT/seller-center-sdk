@@ -10,8 +10,8 @@ $finder = Finder::create()
 return (new Config())
     ->setRules([
         '@Symfony' => true,
-        '@PHP71Migration:risky' => true,
-        '@PHPUnit60Migration:risky' => true,
+        '@PHP7x1Migration:risky' => true,
+        '@PHPUnit6x0Migration:risky' => true,
         'array_indentation' => true,
         'array_syntax' => ['syntax' => 'short'],
         'blank_line_after_opening_tag' => true,

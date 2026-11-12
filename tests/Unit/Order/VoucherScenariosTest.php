@@ -4,7 +4,6 @@ declare(strict_types=1);
 
 namespace Linio\SellerCenter\Order;
 
-use Linio\Component\Util\Json;
 use Linio\SellerCenter\Factory\Xml\Order\OrderFactory;
 use Linio\SellerCenter\Factory\Xml\Order\OrderItemFactory;
 use Linio\SellerCenter\Factory\Xml\Order\OrderItemsFactory;
@@ -15,7 +14,6 @@ use Linio\SellerCenter\Model\Order\VoucherAmountDetails;
 use Linio\SellerCenter\Model\Order\VoucherDetails;
 use Linio\SellerCenter\V2\Factory\Xml\Order\OrderFactory as OrderFactoryV2;
 use Linio\SellerCenter\V2\Factory\Xml\Order\OrdersFactory as OrdersFactoryV2;
-use SimpleXMLElement;
 
 /**
  * Oportunidad Única (CMR discount) contract update: TC01 - TC16 + regression checklist.
@@ -31,14 +29,14 @@ class VoucherScenariosTest extends LinioTestCase
 
     // ---------------------------------------------------------------- helpers
 
-    private function ordersXml(bool $v2 = false): SimpleXMLElement
+    private function ordersXml(bool $v2 = false): \SimpleXMLElement
     {
         $raw = $v2 ? $this->getSchemaV2('Order/OrdersResponse.xml') : $this->getSchema('Order/OrdersResponse.xml');
 
         return simplexml_load_string($raw)->Body;
     }
 
-    private function addOrderVoucherDetails(SimpleXMLElement $order, string $cmr, string $other, string $voucher): void
+    private function addOrderVoucherDetails(\SimpleXMLElement $order, string $cmr, string $other, string $voucher): void
     {
         $order->Voucher = $voucher;
         $details = $order->addChild('VoucherDetails');
@@ -46,7 +44,7 @@ class VoucherScenariosTest extends LinioTestCase
         $details->addChild('OtherDiscount', $other);
     }
 
-    private function itemsXml(): SimpleXMLElement
+    private function itemsXml(): \SimpleXMLElement
     {
         return simplexml_load_string($this->getSchema('Order/OrderItemsResponse.xml'))->Body;
     }
@@ -55,12 +53,12 @@ class VoucherScenariosTest extends LinioTestCase
      * Configures the (single) item of OrderItemsResponse.xml and optionally clones it.
      */
     private function configureItem(
-        SimpleXMLElement $item,
+        \SimpleXMLElement $item,
         int $id,
         string $itemPrice,
         string $paidPrice,
         string $voucherAmount,
-        ?array $details
+        ?array $details,
     ): void {
         $item->OrderItemId = (string) $id;
         $item->ItemPrice = $itemPrice;
@@ -76,7 +74,7 @@ class VoucherScenariosTest extends LinioTestCase
         }
     }
 
-    private function cloneItem(SimpleXMLElement $items): SimpleXMLElement
+    private function cloneItem(\SimpleXMLElement $items): \SimpleXMLElement
     {
         $first = dom_import_simplexml($items->OrderItem[0]);
         $first->parentNode->appendChild($first->cloneNode(true));
@@ -87,7 +85,7 @@ class VoucherScenariosTest extends LinioTestCase
         return $clone;
     }
 
-    private function buildMixedOrderItems(): SimpleXMLElement
+    private function buildMixedOrderItems(): \SimpleXMLElement
     {
         $body = $this->itemsXml();
         $items = $body->OrderItems;
@@ -139,7 +137,7 @@ class VoucherScenariosTest extends LinioTestCase
             $this->assertSame(self::OTHER, $model->getVoucherDetails()->getOtherDiscount());
             $this->assertSame(33611.0, $model->getVoucher());
 
-            $json = Json::decode(Json::encode($model));
+            $json = json_decode(json_encode($model), true);
             $this->assertEquals(['cmrDiscount' => self::CMR, 'otherDiscount' => self::OTHER], $json['voucherDetails']);
         }
     }
@@ -182,7 +180,7 @@ class VoucherScenariosTest extends LinioTestCase
         $this->assertSame(self::OTHER, $details->getOtherDiscount());
         $this->assertSame(self::SELLER_PCT, $details->getCmrDiscountSellerFundedPct());
 
-        $json = Json::decode(Json::encode($item));
+        $json = json_decode(json_encode($item), true);
         $this->assertSame(
             ['cmrDiscount', 'otherDiscount', 'cmrDiscountSellerFundedPct'],
             array_keys($json['voucherAmountDetails'])
