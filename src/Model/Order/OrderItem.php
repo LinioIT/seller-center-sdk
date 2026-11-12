@@ -417,6 +417,21 @@ class OrderItem implements \JsonSerializable
         return !empty($this->voucherCode) ? $this->voucherCode : null;
     }
 
+    /**
+     * @var VoucherAmountDetails|null
+     */
+    protected $voucherAmountDetails;
+
+    public function getVoucherAmountDetails(): ?VoucherAmountDetails
+    {
+        return $this->voucherAmountDetails;
+    }
+
+    public function setVoucherAmountDetails(?VoucherAmountDetails $voucherAmountDetails): void
+    {
+        $this->voucherAmountDetails = $voucherAmountDetails;
+    }
+
     public function getStatus(): ?string
     {
         return $this->status;
@@ -556,6 +571,11 @@ class OrderItem implements \JsonSerializable
         $serialized->shippingServiceCost = $this->shippingServiceCost;
         $serialized->voucherAmount = $this->voucherAmount;
         $serialized->voucherCode = $this->voucherCode;
+
+        if ($this->voucherAmountDetails !== null) {
+            $serialized->voucherAmountDetails = $this->voucherAmountDetails;
+        }
+
         $serialized->status = $this->status;
         $serialized->isProcessable = $this->isProcessable;
         $serialized->shipmentProvider = $this->shipmentProvider;

@@ -7,6 +7,7 @@ namespace Linio\SellerCenter\V2\Model\Order;
 use Linio\SellerCenter\Model\Order\Address;
 use Linio\SellerCenter\Model\Order\ExtraBillingAttributes;
 use Linio\SellerCenter\Model\Order\OrderItems;
+use Linio\SellerCenter\Model\Order\VoucherDetails;
 use Linio\SellerCenter\V2\Model\Warehouse\Warehouse;
 
 class Order implements \JsonSerializable
@@ -175,6 +176,11 @@ class Order implements \JsonSerializable
      * @var float|null
      */
     protected $voucher;
+
+    /**
+     * @var VoucherDetails|null
+     */
+    protected $voucherDetails;
 
     /**
      * @var Warehouse
@@ -423,6 +429,16 @@ class Order implements \JsonSerializable
         return $this->voucher;
     }
 
+    public function getVoucherDetails(): ?VoucherDetails
+    {
+        return $this->voucherDetails;
+    }
+
+    public function setVoucherDetails(?VoucherDetails $voucherDetails): void
+    {
+        $this->voucherDetails = $voucherDetails;
+    }
+
     public function setOrderItems(OrderItems $orderItems): void
     {
         $this->orderItems = $orderItems;
@@ -473,6 +489,11 @@ class Order implements \JsonSerializable
         $serialized->shippingFeeTotal = $this->shippingFeeTotal;
         $serialized->shippingTax = $this->shippingTax;
         $serialized->voucher = $this->voucher;
+
+        if ($this->voucherDetails !== null) {
+            $serialized->voucherDetails = $this->voucherDetails;
+        }
+
         $serialized->warehouse = $this->warehouse;
 
         return $serialized;
