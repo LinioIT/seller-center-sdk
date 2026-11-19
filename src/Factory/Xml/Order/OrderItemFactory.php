@@ -79,7 +79,7 @@ class OrderItemFactory
         $dateTime = \DateTimeImmutable::createFromFormat('Y-m-d H:i:s', (string) $element->UpdatedAt);
         $updatedAt = !empty($dateTime) ? $dateTime : null;
 
-        return OrderItem::fromOrderItem(
+        $orderItem = OrderItem::fromOrderItem(
             (int) $element->OrderItemId,
             (int) $element->ShopId,
             (int) $element->OrderId,
@@ -120,6 +120,10 @@ class OrderItemFactory
             isset($element->SalesType) ? (string) $element->SalesType : null,
             isset($element->Imei) ? (string) $element->Imei : null
         );
+
+        $orderItem->setVoucherAmountDetails(VoucherDetailsFactory::makeAmountDetails($element));
+
+        return $orderItem;
     }
 
     public static function makeFromStatus(\SimpleXMLElement $element): OrderItem

@@ -8,6 +8,7 @@ use Linio\SellerCenter\Contract\BusinessUnitOperatorCodes;
 use Linio\SellerCenter\Exception\InvalidDomainException;
 use Linio\SellerCenter\Factory\Xml\Order\AddressFactory;
 use Linio\SellerCenter\Factory\Xml\Order\ExtraBillingAttributesFactory;
+use Linio\SellerCenter\Factory\Xml\Order\VoucherDetailsFactory;
 use Linio\SellerCenter\V2\Factory\Xml\Warehouse\WarehouseFactory;
 use Linio\SellerCenter\V2\Model\Order\Order;
 use Linio\SellerCenter\Validator\XmlStructureValidator;
@@ -95,7 +96,7 @@ class OrderFactory
 
         $warehouse = WarehouseFactory::make($element->Warehouse);
 
-        return Order::fromData(
+        $order = Order::fromData(
             (int) $element->OrderId,
             $orderNumber,
             (string) $element->CustomerFirstName,
@@ -129,6 +130,10 @@ class OrderFactory
             self::stringToFloat((string) $element->Voucher),
             $warehouse
         );
+
+        $order->setVoucherDetails(VoucherDetailsFactory::make($element));
+
+        return $order;
     }
 
     public static function stringToFloat(string $value): float
